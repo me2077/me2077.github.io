@@ -381,7 +381,7 @@
                     "songName": "a man",
                     "files": {
                         "song": "music/Signals.mp3",
-                        "cover": "himages/Signals.jpg"
+                        "cover": "images/Signals.jpg"
                     }
                 },
                 {
