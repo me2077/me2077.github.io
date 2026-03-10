@@ -97,9 +97,9 @@
         window.onload = function() {
             init();
             preloadImages([
-                'images/AAA.png',
-                'images/CCC.JPG',
-                'images/DDD.JPG'
+                '/images/AAA.png',
+                '/images/CCC.JPG',
+                '/images/DDD.JPG'
             ]);
             loadMusicPlayer();
             switchPageTo(2);
