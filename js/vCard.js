@@ -17,7 +17,7 @@ X-SOCIALPROFILE;TYPE=Telegram:https://t.me/OOl23456
 X-SOCIALPROFILE;TYPE=Photo:https://xn--yk8h.nekoweb.org
 X-SOCIALPROFILE;TYPE=Blog:https://xn--bt9h.blogspot.com
 X-SOCIALPROFILE;TYPE=WeChat:lllIIllIIlIII
-URL;TYPE=微信WeChat:lllIIllIIlIII
+EMAIL;TYPE=INTERNET:lllIIllIIlIII
 PHOTO;ENCODING=b;TYPE=JPEG:${base64Photo}
 END:VCARD
 `;
