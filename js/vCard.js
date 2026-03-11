@@ -16,6 +16,8 @@ X-SOCIALPROFILE;TYPE=WhatsApp:https://wa.me/message/SYDPTLQEHYE3P1?src=qr
 X-SOCIALPROFILE;TYPE=Telegram:https://t.me/OOl23456
 X-SOCIALPROFILE;TYPE=Photo:https://xn--yk8h.nekoweb.org
 X-SOCIALPROFILE;TYPE=Blog:https://xn--bt9h.blogspot.com
+X-SOCIALPROFILE;TYPE=WeChat:lllIIllIIlIII
+X-SOCIALPROFILE;TYPE=点击跳转至支付宝给我的猫买一杯咖啡:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
 PHOTO;ENCODING=b;TYPE=JPEG:${base64Photo}
 END:VCARD
 `;
