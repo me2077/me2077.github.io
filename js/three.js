@@ -82,18 +82,3 @@
             camera.lookAt(scene.position);
             renderer.render(scene, camera);
         }
-
-       <!-- 全局变量与发光卡片阴影控制 功能：跟踪当前页面、动态调整卡片阴影（音乐页特殊处理💜 -->
-        let currentPage = 2;
-        let musicPlayerLoaded = false;
-        const glowingCard = document.querySelector('.glowing-card');
-        const originalBoxShadow = '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset';
-        function updateGlowingShadow() {
-            if (currentPage !== 3) {
-                glowingCard.style.boxShadow = originalBoxShadow;
-                return;
-            }
-            const isLight = document.body.classList.contains('light');
-            const reducedBoxShadow = isLight ? '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset' : '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset';
-            glowingCard.style.boxShadow = reducedBoxShadow;
-        }
