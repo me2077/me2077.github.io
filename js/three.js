@@ -50,31 +50,27 @@
             windowHalfY = window.innerHeight / 2;
         }
         function anime() {
-            for (let index = 0, len = count; index < len; index++) {
-                velocityArray[2 * index] += 0.015;
-                velocityArray[2 * index + 1] += 0.015;
-                positionArray[6 * index + 2] += velocityArray[2 * index] + 0.03;
-                positionArray[6 * index + 5] += velocityArray[2 * index + 1];
-                if(positionArray[6 * index + 2] > 200) {
-                    let z = Math.random() * 200 - 200;
-                    positionArray[6 * index + 2] = z;
-                    positionArray[6 * index + 5] = z;
-                    velocityArray[2 * index] = 0;
-                    velocityArray[2 * index + 1] = 0;
-                }
-            }
-            position.needsUpdate = true;
-            renderer.render(scene, camera);
-            requestAnimationFrame(anime);
-            render();
+    for (let index = 0, len = count; index < len; index++) {
+        velocityArray[2 * index] += 0.015;
+        velocityArray[2 * index + 1] += 0.015;
+        positionArray[6 * index + 2] += velocityArray[2 * index] + 0.03;
+        positionArray[6 * index + 5] += velocityArray[2 * index + 1];
+        if(positionArray[6 * index + 2] > 200) {
+            let z = Math.random() * 200 - 200;
+            positionArray[6 * index + 2] = z;
+            positionArray[6 * index + 5] = z;
+            velocityArray[2 * index] = 0;
+            velocityArray[2 * index + 1] = 0;
         }
+    }
+    position.needsUpdate = true;
+    camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
+    camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
+    camera.lookAt(scene.position);
+    renderer.render(scene, camera);
+    requestAnimationFrame(anime);
+}
         function onPointerMove(event) {
             mouseX = event.clientX - windowHalfX;
             mouseY = event.clientY - windowHalfY;
-        }
-        function render() {
-            camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
-            camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
-            camera.lookAt(scene.position);
-            renderer.render(scene, camera);
         }
