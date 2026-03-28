@@ -1076,7 +1076,7 @@ const video = document.getElementById('page1Video');
 let videoLoaded = false;
 
 function checkVideoVisibility() {
-    const page = document.getElementById('page1-2');
+    const page = document.getElementById('page1-5');
     const rect = page.getBoundingClientRect();
 
     // 判断是否在可视区域（中间位置）
