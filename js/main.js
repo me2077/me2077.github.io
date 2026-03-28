@@ -1064,3 +1064,32 @@ function loadMusicPlayer() {
             alert('复制失败,请手动输入 ' + wechatID);
             window.location.href = 'wechat://dl/scan';
         });
+  <!--page1-5视频 -->
+const video = document.getElementById('page1Video');
+let videoLoaded = false;
+
+function checkVideoVisibility() {
+    const page = document.getElementById('page1-2');
+    const rect = page.getBoundingClientRect();
+
+    // 判断是否在可视区域（中间位置）
+    const inView = rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4;
+
+    if (inView) {
+        // 👉 第一次进入才加载
+        if (!videoLoaded) {
+            video.src = "https://dogpan.com/f/2kq5C8/xxx.mp4";
+            videoLoaded = true;
+        }
+
+        // 👉 自动播放（iOS 需要静音）
+        video.muted = true;
+        video.play().catch(() => {});
+    } else {
+        // 👉 离开暂停
+        video.pause();
+    }
+}
+video.addEventListener('click', () => {
+    video.muted = false;
+});
