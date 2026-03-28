@@ -42,6 +42,7 @@
             pages.style.transform = `translateX(-${(page - 1) * 100}%)`;
             document.querySelectorAll('.bullet').forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page));
             updateGlowingShadow();
+            setTimeout(checkVideoVisibility, 300);
         }
       
       <!-- Spotify小卡片播放控制💜 -->
@@ -650,7 +651,13 @@ function loadMusicPlayer() {
                 }, 1500);
             });
         }
-      
+       const verticalScroll = document.querySelector('#page1 .page-vertical');
+
+if (verticalScroll) {
+    verticalScroll.addEventListener('scroll', () => {
+        checkVideoVisibility();
+    });
+}
          <!-- 日间切换按钮悬停效果💜  -->
         document.querySelectorAll('.theme-toggle').forEach(button => {
             button.addEventListener('mouseenter', function() {
