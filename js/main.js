@@ -283,7 +283,7 @@ function loadMusicPlayer() {
                         "song": "music/Signals.mp3",
                         "cover": "images/Signals.jpg"
             },
-            "duration": "3:45"
+            "duration": "33:45"
         },
         {
             "bg": "#0896eba1",
