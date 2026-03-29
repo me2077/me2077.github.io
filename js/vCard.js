@@ -16,6 +16,7 @@ X-SOCIALPROFILE;TYPE=Photo:https://xn--yk8h.nekoweb.org
 X-SOCIALPROFILE;TYPE=Telegram:https://t.me/qxx_me
 X-SOCIALPROFILE;TYPE=WhatsApp:https://wa.me/message/SYDPTLQEHYE3P1?src=qr
 URL;TYPE=（跳转支付宝）请我喝杯猫爪拿铁☕️:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
+X-SOCIALPROFILE;TYPE=请我喝杯猫爪拿铁:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
 PHOTO;ENCODING=b;TYPE=JPEG:${base64Photo}
 END:VCARD
 `;
