@@ -11,13 +11,11 @@ TITLE:
 TEL;TYPE=cell:+15513223223
 EMAIL;TYPE=INTERNET:vwwwww@yahoo.com
 URL;TYPE=个人主页:https://qxx.me
-URL;TYPE=点击跳转至支付宝给我的猫买一杯咖啡☕️:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
-X-SOCIALPROFILE;TYPE=WhatsApp:https://wa.me/message/SYDPTLQEHYE3P1?src=qr
-X-SOCIALPROFILE;TYPE=Telegram:https://t.me/OOl23456
-X-SOCIALPROFILE;TYPE=Photo:https://xn--yk8h.nekoweb.org
 X-SOCIALPROFILE;TYPE=Blog:https://xn--bt9h.blogspot.com
-X-SOCIALPROFILE;TYPE=WeChat:lllIIllIIlIII
-EMAIL;TYPE=INTERNET:lllIIllIIlIII
+X-SOCIALPROFILE;TYPE=Photo:https://xn--yk8h.nekoweb.org
+X-SOCIALPROFILE;TYPE=Telegram:https://t.me/qxx_me
+X-SOCIALPROFILE;TYPE=WhatsApp:https://wa.me/message/SYDPTLQEHYE3P1?src=qr
+URL;TYPE=（跳转支付宝）请我喝杯猫爪拿铁☕️:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
 PHOTO;ENCODING=b;TYPE=JPEG:${base64Photo}
 END:VCARD
 `;
