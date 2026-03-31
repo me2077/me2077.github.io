@@ -748,7 +748,7 @@ if (verticalScroll) {
                 nekoEl.style.width = "32px";
                 nekoEl.style.height = "32px";
                 nekoEl.style.position = "fixed";
-                nekoEl.style.backgroundImage = `url('https://raw.githubusercontent.com/kyrie25/spicetify-oneko/main/assets/oneko/oneko-${variant}.gif')`;
+                nekoEl.style.backgroundImage = `url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/oneko-${variant}.gif')`;
                 nekoEl.style.imageRendering = "pixelated";
                 nekoEl.style.left = `${nekoPosX - 16}px`;
                 nekoEl.style.top = `${nekoPosY - 16}px`;
@@ -943,7 +943,7 @@ if (verticalScroll) {
             function setVariant(arr) {
                 variant = arr[0];
                 localStorage.setItem("oneko:variant", `"${variant}"`);
-                nekoEl.style.backgroundImage = `url('images/maia_oneko.gif')`;
+                nekoEl.style.backgroundImage = `url('images/oneko-classic.gif')`;
             }
             function pickerModal() {
                 const container = document.createElement("div");
@@ -980,7 +980,7 @@ if (verticalScroll) {
                     const div = document.createElement("div");
                     div.className = "oneko-variant-button";
                     div.id = variantEnum[0];
-                    div.style.backgroundImage = `url('https://raw.githubusercontent.com/kyrie25/spicetify-oneko/main/assets/oneko/oneko-${variantEnum[0]}.gif')`;
+                    div.style.backgroundImage = `url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/oneko-${variantEnum[0]}.gif')`;
                     div.style.setProperty("--idle-x", `${idle[0] * 64}px`);
                     div.style.setProperty("--idle-y", `${idle[1] * 64}px`);
                     div.style.setProperty("--active-x", `${active[0] * 64}px`);
