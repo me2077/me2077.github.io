@@ -769,7 +769,7 @@ if (verticalScroll) {
     nekoEl.style.width = "32px";
     nekoEl.style.height = "32px";
     nekoEl.style.position = "fixed";
-    nekoEl.style.backgroundImage = `url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/oneko-${variant}.gif')`;
+    nekoEl.style.backgroundImage = `url('images/oneko-${variant}.gif')`;
     nekoEl.style.imageRendering = "pixelated";
     nekoEl.style.left = `${nekoPosX - 16}px`;
     nekoEl.style.top = `${nekoPosY - 16}px`;
