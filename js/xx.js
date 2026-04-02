@@ -278,83 +278,83 @@ function loadMusicPlayer() {
     const songs = [
         {
             "bg": "#c9bea28f",
-            "artist": "sickick",
-            "songName": "talking to the moon (bruno mars remix)",
+            "artist": "SCSI-9",
+            "songName": "Senorita Tristeza",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/Senorita Tristeza.mp3",
+                        "cover": "music/Senorita Tristeza.jpg"
             },
-            "duration": "33:45"
+            "duration": "5:53"
         },
         {
             "bg": "#0896eba1",
-            "artist": "bless you",
-            "songName": "driving",
+            "artist": "Paradox Interactive/Sound Of Neon",
+            "songName": "Be Happy",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/Be Happy.mp3",
+                        "cover": "music/Be Happy.jpg"
             },
-            "duration": "3:28"
+            "duration": "3:22"
         },
         {
             "bg": "#ebbe03",
-            "artist": "lil uzi vert",
-            "songName": "demon high",
+            "artist": "Flower Face",
+            "songName": "Jupiter",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/Jupiter.mp3",
+                        "cover": "music/Jupiter.jpg"
             },
-            "duration": "2:58"
+            "duration": "4:31"
         },
         {
             "bg": "#ffc382",
-            "artist": "travis scott",
-            "songName": "a man",
+            "artist": "La Femme",
+            "songName": "Le jardin",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/Le jardin.mp3",
+                        "cover": "music/Le jardin.jpg"
             },
-            "duration": "3:45"
+            "duration": "4:00"
         },
         {
             "bg": "#ffcbdc",
-            "songName": "Memory Reboot",
-            "artist": "VØJ/Narvent",
+            "artist": "Athletics",
+            "songName": "III",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/III.mp3",
+                        "cover": "music/III.jpg"
             },
-            "duration": "3:12"
+            "duration": "6:10"
         },
         {
             "bg": "#44c16fb5",
-            "artist": "tritonal",
-            "songName": "diamonds (feat. rose darling)",
+            "artist": "Marvel83'",
+            "songName": "Alone With You",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/Alone With You.mp3",
+                        "cover": "music/Alone With You.jpg"
             },
-            "duration": "4:05"
+            "duration": "4:53"
         },
         {
             "bg": "#ff4545",
-            "artist": "the weeknd",
-            "songName": "blinding lights",
+            "artist": "Timecop1983",
+            "songName": "Nightfall",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/Nightfall.mp3",
+                        "cover": "music/Nightfall.jpg"
             },
-            "duration": "3:20"
+            "duration": "4:40"
         },
         {
             "bg": "#e5e7e9",
-            "artist": "arizona zervas",
-            "songName": "no i in team",
+            "artist": "Lazer Boomerang",
+            "songName": "R3cover",
             "files": {
-                        "song": "music/Signals.mp3",
-                        "cover": "images/Signals.jpg"
+                        "song": "music/R3cover.mp3",
+                        "cover": "music/R3cover.jpg"
             },
-            "duration": "2:48"
+            "duration": "3:34"
         }
     ];
 
