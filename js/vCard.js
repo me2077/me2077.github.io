@@ -6,7 +6,7 @@ BEGIN:VCARD
 VERSION:3.0
 N:;;;
 FN:@qxx
-ORG:@qxx
+ORG:@qxxxxx
 TITLE:
 TEL;TYPE=cell:+15513223223
 EMAIL;TYPE=INTERNET:vwwwww@yahoo.com
