@@ -12,7 +12,7 @@ TEL;TYPE=cell:+15513223223
 EMAIL;TYPE=INTERNET:vwwwww@yahoo.com
 URL;TYPE=个人主页:https://qxx.me
 URL;TYPE=Blog博客:https://xn--bt9h.blogspot.com
-URL;TYPE=Photos摄影:https://xn--yk8h.nekoweb.org
+URL;TYPE=Photos摄影🎞:https://xn--yk8h.nekoweb.org
 X-SOCIALPROFILE;TYPE=Telegram:https://t.me/qxx_me
 X-SOCIALPROFILE;TYPE=WhatsApp:https://wa.me/message/SYDPTLQEHYE3P1?src=qr
 URL;TYPE=（跳转支付宝）请我喝杯猫爪拿铁☕️:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
