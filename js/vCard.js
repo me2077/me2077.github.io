@@ -4,15 +4,15 @@
             const vcard = `
 BEGIN:VCARD
 VERSION:3.0
-N:;;;
+N:qxx;;;
 FN:@qxx
-ORG:qxx
+ORG:@qxx
 TITLE:
 TEL;TYPE=cell:+15513223223
 EMAIL;TYPE=INTERNET:vwwwww@yahoo.com
 URL;TYPE=个人主页:https://qxx.me
-X-SOCIALPROFILE;TYPE=Blog:https://xn--bt9h.blogspot.com
-X-SOCIALPROFILE;TYPE=Photo:https://xn--yk8h.nekoweb.org
+URL;TYPE=Blog博客:https://xn--bt9h.blogspot.com
+URL;TYPE=Photo摄影:https://xn--yk8h.nekoweb.org
 X-SOCIALPROFILE;TYPE=Telegram:https://t.me/qxx_me
 X-SOCIALPROFILE;TYPE=WhatsApp:https://wa.me/message/SYDPTLQEHYE3P1?src=qr
 URL;TYPE=（跳转支付宝）请我喝杯猫爪拿铁☕️:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
