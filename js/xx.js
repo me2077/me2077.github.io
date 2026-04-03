@@ -318,13 +318,13 @@ function loadMusicPlayer() {
         },
         {
             "bg": "#ffcbdc",
-            "artist": "Athletics",
-            "songName": "III",
+            "artist": "Still Corners",
+            "songName": "Crying",
             "files": {
-                        "song": "music/III.mp3",
-                        "cover": "music/III.jpg"
+                        "song": "music/Crying.mp3",
+                        "cover": "music/Crying.jpg"
             },
-            "duration": "6:10"
+            "duration": "3:28"
         },
         {
             "bg": "#44c16fb5",
