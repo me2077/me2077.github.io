@@ -129,7 +129,7 @@ canvas {
     height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    margin: -55px auto;
+    margin: -51px auto;
     display: block;
     filter: brightness(0.88);
     object-position: center 10%;
@@ -181,11 +181,11 @@ canvas {
     display: flex;
     align-items: center;
     max-width: 275px;
-    height: 40px;
+    height: 43px;
     background: var(--link-card-bg);
     padding: 8px;
-    margin-bottom: 6px;
-    border-radius: 15px;
+    margin-bottom: 0px;
+    border-radius: 20px;
     text-decoration: none;
     color: var(--fg); /* 此处保留以防 a 标签覆盖默认色 */
     transition: background 0.3s;
@@ -215,12 +215,12 @@ canvas {
     justify-content: space-between;
     align-items: center;
     max-width: 251px;
-    height: 150px;
+    height: 160px;
     background: var(--spotify-card-bg);
-    border-radius: 20px;
+    border-radius: 25px;
     padding: 10.8px 20px;
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     flex-wrap: nowrap;
     gap: 16px;
     transition: all 0.2s ease;
