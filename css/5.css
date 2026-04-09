@@ -743,13 +743,13 @@ body:not(.light) .crt::before {
             padding-left: 0;
             flex-grow: 1;
         }
-        .music-player__song-duration {
-            flex-shrink: 0;
-            margin-left: 10px;
-        }
-        .music-player__song-duration {
-            font-weight: bold; font-size: 0.8em; color: var(--color-text-2);
-        }
+.music-player__song-duration {
+    flex-shrink: 0;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 0.8em;
+    color: var(--color-text-2);
+}
         .loading-spinner {
             display: inline-block;
             width: 40px;
