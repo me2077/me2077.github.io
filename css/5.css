@@ -356,7 +356,8 @@ canvas {
     justify-content: flex-start;
 }
 
-.play-btn:hover {
+.play-btn:hover,
+.play-btn:active {
     transform: scale(1.05);
 }
 
