@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#bd76ff">
+    <title>J͟e͟s͟s͟e͟🐈</title>
+    <link rel="stylesheet" href="css/x.css">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
+    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="qxx">
+    <link rel="manifest" href="favicon/site.webmanifest">
+</head>
+<body class="light">
+    <div class="crt">
+        <div class="alist-widget-wrapper">
+            <div class="glowing-card">
+                <div class="inner">
+                    <svg class="theme-toggle sun-toggle" viewBox="0 0 24 24" onclick="toggleTheme('light')">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                        </g>
+                    </svg>
+
+                    <svg class="theme-toggle moon-toggle" viewBox="0 0 24 24" onclick="toggleTheme('dark')">
+                        <path
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"
+                        ></path>
+                    </svg>
+
+                    <svg class="day-toggle day-toggle-left" viewBox="0 0 24 24" onclick="switchBackground('/images/CCC.JPG')">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                        </g>
+                    </svg>
+
+                    <svg class="day-toggle day-toggle-right" viewBox="0 0 24 24" onclick="switchBackground('/images/DDD.JPG')">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                        </g>
+                    </svg>
+
+                    <div class="link-section">
+                        <div class="pages">
+                            <!-- 第一页：动态图与打赏 -->
+                            <div id="page1" class="page">
+                                <div class="page-vertical">
+                                    <section class="subpage" id="page1-1">
+                                        <div
+                                            id="rewardContainer"
+                                            onclick="toggleReward()"
+                                            style="height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding-top:0px; font-style:italic; cursor:pointer; position:relative;"
+                                        >
+                                            <div style="position:relative; width:100%; display:flex; justify-content:center; align-items:center;">
+                                                <img
+                                                    id="neko-gif"
+                                                    src="images/Neko1.GIF"
+                                                    alt="GIF动图"
+                                                    style="max-width:99.7%; max-height:100%; border-radius:18px; transition:opacity 0.5s ease; opacity:1;"
+                                                >
+                                                <img
+                                                    id="reward-qr"
+                                                    src="images/QR.jpeg"
+                                                    alt="二维码"
+                                                    style="position:absolute; width:340px; height:340px; border-radius:18px; transition:opacity 0.5s ease; opacity:0; pointer-events:none; top:0px;"
+                                                >
+                                            </div>
+
+                                            <div
+                                                style="position:relative; margin-top:21px; display:flex; justify-content:center; align-items:center; width:100%; height:32px;"
+                                            >
+                                                <p
+                                                    id="text-original"
+                                                    style="position:absolute; color:var(--fg); font-size:24px; text-align:center; text-decoration:underline; margin:0; transition:opacity 0.5s ease; opacity:1; white-space:nowrap;"
+                                                >
+                                                    猫爪一伸,请我喝杯咖啡吧☕️
+                                                </p>
+
+                                                <div
+                                                    id="text-new"
+                                                    style="position:absolute; opacity:0; transition:opacity 0.5s ease; pointer-events:none; text-align:center; margin-top:-40px;"
+                                                >
+                                                    <a
+                                                        href="weixin://scanqrcode"
+                                                        target="_blank"
+                                                        style="color:var(--fg); font-size:24px; text-decoration:underline;"
+                                                        onclick="event.stopPropagation()"
+                                                    >
+                                                        👉点击跳转微信扫一扫👈
+                                                    </a>
+                                                    <br>
+                                                    <a
+                                                        href="https://qr.alipay.com/fkx17581wtzihcanvisaz0e"
+                                                        target="_blank"
+                                                        style="color:var(--fg); font-size:24px; text-decoration:underline;"
+                                                        onclick="event.stopPropagation()"
+                                                    >
+                                                        👉点击跳转支付宝付款👈
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+
+                                    <section class="subpage" id="page1-2">
+                                        <div style="height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                            <img src="images/VideoGame Glitch.gif" style="max-width:99.7%; max-height:100%; border-radius:15px; margin-top:8px;">
+                                        </div>
+                                    </section>
+
+                                    <section class="subpage" id="page1-3">
+                                        <div style="height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                            <img src="images/Glitch.PNG" style="max-width:99.5%; max-height:100%; border-radius:15px;">
+                                        </div>
+                                    </section>
+
+                                    <section class="subpage" id="page1-4">
+                                        <div style="width:200px; height:180px; position:relative; transform:scale(0.5); margin-top:-10px;">
+                                            <div
+                                                style="width:10px; height:10px; position:absolute; top:0; left:0; box-shadow:110px 10px #000,120px 10px #000,110px 20px #000,110px 30px #000,110px 40px #000,120px 40px #000,130px 40px #000,140px 40px #000,150px 40px #000,160px 40px #000,30px 50px #000,70px 50px #000,160px 50px #000,30px 60px #000,40px 60px #000,60px 60px #000,70px 60px #000,100px 60px #000,110px 60px #000,120px 60px #000,130px 60px #000,160px 60px #000,30px 70px #000,40px 70px #000,50px 70px #000,60px 70px #000,70px 70px #000,90px 70px #000,100px 70px #000,110px 70px #000,120px 70px #000,130px 70px #000,140px 70px #000,150px 70px #000,160px 70px #000,30px 80px #000,40px 80px #f00,50px 80px #000,60px 80px #f00,70px 80px #000,80px 80px #000,90px 80px #000,100px 80px #000,110px 80px #000,120px 80px #000,130px 80px #000,140px 80px #000,150px 80px #000,160px 80px #000,30px 90px #000,40px 90px #000,50px 90px #000,60px 90px #000,70px 90px #000,80px 90px #000,90px 90px #000,100px 90px #000,110px 90px #000,120px 90px #000,130px 90px #000,140px 90px #000,150px 90px #000,160px 90px #000,40px 100px #000,50px 100px #000,60px 100px #000,70px 100px #000,80px 100px #000,90px 100px #000,100px 100px #000,110px 100px #000,120px 100px #000,130px 100px #000,140px 100px #000,150px 100px #000,160px 100px #000,60px 110px #000,70px 110px #000,80px 110px #000,90px 110px #000,100px 110px #000,110px 110px #000,130px 110px #000,140px 110px #000,150px 110px #000,60px 120px #000,70px 120px #000,80px 120px #000,100px 120px #000,110px 120px #000,130px 120px #000,140px 120px #000,60px 130px #000,80px 130px #000,110px 130px #000,140px 130px #000,60px 140px #000,80px 140px #000,110px 140px #000,140px 140px #000,60px 150px #000,80px 150px #000,110px 150px #000,140px 150px #000,50px 160px #000,60px 160px #000,70px 160px #000,80px 160px #000,100px 160px #000,110px 160px #000,130px 160px #000,140px 160px #000"
+                                            ></div>
+                                        </div>
+                                    </section>
+
+                                    <section class="subpage" id="page1-5">
+                                        <div style="height:100%; width:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                            <video
+                                                id="page1Video"
+                                                style="max-width:99.7%; max-height:100%; border-radius:15px;"
+                                                loop
+                                                playsinline
+                                                webkit-playsinline
+                                                preload="none"
+                                            ></video>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+
+                            <!-- 第二页：头像与外部链接 -->
+                            <div id="page2" class="page">
+                                <div class="profile-header">
+                                    <img
+                                        src="images/Neko.gif"
+                                        alt="头像"
+                                        class="profile-pic"
+                                        onclick="confetti({particleCount:150,spread:100}); avatarSound.play();"
+                                    >
+                                </div>
+
+                                <div class="spotify-card" onclick="window.open('https://open.spotify.com/track/3UkRfA9F62DYYDzqOskoov', '_blank')">
+                                    <div class="spotify-left">
+                                        <div class="spotify-meta">
+                                            <div class="spotify-icon">
+                                                <img src="images/Spotify.svg" alt="Spotify">
+                                            </div>
+                                            <div class="track-text">
+                                                <div class="track-title">Signals</div>
+                                                <div class="track-artist">Lazer Boomerang</div>
+                                            </div>
+                                        </div>
+
+                                        <button class="play-btn" onclick="event.stopPropagation(); togglePlay(this)">
+                                            <svg viewBox="0 0 16 16" fill="white">
+                                                <path d="M3 13.1231V2.87688C3 1.42024 4.55203 0.520516 5.77196 1.26995L14.1114 6.39307C15.2962 7.12093 15.2962 8.87907 14.1114 9.60693L5.77196 14.73C4.55203 15.4795 3 14.5798 3 13.1231Z"></path>
+                                            </svg>
+                                            Play
+                                        </button>
+                                    </div>
+
+                                    <div class="spotify-cover">
+                                        <img src="images/Signals.jpg" alt="封面">
+                                    </div>
+
+                                    <audio id="audioPlayer" src="music/Signals.mp3"></audio>
+                                </div>
+
+                                <div class="link-scroll-container">
+                                    <a href="javascript:void(0);" class="link-card" onclick="downloadVCard()">
+                                        <img src="images/vCard.PNG" alt="vCard" class="link-icon">
+                                        <span class="link-title">vCard</span>
+                                    </a>
+
+                                    <a href="https://🎞.nekoweb.org" class="link-card" target="_blank">
+                                        <img src="images/Camera.png" alt="TikTok" class="link-icon">
+                                        <span class="link-title">Photos 🎞</span>
+                                    </a>
+
+                                    <a href="https://🦋.blogspot.com" class="link-card" target="_blank">
+                                        <img src="images/Blog.PNG" alt="Blog" class="link-icon">
+                                        <span class="link-title">Blog博客</span>
+                                    </a>
+
+                                    <a href="javascript:void(0);" class="link-card" id="wechatBtn">
+                                        <img src="images/WeChat-.png" alt="WeChat" class="link-icon">
+                                        <span class="link-title">WeChat</span>
+                                    </a>
+
+                                    <a href="https://t.me/qxx_me" class="link-card" target="_blank">
+                                        <img src="images/Telegram.svg" alt="Telegram" class="link-icon">
+                                        <span class="link-title">Telegram</span>
+                                    </a>
+                                  
+                                    <a href="https://x.com/vwwvvvvvvv" class="link-card" target="_blank">
+                                        <img src="images/Instagram.svg" alt="X" class="link-icon">
+                                        <span class="link-title">Instagram</span>
+                                    </a>
+                                    
+                                    <a href="mailto:vwwwww@yahoo.com" class="link-card">
+                                        <img src="images/Mail.PNG" alt="Mail" class="link-icon">
+                                        <span class="link-title">Mail</span>
+                                    </a>
+
+                                    <a href="https://wa.me/message/SYDPTLQEHYE3P1?src=qr" class="link-card" target="_blank">
+                                        <img src="images/WhatsApp.png" alt="WhatsApp" class="link-icon" />
+                                        <span class="link-title">WhatsApp</span>
+                                    </a>
+                                    
+                                </div>
+                            </div>
+
+                            <!-- 第三页：音乐播放器 -->
+                            <div id="page3" class="page">
+                                <div class="profile-header"></div>
+                                <audio id="mainAudio" preload="none"></audio>
+
+                                <div id="root">
+                                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%;">
+                                        <div class="loading-spinner"></div>
+                                        <div class="loading-text">加载音乐播放器...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pagination">
+                            <div class="bullet" data-page="1" onclick="switchPageTo(1)"></div>
+                            <div class="bullet active" data-page="2" onclick="switchPageTo(2)"></div>
+                            <div class="bullet" data-page="3" onclick="switchPageTo(3)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="shuicheCanvas"></canvas>
+    <script src="js/three.js"></script>
+    <script src="js/xx.js" defer></script>
+    <script src="js/vCard.js"></script>
+</body>
+</html>
