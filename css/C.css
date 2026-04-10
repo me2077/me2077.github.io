@@ -234,7 +234,7 @@ canvas {
     flex-wrap: nowrap;
     gap: 16px;
     transition: all 0.2s ease;
-    border: 1px solid var(--spotify-card-border);
+    border: 1.5px solid var(--spotify-card-border);
     box-shadow: var(--spotify-card-box-shadow);
 }
 
