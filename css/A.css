@@ -378,43 +378,51 @@ body:not(.light) .crt::before {
     background-size: 100% 2px, 3px 100%;
 }
 
-/* 优化：合并具有相同 overflow 的选择器 */
-#page1, #page1 .page-vertical, #page1 .subpage {
-    overflow-x: hidden !important;
-}
-
-#page1 { padding: 0; }
-
-#page1 .page-vertical {
-    height: 100%;
-    overflow-y: auto;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    overscroll-behavior: contain;
-    scrollbar-width: none;
-    position: relative;
-}
-#page1 .page-vertical::-webkit-scrollbar { display: none; }
-
-#page1 .subpage {
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    height: 100%;
-    min-height: var(--page-height);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#page1 img {
-    display: block;
-    height: auto;
-    max-height: 100%;
-}
-#page1 .subpage > div { overflow: hidden; }
-
+        #page1 {
+            padding: 0;
+        }
+        #page1 .page-vertical {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            overscroll-behavior: contain;
+            position: relative;
+        }
+        #page1 .page-vertical::-webkit-scrollbar {
+            display: none;
+        }
+        #page1 .page-vertical {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #page1 .subpage {
+            scroll-snap-align: start;
+            height: 100%;
+            min-height: var(--page-height);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        #page1 .subpage {
+            scroll-snap-stop: always;
+        }
+        #page1,
+        #page1 .page-vertical,
+        #page1 .subpage {
+            overflow-x: hidden !important;
+        }
+        #page1 img {
+            display: block;
+            height: auto;
+            max-height: 100%;
+        }
+        #page1 .subpage > div {
+            overflow: hidden;
+        }
 @font-face {
     font-family: "icomoon";
     src: url("/fonts/icomoon.eot");
