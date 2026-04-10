@@ -1,7 +1,6 @@
 :root {
     --glow-sens: 30;
     --dark: hsl(260, 25%, 10%);
-    /* 注意: 如果你暗黑模式下文字应该是白色，请将下行改为 white */
     --fg: black;
     --h: 260;
     --card-bg: linear-gradient(8deg, var(--dark) 75%, color-mix(in hsl, var(--dark), white 2.5%) 75.5%);
@@ -67,12 +66,12 @@ body {
     overflow: hidden;
 }
 
-/* 优化：只覆盖需要的属性 */
+
 body.light { background-attachment: fixed; }
 
 canvas {
     position: fixed;
-    inset: 0; /* 优化：替代 top:0; left:0; right:0; bottom:0; */
+    inset: 0;
     width: 100%;
     height: 100dvh;
     z-index: -1;
@@ -98,7 +97,7 @@ canvas {
     backdrop-filter: var(--glowing-card-backdrop);
 }
 
-/* 优化：合并 Theme Toggle 和 Day Toggle 样式 */
+
 .theme-toggle, .day-toggle {
     position: absolute;
     width: 24px;
@@ -176,7 +175,6 @@ canvas {
     padding: 0;
 }
 
-/* 优化：提取公共的交互和卡片UI属性 */
 .link-card, .spotify-card {
     width: 100%;
 
@@ -195,7 +193,7 @@ canvas {
     margin-bottom: 0px;
     border-radius: 20px;
     text-decoration: none;
-    color: var(--fg); /* 此处保留以防 a 标签覆盖默认色 */
+    color: var(--fg);
     transition: background 0.3s;
     font-size: 16px;
     font-style: italic;
@@ -217,7 +215,6 @@ canvas {
     text-align: center;
     width: 100%;
     font-size: 18px;
-    /* 优化：移除了冗余的 color: var(--fg) */
 }
 
 .spotify-card {
@@ -347,7 +344,7 @@ canvas {
 .bullet::before {
     content: "";
     position: absolute;
-    inset: -20px 0; /* 优化：替代 top/bottom/left/right */
+    inset: -20px 0;
     cursor: pointer;
 }
 
@@ -357,7 +354,6 @@ canvas {
     box-shadow: 0px 0px 20px rgba(194, 153, 255, 0);
 }
 
-/* 优化：合并类似阴影遮罩属性 */
 body:not(.light) .crt::after, body:not(.light) .crt::before {
     content: " ";
     display: block;
@@ -453,7 +449,7 @@ body:not(.light) .crt::before {
 .icon-play:before { content: "\e903"; }
 .icon-playlist:before { content: "\e904"; }
 
-/* 实用工具类库保留 */
+
 .img { width: 100%; flex-shrink: 0; display: block; object-fit: cover; }
 .list { margin: 0; padding: 0; list-style-type: none; }
 .text_trsf-cap { text-transform: capitalize; }
@@ -630,7 +626,6 @@ body:not(.light) .crt::before {
     box-sizing: border-box;
 }
 
-/* 优化：合并相同的 Scrollbar 样式 */
 .link-scroll-container::-webkit-scrollbar,
 .music-player__playlist::-webkit-scrollbar {
     width: 4px;
