@@ -1,7 +1,6 @@
 :root {
     --glow-sens: 30;
     --dark: hsl(260, 25%, 10%);
-    /* 注意: 如果你暗黑模式下文字应该是白色，请将下行改为 white */
     --fg: black;
     --h: 260;
     --card-bg: linear-gradient(8deg, var(--dark) 75%, color-mix(in hsl, var(--dark), white 2.5%) 75.5%);
@@ -14,20 +13,21 @@
     --page-height: 498px;
     --accent: hsl(260, 100%, 80%);
 
-    --glowing-card-bg: rgba(255, 255, 255, 0.15);
-    --glowing-card-border: rgba(255, 255, 255, 0.7);
+    /* 统一使用现代 rgb( r g b / alpha) 语法替代旧的 rgba */
+    --glowing-card-bg: rgb(255 255 255 / 15%);
+    --glowing-card-border: rgb(255 255 255 / 70%);
     --glowing-card-backdrop: none;
 
-    --link-card-bg: rgba(255, 255, 255, 0.09);
-    --link-card-hover-bg: rgba(255, 255, 255, 0.25);
-    --link-card-border: rgba(255, 255, 255, 0.4);
+    --link-card-bg: rgb(255 255 255 / 9%);
+    --link-card-hover-bg: rgb(255 255 255 / 25%);
+    --link-card-border: rgb(255 255 255 / 40%);
     --link-card-box-shadow: 0px 4px 3px #0001, 0 0 35px #fffa inset;
   
-    --spotify-card-bg: rgba(255, 255, 255, 0.15);
-    --spotify-card-border: rgba(255, 255, 255, 0.45);
+    --spotify-card-bg: rgb(255 255 255 / 15%);
+    --spotify-card-border: rgb(255 255 255 / 45%);
     --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
   
-    --music-player-bg: rgba(255, 255, 255, 0.15);
+    --music-player-bg: rgb(255 255 255 / 15%);
     --music-player-shadow: none;
 }
 
@@ -37,20 +37,20 @@
     --glow-blend: luminosity;
     --glow-color: 280deg 90% 95%;
     
-    --glowing-card-bg: rgba(255, 255, 255, 0.13); /* 统一为 rgba 或者 #fff2 */
-    --glowing-card-border: rgba(255, 255, 255, 0.35);
+    --glowing-card-bg: rgb(255 255 255 / 13%);
+    --glowing-card-border: rgb(255 255 255 / 80%);
     --glowing-card-backdrop: blur(6px);
 
-    --link-card-bg: rgba(255, 255, 255, 0.07); /* #fff1 等价 */
-    --link-card-hover-bg: rgba(255, 255, 255, 0.25);
-    --link-card-border: rgba(255, 255, 255, 0.4);
+    --link-card-bg: rgb(255 255 255 / 7%);
+    --link-card-hover-bg: rgb(255 255 255 / 25%);
+    --link-card-border: rgb(255 255 255 / 45%);
     --link-card-box-shadow: 0px 4px 3px #0001, 0 0 25px #fffa inset;
 
-    --spotify-card-bg: rgba(255, 255, 255, 0.07);
-    --spotify-card-border: rgba(255, 255, 255, 0.5);
+    --spotify-card-bg: rgb(255 255 255 / 7%);
+    --spotify-card-border: rgb(255 255 255 / 60%);
     --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
   
-    --music-player-bg: rgba(255, 255, 255, 0.1);
+    --music-player-bg: rgb(255 255 255 / 10%);
     --music-player-shadow: 0 2px 6px 1px #0000001f;
 }
 
@@ -67,12 +67,12 @@ body {
     overflow: hidden;
 }
 
-/* 优化：只覆盖需要的属性 */
+
 body.light { background-attachment: fixed; }
 
 canvas {
     position: fixed;
-    inset: 0; /* 优化：替代 top:0; left:0; right:0; bottom:0; */
+    inset: 0;
     width: 100%;
     height: 100dvh;
     z-index: -1;
@@ -98,7 +98,7 @@ canvas {
     backdrop-filter: var(--glowing-card-backdrop);
 }
 
-/* 优化：合并 Theme Toggle 和 Day Toggle 样式 */
+
 .theme-toggle, .day-toggle {
     position: absolute;
     width: 24px;
@@ -166,7 +166,8 @@ canvas {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 0 26px 26px;
+    align-items: center; /* 新增：让内部所有的元素水平居中对齐 */
+    padding: 0 0 26px;   /* 修改：上 0，左右 0，下 26px */
     overflow: hidden;
 }
 
@@ -176,7 +177,6 @@ canvas {
     padding: 0;
 }
 
-/* 优化：提取公共的交互和卡片UI属性 */
 .link-card, .spotify-card {
     width: 100%;
 
@@ -192,10 +192,10 @@ canvas {
     height: 44px;
     background: var(--link-card-bg);
     padding: 8px;
-    margin-bottom: 0px;
+    margin: 0 auto; /* 修改：上下外边距为0，左右自动（完美居中） */
     border-radius: 20px;
     text-decoration: none;
-    color: var(--fg); /* 此处保留以防 a 标签覆盖默认色 */
+    color: var(--fg);
     transition: background 0.3s;
     font-size: 16px;
     font-style: italic;
@@ -217,7 +217,6 @@ canvas {
     text-align: center;
     width: 100%;
     font-size: 18px;
-    /* 优化：移除了冗余的 color: var(--fg) */
 }
 
 .spotify-card {
@@ -230,11 +229,11 @@ canvas {
     border-radius: 25px;
     padding: 10.8px 20px;
     position: relative;
-    margin-bottom: 4px;
+    margin: 0 auto 4px; /* 修改：上0，左右自动(居中)，下4px */
     flex-wrap: nowrap;
     gap: 16px;
     transition: all 0.2s ease;
-    border: 1px solid var(--spotify-card-border);
+    border: 1.5px solid var(--spotify-card-border);
     box-shadow: var(--spotify-card-box-shadow);
 }
 
@@ -347,7 +346,7 @@ canvas {
 .bullet::before {
     content: "";
     position: absolute;
-    inset: -20px 0; /* 优化：替代 top/bottom/left/right */
+    inset: -20px 0;
     cursor: pointer;
 }
 
@@ -357,7 +356,6 @@ canvas {
     box-shadow: 0px 0px 20px rgba(194, 153, 255, 0);
 }
 
-/* 优化：合并类似阴影遮罩属性 */
 body:not(.light) .crt::after, body:not(.light) .crt::before {
     content: " ";
     display: block;
@@ -378,61 +376,53 @@ body:not(.light) .crt::before {
     background-size: 100% 2px, 3px 100%;
 }
 
-        #page1 {
-            padding: 0;
-        }
-        #page1 .page-vertical {
-            height: 100%;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            overscroll-behavior: contain;
-            position: relative;
-        }
-        #page1 .page-vertical::-webkit-scrollbar {
-            display: none;
-        }
-        #page1 .page-vertical {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        #page1 .subpage {
-            scroll-snap-align: start;
-            height: 100%;
-            min-height: var(--page-height);
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        #page1 .subpage {
-            scroll-snap-stop: always;
-        }
-        #page1,
-        #page1 .page-vertical,
-        #page1 .subpage {
-            overflow-x: hidden !important;
-        }
-        #page1 img {
-            display: block;
-            height: auto;
-            max-height: 100%;
-        }
-        #page1 .subpage > div {
-            overflow: hidden;
-        }
+#page1 { padding: 0; }
+
+#page1 .page-vertical {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
+    position: relative;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+#page1 .page-vertical::-webkit-scrollbar { display: none; }
+
+#page1 .subpage {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    height: 100%;
+    min-height: var(--page-height);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#page1, #page1 .page-vertical, #page1 .subpage {
+    overflow-x: hidden;
+}
+
+#page1 img {
+    display: block;
+    height: auto;
+    max-height: 100%;
+}
+#page1 .subpage > div { overflow: hidden; }
+
+/* =========================================
+   5. 字体加载优化 (去除无用格式，增加 display: swap)
+   ========================================= */
 @font-face {
     font-family: "icomoon";
-    src: url("/fonts/icomoon.eot");
-    src: url("/fonts/icomoon.eot#iefix") format("embedded-opentype"),
-        url("/fonts/icomoon.ttf") format("truetype"),
-        url("/fonts/icomoon.woff") format("woff"),
-        url("/fonts/icomoon.svg#icomoon") format("svg");
+    src: url("/fonts/icomoon.woff2") format("woff2"),
+         url("/fonts/icomoon.woff") format("woff");
     font-weight: normal;
     font-style: normal;
-    font-display: block;
+    font-display: swap; 
 }
 
 [class^="icon-"], [class*=" icon-"] {
@@ -453,7 +443,9 @@ body:not(.light) .crt::before {
 .icon-play:before { content: "\e903"; }
 .icon-playlist:before { content: "\e904"; }
 
-/* 实用工具类库保留 */
+/* =========================================
+   6. 工具类与文本溢出优化
+   ========================================= */
 .img { width: 100%; flex-shrink: 0; display: block; object-fit: cover; }
 .list { margin: 0; padding: 0; list-style-type: none; }
 .text_trsf-cap { text-transform: capitalize; }
@@ -467,15 +459,16 @@ body:not(.light) .crt::before {
 ._justify_center { justify-content: center; }
 ._justify_start { justify-content: flex-start; }
 ._justify_end { justify-content: flex-end; }
-._justify_space-btwn { justify-content: space-between; align-items: center; width: 100%;} /* 优化：合并下方重写的类 */
+._justify_space-btwn { justify-content: space-between; align-items: center; width: 100%;}
 
+/* 优化：去掉定死的宽度魔法数字，依靠 Flex 子项能力收缩 */
 .text_overflow {
-    width: 66%;
+    flex: 1;
+    min-width: 0; 
     overflow: hidden;
     white-space: nowrap;
-    display: inline-block;
     text-overflow: ellipsis;
-    margin-right: 60px;
+    display: inline-block;
 }
 
 .music-player {
@@ -630,7 +623,6 @@ body:not(.light) .crt::before {
     box-sizing: border-box;
 }
 
-/* 优化：合并相同的 Scrollbar 样式 */
 .link-scroll-container::-webkit-scrollbar,
 .music-player__playlist::-webkit-scrollbar {
     width: 4px;
