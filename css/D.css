@@ -13,7 +13,6 @@
     --page-height: 498px;
     --accent: hsl(260, 100%, 80%);
 
-    /* 统一使用现代 rgb( r g b / alpha) 语法替代旧的 rgba */
     --glowing-card-bg: rgb(255 255 255 / 15%);
     --glowing-card-border: rgb(255 255 255 / 70%);
     --glowing-card-backdrop: none;
@@ -412,9 +411,7 @@ body:not(.light) .crt::before {
 }
 #page1 .subpage > div { overflow: hidden; }
 
-/* =========================================
-   5. 字体加载优化 (去除无用格式，增加 display: swap)
-   ========================================= */
+
 @font-face {
     font-family: "icomoon";
     src: url("/fonts/icomoon.woff2") format("woff2"),
@@ -442,9 +439,6 @@ body:not(.light) .crt::before {
 .icon-play:before { content: "\e903"; }
 .icon-playlist:before { content: "\e904"; }
 
-/* =========================================
-   6. 工具类与文本溢出优化
-   ========================================= */
 .img { width: 100%; flex-shrink: 0; display: block; object-fit: cover; }
 .list { margin: 0; padding: 0; list-style-type: none; }
 .text_trsf-cap { text-transform: capitalize; }
@@ -460,7 +454,7 @@ body:not(.light) .crt::before {
 ._justify_end { justify-content: flex-end; }
 ._justify_space-btwn { justify-content: space-between; align-items: center; width: 100%;}
 
-/* 优化：去掉定死的宽度魔法数字，依靠 Flex 子项能力收缩 */
+
 .text_overflow {
     flex: 1;
     min-width: 0; 
