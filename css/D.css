@@ -345,7 +345,6 @@ canvas {
     content: "";
     position: absolute;
     inset: -20px 0;
-    cursor: pointer;
 }
 
 .bullet.active {
