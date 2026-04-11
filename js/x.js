@@ -789,7 +789,7 @@ video.addEventListener('click', () => {
     nudge = false,
     kuroNeko = false,
     variant = "classic",
-    lastClickTime = 0; // ⭐ 新增：记录上一次点击的时间戳
+    lastClickTime = 0; // 记录上一次点击的时间戳
 
   function parseLocalStorage(key, fallback) {
     try {
@@ -894,15 +894,14 @@ video.addEventListener('click', () => {
     nekoEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
 
-      // ⭐⭐⭐ 新增：自定义双击/双触控检测逻辑
+      // 自定义双击/双触控检测逻辑
       const currentTime = Date.now();
-      if (currentTime - lastClickTime < 300) { // 两次点击间隔小于 300 毫秒视为双击
-        sleep();           // 触发睡觉/唤醒
-        lastClickTime = 0; // 重置时间
-        return;            // 触发双击后直接退出，不再执行下方的拖动逻辑
+      if (currentTime - lastClickTime < 300) { 
+        sleep();           
+        lastClickTime = 0; 
+        return;            
       }
       lastClickTime = currentTime;
-      // ⭐⭐⭐ 结束新增部分
 
       e.preventDefault();
       grabbing = true;
@@ -980,9 +979,6 @@ video.addEventListener('click', () => {
       nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
     });
 
-    // ⭐ 删除了原来的 dblclick 事件监听
-    // nekoEl.addEventListener("dblclick", sleep);
-
     window.onekoInterval = setInterval(frame, 100);
   }
 
@@ -1004,8 +1000,12 @@ video.addEventListener('click', () => {
     idleTime += 1;
     let avalibleIdleAnimations = [];
 
-    if (idleTime > 10 && Math.floor(Math.random() * 200) == 0 && idleAnimation == null) {
-      avalibleIdleAnimations = ["sleeping", "scratchSelf"];
+    // ⭐⭐⭐ 修改1：将触发概率从 200 改成了 50，平均约 5 秒触发一次动作（原来是 20 秒）
+    if (idleTime > 10 && Math.floor(Math.random() * 50) == 0 && idleAnimation == null) {
+      
+      // ⭐⭐⭐ 修改2：给奖池里塞入更多的 "scratchSelf"，让抽中抓痒的概率远大于打瞌睡
+      avalibleIdleAnimations = ["sleeping", "scratchSelf", "sleeping", "scratchSelf"];
+      
       if (nekoPosX < 32) avalibleIdleAnimations.push("scratchWallW");
       if (nekoPosY < 32) avalibleIdleAnimations.push("scratchWallN");
       if (nekoPosX > window.innerWidth - 32) avalibleIdleAnimations.push("scratchWallE");
