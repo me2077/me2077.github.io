@@ -165,7 +165,7 @@ canvas {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 0 25px 26px;
+    padding: 0 26px 26px;
     overflow: hidden;
 }
 
