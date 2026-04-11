@@ -683,6 +683,8 @@ if (verticalScroll) {
         });
       
         <!-- 鼠标的猫咪oneko💜  -->
+
+
 (async function oneko() {
   const nekoEl = document.createElement("div");
   let nekoPosX = 32,
@@ -698,10 +700,8 @@ if (verticalScroll) {
     grabStop = true,
     nudge = false,
     kuroNeko = false,
-    variant = "classic";
-
-  let lastTap = 0;
-  let isDragging = false;
+    variant = "classic",
+    lastClickTime = 0;
 
   function parseLocalStorage(key, fallback) {
     try {
@@ -772,24 +772,18 @@ if (verticalScroll) {
     nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
     nekoEl.style.zIndex = "9999";
 
-    // ⭐ 移动端关键
     nekoEl.style.touchAction = "none";
     nekoEl.style.userSelect = "none";
+    nekoEl.style.webkitUserSelect = "none";
 
     document.body.appendChild(nekoEl);
 
-    // ⭐ 喵音效
-    const meowAudio = new Audio("music/Cat.wav");
-    meowAudio.volume = 0.5;
-
-    // 鼠标
     window.addEventListener("mousemove", (e) => {
       if (forceSleep) return;
       mousePosX = e.clientX;
       mousePosY = e.clientY;
     });
 
-    // ⭐ 移动端跟随
     window.addEventListener("pointermove", (e) => {
       if (forceSleep) return;
       if (e.pointerType === "touch") {
@@ -805,18 +799,26 @@ if (verticalScroll) {
       }
     });
 
-    // ⭐⭐⭐ 拖动（核心修改）
+
     nekoEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
 
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        sleep(); // ⭐ 移动端双击
+      const currentTime = Date.now();
+      if (currentTime - lastClickTime < 300) { 
+        sleep();           
+        lastClickTime = 0; 
+        return;            
       }
-      lastTap = now;
+      lastClickTime = currentTime;
 
+      e.preventDefault();
       grabbing = true;
-      isDragging = false;
+
+      if (nekoEl.setPointerCapture) {
+        try {
+          nekoEl.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      }
 
       let startX = e.clientX;
       let startY = e.clientY;
@@ -825,7 +827,7 @@ if (verticalScroll) {
       let grabInterval;
 
       const moveHandler = (e) => {
-        isDragging = true;
+        e.preventDefault();
 
         const deltaX = e.clientX - startX;
         const deltaY = e.clientY - startY;
@@ -838,7 +840,7 @@ if (verticalScroll) {
           setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount);
         }
 
-        if (grabStop || absDeltaX > 10 || absDeltaY > 10) {
+        if (grabStop || absDeltaX > 10 || absDeltaY > 10 || Math.sqrt(deltaX ** 2 + deltaY ** 2) > 10) {
           grabStop = false;
           clearTimeout(grabInterval);
           grabInterval = setTimeout(() => {
@@ -851,38 +853,32 @@ if (verticalScroll) {
           }, 150);
         }
 
-        nekoPosX = startNekoX + deltaX;
-        nekoPosY = startNekoY + deltaY;
-
+        nekoPosX = startNekoX + e.clientX - startX;
+        nekoPosY = startNekoY + e.clientY - startY;
         nekoEl.style.left = `${nekoPosX - 16}px`;
         nekoEl.style.top = `${nekoPosY - 16}px`;
       };
 
-      const upHandler = () => {
+      const upHandler = (e) => {
         grabbing = false;
         nudge = true;
         resetIdleAnimation();
 
-        // ⭐ 点击才喵
-        if (!isDragging) {
-          try {
-            meowAudio.currentTime = 0;
-            meowAudio.play();
-          } catch (e) {}
-        }
-
         window.removeEventListener("pointermove", moveHandler);
         window.removeEventListener("pointerup", upHandler);
         window.removeEventListener("pointercancel", upHandler);
+
+        if (nekoEl.releasePointerCapture) {
+          try {
+            nekoEl.releasePointerCapture(e.pointerId);
+          } catch (_) {}
+        }
       };
 
       window.addEventListener("pointermove", moveHandler, { passive: false });
       window.addEventListener("pointerup", upHandler);
       window.addEventListener("pointercancel", upHandler);
     });
-
-    // 桌面双击
-    nekoEl.addEventListener("dblclick", sleep);
 
     nekoEl.addEventListener("contextmenu", (e) => {
       e.preventDefault();
@@ -912,8 +908,10 @@ if (verticalScroll) {
     idleTime += 1;
     let avalibleIdleAnimations = [];
 
-    if (idleTime > 10 && Math.floor(Math.random() * 200) == 0 && idleAnimation == null) {
-      avalibleIdleAnimations = ["sleeping", "scratchSelf"];
+    if (idleTime > 10 && Math.floor(Math.random() * 50) == 0 && idleAnimation == null) {
+      
+      avalibleIdleAnimations = ["sleeping", "scratchSelf", "sleeping", "scratchSelf"];
+      
       if (nekoPosX < 32) avalibleIdleAnimations.push("scratchWallW");
       if (nekoPosY < 32) avalibleIdleAnimations.push("scratchWallN");
       if (nekoPosX > window.innerWidth - 32) avalibleIdleAnimations.push("scratchWallE");
@@ -939,18 +937,23 @@ if (verticalScroll) {
         setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
         if (idleAnimationFrame > 192 && !forceSleep) resetIdleAnimation();
         break;
+      case "scratchWallN":
+      case "scratchWallS":
+      case "scratchWallE":
+      case "scratchWallW":
       case "scratchSelf":
         setSprite(idleAnimation, idleAnimationFrame);
         if (idleAnimationFrame > 9) resetIdleAnimation();
         break;
       default:
         setSprite("idle", 0);
+        return;
     }
-    idleAnimationFrame++;
+    idleAnimationFrame += 1;
   }
 
   function frame() {
-    frameCount++;
+    frameCount += 1;
 
     if (grabbing) {
       grabStop && setSprite("alert", 0);
@@ -961,6 +964,15 @@ if (verticalScroll) {
     const diffY = nekoPosY - mousePosY;
     const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
 
+    if (forceSleep && Math.abs(diffY) < nekoSpeed && Math.abs(diffX) < nekoSpeed) {
+      nekoPosX = mousePosX;
+      nekoPosY = mousePosY;
+      nekoEl.style.left = `${nekoPosX - 16}px`;
+      nekoEl.style.top = `${nekoPosY - 16}px`;
+      idle();
+      return;
+    }
+
     if ((distance < nekoSpeed || distance < 48) && !forceSleep) {
       idle();
       return;
@@ -968,6 +980,13 @@ if (verticalScroll) {
 
     idleAnimation = null;
     idleAnimationFrame = 0;
+
+    if (idleTime > 1) {
+      setSprite("alert", 0);
+      idleTime = Math.min(idleTime, 7);
+      idleTime -= 1;
+      return;
+    }
 
     let direction = diffY / distance > 0.5 ? "N" : "";
     direction += diffY / distance < -0.5 ? "S" : "";
