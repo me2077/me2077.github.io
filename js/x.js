@@ -788,7 +788,8 @@ video.addEventListener('click', () => {
     grabStop = true,
     nudge = false,
     kuroNeko = false,
-    variant = "classic";
+    variant = "classic",
+    lastClickTime = 0; // ⭐ 新增：记录上一次点击的时间戳
 
   function parseLocalStorage(key, fallback) {
     try {
@@ -859,7 +860,7 @@ video.addEventListener('click', () => {
     nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
     nekoEl.style.zIndex = "9999";
 
-    // ⭐ 关键：移动端支持拖动
+    // 移动端支持拖动
     nekoEl.style.touchAction = "none";
     nekoEl.style.userSelect = "none";
     nekoEl.style.webkitUserSelect = "none";
@@ -873,7 +874,7 @@ video.addEventListener('click', () => {
       mousePosY = e.clientY;
     });
 
-    // ⭐ 移动端触摸跟随
+    // 移动端触摸跟随
     window.addEventListener("pointermove", (e) => {
       if (forceSleep) return;
       if (e.pointerType === "touch") {
@@ -889,9 +890,19 @@ video.addEventListener('click', () => {
       }
     });
 
-    // ⭐⭐⭐ 核心：统一拖动（鼠标 + 手机）
+    // 核心：统一拖动（鼠标 + 手机）
     nekoEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
+
+      // ⭐⭐⭐ 新增：自定义双击/双触控检测逻辑
+      const currentTime = Date.now();
+      if (currentTime - lastClickTime < 300) { // 两次点击间隔小于 300 毫秒视为双击
+        sleep();           // 触发睡觉/唤醒
+        lastClickTime = 0; // 重置时间
+        return;            // 触发双击后直接退出，不再执行下方的拖动逻辑
+      }
+      lastClickTime = currentTime;
+      // ⭐⭐⭐ 结束新增部分
 
       e.preventDefault();
       grabbing = true;
@@ -969,7 +980,8 @@ video.addEventListener('click', () => {
       nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
     });
 
-    nekoEl.addEventListener("dblclick", sleep);
+    // ⭐ 删除了原来的 dblclick 事件监听
+    // nekoEl.addEventListener("dblclick", sleep);
 
     window.onekoInterval = setInterval(frame, 100);
   }
