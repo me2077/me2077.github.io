@@ -134,14 +134,8 @@ canvas {
 .profile-pic {
     width: 200px;
     height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
     margin: -56px auto;
-    display: block;
     filter: brightness(0.88);
-    object-position: center 10%;
-    image-rendering: crisp-edges;
-    transform: translateZ(0);
 }
 
 .link-section {
@@ -350,7 +344,7 @@ canvas {
 .bullet.active {
     opacity: 1;
     background: #c299ff;
-    box-shadow: 0px 0px 20px rgba(194, 153, 255, 0);
+    box-shadow: 0px 0px 20px rgba(194, 153, 255, 5);
 }
 
 body:not(.light) .crt::after, body:not(.light) .crt::before {
