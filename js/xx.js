@@ -181,8 +181,12 @@ function loadMusicPlayer() {
         }
     }
 
-    window.addEventListener('beforeunload', savePlaybackState);
-    setInterval(savePlaybackState, 5000);
+// ✅ 只在关键时机保存（性能最优）
+mainAudio.addEventListener('pause', savePlaybackState);
+mainAudio.addEventListener('ended', savePlaybackState);
+
+// ✅ 页面关闭时兜底保存（原本就有，可以保留）
+window.addEventListener('beforeunload', savePlaybackState);
 
     function handleChangeMusic({ isPrev = false, playListIndex = null }) {
         if (isLocked) return;
