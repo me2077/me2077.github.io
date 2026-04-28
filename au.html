@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>更多 macOS 风格音效选择</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+            background-color: #F2F2F7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #007AFF;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        button:active { transform: scale(0.95); opacity: 0.9; }
+        p { font-size: 13px; color: #8E8E93; line-height: 1.4; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1 style="font-weight: 600; font-size: 24px;">音效风格库</h1>
+
+    <div class="grid">
+        <div class="card">
+            <button onclick="playStyle('modern')">风格 A：Modern Ping</button>
+            <p>类似于收到系统通知的轻快感。频率略高，带有双频率共振，听起来更高级。</p>
+        </div>
+
+        <div class="card">
+            <button onclick="playStyle('mechanical')">风格 B：Mechanical Tap</button>
+            <p>模拟老款 MacBook 物理按键的触感。加入了一点点“白噪声”来模拟按键的摩擦声。</p>
+        </div>
+
+        <div class="card">
+            <button onclick="playStyle('elastic')">风格 C：Elastic Bounce</button>
+            <p>参考 iOS 灵动岛的反馈感。声音带有微小的“回弹”频率变化，非常有弹性。</p>
+        </div>
+
+        <div class="card">
+            <button onclick="playStyle('minimal')">风格 D：Minimal Tick</button>
+            <p>极简主义。只有 10 毫秒的极短发声，类似手表走动的声音，非常不打扰用户。</p>
+        </div>
+    </div>
+
+<script>
+    let audioCtx;
+    function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function playStyle(type) {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const gainNode = audioCtx.createGain();
+        gainNode.connect(audioCtx.destination);
+
+        if (type === 'modern') {
+            // 风格 A：使用两个振荡器叠加，模拟金属谐波
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            osc1.frequency.setValueAtTime(1200, now);
+            osc2.frequency.setValueAtTime(2400, now); // 高八度谐波
+
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.2, now + 0.005);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+            osc1.connect(gainNode);
+            osc2.connect(gainNode);
+            osc1.start(now); osc2.start(now);
+            osc1.stop(now + 0.1); osc2.stop(now + 0.1);
+
+        } else if (type === 'mechanical') {
+            // 风格 B：正弦波 + 噪声过滤
+            const osc = audioCtx.createOscillator();
+            const noise = audioCtx.createBufferSource();
+            const bufferSize = audioCtx.sampleRate * 0.02;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            noise.buffer = buffer;
+
+            const noiseGain = audioCtx.createGain();
+            noiseGain.gain.setValueAtTime(0.05, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.linearRampToValueAtTime(100, now + 0.02);
+
+            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+
+            osc.connect(gainNode);
+            noise.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+            osc.start(now); noise.start(now);
+            osc.stop(now + 0.02);
+
+        } else if (type === 'elastic') {
+            // 风格 C：频率快速上下波动，产生弹性感
+            const osc = audioCtx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.linearRampToValueAtTime(600, now + 0.02);
+            osc.frequency.linearRampToValueAtTime(300, now + 0.05);
+
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.4, now + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+            osc.connect(gainNode);
+            osc.start(now);
+            osc.stop(now + 0.08);
+
+        } else if (type === 'minimal') {
+            // 风格 D：极短的高频 Tick
+            const osc = audioCtx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(2000, now);
+
+            gainNode.gain.setValueAtTime(0, now);
+            gainNode.gain.linearRampToValueAtTime(0.1, now + 0.001);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.01);
+
+            osc.connect(gainNode);
+            osc.start(now);
+            osc.stop(now + 0.01);
+        }
+    }
+</script>
+</body>
+</html>
