@@ -114,7 +114,7 @@
             osc.frequency.setValueAtTime(150, now);
             osc.frequency.linearRampToValueAtTime(100, now + 0.02);
 
-            gainNode.gain.setValueAtTime(0.3, now);
+            gainNode.gain.setValueAtTime(0.8, now);
             gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
 
             osc.connect(gainNode);
