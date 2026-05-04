@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>音效</title>
+
+<style>
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  background:#111;
+}
+
+button{
+  padding:15px 30px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  background:#4CAF50;
+  color:#fff;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:active{
+  transform:scale(0.95);
+}
+</style>
+</head>
+
+<body>
+
+<button id="btn">点击音效</button>
+
+<script>
+let audioCtx;
+let buffer;
+
+// 初始化音频（必须用户触发）
+async function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    const res = await fetch("https://raw.githubusercontent.com/ryokun6/ryos/main/public/sounds/MenuItemClick.mp3");
+    const arrayBuffer = await res.arrayBuffer();
+    buffer = await audioCtx.decodeAudioData(arrayBuffer);
+  }
+
+  if (audioCtx.state === 'suspended') {
+    await audioCtx.resume();
+  }
+}
+
+// 播放音效
+function playSound() {
+  const source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioCtx.destination);
+  source.start(0);
+}
+
+// 按钮点击
+document.getElementById("btn").addEventListener("click", async () => {
+  await initAudio();
+  playSound();
+});
+</script>
+
+</body>
+</html>
