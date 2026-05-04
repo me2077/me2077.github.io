@@ -2,158 +2,83 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>更多 macOS 风格音效选择</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>带参数调优的完美系统音效</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-            background-color: #F2F2F7;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            max-width: 900px;
-            width: 100%;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: #007AFF;
-            color: white;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.1s;
-        }
-        button:active { transform: scale(0.95); opacity: 0.9; }
-        p { font-size: 13px; color: #8E8E93; line-height: 1.4; margin-top: 10px; }
+        body { display: flex; gap: 20px; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f7; font-family: sans-serif; margin: 0; }
+        .sys-button { padding: 12px 30px; font-size: 16px; color: #333; background: #ffffff; border: 1px solid #d1d1d6; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; user-select: none; transition: all 0.1s; }
+        .sys-button:active { background: #e5e5ea; transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <h1 style="font-weight: 600; font-size: 24px;">音效风格库</h1>
+    <button id="btn1" class="sys-button">点击听听看</button>
 
-    <div class="grid">
-        <div class="card">
-            <button onclick="playStyle('modern')">风格 A：Modern Ping</button>
-            <p>类似于收到系统通知的轻快感。频率略高，带有双频率共振，听起来更高级。</p>
-        </div>
+    <script>
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext({ latencyHint: 'interactive' });
+        let clickAudioBuffer = null; 
 
-        <div class="card">
-            <button onclick="playStyle('mechanical')">风格 B：Mechanical Tap</button>
-            <p>模拟老款 MacBook 物理按键的触感。加入了一点点“白噪声”来模拟按键的摩擦声。</p>
-        </div>
+        // 🎛️ === 你可以微调的音效参数 === 🎛️
+        const CONFIG = {
+            VOLUME: 1,  // 音量大小 (0.0 到 1.0)。原站听起来柔和，通常在 0.3 到 0.5 之间
+            SPEED: 1.05    // 播放速度/音调。1.0 是原声，>1 声音更短促清脆，<1 声音更低沉厚重
+        };
 
-        <div class="card">
-            <button onclick="playStyle('elastic')">风格 C：Elastic Bounce</button>
-            <p>参考 iOS 灵动岛的反馈感。声音带有微小的“回弹”频率变化，非常有弹性。</p>
-        </div>
+        // 创建全局的音量控制节点 (类似调音台的主推子)
+        const masterGain = audioCtx.createGain();
+        masterGain.gain.value = CONFIG.VOLUME;
+        // 将音量节点连接到电脑扬声器
+        masterGain.connect(audioCtx.destination);
 
-        <div class="card">
-            <button onclick="playStyle('minimal')">风格 D：Minimal Tick</button>
-            <p>极简主义。只有 10 毫秒的极短发声，类似手表走动的声音，非常不打扰用户。</p>
-        </div>
-    </div>
-
-<script>
-    let audioCtx;
-    function initAudio() {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    function playStyle(type) {
-        initAudio();
-        const now = audioCtx.currentTime;
-        const gainNode = audioCtx.createGain();
-        gainNode.connect(audioCtx.destination);
-
-        if (type === 'modern') {
-            // 风格 A：使用两个振荡器叠加，模拟金属谐波
-            const osc1 = audioCtx.createOscillator();
-            const osc2 = audioCtx.createOscillator();
-            osc1.type = 'sine';
-            osc2.type = 'sine';
-            osc1.frequency.setValueAtTime(1200, now);
-            osc2.frequency.setValueAtTime(2400, now); // 高八度谐波
-
-            gainNode.gain.setValueAtTime(0, now);
-            gainNode.gain.linearRampToValueAtTime(0.2, now + 0.005);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-
-            osc1.connect(gainNode);
-            osc2.connect(gainNode);
-            osc1.start(now); osc2.start(now);
-            osc1.stop(now + 0.1); osc2.stop(now + 0.1);
-
-        } else if (type === 'mechanical') {
-            // 风格 B：正弦波 + 噪声过滤
-            const osc = audioCtx.createOscillator();
-            const noise = audioCtx.createBufferSource();
-            const bufferSize = audioCtx.sampleRate * 0.02;
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-            noise.buffer = buffer;
-
-            const noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(0.05, now);
-            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.linearRampToValueAtTime(100, now + 0.02);
-
-            gainNode.gain.setValueAtTime(1, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-
-            osc.connect(gainNode);
-            noise.connect(noiseGain);
-            noiseGain.connect(audioCtx.destination);
-            osc.start(now); noise.start(now);
-            osc.stop(now + 0.02);
-
-        } else if (type === 'elastic') {
-            // 风格 C：频率快速上下波动，产生弹性感
-            const osc = audioCtx.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(400, now);
-            osc.frequency.linearRampToValueAtTime(600, now + 0.02);
-            osc.frequency.linearRampToValueAtTime(300, now + 0.05);
-
-            gainNode.gain.setValueAtTime(0, now);
-            gainNode.gain.linearRampToValueAtTime(0.4, now + 0.01);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
-
-            osc.connect(gainNode);
-            osc.start(now);
-            osc.stop(now + 0.08);
-
-        } else if (type === 'minimal') {
-            // 风格 D：极短的高频 Tick
-            const osc = audioCtx.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(2000, now);
-
-            gainNode.gain.setValueAtTime(0, now);
-            gainNode.gain.linearRampToValueAtTime(0.1, now + 0.001);
-            gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.01);
-
-            osc.connect(gainNode);
-            osc.start(now);
-            osc.stop(now + 0.01);
+        async function loadSound() {
+            try {
+                const url = "https://raw.githubusercontent.com/ryokun6/ryos/main/public/sounds/MenuItemClick.mp3";
+                const response = await fetch(url);
+                const arrayBuffer = await response.arrayBuffer();
+                clickAudioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (error) {
+                console.error("加载失败:", error);
+            }
         }
+
+        async function playClickSound(e) {
+            e.preventDefault(); 
+            if (!clickAudioBuffer) return; 
+// 只要音频引擎不是 running (运行中) 状态，就强制唤醒
+if (audioCtx.state !== 'running') {
+    await audioCtx.resume();
+}
+            // 创建播放器
+            const source = audioCtx.createBufferSource();
+            source.buffer = clickAudioBuffer;
+            
+            // 调整播放速度和音高
+            source.playbackRate.value = CONFIG.SPEED;
+
+            // 【关键改变】不再直接连接到扬声器，而是连接到刚刚建好的"音量控制节点"
+            source.connect(masterGain);
+            
+            // 立即播放
+            source.start(audioCtx.currentTime); 
+        }
+
+        loadSound();
+        document.getElementById('btn1').addEventListener('pointerdown', playClickSound);
+        
+        
+// 监听网页可见性变化 (切后台 / 切回前台)
+document.addEventListener("visibilitychange", () => {
+    // 如果用户切回了这个标签页，且音频引擎不在运行中
+    if (document.visibilityState === "visible" && audioCtx.state !== 'running') {
+        // 尝试静默唤醒音频引擎 (部分浏览器允许这种恢复操作)
+        audioCtx.resume().catch(() => {
+            // 如果浏览器严格限制必须点击才能唤醒，就忽略报错，等用户点击时再唤醒
+        });
     }
-</script>
+});
+        
+    </script>
+
 </body>
 </html>
