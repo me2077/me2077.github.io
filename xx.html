@@ -1,6 +1,6 @@
 <!doctype html>
 
-    <!-- [极致优化] 1. DNS 预解析与 TCP 预连接，提速外部资源加载 -->
+    <!--[极致优化] 1. DNS 预解析与 TCP 预连接，提速外部资源加载 -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
 <style>
@@ -249,7 +249,6 @@ svg.day-toggle {
     border: 1px solid var(--link-card-border);
     border-radius: 20px;
     box-shadow: var(--link-card-box-shadow);
-    transition: background 0.3s;
     transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
 }
 
@@ -618,6 +617,8 @@ body:not(.light) .music-player { --color-text-2: #ffffff6b; }
     height: 6.8em;
     border-radius: inherit;
     transition: var(--duration) height var(--ease-timeline);
+    /*[优化2] 添加 will-change 防止高度渐变掉帧 */
+    will-change: height;
 }
 
 .slider.resize {
@@ -653,6 +654,8 @@ body:not(.light) .music-player { --color-text-2: #ffffff6b; }
     transition: transform, width, height;
     transition-duration: var(--duration);
     transition-timing-function: var(--ease-timeline);
+    /* [优化2] 提前告知浏览器宽高及形变会变化 */
+    will-change: width, height, transform;
 }
 
 .slider.resize .slider__content {
@@ -797,25 +800,32 @@ body:not(.light) .music-player { --color-text-2: #ffffff6b; }
     border-radius: 1em;
 }
 
+/* [优化1] 改用 scaleX 硬件加速代替 width 的修改，杜绝频繁 Reflow */
 .progress__bar {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
-    width: var(--width);
+    width: 100%;
     background-color: var(--color-blue);
     border-radius: inherit;
+    transform: scaleX(var(--scale, 0));
+    transform-origin: left;
+    will-change: transform;
 }
 
-.progress__bar::after {
+/* [优化1] 分离圆点为独立的 DOM 结构，单独通过绝对定位平移，防止被 scale 拉伸 */
+.progress__dot {
     --size: 0.375em;
-    content: "";
     position: absolute;
-    left: 98%;
+    top: 50%;
+    left: var(--width, 0%);
     width: var(--size);
     height: var(--size);
     background-color: var(--color-blue-dark);
     border-radius: 100%;
+    transform: translate(-50%, -50%);
+    will-change: left;
 }
 
 .music-player__playlist {
@@ -971,7 +981,7 @@ body:not(.light) .music-player { --color-text-2: #ffffff6b; }
                                 </button>
                             </div>
                             <div class="spotify-cover">
-                                <img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Signals.webp" loading="lazy" alt="封面" />
+                                <img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Signals.webp" alt="封面" />
                             </div>
                             <audio id="audioPlayer" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Signals.mp3" preload="none"></audio>
                         </div>
@@ -1018,7 +1028,7 @@ body:not(.light) .music-player { --color-text-2: #ffffff6b; }
         </div>
     </div>
   
-<script src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/js/xx.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/js/xx.js" defer="defer"></script>
  <script>
     const count = 1000;
     let scene, camera, renderer;
@@ -1101,52 +1111,75 @@ body:not(.light) .music-player { --color-text-2: #ffffff6b; }
         document.querySelectorAll('.bullet').forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page));
     }
 
+// 在函数外部声明两个全局变量，用于追踪唯一节点和倒计时
+let bgTransitionLayer = null;
+let bgTransitionTimer = null;
+
 function changeBackgroundImage(newBgUrl, isPureColor = false) {
-    const ghostLayer = document.createElement('div');
-    
-    // 使用明确的样式，避免使用 shorthand background 导致属性被覆盖
-    ghostLayer.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: -2;
-        pointer-events: none; transition: opacity 0.8s ease-in-out; opacity: 0;
-        background-size: cover; background-position: center; background-attachment: fixed;
-    `;
-    
-    // 关键修复：判断传入的是纯色还是 CSS 渐变 (gradient)
+    // 1. 初始化（单例模式）：如果过渡层不存在，则创建唯一的一个
+    if (!bgTransitionLayer) {
+        bgTransitionLayer = document.createElement('div');
+        bgTransitionLayer.id = 'bg-transition-layer';
+        // 添加 will-change 开启 GPU 硬件加速，让渐变极致丝滑
+        bgTransitionLayer.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: -2;
+            pointer-events: none; opacity: 0; transition: opacity 0.8s ease-in-out;
+            background-size: cover; background-position: center; background-attachment: fixed;
+            will-change: opacity;
+        `;
+        document.body.prepend(bgTransitionLayer);
+    }
+
+    // 2. 清理之前的倒计时（防止手快疯狂点击导致背景错乱的竞态条件）
+    if (bgTransitionTimer) {
+        clearTimeout(bgTransitionTimer);
+    }
+
+    // 3. 判断是否为渐变色
     const isGradient = isPureColor && newBgUrl.includes('gradient');
 
+    // 4. 先清空上一次可能残留的样式冲突
+    bgTransitionLayer.style.backgroundImage = '';
+    bgTransitionLayer.style.backgroundColor = '';
+
+    // 5. 为过渡层赋予新背景
     if (isGradient) {
-        // 渐变色在 CSS 中被视为 Image，必须用 backgroundImage 才能保留尺寸设置
-        ghostLayer.style.backgroundImage = newBgUrl;
+        bgTransitionLayer.style.backgroundImage = newBgUrl;
     } else if (isPureColor) {
-        // 纯色可以直接用 backgroundColor
-        ghostLayer.style.backgroundColor = newBgUrl;
+        bgTransitionLayer.style.backgroundColor = newBgUrl;
     } else {
-        // 普通图片
-        ghostLayer.style.backgroundImage = `url('${newBgUrl}')`;
+        bgTransitionLayer.style.backgroundImage = `url('${newBgUrl}')`;
     }
-    
-    document.body.prepend(ghostLayer);
-    void ghostLayer.offsetWidth; // 触发重绘
-    ghostLayer.style.opacity = '1';
-    
-    setTimeout(() => {
+
+    // 6. 强制浏览器触发重绘 (Reflow)，确保 opacity:0 状态被应用后再执行渐变
+    void bgTransitionLayer.offsetWidth; 
+    bgTransitionLayer.style.opacity = '1'; // 开始淡入动画
+
+    // 7. 开启倒计时：等 800ms 动画完全结束后，把真实的 body 背景换掉，并把过渡层隐藏
+    bgTransitionTimer = setTimeout(() => {
+        // 清理 body 之前的样式
+        document.body.style.background = ''; 
+        document.body.style.backgroundImage = '';
+        document.body.style.backgroundColor = '';
+
+        // 真实赋予背景
         if (isGradient) {
-            // 清除可能残留的 inline background 简写
-            document.body.style.background = ''; 
-            // 强制将 body 的背景固定，防止因为页面滚动导致渐变被拉伸放大
             document.body.style.backgroundImage = newBgUrl;
             document.body.style.backgroundSize = 'cover';
             document.body.style.backgroundPosition = 'center';
             document.body.style.backgroundAttachment = 'fixed';
         } else if (isPureColor) {
-            document.body.style.background = newBgUrl; 
+            document.body.style.backgroundColor = newBgUrl; 
         } else {
             document.body.style.background = `url('${newBgUrl}') center/cover fixed`; 
         }
         
         currentBgRecord = newBgUrl;
-        ghostLayer.remove();
-    }, 800);
+
+        // 背景移交完毕，将过渡层默默变透明隐藏，为下一次切换做准备
+        bgTransitionLayer.style.opacity = '0';
+        bgTransitionTimer = null; // 释放定时器
+    }, 800); // 注意：这里的 800 必须和 transition: opacity 0.8s 保持一致
 }
 
     function toggleTheme(theme) {
@@ -1313,7 +1346,6 @@ function loadMusicPlayer() {
     let songName_elmnt = null;
     let sliderImgs_elmnt = null;
     let singerName_elmnt = null;
-    let progressBar_elmnt = null;
     let musicPlayerInfo_elmnt = null;
     let progressBarIsUpdating = false;
     let broadcastGuarantor_elmnt = null;
@@ -1350,7 +1382,7 @@ function loadMusicPlayer() {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: songs[index].songName,
                 artist: songs[index].artist,
-                artwork: [{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }]
+                artwork:[{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }]
             });
         }
     }
@@ -1469,12 +1501,14 @@ function loadMusicPlayer() {
         }
     }
 
+    //[优化1] JS同步改变 progress_elmnt 的 --scale 与 --width
     function updateTheProgressBar() {
         const duration = this.duration;
         const currentTime = this.currentTime;
         if (isNaN(duration) || duration === 0) return;
-        const progressBarWidth = (currentTime / duration) * 100;
-        setProperty(progressBar_elmnt, "--width", `${progressBarWidth}%`);
+        const progressRatio = currentTime / duration;
+        setProperty(progress_elmnt, "--scale", progressRatio);
+        setProperty(progress_elmnt, "--width", `${progressRatio * 100}%`);
     }
 
     function syncMediaSessionPosition() {
@@ -1580,9 +1614,15 @@ function loadMusicPlayer() {
 
     const progressWrapper = document.createElement("div");
     progressWrapper.className = "progress__wrapper";
+    
+    // [优化1] 创建分离的 bar 与 dot 结构
     const progressBar = document.createElement("div");
     progressBar.className = "progress__bar";
+    const progressDot = document.createElement("div");
+    progressDot.className = "progress__dot";
+    
     progressWrapper.appendChild(progressBar);
+    progressWrapper.appendChild(progressDot);
     progress.appendChild(progressWrapper);
 
     sliderControls.append(prevButton, musicInfo, nextButton, progress);
@@ -1620,7 +1660,6 @@ function loadMusicPlayer() {
     songName_elmnt = document.querySelector(".music-player__singer-name");
     musicPlayerInfo_elmnt = document.querySelector(".music-player__info");
     singerName_elmnt = document.querySelector(".music-player__subtitle");
-    progressBar_elmnt = document.querySelector(".progress__bar");
     broadcastGuarantor_elmnt = document.querySelector(".music-player__broadcast-guarantor");
     selectedSong = mainAudio;
 
@@ -1829,7 +1868,7 @@ function loadMusicPlayer() {
         document.querySelector('.moon-toggle').addEventListener('click', () => toggleTheme('dark'));
         
         // 此处分别修改为左下角（淡灰 F0F0F0）和右下角（淡蓝 E8F0FE）的纯色设置
-        document.querySelector('.day-toggle-left').addEventListener('click', () => switchBackground('https://media.giphy.com/media/etTPrfNi3ZTz5UgLDM/giphy.gif?cid=ecf05e47181ce5aa4bb332b83cca606c2e20d184aa27b5d2&ep=v1_user_favorites&rid=giphy.gif&ct=g'));
+        document.querySelector('.day-toggle-left').addEventListener('click', () => switchBackground('#9F79EE', true));
 document.querySelector('.day-toggle-right').addEventListener('click', () => {
   const gradient = 'linear-gradient(15.3deg, rgba(111, 71, 133, 1) 14.6%, rgba(232, 129, 166, 1) 29.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 56.7%, rgba(154, 219, 232, 1) 68.7%, rgba(238, 226, 159, 1) 84.8%)';
   const darkLayer = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15))';
