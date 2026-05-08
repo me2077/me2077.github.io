@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#000000">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+<meta name="theme-color" content="#000000">
     <title>✨🐈</title>
 
     <!-- [极致优化] DNS 预解析与 TCP 预连接 -->
@@ -1314,14 +1315,20 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
         if (currentChangeId !== bgChangeSequence) return;
 
         // 1. 设置覆盖层的内容（新背景）
+// 1. 设置覆盖层的内容（新背景）
         overlay.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover fixed` : backgroundValue;
 
         // 2. 切换 UI 主题样式
         document.body.classList.toggle('light', isLightTheme);
         document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
+
+        // 👉 [新增修复] 强制锁死 Safari 浏览器地址栏和状态栏为纯黑色，防止被浅色背景带偏
         document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-            meta.setAttribute('content', isLightTheme ? '#ffffff' : '#000000');
+            meta.setAttribute('content', '#000000');
         });
+
+        // 3. 粒子联动
+        // ...后面的代码保持不变...
         // 3. 粒子联动
         if (!window.userToggledParticles) window.isParticlesEnabled = !isLightTheme;
         updateParticlesDisplay();
