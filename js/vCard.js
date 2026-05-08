@@ -4,10 +4,9 @@
             const vcard = `
 BEGIN:VCARD
 VERSION:3.0
-N:qxx;;;
+N:;;;
 FN:@qxx
-ORG:@qxx
-TITLE:
+TITLE:Amateur photographer
 TEL;TYPE=cell:+15513223223
 EMAIL;TYPE=INTERNET:vwwwww@yahoo.com
 URL;TYPE=个人主页:https://qxx.me
