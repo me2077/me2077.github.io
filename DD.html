@@ -1118,7 +1118,7 @@
 <body class="light">
 
     <!-- 双层交替无缝平滑切换背景缓冲层 -->
-    <div id="bg-layer-1" class="bg-layer active" style="background: url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnk4ZXVmOG5tdmI1NzUwNHg5cTV0bHZ5NmszeG50Zml5dGNtODV1byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ohs4ucXR6NYRxmpTa/giphy.gif') center/cover;"></div>
+    <div id="bg-layer-1" class="bg-layer active" style="background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover;"></div>
     <div id="bg-layer-2" class="bg-layer"></div>
 
     <div class="crt">
@@ -1276,6 +1276,15 @@ const glowingCard = document.querySelector('.glowing-card');
 const audio = document.getElementById('audioPlayer');
 let isPlaying = false;
 
+// --- 主题循环配置 ---
+const bgPresets = [
+    { name: 'light-default', type: 'theme', value: 'light' },
+    { name: 'dark-default', type: 'theme', value: 'dark' },
+    { name: 'custom-1', type: 'bg', value: 'https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/000.jpg' },
+    { name: 'custom-2', type: 'bg', value: 'https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/DDD.webp' }
+];
+let currentBgIndex = 0;
+
 // --- 核心：粒子状态控制引擎 ---
 function updateParticlesDisplay() {
     const canvas = document.getElementById('shuicheCanvas');
@@ -1339,7 +1348,7 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
 
 function toggleTheme(theme) {
     if (theme === 'light') {
-        crossfadeBackground("url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnk4ZXVmOG5tdmI1NzUwNHg5cTV0bHZ5NmszeG50Zml5dGNtODV1byZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ohs4ucXR6NYRxmpTa/giphy.gif')", true);
+        crossfadeBackground("url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png')", true);
     } else {
         crossfadeBackground("#000", false);
     }
@@ -1538,6 +1547,13 @@ function loadMusicPlayer() {
     const root = document.querySelector("#root");
     const mainAudio = document.getElementById('mainAudio');
 
+    // 暴露控制接口供全局键盘事件使用
+    window.musicControls = {
+        playPause: handlePlayMusic,
+        next: () => handleChangeMusic({ isPrev: false }),
+        prev: () => handleChangeMusic({ isPrev: true })
+    };
+
     function savePlaybackState() {
         if (!selectedSong) return;
         const playbackState = {
@@ -1593,7 +1609,7 @@ function loadMusicPlayer() {
         let newIndex = playListIndex !== null ? playListIndex : (isPrev ? indexSong - 1 : indexSong + 1);
         if (newIndex < 0) newIndex = songsLength;
         if (newIndex > songsLength) newIndex = 0;
-        if (newIndex === indexSong) return;
+        if (newIndex === indexSong && playListIndex === null) return;
 
         let wasPlaying = songIsPlayed;
         isSwitchingMusic = true;
@@ -1778,6 +1794,62 @@ function loadMusicPlayer() {
     handleResize();
 }
 
+// --- [新增] 全局键盘控制系统 ---
+function initKeyboardControls() {
+    document.addEventListener('keydown', (e) => {
+        const key = e.key.toLowerCase();
+        
+        // 1. T键 顺序切换主题
+        if (key === 't') {
+            currentBgIndex = (currentBgIndex + 1) % bgPresets.length;
+            const preset = bgPresets[currentBgIndex];
+            if (preset.type === 'theme') toggleTheme(preset.value);
+            else switchBackground(preset.value);
+        }
+
+        // 2. 1, 2, 3, 4 快捷切换主题
+        if (key === '1') { toggleTheme('light'); currentBgIndex = 0; }
+        if (key === '2') { toggleTheme('dark'); currentBgIndex = 1; }
+        if (key === '3') { switchBackground('https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/000.jpg'); currentBgIndex = 2; }
+        if (key === '4') { switchBackground('https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/DDD.webp'); currentBgIndex = 3; }
+
+        // 3. P键 粒子开关
+        if (key === 'p') {
+            window.isParticlesEnabled = !window.isParticlesEnabled;
+            window.userToggledParticles = true;
+            updateParticlesDisplay();
+        }
+
+        // 4. 左右方向键分页导航 (1 <-> 2 <-> 3 <-> 1)
+        if (!e.shiftKey) {
+            if (e.key === 'ArrowRight') {
+                let next = currentPage + 1;
+                if (next > 3) next = 1;
+                switchPageTo(next);
+            }
+            if (e.key === 'ArrowLeft') {
+                let prev = currentPage - 1;
+                if (prev < 1) prev = 3;
+                switchPageTo(prev);
+            }
+        }
+
+        // 5. 第3页音乐播放器控制 (空格、Shift+方向键)
+        if (window.musicControls) {
+            // 空格键播放暂停
+            if (e.code === 'Space') {
+                e.preventDefault(); // 防止页面滚动
+                window.musicControls.playPause();
+            }
+            // Shift + 方向键 切歌
+            if (e.shiftKey) {
+                if (e.key === 'ArrowRight') window.musicControls.next();
+                if (e.key === 'ArrowLeft') window.musicControls.prev();
+            }
+        }
+    });
+}
+
 // --- 业务初始化 ---
 const scrollContainer = document.querySelector('.link-scroll-container');
 let scrollTimeout;
@@ -1820,6 +1892,7 @@ if(video) video.addEventListener('click', () => video.muted = false);
 
 window.onload = function() {
     loadMusicPlayer();
+    initKeyboardControls();
     // 初始状态判定
     if (document.body.classList.contains('light')) {
         window.isParticlesEnabled = false;
