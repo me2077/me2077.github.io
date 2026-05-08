@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#000000">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
-<meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- [关键修改] 声明网页为深色模式，且将主题色强制锁死为纯黑色 -->
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#000000">
     <title>✨🐈</title>
 
     <!-- [极致优化] DNS 预解析与 TCP 预连接 -->
@@ -79,7 +79,9 @@
 
         /* 全局基础样式 */
         body {
-            background-color: #000;
+            /* [关键修改] 强制锁死 body 的背景颜色，彻底杜绝 Safari 嗅探图片颜色 */
+            background-color: #000000 !important;
+            background-image: none !important;
             margin: 0;
             padding: 0;
             min-height: 100dvh;
@@ -91,10 +93,35 @@
             overflow: hidden;
             touch-action: manipulation;
             transition: color 0.8s ease;
-            /* 关键点：Body 用于放置背景图 */
+        }
+
+        /* [新增核心修复] 物理遮挡顶部刘海区域和底部地址栏区域，保证 Safari 磨砂玻璃透出的是纯黑色 */
+        body::before, body::after {
+            content: "";
+            position: fixed;
+            left: 0; right: 0;
+            background-color: #000000;
+            z-index: 99999;
+            pointer-events: none;
+        }
+        body::before {
+            top: 0;
+            height: env(safe-area-inset-top);
+        }
+        body::after {
+            bottom: 0;
+            height: env(safe-area-inset-bottom);
+        }
+
+        /* [底层背景墙] 替代原来的 body 背景 */
+        #bg-base-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png');
         }
 
         /* [新增修复] 过渡覆盖层样式 */
@@ -1118,9 +1145,12 @@
     </style>
 </head>
 
-<body class="light" style="background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png')">
+<body class="light">
 
-    <!-- [关键修改] 移除了双层 bg-layer，改为单一过渡层 -->
+    <!--[新增修复] 专门用来放底层固定背景的容器，不再用 body 装背景图 -->
+    <div id="bg-base-layer" style="position: fixed; inset: 0; z-index: -3; background-size: cover; background-position: center; background-attachment: fixed; background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png');"></div>
+
+    <!-- 过渡覆盖层 -->
     <div id="bg-transition-layer" style="position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0; transition: opacity 0.8s ease-in-out; background-size: cover; background-position: center; background-attachment: fixed; will-change: opacity;"></div>
 
     <div class="crt">
@@ -1278,7 +1308,7 @@ const audio = document.getElementById('audioPlayer');
 let isPlaying = false;
 
 // --- 主题循环配置 ---
-const bgPresets = [
+const bgPresets =[
     { name: 'light-default', type: 'theme', value: 'light' },
     { name: 'dark-default', type: 'theme', value: 'dark' },
     { name: 'custom-1', type: 'bg', value: 'https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/000.jpg' },
@@ -1300,7 +1330,7 @@ function updateParticlesDisplay() {
     }
 }
 
-// --- [核心修复] 单层平滑过渡覆盖逻辑 ---
+// --- [终极核心修复] 单层平滑过渡覆盖逻辑 ---
 let bgTransitionTimer = null;
 function crossfadeBackground(backgroundValue, isLightTheme) {
     const currentChangeId = ++bgChangeSequence;
@@ -1314,21 +1344,13 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
     const applyEffect = () => {
         if (currentChangeId !== bgChangeSequence) return;
 
-        // 1. 设置覆盖层的内容（新背景）
-// 1. 设置覆盖层的内容（新背景）
+        // 1. 设置过渡层的内容（新背景）
         overlay.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover fixed` : backgroundValue;
 
         // 2. 切换 UI 主题样式
         document.body.classList.toggle('light', isLightTheme);
         document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
 
-        // 👉 [新增修复] 强制锁死 Safari 浏览器地址栏和状态栏为纯黑色，防止被浅色背景带偏
-        document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-            meta.setAttribute('content', '#000000');
-        });
-
-        // 3. 粒子联动
-        // ...后面的代码保持不变...
         // 3. 粒子联动
         if (!window.userToggledParticles) window.isParticlesEnabled = !isLightTheme;
         updateParticlesDisplay();
@@ -1336,11 +1358,11 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
         // 4. 过渡层淡入
         overlay.style.opacity = '1';
 
-        // 5. 动画结束后，同步给 Body 背景，并重置覆盖层
+        // 5. 动画结束后，同步给 bg-base-layer！(彻底不碰 body 的背景)
         bgTransitionTimer = setTimeout(() => {
-            document.body.style.background = overlay.style.background;
+            document.getElementById('bg-base-layer').style.background = overlay.style.background;
             
-            // 瞬间隐藏覆盖层（由于 Body 背景已同步，此过程视觉上是无感的）
+            // 瞬间隐藏覆盖层
             overlay.style.transition = 'none';
             overlay.style.opacity = '0';
             setTimeout(() => {
@@ -1372,8 +1394,6 @@ function toggleTheme(theme) {
 function switchBackground(url) {
     crossfadeBackground(`url('${url}')`, true);
 }
-
-// --- 其余所有原始代码逻辑保持不变 ---
 
 // --- 手动双击切换粒子逻辑 ---
 (function initDoubleClickToggle() {
@@ -1588,7 +1608,7 @@ function loadMusicPlayer() {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: songs[index].songName,
                 artist: songs[index].artist,
-                artwork: [{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }]
+                artwork:[{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }]
             });
         }
     }
@@ -1695,7 +1715,7 @@ function loadMusicPlayer() {
         selectedSong.currentTime = (clientX - progressOffsetLeft) / progressWidth * duration;
     }
 
-    const songs = [
+    const songs =[
         { "bg": "#c9bea28f", "artist": "SCSI-9", "songName": "Senorita Tristeza", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.webp" }, "duration": "5:53" },
         { "bg": "#0896eba1", "artist": "Paradox Interactive", "songName": "Be Happy", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.webp" }, "duration": "3:22" },
         { "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.webp" }, "duration": "4:31" },
