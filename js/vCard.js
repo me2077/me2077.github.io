@@ -5,7 +5,7 @@
 BEGIN:VCARD
 VERSION:3.0
 N:;;;
-FN:@qxx
+FN:qxx
 TITLE:Amateur photographer
 TEL;TYPE=cell:+15513223223
 EMAIL;TYPE=INTERNET:vwwwww@yahoo.com
