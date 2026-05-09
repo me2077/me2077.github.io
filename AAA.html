@@ -1425,10 +1425,14 @@ function switchBackground(url) {
 })();
 
 // --- ThreeJS 星空粒子引擎 ---
+// --- ThreeJS 星空粒子引擎 (基于 Delta Time，保证所有浏览器速度绝对一致) ---
 (function initBackgroundEngine() {
-    const count = 200;
+    const count = 1000; // 换成了新版本要求的 1000 个粒子数量
     let scene, camera, renderer, animationId = null, mouseX = 0, mouseY = 0;
     let windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
+    
+    let clock = new THREE.Clock(); // [核心修改] 引入 Three.js 时钟，用于抹平帧率差异
+    
     let geometry = new THREE.BufferGeometry();
     let posAttribute = new THREE.BufferAttribute(new Float32Array(6 * count), 3);
     posAttribute.setUsage(THREE.DynamicDrawUsage);
@@ -1448,18 +1452,23 @@ function switchBackground(url) {
         });
         renderer.setSize(window.innerWidth, window.innerHeight, false);
         renderer.setClearColor(0x000000, 0);
+        
         for (let index = 0; index < count; index++) {
             const x = Math.random() * 800 - 400, y = Math.random() * 800 - 400, z = Math.random() * 400 - 200;
             positionArray[6 * index] = x; positionArray[6 * index + 1] = y; positionArray[6 * index + 2] = z;
             positionArray[6 * index + 3] = x; positionArray[6 * index + 4] = y; positionArray[6 * index + 5] = z;
         }
         scene.add(new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xffffff })));
+        
         window.addEventListener('resize', debounceResize, { passive: true });
         document.body.addEventListener('pointermove', e => {
             mouseX = e.clientX - windowHalfX; mouseY = e.clientY - windowHalfY;
         }, { passive: true });
         
-        if (window.isParticlesEnabled) anime();
+        if (window.isParticlesEnabled) {
+            clock.start(); // 引擎启动时同步启动时钟
+            anime();
+        }
     }
 
     let resizeTimeout;
@@ -1474,11 +1483,17 @@ function switchBackground(url) {
     }
 
     function anime() {
+        // [核心修改] 获取两帧之间的时间差 (Delta Time)
+        let delta = clock.getDelta();
+        delta = Math.min(delta, 0.1); // 防止切换标签页后 delta 过大导致粒子乱飞
+        const timeScale = delta / (1 / 60); // 强制以 60FPS 为基准比例计算
+
         for (let index = 0; index < count; index++) {
-            velocityArray[2 * index] += 0.015;
-            velocityArray[2 * index + 1] += 0.015;
-            positionArray[6 * index + 2] += velocityArray[2 * index] + 0.03;
-            positionArray[6 * index + 5] += velocityArray[2 * index + 1];
+            velocityArray[2 * index] += 0.015 * timeScale;
+            velocityArray[2 * index + 1] += 0.015 * timeScale;
+            positionArray[6 * index + 2] += (velocityArray[2 * index] + 0.03) * timeScale;
+            positionArray[6 * index + 5] += velocityArray[2 * index + 1] * timeScale;
+            
             if (positionArray[6 * index + 2] > 200) {
                 let z = Math.random() * 200 - 200;
                 positionArray[6 * index + 2] = z; positionArray[6 * index + 5] = z;
@@ -1486,6 +1501,7 @@ function switchBackground(url) {
             }
         }
         posAttribute.needsUpdate = true;
+        
         camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
         camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
         camera.lookAt(scene.position);
@@ -1497,13 +1513,24 @@ function switchBackground(url) {
         if (document.hidden && animationId !== null) {
             cancelAnimationFrame(animationId); animationId = null;
         } else if (!document.hidden && animationId === null && window.isParticlesEnabled) {
+            clock.start(); // [关键点] 页面切回来时必须重置时钟
             anime();
         }
     });
 
     window.bgEngine = {
-        start: () => { if (animationId === null) anime(); },
-        stop: () => { if (animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } }
+        start: () => { 
+            if (animationId === null) {
+                clock.start();
+                anime(); 
+            }
+        },
+        stop: () => { 
+            if (animationId !== null) { 
+                cancelAnimationFrame(animationId); 
+                animationId = null; 
+            } 
+        }
     };
     window.bgRenderer = { setClearColor: (c, a) => renderer.setClearColor(c, a) };
     window.addEventListener('DOMContentLoaded', init);
