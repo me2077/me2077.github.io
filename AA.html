@@ -1972,7 +1972,7 @@ if ('IntersectionObserver' in window && video) {
     const videoObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                if (!videoLoaded) { video.src = "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Movie.MP4"; videoLoaded = true; }
+                if (!videoLoaded) { video.src = "music/Movie.MP4"; videoLoaded = true; }
                 video.muted = true; video.play().catch(() => {});
             } else { video.pause(); }
         });
