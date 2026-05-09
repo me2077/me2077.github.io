@@ -437,6 +437,7 @@
             left: 0;
             z-index: 9999;
             pointer-events: none;
+            display: none;
         }
 
         /* 底部引导分页小圆点指示器 */
@@ -1299,7 +1300,8 @@
 
     <script>
 // --- 全局状态与配置 ---
-window.isParticlesEnabled = true; 
+// 👉 修改这里：根据 body 是否有 light 类名，自动决定一开始要不要开启粒子
+window.isParticlesEnabled = !document.body.classList.contains('light');
 window.userToggledParticles = false; 
 let bgChangeSequence = 0;
 let currentPage = 2;
