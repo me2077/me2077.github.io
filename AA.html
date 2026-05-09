@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#000000">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- [关键修改] 声明网页为深色模式，且将主题色强制锁死为纯黑色 -->
+    <meta name="color-scheme" content="dark">
+    <meta name="theme-color" content="#000000">
     <title>✨🐈</title>
 
     <!-- [极致优化] DNS 预解析与 TCP 预连接 -->
@@ -41,7 +42,7 @@
             --duration: 1s;
             --ease-slider: cubic-bezier(0.4, 0, 0.2, 1);
             --ease-timeline: cubic-bezier(0.71, 0.21, 0.3, 0.95);
-            --page-height: 498px;
+            --page-height: 510px;
             --accent: hsl(260, 100%, 80%);
             --glowing-card-bg: rgb(255 255 255 / 15%);
             --glowing-card-border: rgb(255 255 255 / 70%);
@@ -78,7 +79,9 @@
 
         /* 全局基础样式 */
         body {
-            background-color: #000;
+            /* [关键修改] 强制锁死 body 的背景颜色，彻底杜绝 Safari 嗅探图片颜色 */
+            background-color: #000000 !important;
+            background-image: none !important;
             margin: 0;
             padding: 0;
             min-height: 100dvh;
@@ -90,10 +93,35 @@
             overflow: hidden;
             touch-action: manipulation;
             transition: color 0.8s ease;
-            /* 关键点：Body 用于放置背景图 */
+        }
+
+        /* [新增核心修复] 物理遮挡顶部刘海区域和底部地址栏区域，保证 Safari 磨砂玻璃透出的是纯黑色 */
+        body::before, body::after {
+            content: "";
+            position: fixed;
+            left: 0; right: 0;
+            background-color: #000000;
+            z-index: 99999;
+            pointer-events: none;
+        }
+        body::before {
+            top: 0;
+            height: env(safe-area-inset-top);
+        }
+        body::after {
+            bottom: 0;
+            height: env(safe-area-inset-bottom);
+        }
+
+        /* [底层背景墙] 替代原来的 body 背景 */
+        #bg-base-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png');
         }
 
         /* [新增修复] 过渡覆盖层样式 */
@@ -223,7 +251,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 0 25px 26px;
+            padding: 0 25px 36px;
             overflow: hidden;
         }
 
@@ -409,6 +437,7 @@
             left: 0;
             z-index: 9999;
             pointer-events: none;
+            display: none;
         }
 
         /* 底部引导分页小圆点指示器 */
@@ -416,8 +445,8 @@
             display: flex;
             justify-content: center;
             gap: 5px;
-            margin-top: -8px;
-            margin-bottom: 10px;
+            margin-top: -21px;
+            margin-bottom: 15px;
         }
 
         .bullet {
@@ -553,7 +582,7 @@
             max-width: 99.7%;
             max-height: 100%;
             border-radius: 18px;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease;
             opacity: 1;
         }
 
@@ -562,7 +591,7 @@
             width: 340px;
             height: 340px;
             border-radius: 18px;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.8s ease;
             opacity: 0;
             pointer-events: none;
             top: 0px;
@@ -596,7 +625,7 @@
             transition: opacity 0.5s ease;
             pointer-events: none;
             text-align: center;
-            margin-top: -40px;
+            margin-top: -50px;
         }
 
         .reward-text-new a {
@@ -762,7 +791,7 @@
             user-select: none;
             border-radius: var(--border-radius);
             background-color: var(--music-player-bg);
-            margin: -15px auto 0;
+            margin: -32px auto 0;
             box-sizing: border-box;
             color: inherit;
             transition: background-color 0.8s ease;
@@ -869,7 +898,7 @@
         }
 
         .slider__controls {
-            --controls-y: 130%;
+            --controls-y: 200%;
             --controls-x: 17.3%;
             --controls-width: 68.4%;
             --controls-resize-width: 88%;
@@ -1117,9 +1146,12 @@
     </style>
 </head>
 
-<body class="light" style="background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png')">
+<body class="light">
 
-    <!-- [关键修改] 移除了双层 bg-layer，改为单一过渡层 -->
+    <!--[新增修复] 专门用来放底层固定背景的容器，不再用 body 装背景图 -->
+    <div id="bg-base-layer" style="position: fixed; inset: 0; z-index: -3; background-size: cover; background-position: center; background-attachment: fixed; background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png');"></div>
+
+    <!-- 过渡覆盖层 -->
     <div id="bg-transition-layer" style="position: fixed; inset: 0; z-index: -2; pointer-events: none; opacity: 0; transition: opacity 0.8s ease-in-out; background-size: cover; background-position: center; background-attachment: fixed; will-change: opacity;"></div>
 
     <div class="crt">
@@ -1175,7 +1207,7 @@
 
                                     <section class="subpage" id="page1-2">
                                         <div class="media-wrapper">
-                                            <img src="images/VideoGame Glitch.gif" loading="lazy" class="glitch-img" style="margin-top:8px;" alt="glitch">
+                                            <img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/me.webp" loading="lazy" class="glitch-img" style="margin-top:8px;" alt="glitch">
                                         </div>
                                     </section>
 
@@ -1268,7 +1300,8 @@
 
     <script>
 // --- 全局状态与配置 ---
-window.isParticlesEnabled = true; 
+// 👉 修改这里：根据 body 是否有 light 类名，自动决定一开始要不要开启粒子
+window.isParticlesEnabled = !document.body.classList.contains('light');
 window.userToggledParticles = false; 
 let bgChangeSequence = 0;
 let currentPage = 2;
@@ -1277,7 +1310,7 @@ const audio = document.getElementById('audioPlayer');
 let isPlaying = false;
 
 // --- 主题循环配置 ---
-const bgPresets = [
+const bgPresets =[
     { name: 'light-default', type: 'theme', value: 'light' },
     { name: 'dark-default', type: 'theme', value: 'dark' },
     { name: 'custom-1', type: 'bg', value: 'https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/000.jpg' },
@@ -1299,7 +1332,7 @@ function updateParticlesDisplay() {
     }
 }
 
-// --- [核心修复] 单层平滑过渡覆盖逻辑 ---
+// --- [终极核心修复] 单层平滑过渡覆盖逻辑 ---
 let bgTransitionTimer = null;
 function crossfadeBackground(backgroundValue, isLightTheme) {
     const currentChangeId = ++bgChangeSequence;
@@ -1313,7 +1346,7 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
     const applyEffect = () => {
         if (currentChangeId !== bgChangeSequence) return;
 
-        // 1. 设置覆盖层的内容（新背景）
+        // 1. 设置过渡层的内容（新背景）
         overlay.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover fixed` : backgroundValue;
 
         // 2. 切换 UI 主题样式
@@ -1327,11 +1360,11 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
         // 4. 过渡层淡入
         overlay.style.opacity = '1';
 
-        // 5. 动画结束后，同步给 Body 背景，并重置覆盖层
+        // 5. 动画结束后，同步给 bg-base-layer！(彻底不碰 body 的背景)
         bgTransitionTimer = setTimeout(() => {
-            document.body.style.background = overlay.style.background;
+            document.getElementById('bg-base-layer').style.background = overlay.style.background;
             
-            // 瞬间隐藏覆盖层（由于 Body 背景已同步，此过程视觉上是无感的）
+            // 瞬间隐藏覆盖层
             overlay.style.transition = 'none';
             overlay.style.opacity = '0';
             setTimeout(() => {
@@ -1364,8 +1397,6 @@ function switchBackground(url) {
     crossfadeBackground(`url('${url}')`, true);
 }
 
-// --- 其余所有原始代码逻辑保持不变 ---
-
 // --- 手动双击切换粒子逻辑 ---
 (function initDoubleClickToggle() {
     let lastToggleTime = 0;
@@ -1394,10 +1425,14 @@ function switchBackground(url) {
 })();
 
 // --- ThreeJS 星空粒子引擎 ---
+// --- ThreeJS 星空粒子引擎 (基于 Delta Time，保证所有浏览器速度绝对一致) ---
 (function initBackgroundEngine() {
-    const count = 200;
+    const count = 1000; // 换成了新版本要求的 1000 个粒子数量
     let scene, camera, renderer, animationId = null, mouseX = 0, mouseY = 0;
     let windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
+    
+    let clock = new THREE.Clock(); // [核心修改] 引入 Three.js 时钟，用于抹平帧率差异
+    
     let geometry = new THREE.BufferGeometry();
     let posAttribute = new THREE.BufferAttribute(new Float32Array(6 * count), 3);
     posAttribute.setUsage(THREE.DynamicDrawUsage);
@@ -1417,18 +1452,23 @@ function switchBackground(url) {
         });
         renderer.setSize(window.innerWidth, window.innerHeight, false);
         renderer.setClearColor(0x000000, 0);
+        
         for (let index = 0; index < count; index++) {
             const x = Math.random() * 800 - 400, y = Math.random() * 800 - 400, z = Math.random() * 400 - 200;
             positionArray[6 * index] = x; positionArray[6 * index + 1] = y; positionArray[6 * index + 2] = z;
             positionArray[6 * index + 3] = x; positionArray[6 * index + 4] = y; positionArray[6 * index + 5] = z;
         }
         scene.add(new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xffffff })));
+        
         window.addEventListener('resize', debounceResize, { passive: true });
         document.body.addEventListener('pointermove', e => {
             mouseX = e.clientX - windowHalfX; mouseY = e.clientY - windowHalfY;
         }, { passive: true });
         
-        if (window.isParticlesEnabled) anime();
+        if (window.isParticlesEnabled) {
+            clock.start(); // 引擎启动时同步启动时钟
+            anime();
+        }
     }
 
     let resizeTimeout;
@@ -1443,11 +1483,17 @@ function switchBackground(url) {
     }
 
     function anime() {
+        // [核心修改] 获取两帧之间的时间差 (Delta Time)
+        let delta = clock.getDelta();
+        delta = Math.min(delta, 0.1); // 防止切换标签页后 delta 过大导致粒子乱飞
+        const timeScale = delta / (1 / 60); // 强制以 60FPS 为基准比例计算
+
         for (let index = 0; index < count; index++) {
-            velocityArray[2 * index] += 0.015;
-            velocityArray[2 * index + 1] += 0.015;
-            positionArray[6 * index + 2] += velocityArray[2 * index] + 0.03;
-            positionArray[6 * index + 5] += velocityArray[2 * index + 1];
+            velocityArray[2 * index] += 0.015 * timeScale;
+            velocityArray[2 * index + 1] += 0.015 * timeScale;
+            positionArray[6 * index + 2] += (velocityArray[2 * index] + 0.03) * timeScale;
+            positionArray[6 * index + 5] += velocityArray[2 * index + 1] * timeScale;
+            
             if (positionArray[6 * index + 2] > 200) {
                 let z = Math.random() * 200 - 200;
                 positionArray[6 * index + 2] = z; positionArray[6 * index + 5] = z;
@@ -1455,6 +1501,7 @@ function switchBackground(url) {
             }
         }
         posAttribute.needsUpdate = true;
+        
         camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
         camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
         camera.lookAt(scene.position);
@@ -1466,13 +1513,24 @@ function switchBackground(url) {
         if (document.hidden && animationId !== null) {
             cancelAnimationFrame(animationId); animationId = null;
         } else if (!document.hidden && animationId === null && window.isParticlesEnabled) {
+            clock.start(); // [关键点] 页面切回来时必须重置时钟
             anime();
         }
     });
 
     window.bgEngine = {
-        start: () => { if (animationId === null) anime(); },
-        stop: () => { if (animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } }
+        start: () => { 
+            if (animationId === null) {
+                clock.start();
+                anime(); 
+            }
+        },
+        stop: () => { 
+            if (animationId !== null) { 
+                cancelAnimationFrame(animationId); 
+                animationId = null; 
+            } 
+        }
     };
     window.bgRenderer = { setClearColor: (c, a) => renderer.setClearColor(c, a) };
     window.addEventListener('DOMContentLoaded', init);
@@ -1579,7 +1637,7 @@ function loadMusicPlayer() {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: songs[index].songName,
                 artist: songs[index].artist,
-                artwork: [{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }]
+                artwork:[{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }]
             });
         }
     }
@@ -1686,7 +1744,7 @@ function loadMusicPlayer() {
         selectedSong.currentTime = (clientX - progressOffsetLeft) / progressWidth * duration;
     }
 
-    const songs = [
+    const songs =[
         { "bg": "#c9bea28f", "artist": "SCSI-9", "songName": "Senorita Tristeza", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.webp" }, "duration": "5:53" },
         { "bg": "#0896eba1", "artist": "Paradox Interactive", "songName": "Be Happy", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.webp" }, "duration": "3:22" },
         { "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.webp" }, "duration": "4:31" },
@@ -1867,11 +1925,38 @@ if (scrollContainer) {
     }, { passive: true });
 }
 
-const avatarSound = new Audio("https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav");
-avatarSound.volume = 0.35;
+let avatarSound = null;
+
+async function initAvatarSound() {
+    const audioUrl = "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav";
+    try {
+        // 添加 { cache: 'force-cache' } 强制浏览器使用本地缓存，拒绝二次网络请求
+        const response = await fetch(audioUrl, { cache: 'force-cache' });
+        const audioBlob = await response.blob();
+        const blobUrl = URL.createObjectURL(audioBlob);
+        avatarSound = new Audio(blobUrl);
+        avatarSound.volume = 0.35;
+    } catch (error) {
+        avatarSound = new Audio(audioUrl);
+        avatarSound.volume = 0.35;
+    }
+}
+
+// 利用浏览器的空闲时间 (Idle Time) 预加载音频
+// 兼容 Safari 等不支持 requestIdleCallback 的浏览器则使用 setTimeout 延迟加载
+if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => initAvatarSound());
+} else {
+    setTimeout(initAvatarSound, 1500); 
+}
+
 function triggerConfetti() {
     if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 100 });
-    avatarSound.play().catch(e => console.log(e));
+    // 增加判空保护，并把时间重置为0以便双击时能连续发声
+    if (avatarSound) {
+        avatarSound.currentTime = 0; 
+        avatarSound.play().catch(e => console.log(e));
+    }
 }
 
 function toggleReward() { document.getElementById('rewardContainer').classList.toggle('show-qr'); }
