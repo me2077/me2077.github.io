@@ -1896,11 +1896,38 @@ if (scrollContainer) {
     }, { passive: true });
 }
 
-const avatarSound = new Audio("https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav");
-avatarSound.volume = 0.35;
+let avatarSound = null;
+
+async function initAvatarSound() {
+    const audioUrl = "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav";
+    try {
+        // 添加 { cache: 'force-cache' } 强制浏览器使用本地缓存，拒绝二次网络请求
+        const response = await fetch(audioUrl, { cache: 'force-cache' });
+        const audioBlob = await response.blob();
+        const blobUrl = URL.createObjectURL(audioBlob);
+        avatarSound = new Audio(blobUrl);
+        avatarSound.volume = 0.35;
+    } catch (error) {
+        avatarSound = new Audio(audioUrl);
+        avatarSound.volume = 0.35;
+    }
+}
+
+// 利用浏览器的空闲时间 (Idle Time) 预加载音频
+// 兼容 Safari 等不支持 requestIdleCallback 的浏览器则使用 setTimeout 延迟加载
+if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => initAvatarSound());
+} else {
+    setTimeout(initAvatarSound, 1500); 
+}
+
 function triggerConfetti() {
     if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 100 });
-    avatarSound.play().catch(e => console.log(e));
+    // 增加判空保护，并把时间重置为0以便双击时能连续发声
+    if (avatarSound) {
+        avatarSound.currentTime = 0; 
+        avatarSound.play().catch(e => console.log(e));
+    }
 }
 
 function toggleReward() { document.getElementById('rewardContainer').classList.toggle('show-qr'); }
