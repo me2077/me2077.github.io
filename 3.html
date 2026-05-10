@@ -4,11 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
 <!-- 改为 black-translucent 允许背景在添加到主屏幕时穿透状态栏 -->
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- 删除了 theme-color，这样 Safari 会自动使用你的壁纸颜色作为毛玻璃透视 -->
-    <meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- 将状态栏设置为半透明穿透 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- 注意：把原来的 color-scheme 和 theme-color 删掉！不要留！ -->
 
     <title>✨🐈</title>
 
@@ -80,12 +81,20 @@
             --music-player-shadow: 0 2px 6px 1px #0000001f;
         }
 
-body {
-            background-color: transparent !important; /* 改为透明 */
-            background-image: none !important;
+/* 1. 给 html 添加背景，这是 Safari 能成功提取毛玻璃的关键 */
+        html {
+            background-size: cover;
+            background-position: center;
+            background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png');
+            height: 100vh;
+        }
+
+        /* 2. 修改 body，把 100dvh 改为 100vh */
+        body {
+            background: transparent !important; /* 必须透明，让底下的 html 壁纸透出来 */
             margin: 0;
             padding: 0;
-            min-height: 100dvh;
+            min-height: 100vh; /* 【重点】必须是100vh！这样才能延伸到地址栏和刘海屏下面！ */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -96,16 +105,9 @@ body {
             transition: color 0.8s ease;
         }
 
-
-
+        /* 3. 隐藏原本的固定背景层（因为背景现在直接由 html 承担了） */
         #bg-base-layer {
-            position: fixed;
-            inset: 0;
-            z-index: -3;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png');
+            display: none !important;
         }
 
         #bg-transition-layer {
@@ -904,8 +906,13 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
         updateParticlesDisplay();
         overlay.style.opacity = '1';
 
-        bgTransitionTimer = setTimeout(() => {
-            document.getElementById('bg-base-layer').style.background = overlay.style.background;
+bgTransitionTimer = setTimeout(() => {
+            // 找到原代码：
+            // document.getElementById('bg-base-layer').style.background = overlay.style.background;
+            
+            // 【修改为】：
+            document.documentElement.style.background = overlay.style.background;
+            
             overlay.style.transition = 'none';
             overlay.style.opacity = '0';
             setTimeout(() => { overlay.style.transition = 'opacity 0.8s ease-in-out'; }, 50);
