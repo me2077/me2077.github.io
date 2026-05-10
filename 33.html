@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#010101">
+<meta name="theme-color" content="#000000">
     <title>✨🐈</title>
 
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -78,9 +78,14 @@
             --music-player-shadow: 0 2px 6px 1px #0000001f;
         }
 
-/* 覆盖替换这整个 body 及其前后伪元素的样式 */
-        body {
+/* 1. 强制系统最底层为纯黑色，作为 Safari 取色的安全池 */
+        html {
             background-color: #000000 !important;
+        }
+
+        /* 2. body 改为透明，让底下的黑色能在边缘透出来 */
+        body {
+            background-color: transparent !important;
             background-image: none !important;
             margin: 0;
             padding: 0;
@@ -95,26 +100,25 @@
             transition: color 0.8s ease;
         }
 
-        /* Safari 终极防变色装甲 */
+        /* 3. 原始的安全区遮罩（可以保留，防刘海屏溢出） */
         body::before, body::after {
             content: "";
             position: fixed;
             left: 0; right: 0;
-            /* 核心秘籍 1：使用 #010101 代替纯黑。人眼看不出区别，但能完美骗过 Safari，防止它把纯黑当作无效值 */
-            background-color: #010101 !important;
-            z-index: 2147483647; /* 提到最高层级 */
+            background-color: #000000;
+            z-index: 99999;
             pointer-events: none;
-            /* 核心秘籍 2：暴力提层到 3D 渲染的最顶端，稳压 WebGL 粒子层 */
-            transform: translateZ(9999px); 
         }
-        body::before {
-            top: 0;
-            /* 核心秘籍 3：即使没有刘海，也要强行占领顶部 1 像素供 Safari 取色 */
-            height: max(1px, env(safe-area-inset-top));
-        }
-        body::after {
-            bottom: 0;
-            height: max(1px, env(safe-area-inset-bottom));
+        body::before { top: 0; height: env(safe-area-inset-top); }
+        body::after { bottom: 0; height: env(safe-area-inset-bottom); }
+
+        /* 4. 【终极防 Safari 变色黑科技】物理切割边缘 1 像素 */
+        /* 给所有会变色的全屏图层上下各切掉 1px，强行暴露出 html 的纯黑色 */
+        #bg-base-layer, 
+        #bg-transition-layer, 
+        #shuicheCanvas {
+            -webkit-clip-path: inset(1px 0) !important;
+            clip-path: inset(1px 0) !important;
         }
 
         #bg-base-layer {
