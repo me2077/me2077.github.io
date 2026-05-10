@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+<!-- 改为 black-translucent 允许背景在添加到主屏幕时穿透状态栏 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- 删除了 theme-color，这样 Safari 会自动使用你的壁纸颜色作为毛玻璃透视 -->
     <meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#010101">
+
     <title>✨🐈</title>
 
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -78,9 +80,8 @@
             --music-player-shadow: 0 2px 6px 1px #0000001f;
         }
 
-/* 覆盖替换这整个 body 及其前后伪元素的样式 */
-        body {
-            background-color: #000000 !important;
+body {
+            background-color: transparent !important; /* 改为透明 */
             background-image: none !important;
             margin: 0;
             padding: 0;
@@ -95,27 +96,7 @@
             transition: color 0.8s ease;
         }
 
-        /* Safari 终极防变色装甲 */
-        body::before, body::after {
-            content: "";
-            position: fixed;
-            left: 0; right: 0;
-            /* 核心秘籍 1：使用 #010101 代替纯黑。人眼看不出区别，但能完美骗过 Safari，防止它把纯黑当作无效值 */
-            background-color: #010101 !important;
-            z-index: 2147483647; /* 提到最高层级 */
-            pointer-events: none;
-            /* 核心秘籍 2：暴力提层到 3D 渲染的最顶端，稳压 WebGL 粒子层 */
-            transform: translateZ(9999px); 
-        }
-        body::before {
-            top: 0;
-            /* 核心秘籍 3：即使没有刘海，也要强行占领顶部 1 像素供 Safari 取色 */
-            height: max(1px, env(safe-area-inset-top));
-        }
-        body::after {
-            bottom: 0;
-            height: max(1px, env(safe-area-inset-bottom));
-        }
+
 
         #bg-base-layer {
             position: fixed;
@@ -796,7 +777,7 @@
 // ==========================================
 
 // 1. 左上角 (日间默认) - 对应键盘 1
-const BG_TOP_LEFT = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 14.6%, rgba(232, 129, 166, 1) 29.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 56.7%, rgba(154, 219, 232, 1) 68.7%, rgba(238, 226, 159, 1) 84.8%)';
+const BG_TOP_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png';
 
 // 2. 右上角 (夜间默认) - 对应键盘 2
 const BG_TOP_RIGHT = '#000000';
