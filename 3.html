@@ -81,9 +81,14 @@
             --music-player-shadow: 0 2px 6px 1px #0000001f;
         }
 
-        /* 全局基础样式 */
-        body {
+/* 1. 强制系统最底层为黑色，拦截 Safari 取色 */
+        html {
             background-color: #000000 !important;
+        }
+
+        /* 2. body 改为透明背景，让负 z-index 的壁纸透出来 */
+        body {
+            background-color: transparent !important; /* <--- 这里是修复的关键 */
             background-image: none !important;
             margin: 0;
             padding: 0;
@@ -98,13 +103,17 @@
             transition: color 0.8s ease;
         }
 
+        /* 3. 顶部和底部的黑边安全区遮罩保持不变 */
         body::before, body::after {
             content: "";
             position: fixed;
             left: 0; right: 0;
-            background-color: #000000;
-            z-index: 99999;
+            background-color: #000000 !important;
+            z-index: 999999;
             pointer-events: none;
+            /* 保持硬件加速开启，锁死 Safari 状态栏颜色 */
+            transform: translateZ(0); 
+            will-change: transform;
         }
         body::before {
             top: 0;
