@@ -1,68 +1,82 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#bd76ff">
-    <title>✨🐈</title>
-    
-    <!-- [极致优化] 1. DNS 预解析与 TCP 预连接，提速外部资源加载 -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preconnect" href="https://me2077.github.io" crossorigin>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- HTML 原生 preload 提前加载大体积背景图 -->
-    <link rel="preload" as="image" href="https://me2077.github.io/images/AAA.png">
-    <link rel="preload" as="image" href="/images/CCC.JPG">
-    <link rel="preload" as="image" href="/images/DDD.JPG">
+<title>WebM Background</title>
 
-    <link rel="stylesheet" href="css/D.css">
-    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
-    <link rel="shortcut icon" href="favicon/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <meta name="apple-mobile-web-app-title" content="qxx">
-    <link rel="manifest" href="favicon/site.webmanifest">
-  
 <style>
-/* CSS 变量与核心主题保持不变 */
-:root {
-    --glow-sens: 30; --dark: hsl(260, 25%, 10%); --fg: black; --h: 260;
-    --card-bg: linear-gradient(8deg, var(--dark) 75%, color-mix(in hsl, var(--dark), white 2.5%) 75.5%);
-    --blend: soft-light; --glow-blend: plus-lighter; --glow-color: 40deg 80% 80%;
-    --duration: 1s; --ease-slider: cubic-bezier(0.4, 0, 0.2, 1); --ease-timeline: cubic-bezier(0.71, 0.21, 0.3, 0.95);
-    --page-height: 498px; --accent: hsl(260, 100%, 80%);
-    /* 🌟修复毛玻璃动画：将 none 改为 blur(0px)，否则 CSS 无法执行 0.8s 的平滑模糊过渡 */
-    --glowing-card-bg: rgb(255 255 255 / 15%); --glowing-card-border: rgb(255 255 255 / 70%); --glowing-card-backdrop: blur(7px);
-    --link-card-bg: rgb(255 255 255 / 9%); --link-card-hover-bg: rgb(255 255 255 / 25%); --link-card-border: rgb(255 255 255 / 40%); --link-card-box-shadow: 0px 4px 3px #0001, 0 0 35px #fffa inset;
-    --spotify-card-bg: rgb(255 255 255 / 15%); --spotify-card-border: rgb(255 255 255 / 45%); --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
-    --music-player-bg: rgb(255 255 255 / 15%); --music-player-shadow: none;
-}
-.light {
-    --card-bg: linear-gradient(8deg, color-mix(in hsl, hsl(260, 25%, 95%), var(--dark) 2.5%) 75%, hsl(260, 25%, 95%) 75.5%);
-    --blend: darken; --glow-blend: luminosity; --glow-color: 280deg 90% 95%;
-    --glowing-card-bg: rgb(255 255 255 / 13%); --glowing-card-border: rgb(255 255 255 / 80%); --glowing-card-backdrop: blur(15px);
-    --link-card-bg: rgb(255 255 255 / 7%); --link-card-hover-bg: rgb(255 255 255 / 35%); --link-card-border: rgb(255 255 255 / 45%); --link-card-box-shadow: 0px 4px 3px #0001, 0 0 25px #fffa inset;
-    --spotify-card-bg: rgb(255 255 255 / 7%); --spotify-card-border: rgb(255 255 255 / 60%); --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
-    --music-player-bg: rgb(255 255 255 / 10%); --music-player-shadow: 0 2px 6px 1px #0000001f;
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-body { background-color: #000; margin: 0; padding: 0; min-height: 100dvh; display: flex; justify-content: center; align-items: center; font-family: 'Inter', sans-serif; color: var(--fg); overflow: hidden; touch-action: manipulation; transition: color 0.8s ease; }
-.bg-layer { position: fixed; inset: 0; z-index: -2; background-position: center; background-size: cover; background-repeat: no-repeat; transition: opacity 0.8s ease-in-out; opacity: 0; pointer-events: none; will-change: opacity; }
-.bg-layer.active { opacity: 1; }
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+    }
 
-canvas { position: fixed; inset: 0; width: 100%; height: 100dvh; z-index: -1; }
+    .video-bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
 
-/* 🌟给外部大卡片（发光玻璃卡片）添加背景、边框、发光和模糊的 0.8s 渐变 */
-.glowing-card {
-    position: relative; width: 100%; max-width: 345px; height: 510px; flex-shrink: 0; border-radius: 20px;
-    isolation: isolate; transform: translateZ(0); background: var(--glowing-card-bg);
-    box-shadow: 0px 10px 15px transparent, 0 0 55px #fff inset; overflow: hidden; text-align: center;
-    box-sizing: border-box; border: 1px solid var(--glowing-card-border); backdrop-filter: var(--glowing-card-backdrop);
-    transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease, backdrop-filter 0.8s ease;
-}
+        /* Safari 更流畅 */
+        transform: translateZ(0);
+        will-change: transform;
+        backface-visibility: hidden;
+    }
 
+    .content {
+        position: relative;
+        z-index: 1;
+        color: white;
+        height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 40px;
+        font-family: sans-serif;
+    }
+</style>
+</head>
+
+<body>
+
+<!-- 背景视频 -->
+<video
+    class="video-bg"
+    autoplay
+    muted
+    loop
+    playsinline
+    webkit-playsinline
+    preload="auto"
+>
+    <!-- WebM -->
+    <source src="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/StarsGlowGIFbyEricaAnderson-ezgif.com-gif-to-mp4-converter.webm" type="video/webm">
+
+    <!-- Safari / iPhone fallback -->
+    <source src="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/StarsGlowGIFbyEricaAnderson-ezgif.com-gif-to-mp4-converter.webm" type="video/mp4">
+</video>
+
+<!-- 页面内容 -->
+<div class="content">
+    My Website
+</div>
+
+</body>
+</html>
 .theme-toggle, .day-toggle { position: absolute; width: 24px; height: 24px; cursor: pointer; z-index: 10; opacity: 0.5; transition: opacity 0.3s; -webkit-tap-highlight-color: transparent; }
 .theme-toggle { top: 6px; }
 .day-toggle { bottom: 5px; }
