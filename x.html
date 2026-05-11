@@ -528,7 +528,9 @@
         .icon-playlist:before { content: "\e904"; }
 
 .link-scroll-container, .music-player__playlist {
-    overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--fg) transparent;
+    overflow-y: auto; 
+    scrollbar-width: thin; 
+    scrollbar-color: color-mix(in srgb, var(--fg) 40%, transparent) transparent; 
 }
 
         .lazy-placeholder { background-color: rgba(255, 255, 255, 0.1); }
@@ -612,11 +614,12 @@
         .link-scroll-container::-webkit-scrollbar, .music-player__playlist::-webkit-scrollbar { width: 4px; background: transparent; }
         .link-scroll-container::-webkit-scrollbar-track, .music-player__playlist::-webkit-scrollbar-track { background: transparent; border-right: 0 solid transparent; }
 .link-scroll-container::-webkit-scrollbar-thumb, .music-player__playlist::-webkit-scrollbar-thumb { 
-    background: var(--fg); /* 修改此处：背景色跟随字体颜色 */
+    background: color-mix(in srgb, var(--fg) 40%, transparent); /*  使用带透明度的前景色 */
     border-radius: 10px; 
-    border: 1px solid transparent; /* 修改此处：建议把固定的白边框改为透明，防止日间模式下黑色滚动条带个白边很突兀 */
+    border: 1px solid transparent; /* 移除白边，避免日间模式突兀 */
     opacity: 0; 
-    transition: opacity 0.3s ease; 
+    /* 增加 background-color 的过渡动画，让日夜切换时颜色渐变更丝滑 */
+    transition: opacity 0.3s ease, background-color 0.8s ease; 
 }
         .link-scroll-container.scrolling::-webkit-scrollbar-thumb, .link-scroll-container:hover::-webkit-scrollbar-thumb, .music-player__playlist.scrolling::-webkit-scrollbar-thumb, .music-player__playlist:hover::-webkit-scrollbar-thumb { opacity: 1; }
 
@@ -804,7 +807,7 @@ const BG_TOP_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/m
 const BG_TOP_RIGHT = '#000000';
 
 // 3. 左下角 (自定义1) - 对应键盘 3
-const BG_BOTTOM_LEFT = 'https://cdn.jsdelivr.net/gh/me2077/me2077.github.io@main/images/DEABA94F-670C-4CA5-BEEB-447031A2AE66.PNG';
+const BG_BOTTOM_LEFT = 'https://media.giphy.com/media/3ohs4ucXR6NYRxmpTa/giphy.gif?cid=ecf05e47d0c25c1f3376cd42c27baa27a8f9200d0bd75464&ep=v1_user_favorites&rid=giphy.gif&ct=g';
 
 // 4. 右下角 (自定义2) - 对应键盘 4
 const BG_BOTTOM_RIGHT = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
