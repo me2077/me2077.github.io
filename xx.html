@@ -222,7 +222,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 0 25px 26px;
+    padding: 0 25px 25.5px;
     overflow: hidden;
     contain: paint layout; /* 性能优化：切页时不要重算整个 DOM 树 */
 }
@@ -701,24 +701,17 @@
 
                                     <section class="subpage" id="page1-2">
                                         <div class="media-wrapper">
-                                            <!-- [优化点2] 补充 decoding="async" -->
-                                            <img src="images/VideoGame Glitch.gif" loading="lazy" decoding="async" class="glitch-img" style="margin-top:8px;" alt="glitch">
-                                        </div>
-                                    </section>
-
-                                    <section class="subpage" id="page1-3">
-                                        <div class="media-wrapper">
                                             <img src="images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img">
                                         </div>
                                     </section>
 
-                                    <section class="subpage" id="page1-4">
+                                    <section class="subpage" id="page1-3">
                                         <div class="pixel-scale-box">
                                             <div class="pixel-art"></div>
                                         </div>
                                     </section>
 
-                                    <section class="subpage" id="page1-5">
+                                    <section class="subpage" id="page1-4">
                                         <div class="media-wrapper">
                                             <video id="page1Video" class="glitch-img" loop playsinline webkit-playsinline preload="none"></video>
                                         </div>
@@ -1593,7 +1586,7 @@ if ('IntersectionObserver' in window && video) {
             } else { video.pause(); }
         });
     }, { threshold: 0.5 });
-    videoObserver.observe(document.getElementById('page1-5'));
+    videoObserver.observe(document.getElementById('page1-4'));
 }
 if(video) video.addEventListener('click', () => video.muted = false);
 
