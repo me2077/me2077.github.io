@@ -614,12 +614,11 @@
         .link-scroll-container::-webkit-scrollbar, .music-player__playlist::-webkit-scrollbar { width: 4px; background: transparent; }
         .link-scroll-container::-webkit-scrollbar-track, .music-player__playlist::-webkit-scrollbar-track { background: transparent; border-right: 0 solid transparent; }
 .link-scroll-container::-webkit-scrollbar-thumb, .music-player__playlist::-webkit-scrollbar-thumb { 
-    background: color-mix(in srgb, var(--fg) 40%, transparent); /*  使用带透明度的前景色 */
+    background: color-mix(in srgb, var(--fg) 40%, transparent); 
     border-radius: 10px; 
-    border: 1px solid transparent; /* 移除白边，避免日间模式突兀 */
+    border: 1px solid transparent; 
     opacity: 0; 
-    /* 增加 background-color 的过渡动画，让日夜切换时颜色渐变更丝滑 */
-    transition: opacity 0.3s ease, background-color 0.8s ease; 
+    transition: opacity 0.3s ease; /* 👈 只保留显示/隐藏的透明度过渡，干净利落 */
 }
         .link-scroll-container.scrolling::-webkit-scrollbar-thumb, .link-scroll-container:hover::-webkit-scrollbar-thumb, .music-player__playlist.scrolling::-webkit-scrollbar-thumb, .music-player__playlist:hover::-webkit-scrollbar-thumb { opacity: 1; }
 
