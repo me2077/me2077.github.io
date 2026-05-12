@@ -527,11 +527,6 @@
         .icon-play:before { content: "\e903"; }
         .icon-playlist:before { content: "\e904"; }
 
-.link-scroll-container, .music-player__playlist {
-    overflow-y: auto; 
-    scrollbar-width: thin; 
-    scrollbar-color: color-mix(in srgb, var(--fg) 40%, transparent) transparent; 
-}
 
         .lazy-placeholder { background-color: rgba(255, 255, 255, 0.1); }
         .img { width: 100%; flex-shrink: 0; display: block; object-fit: cover; }
@@ -619,6 +614,12 @@
     border: 1px solid transparent; 
     opacity: 0; 
     transition: opacity 0.3s ease; /* 👈 只保留显示/隐藏的透明度过渡，干净利落 */
+}
+
+.link-scroll-container, .music-player__playlist {
+    overflow-y: auto; 
+    scrollbar-width: thin; 
+    scrollbar-color: color-mix(in srgb, var(--fg) 40%, transparent) transparent; 
 }
         .link-scroll-container.scrolling::-webkit-scrollbar-thumb, .link-scroll-container:hover::-webkit-scrollbar-thumb, .music-player__playlist.scrolling::-webkit-scrollbar-thumb, .music-player__playlist:hover::-webkit-scrollbar-thumb { opacity: 1; }
 
