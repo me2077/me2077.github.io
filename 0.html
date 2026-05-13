@@ -189,9 +189,14 @@
         /* 移动端手指按下的瞬间只改变颜色（大小交给 JS 锁定时间） */
         .theme-toggle:active, .day-toggle:active { opacity: 0.7; }
 
-        /* 配合 JS 精准控制放大和缩回的类名 */
-        .icon-scale-active { transform: scale(1.2) !important; }
-        .icon-shrink-force { transform: scale(1) !important; }
+/* 配合 JS 精准控制放大和缩回的类名，把颜色加深也绑在一起 */
+        .icon-scale-active { 
+            transform: scale(1.2) !important; 
+            opacity: 0.7 !important; 
+        }
+        .icon-shrink-force { 
+            transform: scale(1) !important; 
+        }
 
         .alist-widget-wrapper {
             padding: 20px;
