@@ -163,6 +163,7 @@
 }
 
 .theme-toggle,
+.theme-toggle,
         .day-toggle {
             position: absolute;
             width: 24px;
@@ -170,7 +171,8 @@
             cursor: pointer;
             z-index: 10;
             opacity: 0.5;
-            transition: opacity 0.3s, transform 0.2s ease;
+            /* 恢复你原来的 0.1s 动画速度 */
+            transition: opacity 0.3s, transform 0.1s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -179,14 +181,16 @@
         .sun-toggle, .day-toggle-left { left: 6px; }
         .moon-toggle, .day-toggle-right { right: 6px; }
 
-        /* 电脑端鼠标悬停放大 */
+        /* 电脑端鼠标悬停的颜色和大小 */
         @media (hover: hover) {
             .theme-toggle:hover, .day-toggle:hover { opacity: 0.7; transform: scale(1.2); }
         }
-        /* 移动端手指按下放大 */
-        .theme-toggle:active, .day-toggle:active { opacity: 0.7; transform: scale(1.2); }
 
-        /* 新增：专门用于电脑端点击后，强制图标缩回原大小的覆盖类 */
+        /* 移动端手指按下的瞬间只改变颜色（大小交给 JS 锁定时间） */
+        .theme-toggle:active, .day-toggle:active { opacity: 0.7; }
+
+        /* 配合 JS 精准控制放大和缩回的类名 */
+        .icon-scale-active { transform: scale(1.2) !important; }
         .icon-shrink-force { transform: scale(1) !important; }
 
         .alist-widget-wrapper {
@@ -849,19 +853,25 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-bg-1').addEventListener('click', () => switchBackground(BG_BOTTOM_LEFT, true));
     document.getElementById('btn-bg-2').addEventListener('click', () => switchBackground(BG_BOTTOM_RIGHT, true));
 
-// 3. 绑定图标悬停与点击动效（完美兼容电脑与手机）
+// 3. 绑定图标悬停与点击动效（100%还原原来的 350ms 节奏）
     document.querySelectorAll('.theme-toggle, .day-toggle').forEach(button => {
-        // 清除缩回状态的函数，确保下次交互能正常放大
-        const resetScale = () => button.classList.remove('icon-shrink-force');
+        const resetScale = () => {
+            button.classList.remove('icon-shrink-force', 'icon-scale-active');
+        };
         
-        // 无论鼠标移入还是手指摸到，先解除限制
         button.addEventListener('mouseenter', resetScale);
-        button.addEventListener('touchstart', resetScale, { passive: true });
         button.addEventListener('mouseleave', resetScale);
         
-        // 点击后，延迟一小下强制缩回原大小（还原你电脑端的经典效果）
         button.addEventListener('click', function() {
-            setTimeout(() => { this.classList.add('icon-shrink-force'); }, 250);
+            resetScale();
+            // 点击瞬间执行放大
+            this.classList.add('icon-scale-active');
+            
+            // 完美还原原来的 350 毫秒延迟，时间一到强制缩回！
+            setTimeout(() => { 
+                this.classList.remove('icon-scale-active');
+                this.classList.add('icon-shrink-force'); 
+            }, 350);
         });
     });
 
