@@ -13,9 +13,9 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://me2077.github.io" crossorigin>
 
-    <link rel="preload" as="image" href="https://me2077.github.io/images/AAA.png">
-    <link rel="preload" as="image" href="/images/CCC.JPG">
-    <link rel="preload" as="image" href="/images/DDD.JPG">
+    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png">
+    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG">
+    <link rel="preload" as="font" type="font/woff" href="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/fonts/icomoon.woff" crossorigin>
 
     <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
@@ -112,28 +112,25 @@
             height: env(safe-area-inset-bottom);
         }
 
-        #bg-base-layer {
-            position: fixed;
-            inset: 0;
-            z-index: -3;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-image: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png');
-        }
+#bg-container {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+    contain: strict; /* 告诉浏览器：这个容器被死死固定了，不会影响外面 */
+}
 
-        #bg-transition-layer {
-            position: fixed;
-            inset: 0;
-            z-index: -2;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            will-change: opacity;
-        }
+.bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    transform: translateZ(0);
+    will-change: opacity;
+    contain: strict; /* 内部渲染完全独立 */
+}
 
         canvas {
             position: fixed;
@@ -160,11 +157,12 @@
             box-sizing: border-box;
             border: 1px solid var(--glowing-card-border);
             -webkit-backdrop-filter: var(--glowing-card-backdrop);
-            backdrop-filter: var(--glowing-card-backdrop);
-            transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease, backdrop-filter 0.8s ease, -webkit-backdrop-filter 0.8s ease;
-        }
+    backdrop-filter: var(--glowing-card-backdrop);
+    transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
+    will-change: background, box-shadow, border;
+}
 
-        .theme-toggle,
+.theme-toggle,
         .day-toggle {
             position: absolute;
             width: 24px;
@@ -172,16 +170,24 @@
             cursor: pointer;
             z-index: 10;
             opacity: 0.5;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.2s ease;
             -webkit-tap-highlight-color: transparent;
         }
 
         .theme-toggle { top: 6px; }
         .day-toggle { bottom: 5px; }
-        .theme-toggle:hover, .day-toggle:hover { opacity: 0.7; }
-        .sun-toggle, .day-toggle-left { left: 6px; transition: transform 0.1s ease; }
-        .sun-toggle:hover, .day-toggle-left:hover { transform: scale(1.2); }
+        .sun-toggle, .day-toggle-left { left: 6px; }
         .moon-toggle, .day-toggle-right { right: 6px; }
+
+        /* 电脑端鼠标悬停放大 */
+        @media (hover: hover) {
+            .theme-toggle:hover, .day-toggle:hover { opacity: 0.7; transform: scale(1.2); }
+        }
+        /* 移动端手指按下放大 */
+        .theme-toggle:active, .day-toggle:active { opacity: 0.7; transform: scale(1.2); }
+
+        /* 新增：专门用于电脑端点击后，强制图标缩回原大小的覆盖类 */
+        .icon-shrink-force { transform: scale(1) !important; }
 
         .alist-widget-wrapper {
             padding: 20px;
@@ -218,16 +224,17 @@
             transform: translateX(-100%);
         }
 
-        .page {
-            flex: 0 0 100%;
-            height: var(--page-height);
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 0 25px 26px;
-            overflow: hidden;
-        }
+.page {
+    flex: 0 0 100%;
+    height: var(--page-height);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 25px 25px;
+    overflow: hidden;
+    contain: paint layout; /* 性能优化：切页时不要重算整个 DOM 树 */
+}
 
         #page3 {
             justify-content: center;
@@ -529,9 +536,6 @@
         .icon-play:before { content: "\e903"; }
         .icon-playlist:before { content: "\e904"; }
 
-        .link-scroll-container, .music-player__playlist {
-            overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(200, 200, 200, 0.3) transparent;
-        }
 
         .lazy-placeholder { background-color: rgba(255, 255, 255, 0.1); }
         .img { width: 100%; flex-shrink: 0; display: block; object-fit: cover; }
@@ -613,7 +617,19 @@
         .music-player__playlist { box-sizing: border-box; height: calc(100% - 6.8em); padding: 10px 0.9em 0 var(--offset-cover) !important; overflow-y: auto; }
         .link-scroll-container::-webkit-scrollbar, .music-player__playlist::-webkit-scrollbar { width: 4px; background: transparent; }
         .link-scroll-container::-webkit-scrollbar-track, .music-player__playlist::-webkit-scrollbar-track { background: transparent; border-right: 0 solid transparent; }
-        .link-scroll-container::-webkit-scrollbar-thumb, .music-player__playlist::-webkit-scrollbar-thumb { background: rgba(200, 200, 200, 0.3); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); opacity: 0; transition: opacity 0.3s ease; }
+.link-scroll-container::-webkit-scrollbar-thumb, .music-player__playlist::-webkit-scrollbar-thumb { 
+    background: color-mix(in srgb, var(--fg) 40%, transparent); 
+    border-radius: 10px; 
+    border: 1px solid transparent; 
+    opacity: 0; 
+    transition: opacity 0.3s ease; /* 👈 只保留显示/隐藏的透明度过渡，干净利落 */
+}
+
+.link-scroll-container, .music-player__playlist {
+    overflow-y: auto; 
+    scrollbar-width: thin; 
+    scrollbar-color: color-mix(in srgb, var(--fg) 40%, transparent) transparent; 
+}
         .link-scroll-container.scrolling::-webkit-scrollbar-thumb, .link-scroll-container:hover::-webkit-scrollbar-thumb, .music-player__playlist.scrolling::-webkit-scrollbar-thumb, .music-player__playlist:hover::-webkit-scrollbar-thumb { opacity: 1; }
 
         .music-player__song { --gap: 0.5em; cursor: pointer; margin-bottom: var(--gap); padding-bottom: var(--gap); border-bottom: 0.8px solid #d8d8d859; }
@@ -632,8 +648,11 @@
 
 <body class="light">
 
-    <div id="bg-base-layer"></div>
-    <div id="bg-transition-layer"></div>
+<!-- 动态背景图层容器 -->
+    <div id="bg-container">
+        <!-- 默认显示第一张图片 -->
+        <div class="bg-layer" style="background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover; opacity: 1; z-index: 0;"></div>
+    </div>
 
     <div class="crt">
         <div class="alist-widget-wrapper">
@@ -691,24 +710,17 @@
 
                                     <section class="subpage" id="page1-2">
                                         <div class="media-wrapper">
-                                            <!-- [优化点2] 补充 decoding="async" -->
-                                            <img src="images/VideoGame Glitch.gif" loading="lazy" decoding="async" class="glitch-img" style="margin-top:8px;" alt="glitch">
-                                        </div>
-                                    </section>
-
-                                    <section class="subpage" id="page1-3">
-                                        <div class="media-wrapper">
                                             <img src="images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img">
                                         </div>
                                     </section>
 
-                                    <section class="subpage" id="page1-4">
+                                    <section class="subpage" id="page1-3">
                                         <div class="pixel-scale-box">
                                             <div class="pixel-art"></div>
                                         </div>
                                     </section>
 
-                                    <section class="subpage" id="page1-5">
+                                    <section class="subpage" id="page1-4">
                                         <div class="media-wrapper">
                                             <video id="page1Video" class="glitch-img" loop playsinline webkit-playsinline preload="none"></video>
                                         </div>
@@ -752,7 +764,7 @@
                                     <a href="javascript:void(0);" class="link-card" id="wechatBtn"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/WeChat.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WeChat</span></a>
                                     <a href="https://t.me/qxx_me" class="link-card" target="_blank"><img src="images/Telegram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Telegram</span></a>
                                     <a href="https://x.com/vwwvvvvvvv" class="link-card" target="_blank"><img src="images/Instagram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Instagram</span></a>
-                                    <a href="mailto:vwwwww@yahoo.com" class="link-card"><img src="images/Mail.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Mail</span></a>
+                                    <a href="mailto:vwwwww@yahoo.com" class="link-card"><img src="images/Mail.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Email</span></a>
                                     <a href="https://wa.me/message/SYDPTLQEHYE3P1?src=qr" class="link-card" target="_blank"><img src="images/WhatsApp.png" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WhatsApp</span></a>
                                 </div>
                             </div>
@@ -797,7 +809,7 @@ const BG_TOP_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/m
 const BG_TOP_RIGHT = '#000000';
 
 // 3. 左下角 (自定义1) - 对应键盘 3
-const BG_BOTTOM_LEFT = 'https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/000.jpg';
+const BG_BOTTOM_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG';
 
 // 4. 右下角 (自定义2) - 对应键盘 4
 const BG_BOTTOM_RIGHT = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
@@ -837,11 +849,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-bg-1').addEventListener('click', () => switchBackground(BG_BOTTOM_LEFT, true));
     document.getElementById('btn-bg-2').addEventListener('click', () => switchBackground(BG_BOTTOM_RIGHT, true));
 
-    // 3. 绑定悬停动效
+// 3. 绑定图标悬停与点击动效（完美兼容电脑与手机）
     document.querySelectorAll('.theme-toggle, .day-toggle').forEach(button => {
-        button.addEventListener('mouseenter', function() { this.style.transform = 'scale(1.2)'; });
-        button.addEventListener('mouseleave', function() { this.style.transform = 'scale(1)'; });
-        button.addEventListener('click', function() { setTimeout(() => { this.style.transform = 'scale(1)'; }, 350); });
+        // 清除缩回状态的函数，确保下次交互能正常放大
+        const resetScale = () => button.classList.remove('icon-shrink-force');
+        
+        // 无论鼠标移入还是手指摸到，先解除限制
+        button.addEventListener('mouseenter', resetScale);
+        button.addEventListener('touchstart', resetScale, { passive: true });
+        button.addEventListener('mouseleave', resetScale);
+        
+        // 点击后，延迟一小下强制缩回原大小（还原你电脑端的经典效果）
+        button.addEventListener('click', function() {
+            setTimeout(() => { this.classList.add('icon-shrink-force'); }, 250);
+        });
     });
 
     // 4. 绑定赞赏打赏事件
@@ -898,34 +919,72 @@ function updateParticlesDisplay() {
 }
 
 // --- 单层平滑过渡覆盖逻辑 ---
-let bgTransitionTimer = null;
+// 全局图层层级计数器
+let bgLayerIndex = 0; 
+
 function crossfadeBackground(backgroundValue, isLightTheme) {
     const currentChangeId = ++bgChangeSequence;
-    const overlay = document.getElementById('bg-transition-layer');
-    if (bgTransitionTimer) clearTimeout(bgTransitionTimer);
+    const container = document.getElementById('bg-container');
+    if (!container) return;
 
     const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/);
     const imageUrl = urlMatch ? urlMatch[1] : null;
 
     const applyEffect = () => {
         if (currentChangeId !== bgChangeSequence) return;
-        overlay.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover fixed` : backgroundValue;
+        
+        bgLayerIndex++; // 每切换一次，新图层永远盖在最上面
+
+        // 1. 【核心优化】直接创建一个全新的 DOM 节点
+        const newLayer = document.createElement('div');
+        newLayer.className = 'bg-layer';
+        newLayer.style.zIndex = bgLayerIndex;
+        newLayer.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover` : backgroundValue;
+        
+        // 将新图层塞入容器底部
+        container.appendChild(newLayer);
+
+        // 2. 强制 Safari 立即在后台 GPU 渲染这个渐变，不占用动画的时间
+        void newLayer.offsetWidth;
+
+        // 3. 切换页面主体的日夜模式
         document.body.classList.toggle('light', isLightTheme);
         document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
 
         if (!window.userToggledParticles) window.isParticlesEnabled = !isLightTheme;
-        updateParticlesDisplay();
-        overlay.style.opacity = '1';
+        
+        // 如果切到日间，立刻关闭星空引擎释放性能
+        if (!window.isParticlesEnabled) {
+            updateParticlesDisplay();
+        }
 
-        bgTransitionTimer = setTimeout(() => {
-            document.getElementById('bg-base-layer').style.background = overlay.style.background;
-            overlay.style.transition = 'none';
-            overlay.style.opacity = '0';
-            setTimeout(() => { overlay.style.transition = 'opacity 0.8s ease-in-out'; }, 50);
-            bgTransitionTimer = null;
+        // 4. 等下一帧渐变渲染完毕后，纯 GPU 驱动淡入，绝对丝滑
+        requestAnimationFrame(() => {
+            newLayer.style.opacity = '1';
+        });
+
+        // 5. 动画结束后的收尾工作：打扫战场
+        setTimeout(() => {
+            // 如果中途手速太快又点了切换，中断清理
+            if (currentChangeId !== bgChangeSequence) return; 
+            
+            // 找出容器里所有的背景图层
+            const layers = container.querySelectorAll('.bg-layer');
+            layers.forEach(layer => {
+                // 只保留目前最新的这一层，把之前垫底的旧背景彻底删除释放内存
+                if (layer !== newLayer) {
+                    layer.remove();
+                }
+            });
+            
+            // 如果切到夜间，等背景渐变动画安全走完了，再启动星空引擎，错峰运行
+            if (window.isParticlesEnabled) {
+                updateParticlesDisplay();
+            }
         }, 850);
     };
 
+    // 如果是图片，等图片预加载完毕再执行；如果是渐变，直接执行
     if (imageUrl) {
         const img = new Image();
         img.src = imageUrl;
@@ -1356,15 +1415,36 @@ function loadMusicPlayer() {
     progressDot.className = "progress__dot";
     progressWrapper.appendChild(progressBar); progressWrapper.appendChild(progressDot); progress.appendChild(progressWrapper);
     sliderControls.append(prevButton, musicInfo, nextButton, progress); slider.append(sliderContent, sliderControls);
-    const playlist = document.createElement("ul");
+const playlist = document.createElement("ul");
     playlist.className = "music-player__playlist list";
+
+    // 1. 生成列表时，不再绑定事件，只把歌曲的“编号(index)”悄悄存在 HTML 标签上
     songs.forEach((song, index) => {
         const listItem = document.createElement("li");
         listItem.className = "music-player__song";
-        listItem.onclick = () => handleChangeMusic({ playListIndex: index });
+        
+        // 【修改点A】给 HTML 标签打上自定义标记，类似于给包裹贴上名字：data-index="0"
+        listItem.dataset.index = index; 
+        
         listItem.innerHTML = `<div class="flex-row _align_center"><img src="${song.files.cover}" loading="lazy" class="img music-player__song-img" alt="${song.songName}"><div class="music-player__playlist-info text_trsf-cap"><b class="text_overflow">${song.songName}</b><div class="flex-row _justify_space-btwn"><span class="music-player__subtitle">${song.artist}</span><span class="music-player__song-duration">${song.duration}</span></div></div></div>`;
         playlist.appendChild(listItem);
     });
+
+    // 2. 【修改点B】事件委托：只给父级容器 playlist 绑定唯一一个点击事件
+    playlist.addEventListener('click', (e) => {
+        // e.target 是用户实际点到的极其精确的元素（比如可能点到了封面 <img>，或者歌名 <b>）
+        // closest() 往上找，找到离它最近的带有 .music-player__song 的 <li> 容器
+        const clickedItem = e.target.closest('.music-player__song');
+        
+        // 如果点到的确实是歌曲栏（排除了点到滚动条或空白处的情况）
+        if (clickedItem) {
+            // 把刚才贴上的标记拿下来，转成数字
+            const clickIndex = parseInt(clickedItem.dataset.index, 10);
+            // 执行切歌逻辑
+            handleChangeMusic({ playListIndex: clickIndex });
+        }
+    });
+
     musicPlayer.append(slider, playlist);
     root.innerHTML = ''; root.appendChild(musicPlayer);
     songsLength = songs.length - 1;
@@ -1524,7 +1604,7 @@ if ('IntersectionObserver' in window && video) {
             } else { video.pause(); }
         });
     }, { threshold: 0.5 });
-    videoObserver.observe(document.getElementById('page1-5'));
+    videoObserver.observe(document.getElementById('page1-4'));
 }
 if(video) video.addEventListener('click', () => video.muted = false);
 
@@ -1537,7 +1617,121 @@ window.onload = function() {
     }
     switchPageTo(2);
 };
+(function emojiCursor() {
 
+    var possibleEmoji = [
+        "😊","🥺","💙","🥰","⭐","🌈","❤","🧡","💛","💚","💜",
+        "🏳️‍🌈","⚧","⌘","^^",":)","(^◡^)","≧◠‿◠≦"
+    ];
+
+    var particles = [];
+    var cursor = { x: 0, y: 0 };
+    var lastTime = 0;
+
+    function init() {
+        bindEvents();
+        loop();
+    }
+
+    function bindEvents() {
+        document.addEventListener('pointermove', onPointerMove, { passive: true });
+        window.addEventListener('resize', onResize);
+    }
+
+    function onResize() {}
+
+    function onPointerMove(e) {
+        const now = Date.now();
+
+        // 🔥 控制频率，避免手机卡顿
+        if (now - lastTime < 18) return;
+        lastTime = now;
+
+        cursor.x = e.clientX;
+        cursor.y = e.clientY;
+
+        addParticle(
+            cursor.x,
+            cursor.y + window.scrollY,
+            possibleEmoji[Math.floor(Math.random() * possibleEmoji.length)]
+        );
+    }
+
+    function addParticle(x, y, character) {
+        var particle = new Particle();
+        particle.init(x, y, character);
+        particles.push(particle);
+    }
+
+    function updateParticles() {
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            if (particles[i].lifeSpan < 0) {
+                particles[i].die();
+                particles.splice(i, 1);
+            }
+        }
+    }
+
+    function loop() {
+        requestAnimationFrame(loop);
+        updateParticles();
+    }
+
+    function Particle() {
+
+        this.lifeSpan = 100;
+
+        this.init = function(x, y, character) {
+
+            this.velocity = {
+                x: (Math.random() - 0.5) * 1.2,
+                y: 1
+            };
+
+            this.position = {
+                x: x,
+                y: y
+            };
+
+            this.element = document.createElement('span');
+            this.element.innerHTML = character;
+
+            this.element.style.position = "fixed";
+            this.element.style.left = "0";
+            this.element.style.top = "0";
+            this.element.style.pointerEvents = "none";
+            this.element.style.zIndex = "999999";
+            this.element.style.fontSize = "16px";
+            this.element.style.willChange = "transform";
+
+            document.body.appendChild(this.element);
+
+            this.update();
+        };
+
+        this.update = function() {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+            this.lifeSpan--;
+
+            const scale = this.lifeSpan / 100;
+
+            this.element.style.transform =
+                `translate3d(${this.position.x}px, ${this.position.y}px, 0) scale(${scale})`;
+        };
+
+        this.die = function() {
+            this.element.remove();
+        };
+    }
+
+    init();
+
+})();
     </script>
 </body>
 
