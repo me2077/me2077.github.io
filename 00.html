@@ -978,11 +978,11 @@ window.onload = function() {
 (async function oneko() {
   const nekoEl = document.createElement("div");
   
-  // [修复点 1] 初始化坐标设定为屏幕正中心，而不是左上角 (32, 32)，解决最初找不到猫的问题
-  let nekoPosX = window.innerWidth / 2,
-    nekoPosY = window.innerHeight / 2,
-    mousePosX = nekoPosX,
-    mousePosY = nekoPosY,
+// 恢复猫咪默认在左上角 (32, 32)
+  let nekoPosX = 32,
+    nekoPosY = 32,
+    mousePosX = 32,
+    mousePosY = 32,
     frameCount = 0,
     idleTime = 0,
     idleAnimation = null,
