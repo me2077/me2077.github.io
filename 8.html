@@ -249,7 +249,7 @@
             left: 8px;  /* 距离左侧边缘的距离，可随意更改数值微调位置 */
             width: 32px;
             height: 32px;
-            background-image: url('https://dogpan.com/f/v2MpsA/blue.png'); /* 蓝猫贴图 */
+            background-image: url('https://qxx.me/images/oneko-classic.gif'); /* 蓝猫贴图 */
             background-position: -64px 0px; /* 睡觉的第一帧 */
             image-rendering: pixelated; /* 保持像素清晰 */
             z-index: 100;
@@ -1046,7 +1046,7 @@ window.onload = function() {
     if (!variants.some((v) => v[0] === variant)) { variant = "classic"; }
 
     nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
-    nekoEl.style.position = "fixed"; nekoEl.style.backgroundImage = `url('https://dogpan.com/f/v2MpsA/blue.png')`;
+    nekoEl.style.position = "fixed"; nekoEl.style.backgroundImage = `url('https://qxx.me/images/oneko-classic.gif')`;
     nekoEl.style.imageRendering = "pixelated"; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
     nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; nekoEl.style.zIndex = "9999";
     nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
