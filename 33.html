@@ -1173,31 +1173,15 @@ window.onload = function() {
         window.visualViewport.addEventListener("scroll", handleResize); // 监听手机双指平移拖拽
     }
 
+let clickTimeout = null; // 用于区分单击和双击
+
     nekoEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
-      const currentTime = Date.now();
       
-      // 连续点击逻辑检测（400ms间隔内）
-      if (currentTime - lastClickTime < 400) {
-          clickCount++;
-      } else {
-          clickCount = 1;
-      }
-      lastClickTime = currentTime; 
-
-      if (clickCount === 3) {
-          clickCount = 0; // 重置点击
-          e.preventDefault();
-          if (forceSleep) sleep(); // 如果睡着了就唤醒猫咪
-          showSkinMenu(); // 展开换皮肤面板
-          return; // 终止后续的拖拽行为
-      } else if (clickCount === 2) {
-          e.preventDefault();
-          sleep(); // 触发原地睡觉
-          return; // 终止后续的拖拽行为
-      }
+      e.preventDefault(); 
+      grabbing = true;
+      let isDragging = false; // 用来精确判断是否发生了拖拽
       
-      e.preventDefault(); grabbing = true;
       if (nekoEl.setPointerCapture) { try { nekoEl.setPointerCapture(e.pointerId); } catch (_) {} }
       
       let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval;
@@ -1207,11 +1191,17 @@ window.onload = function() {
         const deltaX = e.clientX - startX; const deltaY = e.clientY - startY;
         const absDeltaX = Math.abs(deltaX); const absDeltaY = Math.abs(deltaY);
 
+        // 如果移动距离超过 5 像素，判定为拖拽行为，不再触发点击
+        if (absDeltaX > 5 || absDeltaY > 5) {
+            isDragging = true; 
+        }
+
         if (absDeltaX > absDeltaY && absDeltaX > 10) { setSprite(deltaX > 0 ? "scratchWallW" : "scratchWallE", frameCount); } 
         else if (absDeltaY > absDeltaX && absDeltaY > 10) { setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount); }
 
         if (grabStop || absDeltaX > 10 || absDeltaY > 10 || Math.sqrt(deltaX ** 2 + deltaY ** 2) > 10) {
-          grabStop = false; clearTimeout(grabInterval);
+          grabStop = false; 
+          clearTimeout(grabInterval);
           grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150);
         }
 
@@ -1221,12 +1211,33 @@ window.onload = function() {
 
       const upHandler = (e) => {
         grabbing = false; nudge = true; resetIdleAnimation();
-        window.removeEventListener("pointermove", moveHandler); window.removeEventListener("pointerup", upHandler); window.removeEventListener("pointercancel", upHandler);
+        window.removeEventListener("pointermove", moveHandler); 
+        window.removeEventListener("pointerup", upHandler); 
+        window.removeEventListener("pointercancel", upHandler);
         if (nekoEl.releasePointerCapture) { try { nekoEl.releasePointerCapture(e.pointerId); } catch (_) {} }
+
+        // 【单击与双击的判断逻辑】
+        if (!isDragging) {
+            const currentTime = Date.now();
+            if (currentTime - lastClickTime < 300) {
+                // 如果 300ms 内连续点击了两次 -> 判定为双击，猫咪睡觉
+                clearTimeout(clickTimeout);
+                sleep();
+                lastClickTime = 0;
+            } else {
+                // 单击 -> 延迟 300ms 等待确认不是双击后，弹出皮肤面板
+                lastClickTime = currentTime;
+                clickTimeout = setTimeout(() => {
+                    if (forceSleep) sleep(); // 如果猫咪睡着了先唤醒
+                    showSkinMenu(); // 弹出选择面板
+                }, 300);
+            }
+        }
       };
 
       window.addEventListener("pointermove", moveHandler, { passive: false });
-      window.addEventListener("pointerup", upHandler); window.addEventListener("pointercancel", upHandler);
+      window.addEventListener("pointerup", upHandler); 
+      window.addEventListener("pointercancel", upHandler);
     });
 
     nekoEl.addEventListener("contextmenu", (e) => { e.preventDefault(); kuroNeko = !kuroNeko; localStorage.setItem("oneko:kuroneko", kuroNeko); nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; });
@@ -1311,7 +1322,6 @@ window.onload = function() {
 
   create();
 })();
-
     </script>
 </body>
 </html>
