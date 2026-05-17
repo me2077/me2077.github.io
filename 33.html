@@ -930,14 +930,55 @@ function loadMusicPlayer() {
 function initKeyboardControls() {
     document.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();
+        
+        // 🐾 新增: Z键控制猫咪睡觉和唤醒
+        if (key === 'z') {
+            if (typeof window.onekoSleep === 'function') window.onekoSleep();
+        }
+        
+        // 🐾 新增: S键打开和关闭猫咪皮肤面板
+        if (key === 's') {
+            if (typeof window.onekoToggleSkinMenu === 'function') window.onekoToggleSkinMenu();
+        }
+        
+        // 🎉 新增: N和M键触发彩带和Cat.wav猫叫
+        if (key === 'n' || key === 'm') {
+            triggerConfetti();
+        }
+
+        // 原有的键盘快捷键逻辑
         if (key === 't') { currentBgIndex = (currentBgIndex + 1) % bgPresets.length; const preset = bgPresets[currentBgIndex]; switchBackground(preset.value, preset.isLight); }
         if (key === '1') { switchBackground(BG_TOP_LEFT, true); currentBgIndex = 0; }
         if (key === '2') { switchBackground(BG_TOP_RIGHT, false); currentBgIndex = 1; }
         if (key === '3') { switchBackground(BG_BOTTOM_LEFT, true); currentBgIndex = 2; }
         if (key === '4') { switchBackground(BG_BOTTOM_RIGHT, true); currentBgIndex = 3; }
         if (key === 'p') { window.isParticlesEnabled = !window.isParticlesEnabled; window.userToggledParticles = true; updateParticlesDisplay(); }
-        if (!e.shiftKey) { if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } }
-        if (window.musicControls) { if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } if (e.shiftKey) { if (e.key === 'ArrowRight') window.musicControls.next(); if (e.key === 'ArrowLeft') window.musicControls.prev(); } }
+        
+        if (!e.shiftKey) { 
+            // 左右页面切换
+            if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } 
+            if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } 
+            
+            // ↕️ 新增: 上下方向键控制 Page1 中的滚动吸附效果
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                if (currentPage === 1) {
+                    e.preventDefault(); // 阻止浏览器默认滚动条乱跳
+                    const pageVertical = document.querySelector('#page1 .page-vertical');
+                    const sign = e.key === 'ArrowUp' ? -1 : 1;
+                    // 通过容器的 clientHeight 平滑滚动，完美配合原有的 scroll-snap 滚动吸附属性
+                    pageVertical.scrollBy({ top: sign * pageVertical.clientHeight, behavior: 'smooth' });
+                }
+            }
+        }
+        
+        // 原有的音乐播放器控制逻辑
+        if (window.musicControls) { 
+            if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } 
+            if (e.shiftKey) { 
+                if (e.key === 'ArrowRight') window.musicControls.next(); 
+                if (e.key === 'ArrowLeft') window.musicControls.prev(); 
+            } 
+        }
     });
 }
 
@@ -1069,7 +1110,15 @@ window.onload = function() {
 
       skinMenu.style.top = `${topPos}px`;
   }
-
+  window.onekoToggleSkinMenu = () => {
+      if (skinMenu.style.display === "grid") {
+          skinMenu.style.display = "none";
+      } else {
+          showSkinMenu();
+      }
+  };
+  
+  
   // 点击空白处收起皮肤弹窗
   document.addEventListener("pointerdown", (e) => {
       // 当面板处于显示状态，并且点击区域既不是猫咪，也不是皮肤面板的内部元素时，才隐藏面板
@@ -1116,6 +1165,7 @@ window.onload = function() {
     if (!forceSleep) { resetIdleAnimation(); return; }
     mousePosX = nekoPosX; mousePosY = nekoPosY;
   }
+  window.onekoSleep = sleep;
 
   function create() {
     variant = parseLocalStorage("variant", "classic"); kuroNeko = parseLocalStorage("kuroneko", false);
