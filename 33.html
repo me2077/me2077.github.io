@@ -978,19 +978,23 @@ window.onload = function() {
 
 
 // ==========================================
-// 🛠️ 修复后的 猫咪 (Oneko) 核心引擎 + 皮肤更换功能
+// 🛠️ 修复后的 猫咪 (Oneko) 核心引擎 + 九宫格皮肤更换功能
 // ==========================================
 (async function oneko() {
   const nekoEl = document.createElement("div");
 
-  // --- 新增：可更换的猫咪精灵图配置列表 (32x32 sprites) ---
+  // --- 新增：10个可更换的皮肤URL位 (留空，你自己填入精灵图链接) ---
   const skinList = [
-    { name: "Blue (默认)", url: "https://dogpan.com/f/v2MpsA/blue.png" },
-    { name: "Classic", url: "https://raw.githubusercontent.com/adryd325/oneko.js/main/oneko.gif" },
-    { name: "Dog", url: "https://raw.githubusercontent.com/adryd325/oneko.js/main/dog.gif" },
-    { name: "Tora", url: "https://raw.githubusercontent.com/adryd325/oneko.js/main/tora.gif" },
-    { name: "Maia", url: "https://raw.githubusercontent.com/adryd325/oneko.js/main/maia.gif" },
-    { name: "Vaporwave", url: "https://raw.githubusercontent.com/adryd325/oneko.js/main/vaporwave.gif" }
+    { name: "皮肤 1", url: "https://dogpan.com/f/qxEmsX/holiday.png" },
+    { name: "皮肤 2", url: "https://dogpan.com/f/pYDPtA/neko.png" },
+    { name: "皮肤 3", url: "https://dogpan.com/f/J6n5FK/calico-tabby.png" },
+    { name: "皮肤 4", url: "https://dogpan.com/f/Kro3H4/colourful.png" },
+    { name: "皮肤 5", url: "https://dogpan.com/f/L9pxIQ/dog.png" },
+    { name: "皮肤 6", url: "https://dogpan.com/f/M8qLHz/kina.png" },
+    { name: "皮肤 7", url: "https://dogpan.com/f/Nkrlfj/lucky.png" },
+    { name: "皮肤 8", url: "https://dogpan.com/f/OYvWsv/rose.png" },
+    { name: "皮肤 9", url: "https://dogpan.com/f/PNwPc3/peach.png" },
+    { name: "皮肤 10", url: "https://dogpan.com/f/QWxVuo/skunk.png" }
   ];
   
   // --- 新增：创建弹出菜单 DOM ---
@@ -999,9 +1003,9 @@ window.onload = function() {
   skinMenu.style.cssText = `
     position: fixed;
     display: none;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(5, 32px); /* 一行 5 个 */
+    grid-template-rows: repeat(2, 32px);    /* 一共 2 行 */
     gap: 8px;
-    width: 130px;
     background: var(--glowing-card-bg, rgba(255, 255, 255, 0.15));
     backdrop-filter: var(--glowing-card-backdrop, blur(7px));
     border: 1px solid var(--glowing-card-border, rgba(255, 255, 255, 0.7));
@@ -1011,13 +1015,14 @@ window.onload = function() {
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   `;
 
-  // 渲染菜单选项
+  // 渲染菜单选项 (展示警示状态帧)
   skinList.forEach(skin => {
       const item = document.createElement("div");
       item.style.cssText = `
           width: 32px; height: 32px;
+          background-color: rgba(0, 0, 0, 0); /* 即使留空也能看见格子方块 */
           background-image: url('${skin.url}');
-          background-position: -96px -96px; /* 显示猫咪静止正面的默认帧 */
+          background-position: -222px -95px; /* 显示猫咪竖起尾巴的“警示”帧 [-7, -3] */
           image-rendering: pixelated;
           cursor: pointer;
           border-radius: 4px;
@@ -1030,19 +1035,20 @@ window.onload = function() {
       item.onclick = (e) => {
           e.stopPropagation();
           changeSkin(skin.url);
-          skinMenu.style.display = "none";
+          // 这里去掉了隐藏面板的代码，因此点击选择皮肤后，面板不会收回去
       };
       skinMenu.appendChild(item);
   });
   document.body.appendChild(skinMenu);
 
   function changeSkin(url) {
+      if (!url) return; // 如果地址为空，则不替换以防出错
       nekoEl.style.backgroundImage = `url('${url}')`;
       localStorage.setItem("oneko:skin", url);
   }
 
   function showSkinMenu() {
-      skinMenu.style.display = "flex";
+      skinMenu.style.display = "grid"; // 显示 Grid 布局
       const menuWidth = skinMenu.offsetWidth;
       const menuHeight = skinMenu.offsetHeight;
       const rect = nekoEl.getBoundingClientRect();
@@ -1066,12 +1072,13 @@ window.onload = function() {
 
   // 点击空白处收起皮肤弹窗
   document.addEventListener("pointerdown", (e) => {
-      if (skinMenu.style.display === "flex" && e.target !== nekoEl && !skinMenu.contains(e.target)) {
+      // 当面板处于显示状态，并且点击区域既不是猫咪，也不是皮肤面板的内部元素时，才隐藏面板
+      if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) {
           skinMenu.style.display = "none";
       }
   });
 
-// 恢复猫咪默认在左上角 (32, 32)
+  // 恢复猫咪默认在左上角 (32, 32)
   let nekoPosX = 32,
     nekoPosY = 32,
     mousePosX = 32,
@@ -1114,7 +1121,7 @@ window.onload = function() {
     variant = parseLocalStorage("variant", "classic"); kuroNeko = parseLocalStorage("kuroneko", false);
     if (!variants.some((v) => v[0] === variant)) { variant = "classic"; }
     
-    // 恢复上次保存的皮肤，如果没有保存则使用默认
+    // 恢复上次保存的皮肤，如果没有保存则使用一个默认的蓝猫皮肤防空
     const savedSkin = localStorage.getItem("oneko:skin") || "https://dogpan.com/f/v2MpsA/blue.png";
 
     nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
@@ -1124,8 +1131,17 @@ window.onload = function() {
     nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
     document.body.appendChild(nekoEl);
 
-    // [修复点 2] 处理放大时的鼠标视口坐标换算
+    // 更新鼠标目标的中心逻辑
     function updateMousePos(e) {
+        // [新增] 判断如果面板正在展开，且鼠标移动到了面板的范围内，停止更新追随坐标 (不进入面板区域)
+        if (skinMenu.style.display === "grid") {
+            const rect = skinMenu.getBoundingClientRect();
+            if (e.clientX >= rect.left && e.clientX <= rect.right &&
+                e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                return; // 鼠标位于面板内时，取消位置捕获，猫咪将停在边上不会跑进去
+            }
+        }
+        
         let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
         let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
         mousePosX = e.clientX + offsetLeft;
@@ -1135,7 +1151,7 @@ window.onload = function() {
     window.addEventListener("mousemove", (e) => { if (forceSleep) return; updateMousePos(e); });
     window.addEventListener("pointermove", (e) => { if (forceSleep) return; if (e.pointerType === "touch") updateMousePos(e); });
 
-    // [修复点 3] 缩放/恢复页面大小时，把跑偏的猫拉回到可视区域中心
+    // 缩放/恢复页面大小时，把跑偏的猫拉回到可视区域中心
     function handleResize() {
         if (window.visualViewport) {
             let offsetLeft = window.visualViewport.offsetLeft;
@@ -1161,7 +1177,7 @@ window.onload = function() {
       if (e.button !== 0 && e.pointerType === "mouse") return;
       const currentTime = Date.now();
       
-      // 新增：连续点击逻辑检测（400ms间隔内）
+      // 连续点击逻辑检测（400ms间隔内）
       if (currentTime - lastClickTime < 400) {
           clickCount++;
       } else {
@@ -1275,7 +1291,7 @@ window.onload = function() {
 
     nekoPosX -= (diffX / distance) * nekoSpeed; nekoPosY -= (diffY / distance) * nekoSpeed;
 
-    // [修复点 4] 把墙壁边缘判定，锁定为你当前“眼睛能看到的区域 (Visual Viewport)”
+    // 把墙壁边缘判定，锁定为你当前“眼睛能看到的区域 (Visual Viewport)”
     let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
     let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
     let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
