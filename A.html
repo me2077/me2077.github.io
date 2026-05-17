@@ -1131,7 +1131,7 @@ nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
     nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
     
     // ▼ 添加下面这行代码（1.5倍大小，你可以改成 2 就是两倍大小）▼
-    nekoEl.style.transform = "scale(1.5)";
+    nekoEl.style.transform = "scale(1.2)";
     
     document.body.appendChild(nekoEl);
 
@@ -1312,10 +1312,10 @@ let clickTimeout = null; // 用于区分单击和双击
     let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
     let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
-    let minX = offsetLeft + 24;
-    let maxX = offsetLeft + vWidth - 24;
-    let minY = offsetTop + 24;
-    let maxY = offsetTop + vHeight - 24;
+    let minX = offsetLeft + 19.2;
+    let maxX = offsetLeft + vWidth - 19.2;
+    let minY = offsetTop + 19.2;
+    let maxY = offsetTop + vHeight - 19.2;
 
     nekoPosX = Math.min(Math.max(minX, nekoPosX), maxX);
     nekoPosY = Math.min(Math.max(minY, nekoPosY), maxY);
