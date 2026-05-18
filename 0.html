@@ -225,20 +225,120 @@
         #page1, #page1 .page-vertical, #page1 .subpage { overflow-x: hidden; }
 
         .media-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-        .glitch-img { max-width: 99.7%; max-height: 100%; border-radius: 15px; }
-        .pixel-scale-box { width: 200px; height: 180px; position: relative; transform: scale(0.5); margin-top: -10px; contain: paint; will-change: transform; }
+.glitch-img { 
+    width: 100%; 
+    max-width: 100%; 
+    max-height: 100%; 
+    border-radius: 15px; 
+    display: block; 
+    object-fit: cover; 
+}
+.pixel-scale-box { 
+    width: 200px; 
+    height: 180px; 
+    position: relative; 
+    transform: scale(0.5); 
+    contain: paint; 
+    will-change: transform; 
+    /* 删除了 margin-top: -10px; */
+}
 
         .reward-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-style: italic; cursor: pointer; position: relative; width: 100%; -webkit-tap-highlight-color: transparent; }
-        .reward-media { position: relative; width: 100%; display: flex; justify-content: center; align-items: center; }
-        .reward-gif { max-width: 99.7%; max-height: 100%; border-radius: 18px; transition: opacity 0.5s ease; opacity: 1; }
-        .reward-qr { position: absolute; width: 340px; height: 340px; border-radius: 18px; transition: opacity 0.5s ease; opacity: 0; pointer-events: none; top: 0px; }
-        .reward-texts { position: relative; margin-top: 21px; display: flex; justify-content: center; align-items: center; width: 100%; height: 32px; }
-        .reward-text-old { position: absolute; color: inherit; font-size: 24px; text-align: center; text-decoration: underline; margin: 0; transition: opacity 0.5s ease; opacity: 1; white-space: nowrap; }
-        .reward-text-new { position: absolute; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; text-align: center; margin-top: -40px; }
-        .reward-text-new a { color: inherit; font-size: 24px; text-decoration: underline; display: block; line-height: 1.5; }
+.reward-media { 
+    position: relative; 
+    width: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    
+    /* 👇 新增：让整个图片区域（包含动图和二维码）往上移动 */
+    transform: translateY(-26px); 
+}
+      
+      
+.reward-gif { 
+    width: 100%; 
+    max-width: 100%; 
+    max-height: 100%; 
+    border-radius: 18px; 
+    transition: opacity 0.5s ease; 
+    opacity: 1; 
+    display: block; 
+    object-fit: cover; 
+}
+
+.reward-qr { 
+    position: absolute; 
+    width: 340px; 
+    height: 340px; 
+    border-radius: 18px; 
+    transition: opacity 0.5s ease; 
+    opacity: 0; 
+    pointer-events: none; 
+    
+    /* 👇 关键修改：强制顶部对齐，并保持完美水平居中 */
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    margin: 0 auto; 
+}
+      
+      
+.reward-texts { 
+    position: absolute;
+    bottom: 35px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; 
+    height: 32px; 
+    /* 去掉了原来的 margin-top: 21px; */
+}
+.reward-text-old { 
+    position: absolute; 
+    color: inherit; 
+    font-size: 24px; 
+    text-align: center; 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+    margin: 0; 
+    transition: opacity 0.5s ease; 
+    opacity: 1; 
+    white-space: nowrap; 
+
+    /* 👇 1. 单独控制【猫爪一伸...】的高低。负数往上移，正数往下移 */
+    transform: translateY(0px); 
+}
+
+.reward-text-new { 
+    position: absolute; 
+    opacity: 0; 
+    transition: opacity 0.5s ease; 
+    pointer-events: none; 
+    text-align: center; 
+
+    /* 👇 2. 单独控制【微信/支付宝】整体的高低。负数往上移，正数往下移 */
+    transform: translateY(-18px); 
+}
+
+.reward-text-new a { 
+    color: inherit; 
+    font-size: 24px; 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+    display: block; 
+    line-height: 1.5; 
+
+    /* 👇 3. 单独控制【微信】和【支付宝】这两行字彼此之间的上下间距 */
+    margin-bottom: 0px; 
+}
+
+/* 补充：让最后一行支付宝文字底部不需要多余的间距 */
+.reward-text-new a:last-child {
+    margin-bottom: 0; 
+}
         .show-qr .reward-gif, .show-qr .reward-text-old { opacity: 0; pointer-events: none; }
         .show-qr .reward-qr, .show-qr .reward-text-new { opacity: 1; pointer-events: auto; }
-
         .pixel-art {
             width: 10px; height: 10px; position: absolute; top: 0; left: 0;
             box-shadow: 110px 10px #000, 120px 10px #000, 110px 20px #000, 110px 30px #000, 110px 40px #000, 120px 40px #000, 130px 40px #000, 140px 40px #000, 150px 40px #000, 160px 40px #000, 30px 50px #000, 70px 50px #000, 160px 50px #000, 30px 60px #000, 40px 60px #000, 60px 60px #000, 70px 60px #000, 100px 60px #000, 110px 60px #000, 120px 60px #000, 130px 60px #000, 160px 60px #000, 30px 70px #000, 40px 70px #000, 50px 70px #000, 60px 70px #000, 70px 70px #000, 90px 70px #000, 100px 70px #000, 110px 70px #000, 120px 70px #000, 130px 70px #000, 140px 70px #000, 150px 70px #000, 160px 70px #000, 30px 80px #000, 40px 80px #f00, 50px 80px #000, 60px 80px #f00, 70px 80px #000, 80px 80px #000, 90px 80px #000, 100px 80px #000, 110px 80px #000, 120px 80px #000, 130px 80px #000, 140px 80px #000, 150px 80px #000, 160px 80px #000, 30px 90px #000, 40px 90px #000, 50px 90px #000, 60px 90px #000, 70px 90px #000, 80px 90px #000, 90px 90px #000, 100px 90px #000, 110px 90px #000, 120px 90px #000, 130px 90px #000, 140px 90px #000, 150px 90px #000, 160px 90px #000, 40px 100px #000, 50px 100px #000, 60px 100px #000, 70px 100px #000, 80px 100px #000, 90px 100px #000, 100px 100px #000, 110px 100px #000, 120px 100px #000, 130px 100px #000, 140px 100px #000, 150px 100px #000, 160px 100px #000, 60px 110px #000, 70px 110px #000, 80px 110px #000, 90px 110px #000, 100px 110px #000, 110px 110px #000, 130px 110px #000, 140px 110px #000, 150px 110px #000, 60px 120px #000, 70px 120px #000, 80px 120px #000, 100px 120px #000, 110px 120px #000, 130px 120px #000, 140px 120px #000, 60px 130px #000, 80px 130px #000, 110px 130px #000, 140px 130px #000, 60px 140px #000, 80px 140px #000, 110px 140px #000, 140px 140px #000, 60px 150px #000, 80px 150px #000, 110px 150px #000, 140px 150px #000, 50px 160px #000, 60px 160px #000, 70px 160px #000, 80px 160px #000, 100px 160px #000, 110px 160px #000, 130px 160px #000, 140px 160px #000;
@@ -394,7 +494,7 @@
                                         </div>
                                     </section>
                                     <section class="subpage" id="page1-2">
-                                        <div class="media-wrapper"><img src="images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img"></div>
+                                        <div class="media-wrapper"><img src="https://me2077.github.io/images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img"></div>
                                     </section>
                                     <section class="subpage" id="page1-3">
                                         <div class="pixel-scale-box"><div class="pixel-art"></div></div>
@@ -458,6 +558,7 @@
     </div>
 
     <canvas id="shuicheCanvas"></canvas>
+
 
 <script>
 // ==========================================
