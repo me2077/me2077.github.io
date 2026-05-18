@@ -1400,8 +1400,8 @@ let clickTimeout = null; // 用于区分单击和双击
 
 function idle() {
     idleTime += 1; let avalibleIdleAnimations = [];
-    if (idleTime > 10 && Math.floor(Math.random() * 30) == 0 && idleAnimation == null) {
-      avalibleIdleAnimations = ["sleeping", "scratchSelf", "sleeping", "scratchSelf", "scratchSelf"];
+    if (idleTime > 10 && Math.floor(Math.random() * 20) == 0 && idleAnimation == null) {
+      avalibleIdleAnimations = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"];
       
       let scratchW = false, scratchN = false, scratchE = false, scratchS = false;
       
