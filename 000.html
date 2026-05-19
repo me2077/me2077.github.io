@@ -180,8 +180,16 @@
     transition: transform 0.3s ease, text-shadow 0.3s ease; 
 }
 
-/* 鼠标悬停在 link-card 上时，文字平滑放大并加阴影 */
-.link-card:hover .link-title {
+/* 1. 仅在真正有鼠标的设备（电脑端）上启用 Hover，避免手机端效果“卡住” */
+@media (hover: hover) {
+    .link-card:hover .link-title {
+        transform: scale(1.05);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    }
+}
+
+/* 2. 所有设备通用（尤其针对移动端）：手指按下的瞬间触发放大和阴影 */
+.link-card:active .link-title {
     transform: scale(1.05);
     text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
@@ -1171,28 +1179,30 @@ window.onload = function() {
     `;
     document.head.appendChild(style);
 
-    const linkCards = document.querySelectorAll('.link-card');
+
+const linkCards = document.querySelectorAll('.link-card');
     linkCards.forEach(card => {
         const titleSpan = card.querySelector('.link-title');
         if (titleSpan && titleSpan.textContent) {
             const text = titleSpan.textContent.trim();
-            // 给现有的文字包裹上一层自带 data-text 的 span
             titleSpan.innerHTML = `<span class="glitch-text" data-text="${text}">${text}</span>`;
         }
 
-        // 鼠标移入卡片时激活红蓝故障闪烁
-        card.addEventListener('mouseenter', () => {
-            const glitchEl = card.querySelector('.glitch-text');
-            if (glitchEl) glitchEl.classList.add('active');
-        });
+        const glitchEl = card.querySelector('.glitch-text');
 
-        // 鼠标移出卡片时停止闪烁
-        card.addEventListener('mouseleave', () => {
-            const glitchEl = card.querySelector('.glitch-text');
-            if (glitchEl) glitchEl.classList.remove('active');
-        });
+        // 定义开启和关闭闪烁的函数
+        const startGlitch = () => { if (glitchEl) glitchEl.classList.add('active'); };
+        const stopGlitch = () => { if (glitchEl) glitchEl.classList.remove('active'); };
+
+        // 💻 电脑端：鼠标移入移出
+        card.addEventListener('mouseenter', startGlitch);
+        card.addEventListener('mouseleave', stopGlitch);
+
+        // 📱 移动端：手指按下、松开、或滑动取消
+        card.addEventListener('touchstart', startGlitch, { passive: true });
+        card.addEventListener('touchend', stopGlitch);
+        card.addEventListener('touchcancel', stopGlitch); // 当手指滑动屏幕导致点击取消时也停止
     });
-    // === 👆 新增结束 👆 ===
   
   
   
