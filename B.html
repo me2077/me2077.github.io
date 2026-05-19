@@ -1,12 +1,414 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Neko Cat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Font Showcase Scroll</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto+Mono&family=Space+Grotesk:wght@300;700&family=Oswald:wght@400;700&family=Bebas+Neue&family=Inconsolata:wght@400;700&family=Major+Mono+Display&family=Quicksand:wght@400;700&family=Anton&family=Abril+Fatface&family=Permanent+Marker&family=Press+Start+2P&family=Monoton&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #131921;
+            color: #fff;
+            font-family: 'Karla', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .container {
+            min-height: 300vh;
+        }
+
+        .sticky-bar {
+            position: fixed;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 1em;
+            display: flex;
+            mix-blend-mode: difference;
+            font-size: 10px;
+            font-family: "Karla", Helvetica, sans-serif;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .sticky-bar .item {
+            flex: 1;
+            text-align: center;
+            font-family: "Karla", Helvetica, sans-serif;
+        }
+
+        .achivements {
+            width: 100%;
+            padding: 10em 1em;
+        }
+
+        .row {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 1em;
+            margin-bottom: 20px;
+        }
+
+        .logo p {
+            font-size: 40px;
+            font-weight: 600;
+            margin: 0;
+            text-align: center;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .logo p:hover {
+            transform: scale(1.05);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Font assignments */
+        .row:nth-child(1) .logo:first-child p { font-family: 'Playfair Display', serif; }
+        .row:nth-child(1) .logo:last-child p { font-family: 'Space Grotesk', sans-serif; }
+
+        .row:nth-child(2) .logo:first-child p { font-family: 'Oswald', sans-serif; }
+        .row:nth-child(2) .logo:last-child p { font-family: 'Bebas Neue', cursive; }
+
+        .row:nth-child(3) .logo:first-child p { font-family: 'Inconsolata', monospace; }
+        .row:nth-child(3) .logo:last-child p { font-family: 'Major Mono Display', monospace; }
+
+        .row:nth-child(4) .logo:first-child p { font-family: 'Quicksand', sans-serif; }
+        .row:nth-child(4) .logo:last-child p { font-family: 'Anton', sans-serif; }
+
+        .row:nth-child(5) .logo:first-child p { font-family: 'Abril Fatface', cursive; }
+        .row:nth-child(5) .logo:last-child p { font-family: 'Permanent Marker', cursive; }
+
+        .row:nth-child(6) .logo:first-child p { font-family: 'Press Start 2P', cursive; }
+        .row:nth-child(6) .logo:last-child p { font-family: 'Monoton', cursive; }
+
+        .row:nth-child(7) .logo:first-child p { font-family: 'Space Grotesk', sans-serif; font-weight: 300; }
+        .row:nth-child(7) .logo:last-child p { font-family: 'Oswald', sans-serif; font-weight: 700; }
+
+        .row:nth-child(8) .logo:first-child p { font-family: 'Playfair Display', serif; font-style: italic; }
+        .row:nth-child(8) .logo:last-child p { font-family: 'Roboto Mono', monospace; }
+
+        .row:nth-child(9) .logo:first-child p { font-family: 'Bebas Neue', cursive; }
+        .row:nth-child(9) .logo:last-child p { font-family: 'Inconsolata', monospace; }
+
+        .row:nth-child(10) .logo:first-child p { font-family: 'Major Mono Display', monospace; }
+        .row:nth-child(10) .logo:last-child p { font-family: 'Quicksand', sans-serif; }
+
+        .row:nth-child(11) .logo:first-child p { font-family: 'Anton', sans-serif; }
+        .row:nth-child(11) .logo:last-child p { font-family: 'Abril Fatface', cursive; }
+
+        .row:nth-child(12) .logo:first-child p { font-family: 'Permanent Marker', cursive; }
+        .row:nth-child(12) .logo:last-child p { font-family: 'Press Start 2P', cursive; }
+
+        .row:nth-child(13) .logo:first-child p { font-family: 'Monoton', cursive; }
+        .row:nth-child(13) .logo:last-child p { font-family: 'Space Grotesk', sans-serif; }
+
+        .row:nth-child(14) .logo:first-child p { font-family: 'Oswald', sans-serif; }
+        .row:nth-child(14) .logo:last-child p { font-family: 'Playfair Display', serif; }
+
+        .row:nth-child(15) .logo:first-child p { font-family: 'Roboto Mono', monospace; }
+        .row:nth-child(15) .logo:last-child p { font-family: 'Bebas Neue', cursive; }
+
+        .row:nth-child(16) .logo:first-child p { font-family: 'Inconsolata', monospace; }
+        .row:nth-child(16) .logo:last-child p { font-family: 'Major Mono Display', monospace; }
+
+        /* Glitch Effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+        
+        .glitch-text.active::before {
+            animation: glitch-1 0.4s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #0ff;
+            transform: translateX(-2px);
+        }
+        
+        .glitch-text.active::after {
+            animation: glitch-2 0.4s cubic-bezier(.25, .46, .45, .94) reverse both infinite;
+            color: #f0f;
+            transform: translateX(2px);
+        }
+        
+        @keyframes glitch-1 {
+            0% { opacity: 0.75; transform: translate(-2px, 2px); }
+            50% { opacity: 0.5; transform: translate(1px, -1px); }
+            100% { opacity: 0.75; transform: translate(-2px, 2px); }
+        }
+        
+        @keyframes glitch-2 {
+            0% { opacity: 0.75; transform: translate(2px, -2px); }
+            50% { opacity: 0.5; transform: translate(-1px, 1px); }
+            100% { opacity: 0.75; transform: translate(2px, -2px); }
+        }
+
+        @media (max-width: 900px) {
+            .logo p {
+                font-size: 20px;
+            }
+            .sticky-bar {
+                font-size: 9px;
+            }
+        }
+    </style>
 </head>
 <body>
-<script>NekoType="pink"</script>
-<h1 id=nl><script src="https://webneko.net/n20171213.js"></script><a 
-href="https://webneko.net">Neko</a></h1>
+    <div class="container">
+        <div class="sticky-bar">
+            <div class="item">
+                <strong>SCROLL DOWN</strong><br>
+                MAKE FULL SCREEN FOR BEST EXPERIENCE
+            </div>
+        </div>
+
+        <div class="achivements">
+            <!-- Row 1 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 2 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 3 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 4 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 5 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 6 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 7 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 8 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 9 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 10 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 11 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 12 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 13 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 14 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 15 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+            <!-- Row 16 -->
+            <div class="row">
+                <div class="logo"><p>Place Holder 1</p></div>
+                <div class="logo"><p>Place Holder 2</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const stickyBar = document.querySelector(".sticky-bar");
+            let timelineCache = new Map();
+
+            function getStickyBarCenter() {
+                return stickyBar.offsetTop + stickyBar.offsetHeight / 2;
+            }
+
+            function getGapValues() {
+                return {
+                    maxGap: window.innerWidth < 900 ? 10 : 15,
+                    minGap: window.innerWidth < 900 ? 0.5 : 1
+                };
+            }
+
+            function prepareGlitchText(row) {
+                const textElements = row.querySelectorAll('p');
+                textElements.forEach(element => {
+                    const text = element.textContent;
+                    element.innerHTML = `<span class="glitch-text" data-text="${text}">${text}</span>`;
+                });
+            }
+
+            function toggleGlitch(row, active) {
+                const glitchElements = row.querySelectorAll('.glitch-text');
+                glitchElements.forEach(element => {
+                    if (active) {
+                        element.classList.add('active');
+                    } else {
+                        element.classList.remove('active');
+                    }
+                });
+            }
+
+            function createRowAnimation(row) {
+                prepareGlitchText(row);
+
+                const timeline = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: row,
+                        start: () => `top+=${getStickyBarCenter() - 550} center`,
+                        end: () => `top+=${getStickyBarCenter() - 300} center`,
+                        scrub: 1,
+                        toggleActions: "play reverse play reverse",
+                        onUpdate: (self) => {
+                            updateGap(self, row);
+                            if (self.progress > 0.45 && self.progress < 0.55) {
+                                toggleGlitch(row, true);
+                            } else {
+                                toggleGlitch(row, false);
+                            }
+                        }
+                    }
+                });
+
+                const { maxGap, minGap } = getGapValues();
+
+                timeline.fromTo(row, 
+                    { gap: `${minGap}em` },
+                    { 
+                        gap: `${maxGap}em`,
+                        duration: 1,
+                        ease: "power1.inOut"
+                    }
+                ).to(row, {
+                    gap: `${minGap}em`,
+                    duration: 1,
+                    ease: "power1.inOut"
+                });
+
+                timelineCache.set(row, timeline);
+                return timeline;
+            }
+
+            function updateGap(self, row) {
+                const { maxGap, minGap } = getGapValues();
+                let progress = self.progress;
+                
+                progress = progress < 0.5 
+                    ? 2 * progress * progress
+                    : -1 + (4 - 2 * progress) * progress;
+
+                const currentGap = progress < 0.5
+                    ? minGap + (maxGap - minGap) * (progress * 2)
+                    : maxGap - (maxGap - minGap) * ((progress - 0.5) * 2);
+
+                gsap.set(row, {
+                    gap: `${currentGap}em`,
+                    force3D: true
+                });
+            }
+
+            // Initialize all rows
+            document.querySelectorAll(".row").forEach((row, index) => {
+                row.setAttribute('data-row-index', index);
+                createRowAnimation(row);
+
+                row.addEventListener('mouseenter', () => {
+                    const timeline = timelineCache.get(row);
+                    if (timeline) {
+                        timeline.timeScale(0.5);
+                        toggleGlitch(row, true);
+                    }
+                });
+
+                row.addEventListener('mouseleave', () => {
+                    const timeline = timelineCache.get(row);
+                    if (timeline) {
+                        timeline.timeScale(1);
+                        toggleGlitch(row, false);
+                    }
+                });
+            });
+
+            // Resize handler
+            let resizeTimeout;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    timelineCache.forEach((timeline, row) => {
+                        timeline.kill();
+                        createRowAnimation(row);
+                    });
+                    ScrollTrigger.refresh();
+                }, 250);
+            });
+
+            // Scroll progress (optional)
+            gsap.to('.sticky-bar', {
+                scrollTrigger: {
+                    trigger: '.achivements',
+                    start: 'top top',
+                    end: 'bottom bottom',
+                    scrub: true
+                }
+            });
+
+            console.log("✅ Font showcase with GSAP ScrollTrigger loaded successfully!");
+        });
+    </script>
 </body>
 </html>
