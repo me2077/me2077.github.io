@@ -1400,7 +1400,7 @@ let clickTimeout = null; // 用于区分单击和双击
 
 function idle() {
     idleTime += 1; let avalibleIdleAnimations = [];
-    if (idleTime > 10 && Math.floor(Math.random() * 20) == 0 && idleAnimation == null) {
+    if (idleTime > 10 && Math.floor(Math.random() * 25) == 0 && idleAnimation == null) {
       avalibleIdleAnimations = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"];
       
       let scratchW = false, scratchN = false, scratchE = false, scratchS = false;
@@ -1469,7 +1469,7 @@ function idle() {
       // ====== 核心修改：大幅提高挠墙概率 ======
       if (wallAnimations.length > 0) {
           // 如果靠近了边框，设定 80% 的概率强制优先触发挠墙（剩下 20% 概率它才会去睡觉/舔毛）
-          if (Math.random() < 0.5) { 
+          if (Math.random() < 0.4) { 
               idleAnimation = wallAnimations[Math.floor(Math.random() * wallAnimations.length)];
           } else {
               idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
