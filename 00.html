@@ -225,20 +225,120 @@
         #page1, #page1 .page-vertical, #page1 .subpage { overflow-x: hidden; }
 
         .media-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-        .glitch-img { max-width: 99.7%; max-height: 100%; border-radius: 15px; }
-        .pixel-scale-box { width: 200px; height: 180px; position: relative; transform: scale(0.5); margin-top: -10px; contain: paint; will-change: transform; }
+.glitch-img { 
+    width: 100%; 
+    max-width: 100%; 
+    max-height: 100%; 
+    border-radius: 15px; 
+    display: block; 
+    object-fit: cover; 
+}
+.pixel-scale-box { 
+    width: 200px; 
+    height: 180px; 
+    position: relative; 
+    transform: scale(0.5); 
+    contain: paint; 
+    will-change: transform; 
+    /* 删除了 margin-top: -10px; */
+}
 
         .reward-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-style: italic; cursor: pointer; position: relative; width: 100%; -webkit-tap-highlight-color: transparent; }
-        .reward-media { position: relative; width: 100%; display: flex; justify-content: center; align-items: center; }
-        .reward-gif { max-width: 99.7%; max-height: 100%; border-radius: 18px; transition: opacity 0.5s ease; opacity: 1; }
-        .reward-qr { position: absolute; width: 340px; height: 340px; border-radius: 18px; transition: opacity 0.5s ease; opacity: 0; pointer-events: none; top: 0px; }
-        .reward-texts { position: relative; margin-top: 21px; display: flex; justify-content: center; align-items: center; width: 100%; height: 32px; }
-        .reward-text-old { position: absolute; color: inherit; font-size: 24px; text-align: center; text-decoration: underline; margin: 0; transition: opacity 0.5s ease; opacity: 1; white-space: nowrap; }
-        .reward-text-new { position: absolute; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; text-align: center; margin-top: -40px; }
-        .reward-text-new a { color: inherit; font-size: 24px; text-decoration: underline; display: block; line-height: 1.5; }
+.reward-media { 
+    position: relative; 
+    width: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    
+    /* 👇 新增：让整个图片区域（包含动图和二维码）往上移动 */
+    transform: translateY(-26px); 
+}
+      
+      
+.reward-gif { 
+    width: 100%; 
+    max-width: 100%; 
+    max-height: 100%; 
+    border-radius: 18px; 
+    transition: opacity 0.5s ease; 
+    opacity: 1; 
+    display: block; 
+    object-fit: cover; 
+}
+
+.reward-qr { 
+    position: absolute; 
+    width: 340px; 
+    height: 340px; 
+    border-radius: 18px; 
+    transition: opacity 0.5s ease; 
+    opacity: 0; 
+    pointer-events: none; 
+    
+    /* 👇 关键修改：强制顶部对齐，并保持完美水平居中 */
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    margin: 0 auto; 
+}
+      
+      
+.reward-texts { 
+    position: absolute;
+    bottom: 35px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; 
+    height: 32px; 
+    /* 去掉了原来的 margin-top: 21px; */
+}
+.reward-text-old { 
+    position: absolute; 
+    color: inherit; 
+    font-size: 24px; 
+    text-align: center; 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+    margin: 0; 
+    transition: opacity 0.5s ease; 
+    opacity: 1; 
+    white-space: nowrap; 
+
+    /* 👇 1. 单独控制【猫爪一伸...】的高低。负数往上移，正数往下移 */
+    transform: translateY(0px); 
+}
+
+.reward-text-new { 
+    position: absolute; 
+    opacity: 0; 
+    transition: opacity 0.5s ease; 
+    pointer-events: none; 
+    text-align: center; 
+
+    /* 👇 2. 单独控制【微信/支付宝】整体的高低。负数往上移，正数往下移 */
+    transform: translateY(-18px); 
+}
+
+.reward-text-new a { 
+    color: inherit; 
+    font-size: 24px; 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+    display: block; 
+    line-height: 1.5; 
+
+    /* 👇 3. 单独控制【微信】和【支付宝】这两行字彼此之间的上下间距 */
+    margin-bottom: 0px; 
+}
+
+/* 补充：让最后一行支付宝文字底部不需要多余的间距 */
+.reward-text-new a:last-child {
+    margin-bottom: 0; 
+}
         .show-qr .reward-gif, .show-qr .reward-text-old { opacity: 0; pointer-events: none; }
         .show-qr .reward-qr, .show-qr .reward-text-new { opacity: 1; pointer-events: auto; }
-
         .pixel-art {
             width: 10px; height: 10px; position: absolute; top: 0; left: 0;
             box-shadow: 110px 10px #000, 120px 10px #000, 110px 20px #000, 110px 30px #000, 110px 40px #000, 120px 40px #000, 130px 40px #000, 140px 40px #000, 150px 40px #000, 160px 40px #000, 30px 50px #000, 70px 50px #000, 160px 50px #000, 30px 60px #000, 40px 60px #000, 60px 60px #000, 70px 60px #000, 100px 60px #000, 110px 60px #000, 120px 60px #000, 130px 60px #000, 160px 60px #000, 30px 70px #000, 40px 70px #000, 50px 70px #000, 60px 70px #000, 70px 70px #000, 90px 70px #000, 100px 70px #000, 110px 70px #000, 120px 70px #000, 130px 70px #000, 140px 70px #000, 150px 70px #000, 160px 70px #000, 30px 80px #000, 40px 80px #f00, 50px 80px #000, 60px 80px #f00, 70px 80px #000, 80px 80px #000, 90px 80px #000, 100px 80px #000, 110px 80px #000, 120px 80px #000, 130px 80px #000, 140px 80px #000, 150px 80px #000, 160px 80px #000, 30px 90px #000, 40px 90px #000, 50px 90px #000, 60px 90px #000, 70px 90px #000, 80px 90px #000, 90px 90px #000, 100px 90px #000, 110px 90px #000, 120px 90px #000, 130px 90px #000, 140px 90px #000, 150px 90px #000, 160px 90px #000, 40px 100px #000, 50px 100px #000, 60px 100px #000, 70px 100px #000, 80px 100px #000, 90px 100px #000, 100px 100px #000, 110px 100px #000, 120px 100px #000, 130px 100px #000, 140px 100px #000, 150px 100px #000, 160px 100px #000, 60px 110px #000, 70px 110px #000, 80px 110px #000, 90px 110px #000, 100px 110px #000, 110px 110px #000, 130px 110px #000, 140px 110px #000, 150px 110px #000, 60px 120px #000, 70px 120px #000, 80px 120px #000, 100px 120px #000, 110px 120px #000, 130px 120px #000, 140px 120px #000, 60px 130px #000, 80px 130px #000, 110px 130px #000, 140px 130px #000, 60px 140px #000, 80px 140px #000, 110px 140px #000, 140px 140px #000, 60px 150px #000, 80px 150px #000, 110px 150px #000, 140px 150px #000, 50px 160px #000, 60px 160px #000, 70px 160px #000, 80px 160px #000, 100px 160px #000, 110px 160px #000, 130px 160px #000, 140px 160px #000;
@@ -394,7 +494,7 @@
                                         </div>
                                     </section>
                                     <section class="subpage" id="page1-2">
-                                        <div class="media-wrapper"><img src="images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img"></div>
+                                        <div class="media-wrapper"><img src="https://me2077.github.io/images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img"></div>
                                     </section>
                                     <section class="subpage" id="page1-3">
                                         <div class="pixel-scale-box"><div class="pixel-art"></div></div>
@@ -429,7 +529,7 @@
                                     <a href="javascript:void(0);" class="link-card" id="wechatBtn"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/WeChat.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WeChat</span></a>
                                     <a href="https://t.me/qxx_me" class="link-card" target="_blank"><img src="images/Telegram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Telegram</span></a>
                                     <a href="https://x.com/vwwvvvvvvv" class="link-card" target="_blank"><img src="images/Instagram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Instagram</span></a>
-                                    <a href="mailto:vwwwww@yahoo.com" class="link-card"><img src="images/Mail.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Email</span></a>
+                                    <a href="mailto:me@qxx.me" class="link-card"><img src="images/Mail.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Email</span></a>
                                     <a href="https://wa.me/message/SYDPTLQEHYE3P1?src=qr" class="link-card" target="_blank"><img src="images/WhatsApp.png" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WhatsApp</span></a>
                                 </div>
                             </div>
@@ -595,16 +695,43 @@ function switchBackground(value, isLight = true) {
         let now = new Date().getTime();
         if (now - lastToggleTime < 500) return;
         lastToggleTime = now;
-        if (e.target && e.target.closest && e.target.closest('#oneko, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) { return; }
+        if (e.target && e.target.closest && e.target.closest('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) { return; }
         window.isParticlesEnabled = !window.isParticlesEnabled;
         window.userToggledParticles = true;
         updateParticlesDisplay();
     }
     document.addEventListener('dblclick', toggleParticles);
+    
     let lastTouchEnd = 0;
+    let isMultiTouch = false;
+
+    // 1. 监听手指按下：只要屏幕上超过1根手指，就标记为“多指/缩放操作”
+    document.addEventListener('touchstart', function(e) {
+        if (e.touches.length > 1) {
+            isMultiTouch = true;
+        }
+    }, { passive: true });
+
+    // 2. 监听手指离开
     document.addEventListener('touchend', function(e) {
+        // 如果屏幕上还有手指没离开，说明这不是一次完整的单指点击，直接忽略
+        if (e.touches.length > 0) return;
+        
+        // 如果刚刚经历过多指操作（双指缩放、双指点击等），结束并重置状态，不触发双击
+        if (isMultiTouch) {
+            isMultiTouch = false;
+            lastTouchEnd = 0; 
+            return;
+        }
+
+        // 纯净的单指双击判断逻辑
         let now = new Date().getTime();
-        if (now - lastTouchEnd <= 400) { toggleParticles(e); lastTouchEnd = 0; } else { lastTouchEnd = now; }
+        if (now - lastTouchEnd <= 400) { 
+            toggleParticles(e); 
+            lastTouchEnd = 0; 
+        } else { 
+            lastTouchEnd = now; 
+        }
     });
 })();
 
@@ -903,14 +1030,55 @@ function loadMusicPlayer() {
 function initKeyboardControls() {
     document.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();
+        
+        // 🐾 新增: Z键控制猫咪睡觉和唤醒
+        if (key === 'z') {
+            if (typeof window.onekoSleep === 'function') window.onekoSleep();
+        }
+        
+        // 🐾 新增: S键打开和关闭猫咪皮肤面板
+        if (key === 's') {
+            if (typeof window.onekoToggleSkinMenu === 'function') window.onekoToggleSkinMenu();
+        }
+        
+        // 🎉 新增: N和M键触发彩带和Cat.wav猫叫
+        if (key === 'n' || key === 'm') {
+            triggerConfetti();
+        }
+
+        // 原有的键盘快捷键逻辑
         if (key === 't') { currentBgIndex = (currentBgIndex + 1) % bgPresets.length; const preset = bgPresets[currentBgIndex]; switchBackground(preset.value, preset.isLight); }
         if (key === '1') { switchBackground(BG_TOP_LEFT, true); currentBgIndex = 0; }
         if (key === '2') { switchBackground(BG_TOP_RIGHT, false); currentBgIndex = 1; }
         if (key === '3') { switchBackground(BG_BOTTOM_LEFT, true); currentBgIndex = 2; }
         if (key === '4') { switchBackground(BG_BOTTOM_RIGHT, true); currentBgIndex = 3; }
         if (key === 'p') { window.isParticlesEnabled = !window.isParticlesEnabled; window.userToggledParticles = true; updateParticlesDisplay(); }
-        if (!e.shiftKey) { if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } }
-        if (window.musicControls) { if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } if (e.shiftKey) { if (e.key === 'ArrowRight') window.musicControls.next(); if (e.key === 'ArrowLeft') window.musicControls.prev(); } }
+        
+        if (!e.shiftKey) { 
+            // 左右页面切换
+            if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } 
+            if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } 
+            
+            // ↕️ 新增: 上下方向键控制 Page1 中的滚动吸附效果
+            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                if (currentPage === 1) {
+                    e.preventDefault(); // 阻止浏览器默认滚动条乱跳
+                    const pageVertical = document.querySelector('#page1 .page-vertical');
+                    const sign = e.key === 'ArrowUp' ? -1 : 1;
+                    // 通过容器的 clientHeight 平滑滚动，完美配合原有的 scroll-snap 滚动吸附属性
+                    pageVertical.scrollBy({ top: sign * pageVertical.clientHeight, behavior: 'smooth' });
+                }
+            }
+        }
+        
+        // 原有的音乐播放器控制逻辑
+        if (window.musicControls) { 
+            if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } 
+            if (e.shiftKey) { 
+                if (e.key === 'ArrowRight') window.musicControls.next(); 
+                if (e.key === 'ArrowLeft') window.musicControls.prev(); 
+            } 
+        }
     });
 }
 
@@ -949,36 +1117,122 @@ window.onload = function() {
     switchPageTo(2);
 };
 
-(function emojiCursor() {
-    var possibleEmoji = ["😊","🥺","💙","🥰","⭐","🌈","❤","🧡","💛","💚","💜","🏳️‍🌈","⚧","⌘","^^",":)","(^◡^)","≧◠‿◠≦"];
-    var particles = []; var cursor = { x: 0, y: 0 }; var lastTime = 0;
-    function init() { bindEvents(); loop(); }
-    function bindEvents() { document.addEventListener('pointermove', onPointerMove, { passive: true }); }
-    function onPointerMove(e) { const now = Date.now(); if (now - lastTime < 18) return; lastTime = now; cursor.x = e.clientX; cursor.y = e.clientY; addParticle(cursor.x, cursor.y + window.scrollY, possibleEmoji[Math.floor(Math.random() * possibleEmoji.length)]); }
-    function addParticle(x, y, character) { var particle = new Particle(); particle.init(x, y, character); particles.push(particle); }
-    function updateParticles() { for (let i = 0; i < particles.length; i++) { particles[i].update(); } for (let i = particles.length - 1; i >= 0; i--) { if (particles[i].lifeSpan < 0) { particles[i].die(); particles.splice(i, 1); } } }
-    function loop() { requestAnimationFrame(loop); updateParticles(); }
-    function Particle() {
-        this.lifeSpan = 100;
-        this.init = function(x, y, character) {
-            this.velocity = { x: (Math.random() - 0.5) * 1.2, y: 1 }; this.position = { x: x, y: y };
-            this.element = document.createElement('span'); this.element.innerHTML = character;
-            this.element.style.position = "fixed"; this.element.style.left = "0"; this.element.style.top = "0"; this.element.style.pointerEvents = "none"; this.element.style.zIndex = "999999"; this.element.style.fontSize = "16px"; this.element.style.willChange = "transform";
-            document.body.appendChild(this.element); this.update();
-        };
-        this.update = function() { this.position.x += this.velocity.x; this.position.y += this.velocity.y; this.lifeSpan--; const scale = this.lifeSpan / 100; this.element.style.transform = `translate3d(${this.position.x}px, ${this.position.y}px, 0) scale(${scale})`; };
-        this.die = function() { this.element.remove(); };
-    }
-    init();
-})();
 
 // ==========================================
-// 🛠️ 修复后的 猫咪 (Oneko) 核心引擎
+// 🛠️ 修复后的 猫咪 (Oneko) 核心引擎 + 九宫格皮肤更换功能
 // ==========================================
 (async function oneko() {
   const nekoEl = document.createElement("div");
+
+  // --- 新增：10个可更换的皮肤URL位 (留空，你自己填入精灵图链接) ---
+const skinList = [
+    { name: "blue", url: "https://dogpan.com/f/R6m4u5/blue.png" },
+    { name: "black2", url: "https://dogpan.com/f/QWlVto/black2.png" },
+    { name: "black", url: "https://dogpan.com/f/PNkPh3/black.png" },
+    { name: "calico", url: "https://dogpan.com/f/VOqgCg/calico.png" },
+    { name: "dog", url: "https://dogpan.com/f/W6yOFD/dog.png" },
+    { name: "holiday", url: "https://dogpan.com/f/XDzDUO/holiday.png" },
+    { name: "kina", url: "https://dogpan.com/f/YEA6HA/kina.png" },
+    { name: "lucky", url: "https://dogpan.com/f/Z6BVSQ/lucky.png" },
+    { name: "marmalade", url: "https://dogpan.com/f/1wlWFq/marmalade.png" },
+    { name: "mermaid", url: "https://dogpan.com/f/2km8c8/mermaid.png" },
+    { name: "nekocool", url: "https://dogpan.com/f/31nyI2/nekocool.png" },
+    { name: "neon", url: "https://dogpan.com/f/4xoLUl/neon.png" },
+    { name: "pink", url: "https://dogpan.com/f/5ypWh6/pink.png" },
+    { name: "socks", url: "https://dogpan.com/f/68qmUy/socks.png" },
+    { name: "usa", url: "https://dogpan.com/f/Nkglij/usa.png" }
+];
   
-// 恢复猫咪默认在左上角 (32, 32)
+const skinMenu = document.createElement("div");
+  skinMenu.id = "oneko-skin-menu";
+  skinMenu.style.cssText = `
+    position: fixed;
+    display: none;
+    grid-template-columns: repeat(5, 32px); /* 一行 5 个 */
+    grid-template-rows: repeat(3, 32px);    /* 一共 3 行 */
+    gap: 8px;
+background: rgba(255, 255, 255, 0.15); /* 👈 修改背景底色的透明度（0.15是15%白） */
+    backdrop-filter: blur(5px); /* 👈 修改模糊程度（数值越大越模糊） */
+    -webkit-backdrop-filter: blur(5px); /* 👈 必须加上这个，否则在苹果手机/Safari上模糊会失效 */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 10px;
+    z-index: 10000;
+box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
+  `;
+
+  //  渲染菜单选项(展示警示状态帧)
+  skinList.forEach(skin => {
+      const item = document.createElement("div");
+      item.style.cssText = `
+          width: 32px; height: 32px;
+          background-color: rgba(0, 0, 0, 0); /* 即使留空也能看见格子方块 */
+          background-image: url('${skin.url}');
+          background-position: -222px -95px; /* 显示猫咪竖起尾巴的“警示”帧 [-7, -3] */
+          image-rendering: pixelated;
+          cursor: pointer;
+          border-radius: 4px;
+          border: 2px solid transparent;
+          transition: border 0.2s, transform 0.2s;
+      `;
+      item.title = skin.name;
+      item.onmouseenter = () => { item.style.border = "1px solid #c299ff"; item.style.transform = "scale(1.1)"; };
+      item.onmouseleave = () => { item.style.border = "1px solid transparent"; item.style.transform = "scale(1)"; };
+      item.onclick = (e) => {
+          e.stopPropagation();
+          changeSkin(skin.url);
+          // 这里去掉了隐藏面板的代码，因此点击选择皮肤后，面板不会收回去
+      };
+      skinMenu.appendChild(item);
+  });
+  document.body.appendChild(skinMenu);
+
+  function changeSkin(url) {
+      if (!url) return; // 如果地址为空，则不替换以防出错
+      nekoEl.style.backgroundImage = `url('${url}')`;
+      localStorage.setItem("oneko:skin", url);
+  }
+
+  function showSkinMenu() {
+      skinMenu.style.display = "grid"; // 显示 Grid 布局
+      const menuWidth = skinMenu.offsetWidth;
+      const menuHeight = skinMenu.offsetHeight;
+      const rect = nekoEl.getBoundingClientRect();
+
+      // 判断靠近屏幕哪边：偏左向右弹出，偏右向左弹出
+      if (rect.left < window.innerWidth / 2) {
+          skinMenu.style.left = `${rect.right + 10}px`;
+      } else {
+          skinMenu.style.left = `${rect.left - menuWidth - 10}px`;
+      }
+
+      // 垂直方向居中对齐，并且防止超出屏幕边缘
+      let topPos = rect.top + (rect.height / 2) - (menuHeight / 2);
+      if (topPos + menuHeight > window.innerHeight) {
+          topPos = window.innerHeight - menuHeight - 10;
+      }
+      if (topPos < 0) topPos = 10;
+
+      skinMenu.style.top = `${topPos}px`;
+  }
+  window.onekoToggleSkinMenu = () => {
+      if (skinMenu.style.display === "grid") {
+          skinMenu.style.display = "none";
+      } else {
+          showSkinMenu();
+      }
+  };
+  
+  
+  // 点击空白处收起皮肤弹窗
+  document.addEventListener("pointerdown", (e) => {
+      // 当面板处于显示状态，并且点击区域既不是猫咪，也不是皮肤面板的内部元素时，才隐藏面板
+      if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) {
+          skinMenu.style.display = "none";
+      }
+  });
+
+  // 恢复猫咪默认在左上角 (32, 32)
   let nekoPosX = 32,
     nekoPosY = 32,
     mousePosX = 32,
@@ -993,7 +1247,8 @@ window.onload = function() {
     nudge = false,
     kuroNeko = false,
     variant = "classic",
-    lastClickTime = 0;
+    lastClickTime = 0,
+    clickCount = 0; // 新增：记录连续点击次数
 
   function parseLocalStorage(key, fallback) {
     try { const value = JSON.parse(localStorage.getItem(`oneko:${key}`)); return typeof value === typeof fallback ? value : fallback; } 
@@ -1015,20 +1270,33 @@ window.onload = function() {
     if (!forceSleep) { resetIdleAnimation(); return; }
     mousePosX = nekoPosX; mousePosY = nekoPosY;
   }
+  window.onekoSleep = sleep;
 
   function create() {
     variant = parseLocalStorage("variant", "classic"); kuroNeko = parseLocalStorage("kuroneko", false);
     if (!variants.some((v) => v[0] === variant)) { variant = "classic"; }
+    
+    // 恢复上次保存的皮肤，如果没有保存则使用一个默认的蓝猫皮肤防空
+    const savedSkin = localStorage.getItem("oneko:skin") || "https://dogpan.com/f/v2MpsA/blue.png";
 
     nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
-    nekoEl.style.position = "fixed"; nekoEl.style.backgroundImage = `url('https://dogpan.com/f/v2MpsA/blue.png')`;
+    nekoEl.style.position = "fixed"; nekoEl.style.backgroundImage = `url('${savedSkin}')`;
     nekoEl.style.imageRendering = "pixelated"; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
     nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; nekoEl.style.zIndex = "9999";
     nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
     document.body.appendChild(nekoEl);
 
-    // [修复点 2] 处理放大时的鼠标视口坐标换算
+    // 更新鼠标目标的中心逻辑
     function updateMousePos(e) {
+        // [新增] 判断如果面板正在展开，且鼠标移动到了面板的范围内，停止更新追随坐标 (不进入面板区域)
+        if (skinMenu.style.display === "grid") {
+            const rect = skinMenu.getBoundingClientRect();
+            if (e.clientX >= rect.left && e.clientX <= rect.right &&
+                e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                return; // 鼠标位于面板内时，取消位置捕获，猫咪将停在边上不会跑进去
+            }
+        }
+        
         let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
         let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
         mousePosX = e.clientX + offsetLeft;
@@ -1038,7 +1306,7 @@ window.onload = function() {
     window.addEventListener("mousemove", (e) => { if (forceSleep) return; updateMousePos(e); });
     window.addEventListener("pointermove", (e) => { if (forceSleep) return; if (e.pointerType === "touch") updateMousePos(e); });
 
-    // [修复点 3] 缩放/恢复页面大小时，把跑偏的猫拉回到可视区域中心
+    // 缩放/恢复页面大小时，把跑偏的猫拉回到可视区域中心
     function handleResize() {
         if (window.visualViewport) {
             let offsetLeft = window.visualViewport.offsetLeft;
@@ -1060,11 +1328,15 @@ window.onload = function() {
         window.visualViewport.addEventListener("scroll", handleResize); // 监听手机双指平移拖拽
     }
 
+let clickTimeout = null; // 用于区分单击和双击
+
     nekoEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
-      const currentTime = Date.now();
-      if (currentTime - lastClickTime < 300) { sleep(); lastClickTime = 0; return; }
-      lastClickTime = currentTime; e.preventDefault(); grabbing = true;
+      
+      e.preventDefault(); 
+      grabbing = true;
+      let isDragging = false; // 用来精确判断是否发生了拖拽
+      
       if (nekoEl.setPointerCapture) { try { nekoEl.setPointerCapture(e.pointerId); } catch (_) {} }
       
       let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval;
@@ -1074,11 +1346,17 @@ window.onload = function() {
         const deltaX = e.clientX - startX; const deltaY = e.clientY - startY;
         const absDeltaX = Math.abs(deltaX); const absDeltaY = Math.abs(deltaY);
 
+        // 如果移动距离超过 5 像素，判定为拖拽行为，不再触发点击
+        if (absDeltaX > 5 || absDeltaY > 5) {
+            isDragging = true; 
+        }
+
         if (absDeltaX > absDeltaY && absDeltaX > 10) { setSprite(deltaX > 0 ? "scratchWallW" : "scratchWallE", frameCount); } 
         else if (absDeltaY > absDeltaX && absDeltaY > 10) { setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount); }
 
         if (grabStop || absDeltaX > 10 || absDeltaY > 10 || Math.sqrt(deltaX ** 2 + deltaY ** 2) > 10) {
-          grabStop = false; clearTimeout(grabInterval);
+          grabStop = false; 
+          clearTimeout(grabInterval);
           grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150);
         }
 
@@ -1088,12 +1366,33 @@ window.onload = function() {
 
       const upHandler = (e) => {
         grabbing = false; nudge = true; resetIdleAnimation();
-        window.removeEventListener("pointermove", moveHandler); window.removeEventListener("pointerup", upHandler); window.removeEventListener("pointercancel", upHandler);
+        window.removeEventListener("pointermove", moveHandler); 
+        window.removeEventListener("pointerup", upHandler); 
+        window.removeEventListener("pointercancel", upHandler);
         if (nekoEl.releasePointerCapture) { try { nekoEl.releasePointerCapture(e.pointerId); } catch (_) {} }
+
+        // 【单击与双击的判断逻辑】
+        if (!isDragging) {
+            const currentTime = Date.now();
+            if (currentTime - lastClickTime < 300) {
+                // 如果 300ms 内连续点击了两次 -> 判定为双击，猫咪睡觉
+                clearTimeout(clickTimeout);
+                sleep();
+                lastClickTime = 0;
+            } else {
+                // 单击 -> 延迟 300ms 等待确认不是双击后，弹出皮肤面板
+                lastClickTime = currentTime;
+                clickTimeout = setTimeout(() => {
+                    if (forceSleep) sleep(); // 如果猫咪睡着了先唤醒
+                    showSkinMenu(); // 弹出选择面板
+                }, 300);
+            }
+        }
       };
 
       window.addEventListener("pointermove", moveHandler, { passive: false });
-      window.addEventListener("pointerup", upHandler); window.addEventListener("pointercancel", upHandler);
+      window.addEventListener("pointerup", upHandler); 
+      window.addEventListener("pointercancel", upHandler);
     });
 
     nekoEl.addEventListener("contextmenu", (e) => { e.preventDefault(); kuroNeko = !kuroNeko; localStorage.setItem("oneko:kuroneko", kuroNeko); nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; });
@@ -1104,16 +1403,86 @@ window.onload = function() {
   function setSprite(name, frame) { const sprite = getSprite(name, frame); nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`; }
   function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
 
-  function idle() {
+function idle() {
     idleTime += 1; let avalibleIdleAnimations = [];
-    if (idleTime > 10 && Math.floor(Math.random() * 30) == 0 && idleAnimation == null) {
-      avalibleIdleAnimations = ["sleeping", "scratchSelf", "sleeping", "scratchSelf", "scratchSelf"];
-      // 判断墙壁时，利用当前的坐标来智能判断
-      if (nekoPosX < 32) avalibleIdleAnimations.push("scratchWallW");
-      if (nekoPosY < 32) avalibleIdleAnimations.push("scratchWallN");
-      if (nekoPosX > window.innerWidth - 32) avalibleIdleAnimations.push("scratchWallE");
-      if (nekoPosY > window.innerHeight - 32) avalibleIdleAnimations.push("scratchWallS");
-      idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
+    if (idleTime > 10 && Math.floor(Math.random() * 25) == 0 && idleAnimation == null) {
+      avalibleIdleAnimations = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"];
+      
+      let scratchW = false, scratchN = false, scratchE = false, scratchS = false;
+      
+      // 1. 原有的屏幕边缘判定 (加入了视口缩放偏移兼容)
+      let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
+      let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
+      let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+      let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+      if (nekoPosX < offsetLeft + 32) scratchW = true;
+      if (nekoPosY < offsetTop + 32) scratchN = true;
+      if (nekoPosX > offsetLeft + vWidth - 32) scratchE = true;
+      if (nekoPosY > offsetTop + vHeight - 32) scratchS = true;
+
+      // 2. 新增：UI 卡片元素的内外边缘判定
+      const cards = document.querySelectorAll('.glowing-card, .spotify-card, .link-card');
+      cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          // 如果卡片当前不可见(比如在隐藏的页面里)，则跳过判定
+          if (rect.width === 0 || rect.height === 0) return;
+
+          // 将屏幕坐标系转换与猫咪坐标系一致
+          const rLeft = rect.left + offsetLeft;
+          const rRight = rect.right + offsetLeft;
+          const rTop = rect.top + offsetTop;
+          const rBottom = rect.bottom + offsetTop;
+          const threshold = 32; // 触发挠墙的靠近距离
+
+          // 判断猫咪是否在卡片的垂直高度范围内
+          if (nekoPosY >= rTop - threshold && nekoPosY <= rBottom + threshold) {
+              // 靠近左侧边框
+              if (Math.abs(nekoPosX - rLeft) <= threshold) {
+                  if (nekoPosX <= rLeft) scratchE = true; // 猫在左外侧，朝右挠墙 (面朝卡片)
+                  else scratchW = true;                   // 猫在左内侧，朝左挠墙 (面朝卡片左边缘)
+              }
+              // 靠近右侧边框
+              if (Math.abs(nekoPosX - rRight) <= threshold) {
+                  if (nekoPosX >= rRight) scratchW = true; // 猫在右外侧，朝左挠墙 (面朝卡片)
+                  else scratchE = true;                    // 猫在右内侧，朝右挠墙 (面朝卡片右边缘)
+              }
+          }
+
+          // 判断猫咪是否在卡片的水平宽度范围内
+          if (nekoPosX >= rLeft - threshold && nekoPosX <= rRight + threshold) {
+              // 靠近顶部边框
+              if (Math.abs(nekoPosY - rTop) <= threshold) {
+                  if (nekoPosY <= rTop) scratchS = true;  // 猫在上外侧，朝下挠墙 (面朝卡片)
+                  else scratchN = true;                   // 猫在上内侧，朝上挠墙 (面朝卡片上边缘)
+              }
+              // 靠近底部边框
+              if (Math.abs(nekoPosY - rBottom) <= threshold) {
+                  if (nekoPosY >= rBottom) scratchN = true; // 猫在下外侧，朝上挠墙 (面朝卡片)
+                  else scratchS = true;                     // 猫在下内侧，朝下挠墙 (面朝卡片下边缘)
+              }
+          }
+      });
+
+// 收集所有触发的挠墙动作
+      let wallAnimations = [];
+      if (scratchW) wallAnimations.push("scratchWallW");
+      if (scratchN) wallAnimations.push("scratchWallN");
+      if (scratchE) wallAnimations.push("scratchWallE");
+      if (scratchS) wallAnimations.push("scratchWallS");
+
+      // ====== 核心修改：大幅提高挠墙概率 ======
+      if (wallAnimations.length > 0) {
+          // 如果靠近了边框，设定 80% 的概率强制优先触发挠墙（剩下 20% 概率它才会去睡觉/舔毛）
+          if (Math.random() < 0.4) { 
+              idleAnimation = wallAnimations[Math.floor(Math.random() * wallAnimations.length)];
+          } else {
+              idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
+          }
+      } else {
+          // 如果不在边框附近，就正常从基础动作（睡觉、舔毛等）里随机抽
+          idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
+      }
     }
 
     if (forceSleep) idleAnimation = "sleeping";
@@ -1158,7 +1527,7 @@ window.onload = function() {
 
     nekoPosX -= (diffX / distance) * nekoSpeed; nekoPosY -= (diffY / distance) * nekoSpeed;
 
-    // [修复点 4] 把墙壁边缘判定，锁定为你当前“眼睛能看到的区域 (Visual Viewport)”
+    // 把墙壁边缘判定，锁定为你当前“眼睛能看到的区域 (Visual Viewport)”
     let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
     let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
     let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
@@ -1178,7 +1547,6 @@ window.onload = function() {
 
   create();
 })();
-
     </script>
 </body>
 </html>
