@@ -1,186 +1,63 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
+    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png" fetchpriority="high">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="color-scheme" content="dark">
     <meta name="theme-color" content="#000000">
     <title>✨🐈</title>
-
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://me2077.github.io" crossorigin>
-
-    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png">
     <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG">
     <link rel="preload" as="font" type="font/woff" href="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/fonts/icomoon.woff" crossorigin>
-
     <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
     <link rel="shortcut icon" href="favicon/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
     <meta name="apple-mobile-web-app-title" content="qxx">
     <link rel="manifest" href="favicon/site.webmanifest">
-
     <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/js/xx.js" defer></script>
     <script src="js/vCard.js" defer></script>
-
     <style>
-        :root {
-            --glow-sens: 30;
-            --dark: hsl(260, 25%, 10%);
-            --fg: black;
-            --h: 260;
-            --card-bg: linear-gradient(8deg, var(--dark) 75%, color-mix(in hsl, var(--dark), white 2.5%) 75.5%);
-            --blend: soft-light;
-            --glow-blend: plus-lighter;
-            --glow-color: 40deg 80% 80%;
-            --duration: 1s;
-            --ease-slider: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-timeline: cubic-bezier(0.71, 0.21, 0.3, 0.95);
-            --page-height: 498px;
-            --accent: hsl(260, 100%, 80%);
-            --glowing-card-bg: rgb(255 255 255 / 15%);
-            --glowing-card-border: rgb(255 255 255 / 70%);
-            --glowing-card-backdrop: blur(7px);
-            --link-card-bg: rgb(255 255 255 / 9%);
-            --link-card-hover-bg: rgb(255 255 255 / 25%);
-            --link-card-border: rgb(255 255 255 / 40%);
-            --link-card-box-shadow: 0px 4px 3px #0001, 0 0 35px #fffa inset;
-            --spotify-card-bg: rgb(255 255 255 / 15%);
-            --spotify-card-border: rgb(255 255 255 / 45%);
-            --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
-            --music-player-bg: rgb(255 255 255 / 15%);
-            --music-player-shadow: none;
-        }
-
-        .light {
-            --card-bg: linear-gradient(8deg, color-mix(in hsl, hsl(260, 25%, 95%), var(--dark) 2.5%) 75%, hsl(260, 25%, 95%) 75.5%);
-            --blend: darken;
-            --glow-blend: luminosity;
-            --glow-color: 280deg 90% 95%;
-            --glowing-card-bg: rgb(255 255 255 / 13%);
-            --glowing-card-border: rgb(255 255 255 / 80%);
-            --glowing-card-backdrop: blur(7px);
-            --link-card-bg: rgb(255 255 255 / 7%);
-            --link-card-hover-bg: rgb(255 255 255 / 25%);
-            --link-card-border: rgb(255 255 255 / 45%);
-            --link-card-box-shadow: 0px 4px 3px #0001, 0 0 25px #fffa inset;
-            --spotify-card-bg: rgb(255 255 255 / 7%);
-            --spotify-card-border: rgb(255 255 255 / 60%);
-            --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
-            --music-player-bg: rgb(255 255 255 / 10%);
-            --music-player-shadow: 0 2px 6px 1px #0000001f;
-        }
-
-        body {
-            background-color: #000000 !important;
-            background-image: none !important;
-            margin: 0;
-            padding: 0;
-            min-height: 100dvh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Inter', sans-serif;
-            color: var(--fg);
-            overflow: hidden;
-            touch-action: manipulation;
-            transition: color 0.8s ease;
-        }
-
-        body::before, body::after {
-            content: "";
-            position: fixed;
-            left: 0; right: 0;
-            background-color: #000000;
-            z-index: 99999;
-            pointer-events: none;
-        }
+        #bg-container .init-bg { background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover no-repeat; opacity: 1; z-index: 0; }
+        :root { --glow-sens: 30; --dark: hsl(260, 25%, 10%); --fg: black; --h: 260; --card-bg: linear-gradient(8deg, var(--dark) 75%, color-mix(in hsl, var(--dark), white 2.5%) 75.5%); --blend: soft-light; --glow-blend: plus-lighter; --glow-color: 40deg 80% 80%; --duration: 1s; --ease-slider: cubic-bezier(0.4, 0, 0.2, 1); --ease-timeline: cubic-bezier(0.71, 0.21, 0.3, 0.95); --page-height: 498px; --accent: hsl(260, 100%, 80%); --glowing-card-bg: rgb(255 255 255 / 15%); --glowing-card-border: rgb(255 255 255 / 70%); --glowing-card-backdrop: blur(7px); --link-card-bg: rgb(255 255 255 / 9%); --link-card-hover-bg: rgb(255 255 255 / 25%); --link-card-border: rgb(255 255 255 / 40%); --link-card-box-shadow: 0px 4px 3px #0001, 0 0 35px #fffa inset; --spotify-card-bg: rgb(255 255 255 / 15%); --spotify-card-border: rgb(255 255 255 / 45%); --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset; --music-player-bg: rgb(255 255 255 / 15%); --music-player-shadow: none; }
+        .light { --card-bg: linear-gradient(8deg, color-mix(in hsl, hsl(260, 25%, 95%), var(--dark) 2.5%) 75%, hsl(260, 25%, 95%) 75.5%); --blend: darken; --glow-blend: luminosity; --glow-color: 280deg 90% 95%; --glowing-card-bg: rgb(255 255 255 / 13%); --glowing-card-border: rgb(255 255 255 / 80%); --glowing-card-backdrop: blur(7px); --link-card-bg: rgb(255 255 255 / 7%); --link-card-hover-bg: rgb(255 255 255 / 25%); --link-card-border: rgb(255 255 255 / 45%); --link-card-box-shadow: 0px 4px 3px #0001, 0 0 25px #fffa inset; --spotify-card-bg: rgb(255 255 255 / 7%); --spotify-card-border: rgb(255 255 255 / 60%); --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset; --music-player-bg: rgb(255 255 255 / 10%); --music-player-shadow: 0 2px 6px 1px #0000001f; }
+        body { background-color: #000000 !important; background-image: none !important; margin: 0; padding: 0; min-height: 100dvh; display: flex; justify-content: center; align-items: center; font-family: 'Inter', sans-serif; color: var(--fg); overflow: hidden; touch-action: manipulation; transition: color 0.8s ease; }
+        body::before, body::after { content: ""; position: fixed; left: 0; right: 0; background-color: #000000; z-index: 99999; pointer-events: none; }
         body::before { top: 0; height: env(safe-area-inset-top); }
         body::after { bottom: 0; height: env(safe-area-inset-bottom); }
-
-        #bg-container {
-            position: fixed; inset: 0; z-index: -3; pointer-events: none; contain: strict; 
-        }
-
-        .bg-layer {
-            position: absolute; inset: 0; background-size: cover; background-position: center;
-            opacity: 0; transition: opacity 0.8s ease-in-out; transform: translateZ(0);
-            will-change: opacity; contain: strict;
-        }
-
+        #bg-container { position: fixed; inset: 0; z-index: -3; pointer-events: none; contain: strict; }
+        .bg-layer { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 0.8s ease-in-out; transform: translateZ(0); will-change: opacity; contain: strict; }
         canvas { position: fixed; inset: 0; width: 100%; height: 100dvh; z-index: -1; }
-
-        .glowing-card {
-            position: relative; width: 100%; max-width: 345px; height: 510px; flex-shrink: 0;
-            border-radius: 20px; isolation: isolate; transform: translateZ(0);
-            background: var(--glowing-card-bg); box-shadow: 0px 10px 15px transparent, 0 0 55px #fff inset;
-            overflow: hidden; text-align: center; box-sizing: border-box;
-            border: 1px solid var(--glowing-card-border);
-            -webkit-backdrop-filter: var(--glowing-card-backdrop);
-            backdrop-filter: var(--glowing-card-backdrop);
-            transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
-            will-change: background, box-shadow, border;
-        }
-
-        .theme-toggle, .day-toggle {
-            position: absolute; width: 24px; height: 24px; cursor: pointer; z-index: 10;
-            opacity: 0.5; transition: opacity 0.3s, transform 0.1s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        .glowing-card { position: relative; width: 100%; max-width: 345px; height: 510px; flex-shrink: 0; border-radius: 20px; isolation: isolate; transform: translateZ(0); background: var(--glowing-card-bg); box-shadow: 0px 10px 15px transparent, 0 0 55px #fff inset; overflow: hidden; text-align: center; box-sizing: border-box; border: 1px solid var(--glowing-card-border); -webkit-backdrop-filter: var(--glowing-card-backdrop); backdrop-filter: var(--glowing-card-backdrop); transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease; will-change: background, box-shadow, border; }
+        .theme-toggle, .day-toggle { position: absolute; width: 24px; height: 24px; cursor: pointer; z-index: 10; opacity: 0.5; transition: opacity 0.3s, transform 0.1s ease; -webkit-tap-highlight-color: transparent; }
         .theme-toggle { top: 6px; }
         .day-toggle { bottom: 5px; }
         .sun-toggle, .day-toggle-left { left: 6px; }
         .moon-toggle, .day-toggle-right { right: 6px; }
-
         @media (hover: hover) { .theme-toggle:hover, .day-toggle:hover { opacity: 0.7; transform: scale(1.2); } }
         .theme-toggle:active, .day-toggle:active { opacity: 0.7; }
         .icon-scale-active { transform: scale(1.2) !important; opacity: 0.7 !important; }
         .icon-shrink-force { transform: scale(1) !important; }
-
         .alist-widget-wrapper { padding: 20px; z-index: 1; height: 100%; box-sizing: border-box; }
         .profile-header { padding: 15px 2px 12px; position: relative; }
         .profile-pic { width: 200px; height: 200px; margin: -60px auto; filter: brightness(0.88); cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .link-section { width: 100%; height: 100%; overflow: hidden; padding: 0; }
         .pages { display: flex; transition: transform 0.5s ease-in-out; height: 100%; transform: translateX(-100%); }
-
-        .page {
-            flex: 0 0 100%; height: var(--page-height); box-sizing: border-box; display: flex;
-            flex-direction: column; justify-content: space-between; padding: 0 25px 25px;
-            overflow: hidden; contain: paint layout; 
-        }
-
+        .page { flex: 0 0 100%; height: var(--page-height); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; padding: 0 25px 25px; overflow: hidden; contain: paint layout; }
         #page3 { justify-content: center; align-items: center; padding: 0; }
-
-        .link-card, .spotify-card {
-            width: 100%; cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
-        }
-
-        .link-card {
-            display: flex; align-items: center; max-width: 275px; height: 45px;
-            background: var(--link-card-bg); padding: 8px; margin-bottom: 0px; border-radius: 20px;
-            text-decoration: none; color: inherit; font-size: 16px; font-style: italic;
-            border: 1px solid var(--link-card-border); box-shadow: var(--link-card-box-shadow);
-            transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
-        }
-
+        .link-card, .spotify-card { width: 100%; cursor: pointer; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+        .link-card { display: flex; align-items: center; max-width: 275px; height: 45px; background: var(--link-card-bg); padding: 8px; margin-bottom: 0px; border-radius: 20px; text-decoration: none; color: inherit; font-size: 16px; font-style: italic; border: 1px solid var(--link-card-border); box-shadow: var(--link-card-box-shadow); transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease; }
         .link-card:hover { background: var(--link-card-hover-bg); transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease; }
         .link-icon { width: 36px; height: 36px; margin-left: 16px; }
-        .link-title { text-align: center; width: 100%; font-size: 18px; }
-
-        .spotify-card {
-            display: flex; justify-content: space-between; align-items: center; max-width: 251px;
-            height: 160px; background: var(--spotify-card-bg); border-radius: 25px; padding: 10.8px 20px;
-            position: relative; margin-bottom: 4px; flex-wrap: nowrap; gap: 16px;
-            border: 1.5px solid var(--spotify-card-border); box-shadow: var(--spotify-card-box-shadow);
-            transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease, transform 0.2s ease;
-        }
-
+        .link-title { text-align: center; width: 100%; font-size: 18px; transition: transform 0.3s ease, text-shadow 0.3s ease; }
+        @media (hover: hover) { .link-card:hover .link-title { transform: scale(1.05); text-shadow: 2px 2px 4px rgba(0,0,0,0.1); } }
+        .link-card:active .link-title { transform: scale(1.15); text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .spotify-card { display: flex; justify-content: space-between; align-items: center; max-width: 251px; height: 160px; background: var(--spotify-card-bg); border-radius: 25px; padding: 10.8px 20px; position: relative; margin-bottom: 4px; flex-wrap: nowrap; gap: 16px; border: 1.5px solid var(--spotify-card-border); box-shadow: var(--spotify-card-box-shadow); transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease, transform 0.2s ease; }
         .spotify-left { display: flex; flex-direction: column; justify-content: flex-start; flex: 1; min-width: 0; padding-right: 8px; gap: 6px; }
         .spotify-meta { display: flex; align-items: center; gap: 6px; }
         .spotify-icon { width: 36px; height: 36px; border-radius: 12px; background-color: #1ed760; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -188,19 +65,12 @@
         .track-text { display: flex; flex-direction: column; text-align: left; gap: 1px; }
         .track-title { font-size: 16px; font-weight: bold; margin: 0; font-style: italic; }
         .track-artist { font-size: 11.8px; font-style: italic; }
-
-        .play-btn {
-            background-color: #3fd97a; color: white; border: none; border-radius: 24px; padding: 6px 36px;
-            font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: flex-start;
-            gap: 6px; cursor: pointer; margin-top: 1px; width: fit-content; font-style: italic; transition: transform 0.1s ease;
-        }
-
+        .play-btn { background-color: #3fd97a; color: white; border: none; border-radius: 24px; padding: 6px 36px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: flex-start; gap: 6px; cursor: pointer; margin-top: 1px; width: fit-content; font-style: italic; transition: transform 0.1s ease; }
         .play-btn:hover, .play-btn:active { transform: scale(1.05); }
         .play-btn svg { width: 14px; height: 14px; }
         .play-btn .icon-pause { display: none; }
         .play-btn.playing .icon-play { display: none; }
         .play-btn.playing .icon-pause { display: block; }
-
         .spotify-cover { width: 75px; height: 75px; border-radius: 12px; overflow: hidden; flex-shrink: 0; margin-left: 8px; }
         .spotify-cover img { width: 100%; height: 100%; object-fit: cover; }
         #shuicheCanvas { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; display: none; }
@@ -208,160 +78,34 @@
         .bullet { width: 85px; height: 6px; background: var(--fg); opacity: 0.2; border-radius: 10%; cursor: pointer; transition: all 0.3s; position: relative; }
         .bullet::before { content: ""; position: absolute; inset: -20px 0; }
         .bullet.active { opacity: 1; background: #c299ff; box-shadow: 0px 0px 20px rgba(194, 153, 255, 5); }
-
-        body:not(.light) .crt::after, body:not(.light) .crt::before {
-            content: " "; display: block; position: fixed; inset: 0; pointer-events: none; z-index: 2;
-        }
-        body:not(.light) .crt::after { background: rgba(18, 16, 16, 0); opacity: 0; }
-        body:not(.light) .crt::before {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 100%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-        }
-
         #page1 { padding: 0; }
         #page1 .page-vertical { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior: contain; position: relative; -ms-overflow-style: none; scrollbar-width: none; }
         #page1 .page-vertical::-webkit-scrollbar { display: none; }
         #page1 .subpage { scroll-snap-align: start; scroll-snap-stop: always; height: 100%; min-height: var(--page-height); display: flex; flex-direction: column; justify-content: center; align-items: center; }
         #page1, #page1 .page-vertical, #page1 .subpage { overflow-x: hidden; }
-
         .media-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-.glitch-img { 
-    width: 100%; 
-    max-width: 100%; 
-    max-height: 100%; 
-    border-radius: 15px; 
-    display: block; 
-    object-fit: cover; 
-}
-.pixel-scale-box { 
-    width: 200px; 
-    height: 180px; 
-    position: relative; 
-    transform: scale(0.5); 
-    contain: paint; 
-    will-change: transform; 
-    /* 删除了 margin-top: -10px; */
-}
-
+        .glitch-img { width: 100%; max-width: 100%; max-height: 100%; border-radius: 15px; display: block; object-fit: cover; }
+        .pixel-scale-box { width: 200px; height: 180px; position: relative; transform: scale(0.5); contain: paint; will-change: transform; }
         .reward-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-style: italic; cursor: pointer; position: relative; width: 100%; -webkit-tap-highlight-color: transparent; }
-.reward-media { 
-    position: relative; 
-    width: 100%; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    
-    /* 👇 新增：让整个图片区域（包含动图和二维码）往上移动 */
-    transform: translateY(-26px); 
-}
-      
-      
-.reward-gif { 
-    width: 100%; 
-    max-width: 100%; 
-    max-height: 100%; 
-    border-radius: 18px; 
-    transition: opacity 0.5s ease; 
-    opacity: 1; 
-    display: block; 
-    object-fit: cover; 
-}
-
-.reward-qr { 
-    position: absolute; 
-    width: 340px; 
-    height: 340px; 
-    border-radius: 18px; 
-    transition: opacity 0.5s ease; 
-    opacity: 0; 
-    pointer-events: none; 
-    
-    /* 👇 关键修改：强制顶部对齐，并保持完美水平居中 */
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    margin: 0 auto; 
-}
-      
-      
-.reward-texts { 
-    position: absolute;
-    bottom: 35px; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    width: 100%; 
-    height: 32px; 
-    /* 去掉了原来的 margin-top: 21px; */
-}
-.reward-text-old { 
-    position: absolute; 
-    color: inherit; 
-    font-size: 24px; 
-    text-align: center; 
-    text-decoration: underline; 
-    text-underline-offset: 2px; 
-    margin: 0; 
-    transition: opacity 0.5s ease; 
-    opacity: 1; 
-    white-space: nowrap; 
-
-    /* 👇 1. 单独控制【猫爪一伸...】的高低。负数往上移，正数往下移 */
-    transform: translateY(0px); 
-}
-
-.reward-text-new { 
-    position: absolute; 
-    opacity: 0; 
-    transition: opacity 0.5s ease; 
-    pointer-events: none; 
-    text-align: center; 
-
-    /* 👇 2. 单独控制【微信/支付宝】整体的高低。负数往上移，正数往下移 */
-    transform: translateY(-18px); 
-}
-
-.reward-text-new a { 
-    color: inherit; 
-    font-size: 24px; 
-    text-decoration: underline; 
-    text-underline-offset: 2px; 
-    display: block; 
-    line-height: 1.5; 
-
-    /* 👇 3. 单独控制【微信】和【支付宝】这两行字彼此之间的上下间距 */
-    margin-bottom: 0px; 
-}
-
-/* 补充：让最后一行支付宝文字底部不需要多余的间距 */
-.reward-text-new a:last-child {
-    margin-bottom: 0; 
-}
+        .reward-media { position: relative; width: 100%; display: flex; justify-content: center; align-items: center; transform: translateY(-26px); }
+        .reward-gif { width: 100%; max-width: 100%; max-height: 100%; border-radius: 18px; transition: opacity 0.5s ease; opacity: 1; display: block; object-fit: cover; }
+        .reward-qr { position: absolute; width: 340px; height: 340px; border-radius: 18px; transition: opacity 0.5s ease; opacity: 0; pointer-events: none; top: 0; left: 0; right: 0; margin: 0 auto; }
+        .reward-texts { position: absolute; bottom: 35px; display: flex; justify-content: center; align-items: center; width: 100%; height: 32px; }
+        .reward-text-old { position: absolute; color: inherit; font-size: 24px; text-align: center; text-decoration: underline; text-underline-offset: 2px; margin: 0; transition: opacity 0.5s ease; opacity: 1; white-space: nowrap; transform: translateY(0px); }
+        .reward-text-new { position: absolute; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; text-align: center; transform: translateY(-18px); }
+        .reward-text-new a { color: inherit; font-size: 24px; text-decoration: underline; text-underline-offset: 2px; display: block; line-height: 1.5; margin-bottom: 0px; }
+        .reward-text-new a:last-child { margin-bottom: 0; }
         .show-qr .reward-gif, .show-qr .reward-text-old { opacity: 0; pointer-events: none; }
         .show-qr .reward-qr, .show-qr .reward-text-new { opacity: 1; pointer-events: auto; }
-        .pixel-art {
-            width: 10px; height: 10px; position: absolute; top: 0; left: 0;
-            box-shadow: 110px 10px #000, 120px 10px #000, 110px 20px #000, 110px 30px #000, 110px 40px #000, 120px 40px #000, 130px 40px #000, 140px 40px #000, 150px 40px #000, 160px 40px #000, 30px 50px #000, 70px 50px #000, 160px 50px #000, 30px 60px #000, 40px 60px #000, 60px 60px #000, 70px 60px #000, 100px 60px #000, 110px 60px #000, 120px 60px #000, 130px 60px #000, 160px 60px #000, 30px 70px #000, 40px 70px #000, 50px 70px #000, 60px 70px #000, 70px 70px #000, 90px 70px #000, 100px 70px #000, 110px 70px #000, 120px 70px #000, 130px 70px #000, 140px 70px #000, 150px 70px #000, 160px 70px #000, 30px 80px #000, 40px 80px #f00, 50px 80px #000, 60px 80px #f00, 70px 80px #000, 80px 80px #000, 90px 80px #000, 100px 80px #000, 110px 80px #000, 120px 80px #000, 130px 80px #000, 140px 80px #000, 150px 80px #000, 160px 80px #000, 30px 90px #000, 40px 90px #000, 50px 90px #000, 60px 90px #000, 70px 90px #000, 80px 90px #000, 90px 90px #000, 100px 90px #000, 110px 90px #000, 120px 90px #000, 130px 90px #000, 140px 90px #000, 150px 90px #000, 160px 90px #000, 40px 100px #000, 50px 100px #000, 60px 100px #000, 70px 100px #000, 80px 100px #000, 90px 100px #000, 100px 100px #000, 110px 100px #000, 120px 100px #000, 130px 100px #000, 140px 100px #000, 150px 100px #000, 160px 100px #000, 60px 110px #000, 70px 110px #000, 80px 110px #000, 90px 110px #000, 100px 110px #000, 110px 110px #000, 130px 110px #000, 140px 110px #000, 150px 110px #000, 60px 120px #000, 70px 120px #000, 80px 120px #000, 100px 120px #000, 110px 120px #000, 130px 120px #000, 140px 120px #000, 60px 130px #000, 80px 130px #000, 110px 130px #000, 140px 130px #000, 60px 140px #000, 80px 140px #000, 110px 140px #000, 140px 140px #000, 60px 150px #000, 80px 150px #000, 110px 150px #000, 140px 150px #000, 50px 160px #000, 60px 160px #000, 70px 160px #000, 80px 160px #000, 100px 160px #000, 110px 160px #000, 130px 160px #000, 140px 160px #000;
-        }
-
-        @font-face {
-            font-family: "icomoon";
-            src: url("https://cdn.jsdelivr.net/gh/qxx2000/blog@main/fonts/icomoon.woff") format("woff");
-            font-weight: normal; font-style: normal; font-display: swap;
-        }
-
-        [class^="icon-"], [class*=" icon-"] {
-            font-family: "icomoon" !important; font-style: normal; font-weight: normal; font-variant: normal;
-            text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-        }
-
+        .pixel-art { width: 10px; height: 10px; position: absolute; top: 0; left: 0; box-shadow: 110px 10px #000, 120px 10px #000, 110px 20px #000, 110px 30px #000, 110px 40px #000, 120px 40px #000, 130px 40px #000, 140px 40px #000, 150px 40px #000, 160px 40px #000, 30px 50px #000, 70px 50px #000, 160px 50px #000, 30px 60px #000, 40px 60px #000, 60px 60px #000, 70px 60px #000, 100px 60px #000, 110px 60px #000, 120px 60px #000, 130px 60px #000, 160px 60px #000, 30px 70px #000, 40px 70px #000, 50px 70px #000, 60px 70px #000, 70px 70px #000, 90px 70px #000, 100px 70px #000, 110px 70px #000, 120px 70px #000, 130px 70px #000, 140px 70px #000, 150px 70px #000, 160px 70px #000, 30px 80px #000, 40px 80px #f00, 50px 80px #000, 60px 80px #f00, 70px 80px #000, 80px 80px #000, 90px 80px #000, 100px 80px #000, 110px 80px #000, 120px 80px #000, 130px 80px #000, 140px 80px #000, 150px 80px #000, 160px 80px #000, 30px 90px #000, 40px 90px #000, 50px 90px #000, 60px 90px #000, 70px 90px #000, 80px 90px #000, 90px 90px #000, 100px 90px #000, 110px 90px #000, 120px 90px #000, 130px 90px #000, 140px 90px #000, 150px 90px #000, 160px 90px #000, 40px 100px #000, 50px 100px #000, 60px 100px #000, 70px 100px #000, 80px 100px #000, 90px 100px #000, 100px 100px #000, 110px 100px #000, 120px 100px #000, 130px 100px #000, 140px 100px #000, 150px 100px #000, 160px 100px #000, 60px 110px #000, 70px 110px #000, 80px 110px #000, 90px 110px #000, 100px 110px #000, 110px 110px #000, 130px 110px #000, 140px 110px #000, 150px 110px #000, 60px 120px #000, 70px 120px #000, 80px 120px #000, 100px 120px #000, 110px 120px #000, 130px 120px #000, 140px 120px #000, 60px 130px #000, 80px 130px #000, 110px 130px #000, 140px 130px #000, 60px 140px #000, 80px 140px #000, 110px 140px #000, 140px 140px #000, 60px 150px #000, 80px 150px #000, 110px 150px #000, 140px 150px #000, 50px 160px #000, 60px 160px #000, 70px 160px #000, 80px 160px #000, 100px 160px #000, 110px 160px #000, 130px 160px #000, 140px 160px #000; }
+        @font-face { font-family: "icomoon"; src: url("https://cdn.jsdelivr.net/gh/qxx2000/blog@main/fonts/icomoon.woff") format("woff"); font-weight: normal; font-style: normal; font-display: swap; }
+        [class^="icon-"], [class*=" icon-"] { font-family: "icomoon" !important; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         .icon-back:before { content: "\e900"; color: #827d7b; }
         .icon-next:before { content: "\e901"; color: #827d7b; }
         .icon-pause:before, .icon-play:before, .icon-playlist:before { color: #fff; }
         .icon-pause:before { content: "\e902"; }
         .icon-play:before { content: "\e903"; }
         .icon-playlist:before { content: "\e904"; }
-
         .lazy-placeholder { background-color: rgba(255, 255, 255, 0.1); }
         .img { width: 100%; flex-shrink: 0; display: block; object-fit: cover; }
         .list { margin: 0; padding: 0; list-style-type: none; }
@@ -373,16 +117,7 @@
         ._align_center { align-items: center; }
         ._justify_space-btwn { justify-content: space-between; align-items: center; width: 100%; }
         .text_overflow { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: inline-block; }
-
-        .music-player {
-            --color-gray: #e5e7ea; --color-blue: #78adfe; --color-blue-dark: #5781bd;
-            --box-shadow: 0 2px 6px 1px #0000001f; --cover-size: 4.2em; --border-radius: 1.2em;
-            --music-player-height: calc(var(--page-height) - 0px); --offset-cover: 1em;
-            width: 100%; max-width: 335px; height: 445px; -webkit-user-select: none; user-select: none;
-            border-radius: var(--border-radius); background-color: var(--music-player-bg);
-            margin: -15px auto 0; box-sizing: border-box; color: inherit; transition: background-color 0.8s ease;
-        }
-
+        .music-player { --color-gray: #e5e7ea; --color-blue: #78adfe; --color-blue-dark: #5781bd; --box-shadow: 0 2px 6px 1px #0000001f; --cover-size: 4.2em; --border-radius: 1.2em; --music-player-height: calc(var(--page-height) - 0px); --offset-cover: 1em; width: 100%; max-width: 335px; height: 445px; -webkit-user-select: none; user-select: none; border-radius: var(--border-radius); background-color: var(--music-player-bg); margin: -15px auto 0; box-sizing: border-box; color: inherit; transition: background-color 0.8s ease; }
         .slider { --shadow-opacity: 1; z-index: 0; flex-shrink: 0; height: 6.8em; position: relative; border-radius: inherit; transition: var(--duration) height var(--ease-timeline); }
         .slider.resize { --shadow-opacity: 0; height: var(--music-player-height); }
         .slider::after { content: ""; position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; border-radius: inherit; box-shadow: var(--box-shadow); opacity: var(--shadow-opacity); transition: opacity var(--duration) ease, box-shadow 0.8s ease; }
@@ -390,7 +125,6 @@
         .slider.resize .slider__content { width: 100%; height: 22em; transform: translate3d(0, 0, 0); }
         .slider__content .button { --size: 2.5em; z-index: 1; position: absolute; width: var(--size); height: var(--size); }
         .slider__content i { position: absolute; pointer-events: none; font-size: var(--size); }
-
         .music-player__playlist-button { top: 5.5%; left: 5.5%; transform: scale(0); transition: calc(var(--duration) / 2) transform; }
         .slider.resize .music-player__playlist-button { transform: scale(1); transition: 0.30s var(--duration) transform cubic-bezier(0, 0.85, 0.11, 1.64); }
         .music-player__broadcast-guarantor { top: 50%; left: 50%; transform: translate(-50%, -50%); }
@@ -398,11 +132,9 @@
         .music-player__broadcast-guarantor.click .icon-pause { opacity: 1; }
         .slider__imgs { width: 100%; height: 100%; filter: brightness(75%); transform: translate3d(calc(var(--index) * 100%), 0, 0); transition: var(--duration) transform var(--ease-slider); }
         .slider__imgs>img { pointer-events: none; }
-
         .slider__controls { --controls-y: 210%; --controls-x: 17.3%; --controls-width: 68.4%; --controls-resize-width: 88%; gap: 0.375em 0; flex-wrap: wrap; position: absolute; align-items: center; padding-top: 0.375em; width: var(--controls-width); transform: translate3d(var(--controls-x), 0, 0); animation: var(--controls-animate, "down paused") var(--duration) var(--ease-timeline) forwards; }
         @keyframes down { 100% { width: var(--controls-resize-width); transform: translate3d(0, var(--controls-y), 0); } }
         @keyframes up { 0% { width: var(--controls-resize-width); transform: translate3d(0, var(--controls-y), 0); } 100% { width: var(--controls-width); transform: translate3d(var(--controls-x), 0, 0); } }
-
         .slider__switch-button { font-size: 2.5em; height: max-content; }
         .music-player__info { width: 56.3%; cursor: pointer; line-height: 1.45; overflow: hidden; font-weight: bold; padding: 0 0.0625em; white-space: nowrap; }
         .music-player__info>* { margin: 0 auto; pointer-events: none; }
@@ -411,13 +143,11 @@
         .slider__controls .music-player__subtitle { width: max-content; }
         .music-player__singer-name.animate, .music-player__subtitle.animate { --subtitle-gap: 1.2em; display: flex; gap: 0 var(--subtitle-gap); animation: subtitle 12s 1.2s linear infinite; }
         @keyframes subtitle { 80%, 100% { transform: translate3d(calc((100% + var(--subtitle-gap)) / -2), 0, 0); } }
-
         .progress { width: 90%; height: 0.6em; cursor: pointer; transition: var(--duration) width var(--ease-timeline); position: relative; top: 8px; }
         .slider.resize .progress { width: 100%; }
         .progress__wrapper { width: 100%; height: 0.35em; position: relative; border-radius: 1em; background-color: var(--color-gray); }
         .progress__bar { top: 0; left: 0; bottom: 0; position: absolute; width: 100%; border-radius: inherit; background-color: var(--color-blue); transform: scaleX(var(--scale, 0)); transform-origin: left; will-change: transform; }
         .progress__dot { --size: 0.375em; position: absolute; top: 50%; left: var(--width, 0%); width: var(--size); height: var(--size); background-color: var(--color-blue-dark); border-radius: 100%; transform: translate(-50%, -50%); will-change: left; }
-
         .link-scroll-container { position: relative; width: 320px; }
         .music-player__playlist { box-sizing: border-box; height: calc(100% - 6.8em); padding: 10px 0.9em 0 var(--offset-cover) !important; overflow-y: auto; }
         .link-scroll-container::-webkit-scrollbar, .music-player__playlist::-webkit-scrollbar { width: 4px; background: transparent; }
@@ -425,7 +155,6 @@
         .link-scroll-container::-webkit-scrollbar-thumb, .music-player__playlist::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--fg) 40%, transparent); border-radius: 10px; border: 1px solid transparent; opacity: 0; transition: opacity 0.3s ease; }
         .link-scroll-container, .music-player__playlist { overflow-y: auto; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--fg) 40%, transparent) transparent; }
         .link-scroll-container.scrolling::-webkit-scrollbar-thumb, .link-scroll-container:hover::-webkit-scrollbar-thumb, .music-player__playlist.scrolling::-webkit-scrollbar-thumb, .music-player__playlist:hover::-webkit-scrollbar-thumb { opacity: 1; }
-
         .music-player__song { --gap: 0.5em; cursor: pointer; margin-bottom: var(--gap); padding-bottom: var(--gap); border-bottom: 0.8px solid #d8d8d859; }
         .music-player__song audio { display: none; }
         .music-player__song-img { width: var(--cover-size); height: var(--cover-size); border-radius: var(--border-radius); }
@@ -433,209 +162,84 @@
         .music-player__playlist-info b { display: block; margin-left: 0; padding-left: 0; text-align: left; width: calc(100% - 50px); }
         .music-player__playlist-info .music-player__subtitle { display: block; text-align: left; margin-left: 0; padding-left: 0; flex-grow: 1; }
         .music-player__song-duration { flex-shrink: 0; margin-left: 10px; font-weight: bold; font-size: 0.8em; color: inherit; opacity: 0.55; }
-
         .loading-spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: var(--fg); animation: spin 1s ease-in-out infinite; transition: border-top-color 0.8s ease; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { margin-top: 10px; font-size: 16px; }
     </style>
 </head>
-
 <body class="light">
-    <div id="bg-container">
-        <div class="bg-layer" style="background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover; opacity: 1; z-index: 0;"></div>
-    </div>
-
-    <div class="crt">
-        <div class="alist-widget-wrapper">
-            <div class="glowing-card">
-                <div class="inner">
-                    <svg id="btn-theme-light" class="theme-toggle sun-toggle" viewBox="0 0 24 24">
-                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                            <circle cx="12" cy="12" r="4"></circle>
-                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-                        </g>
-                    </svg>
-
-                    <svg id="btn-theme-dark" class="theme-toggle moon-toggle" viewBox="0 0 24 24">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>
-                    </svg>
-
-                    <svg id="btn-bg-1" class="day-toggle day-toggle-left" viewBox="0 0 24 24">
-                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                            <circle cx="12" cy="12" r="4"></circle>
-                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-                        </g>
-                    </svg>
-
-                    <svg id="btn-bg-2" class="day-toggle day-toggle-right" viewBox="0 0 24 24">
-                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                            <circle cx="12" cy="12" r="4"></circle>
-                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-                        </g>
-                    </svg>
-
-                    <div class="link-section">
-                        <div class="pages">
-                            <div id="page1" class="page">
-                                <div class="page-vertical">
-                                    <section class="subpage" id="page1-1">
-                                        <div id="rewardContainer" class="reward-wrapper">
-                                            <div class="reward-media">
-                                                <img id="neko-gif" class="reward-gif" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Neko.GIF" alt="GIF动图" decoding="async">
-                                                <img id="reward-qr" class="reward-qr" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/QR.webp" alt="二维码" decoding="async">
-                                            </div>
-                                            <div class="reward-texts">
-                                                <p id="text-original" class="reward-text-old">猫爪一伸,请我喝杯咖啡吧☕️</p>
-                                                <div id="text-new" class="reward-text-new">
-                                                    <a id="reward-wx" href="weixin://scanqrcode" target="_blank">👉点击跳转微信扫一扫👈</a>
-                                                    <a id="reward-zfb" href="https://qr.alipay.com/fkx17581wtzihcanvisaz0e" target="_blank">👉点击跳转支付宝付款👈</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </section>
-                                    <section class="subpage" id="page1-2">
-                                        <div class="media-wrapper"><img src="https://me2077.github.io/images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img"></div>
-                                    </section>
-                                    <section class="subpage" id="page1-3">
-                                        <div class="pixel-scale-box"><div class="pixel-art"></div></div>
-                                    </section>
-                                    <section class="subpage" id="page1-4">
-                                        <div class="media-wrapper"><video id="page1Video" class="glitch-img" loop playsinline webkit-playsinline preload="none"></video></div>
-                                    </section>
-                                </div>
-                            </div>
-
-                            <div id="page2" class="page">
-                                <div class="profile-header"><img id="profile-pic" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.gif" alt="头像" class="profile-pic" decoding="async"></div>
-                                <div id="spotify-card-wrap" class="spotify-card">
-                                    <div class="spotify-left">
-                                        <div class="spotify-meta">
-                                            <div class="spotify-icon"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Spotify.svg" alt="Spotify" decoding="async"></div>
-                                            <div class="track-text"><div class="track-title">Signals</div><div class="track-artist">Lazer Boomerang</div></div>
-                                        </div>
-                                        <button id="btn-spotify-play" class="play-btn">
-                                            <svg class="icon-play" viewBox="0 0 16 16" fill="white"><path d="M3 13.1231V2.87688C3 1.42024 4.55203 0.520516 5.77196 1.26995L14.1114 6.39307C15.2962 7.12093 15.2962 8.87907 14.1114 9.60693L5.77196 14.73C4.55203 15.4795 3 14.5798 3 13.1231Z"></path></svg>
-                                            <svg class="icon-pause" viewBox="0 0 16 16" fill="white"><path d="M4 2H6V14H4V2ZM10 2H12V14H10V2Z"></path></svg>
-                                            <span class="btn-text">Play</span>
-                                        </button>
+    <div id="bg-container"><div class="bg-layer init-bg"></div></div>
+    <div class="alist-widget-wrapper">
+        <div class="glowing-card">
+            <div class="inner">
+                <svg id="btn-theme-light" class="theme-toggle sun-toggle" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></g></svg>
+                <svg id="btn-theme-dark" class="theme-toggle moon-toggle" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg>
+                <svg id="btn-bg-1" class="day-toggle day-toggle-left" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></g></svg>
+                <svg id="btn-bg-2" class="day-toggle day-toggle-right" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></g></svg>
+                <div class="link-section">
+                    <div class="pages">
+                        <div id="page1" class="page">
+                            <div class="page-vertical">
+                                <section class="subpage" id="page1-1">
+                                    <div id="rewardContainer" class="reward-wrapper">
+                                        <div class="reward-media"><img id="neko-gif" class="reward-gif" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Neko.GIF" alt="GIF" decoding="async"><img id="reward-qr" class="reward-qr" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/QR.webp" alt="QR" decoding="async"></div>
+                                        <div class="reward-texts"><p id="text-original" class="reward-text-old">猫爪一伸,请我喝杯咖啡吧☕️</p><div id="text-new" class="reward-text-new"><a id="reward-wx" href="weixin://scanqrcode" target="_blank">👉点击跳转微信扫一扫👈</a><a id="reward-zfb" href="https://qr.alipay.com/fkx17581wtzihcanvisaz0e" target="_blank">👉点击跳转支付宝付款👈</a></div></div>
                                     </div>
-                                    <div class="spotify-cover"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Signals.webp" alt="封面" decoding="async"></div>
-                                    <audio id="audioPlayer" src="music/Signals.mp3" preload="none"></audio>
-                                </div>
-                                <div class="link-scroll-container">
-                                    <a id="btn-vcard" href="javascript:void(0);" class="link-card"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/vCard.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">vCard</span></a>
-                                    <a href="https://🎞.nekoweb.org" class="link-card" target="_blank"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Camera.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Gallery 🎞</span></a>
-                                    <a href="https://🦋.blogspot.com" class="link-card" target="_blank"><img src="images/Blog.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Blog博客</span></a>
-                                    <a href="javascript:void(0);" class="link-card" id="wechatBtn"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/WeChat.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WeChat</span></a>
-                                    <a href="https://t.me/qxx_me" class="link-card" target="_blank"><img src="images/Telegram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Telegram</span></a>
-                                    <a href="https://x.com/vwwvvvvvvv" class="link-card" target="_blank"><img src="images/Instagram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Instagram</span></a>
-                                    <a href="mailto:me@qxx.me" class="link-card"><img src="images/Mail.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Email</span></a>
-                                    <a href="https://wa.me/message/SYDPTLQEHYE3P1?src=qr" class="link-card" target="_blank"><img src="images/WhatsApp.png" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WhatsApp</span></a>
-                                </div>
-                            </div>
-
-                            <div id="page3" class="page">
-                                <div class="profile-header"></div>
-                                <audio id="mainAudio" preload="none"></audio>
-                                <div id="root" style="width: 100%; min-height: 445px; display: flex; justify-content: center; align-items: center;">
-                                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                        <div class="loading-spinner"></div>
-                                        <div class="loading-text">加载音乐播放器...</div>
-                                    </div>
-                                </div>
+                                </section>
+                                <section class="subpage" id="page1-2"><div class="media-wrapper"><img src="https://me2077.github.io/images/Glitch.PNG" loading="lazy" decoding="async" class="glitch-img" alt="glitch"></div></section>
+                                <section class="subpage" id="page1-3"><div class="pixel-scale-box"><div class="pixel-art"></div></div></section>
+                                <section class="subpage" id="page1-4"><div class="media-wrapper"><video id="page1Video" class="glitch-img" loop playsinline webkit-playsinline preload="none"></video></div></section>
                             </div>
                         </div>
-
-                        <div class="pagination">
-                            <div class="bullet" data-page="1"></div>
-                            <div class="bullet active" data-page="2"></div>
-                            <div class="bullet" data-page="3"></div>
+                        <div id="page2" class="page">
+                            <div class="profile-header"><img id="profile-pic" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.gif" alt="avatar" class="profile-pic" decoding="async"></div>
+                            <div id="spotify-card-wrap" class="spotify-card">
+                                <div class="spotify-left"><div class="spotify-meta"><div class="spotify-icon"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Spotify.svg" alt="Spotify" decoding="async"></div><div class="track-text"><div class="track-title">Signals</div><div class="track-artist">Lazer Boomerang</div></div></div><button id="btn-spotify-play" class="play-btn"><svg class="icon-play" viewBox="0 0 16 16" fill="white"><path d="M3 13.1231V2.87688C3 1.42024 4.55203 0.520516 5.77196 1.26995L14.1114 6.39307C15.2962 7.12093 15.2962 8.87907 14.1114 9.60693L5.77196 14.73C4.55203 15.4795 3 14.5798 3 13.1231Z"></path></svg><svg class="icon-pause" viewBox="0 0 16 16" fill="white"><path d="M4 2H6V14H4V2ZM10 2H12V14H10V2Z"></path></svg><span class="btn-text">Play</span></button></div>
+                                <div class="spotify-cover"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Signals.webp" alt="cover" decoding="async"></div><audio id="audioPlayer" src="music/Signals.mp3" preload="none"></audio>
+                            </div>
+                            <div class="link-scroll-container">
+                                <a id="btn-vcard" href="javascript:void(0);" class="link-card"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/vCard.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">vCard</span></a>
+                                <a href="https://🎞.nekoweb.org" class="link-card" target="_blank"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Camera.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Gallery 🎞</span></a>
+                                <a href="https://🦋.blogspot.com" class="link-card" target="_blank"><img src="images/Blog.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Blog博客</span></a>
+                                <a href="javascript:void(0);" class="link-card" id="wechatBtn"><img src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/WeChat.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WeChat</span></a>
+                                <a href="https://t.me/qxx_me" class="link-card" target="_blank"><img src="images/Telegram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Telegram</span></a>
+                                <a href="https://x.com/vwwvvvvvvv" class="link-card" target="_blank"><img src="images/Instagram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Instagram</span></a>
+                                <a href="mailto:me@qxx.me" class="link-card"><img src="images/Mail.PNG" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Email</span></a>
+                                <a href="https://wa.me/message/SYDPTLQEHYE3P1?src=qr" class="link-card" target="_blank"><img src="images/WhatsApp.png" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WhatsApp</span></a>
+                            </div>
+                        </div>
+                        <div id="page3" class="page">
+                            <div class="profile-header"></div><audio id="mainAudio" preload="none"></audio>
+                            <div id="root" style="width: 100%; min-height: 445px; display: flex; justify-content: center; align-items: center;"><div style="display: flex; flex-direction: column; align-items: center; justify-content: center;"><div class="loading-spinner"></div><div class="loading-text">加载音乐播放器...</div></div></div>
                         </div>
                     </div>
+                    <div class="pagination"><div class="bullet" data-page="1"></div><div class="bullet active" data-page="2"></div><div class="bullet" data-page="3"></div></div>
                 </div>
             </div>
         </div>
     </div>
-
     <canvas id="shuicheCanvas"></canvas>
-
-
 <script>
-// ==========================================
-// 🎨 全局背景与主题配置区
-// ==========================================
 const BG_TOP_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png';
 const BG_TOP_RIGHT = '#000000';
 const BG_BOTTOM_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG';
 const BG_BOTTOM_RIGHT = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
-
 window.isParticlesEnabled = !document.body.classList.contains('light');
-window.userToggledParticles = false; 
-let bgChangeSequence = 0;
-let currentPage = 2;
-const glowingCard = document.querySelector('.glowing-card');
-const audio = document.getElementById('audioPlayer');
-let isPlaying = false;
-let pagesContainer;
-let bullets;
-
-const bgPresets =[
-    { name: 'top-left',    value: BG_TOP_LEFT,     isLight: true },
-    { name: 'top-right',   value: BG_TOP_RIGHT,    isLight: false },
-    { name: 'bottom-left', value: BG_BOTTOM_LEFT,  isLight: true },
-    { name: 'bottom-right',value: BG_BOTTOM_RIGHT, isLight: true }
-];
-let currentBgIndex = 0;
-
+window.userToggledParticles = false;
+let bgChangeSequence = 0, currentPage = 2, isPlaying = false, pagesContainer, bullets, currentBgIndex = 0;
+const glowingCard = document.querySelector('.glowing-card'), audio = document.getElementById('audioPlayer');
+const bgPresets =[{ name: 'top-left', value: BG_TOP_LEFT, isLight: true },{ name: 'top-right', value: BG_TOP_RIGHT, isLight: false },{ name: 'bottom-left', value: BG_BOTTOM_LEFT, isLight: true },{ name: 'bottom-right', value: BG_BOTTOM_RIGHT, isLight: true }];
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // --- 👇 新增：页面加载时读取并无缝恢复上次保存的主题壁纸 ---
-    const savedIndex = localStorage.getItem('savedBgIndex');
-    if (savedIndex !== null) {
-        currentBgIndex = parseInt(savedIndex, 10);
-        const preset = bgPresets[currentBgIndex];
-        
-        // 直接在DOM中替换初始背景，防止网页刚打开时闪烁
-        const container = document.getElementById('bg-container');
-        if (container) {
-            const bgStyle = (preset.value.includes('gradient') || /^(#|rgb|hsl)/.test(preset.value.trim())) 
-                ? preset.value 
-                : `url('${preset.value}') center/cover`;
-            container.innerHTML = `<div class="bg-layer" style="background: ${bgStyle}; opacity: 1; z-index: 0;"></div>`;
-        }
-        
-        // 恢复页面的深色/浅色状态和字体颜色
-        document.body.classList.toggle('light', preset.isLight);
-        document.documentElement.style.setProperty('--fg', preset.isLight ? 'black' : '#f0f0f0');
-        window.isParticlesEnabled = !preset.isLight; // 恢复粒子特效状态
-    }
-    // --- 👆 恢复逻辑结束 ---
-
-    pagesContainer = document.querySelector('.pages');
-    bullets = document.querySelectorAll('.bullet');
-
-    // 👇 修改：更新原本的4个按钮监听器，让点击按钮也能触发记录保存
-    document.getElementById('btn-theme-light').addEventListener('click', () => { currentBgIndex = 0; saveAndSwitchBg(); });
-    document.getElementById('btn-theme-dark').addEventListener('click', () => { currentBgIndex = 1; saveAndSwitchBg(); });
-    document.getElementById('btn-bg-1').addEventListener('click', () => { currentBgIndex = 2; saveAndSwitchBg(); });
-    document.getElementById('btn-bg-2').addEventListener('click', () => { currentBgIndex = 3; saveAndSwitchBg(); });
-
-
-
+    pagesContainer = document.querySelector('.pages'); bullets = document.querySelectorAll('.bullet');
+    document.getElementById('btn-theme-light').addEventListener('click', () => switchBackground(BG_TOP_LEFT, true));
+    document.getElementById('btn-theme-dark').addEventListener('click', () => switchBackground(BG_TOP_RIGHT, false));
+    document.getElementById('btn-bg-1').addEventListener('click', () => switchBackground(BG_BOTTOM_LEFT, true));
+    document.getElementById('btn-bg-2').addEventListener('click', () => switchBackground(BG_BOTTOM_RIGHT, true));
     document.querySelectorAll('.theme-toggle, .day-toggle').forEach(button => {
         const resetScale = () => { button.classList.remove('icon-shrink-force', 'icon-scale-active'); };
-        button.addEventListener('mouseenter', resetScale);
-        button.addEventListener('mouseleave', resetScale);
-        button.addEventListener('click', function() {
-            resetScale();
-            this.classList.add('icon-scale-active');
-            setTimeout(() => { 
-                this.classList.remove('icon-scale-active');
-                this.classList.add('icon-shrink-force'); 
-            }, 350);
-        });
+        button.addEventListener('mouseenter', resetScale); button.addEventListener('mouseleave', resetScale);
+        button.addEventListener('click', function() { resetScale(); this.classList.add('icon-scale-active'); setTimeout(() => { this.classList.remove('icon-scale-active'); this.classList.add('icon-shrink-force'); }, 350); });
     });
-
     document.getElementById('rewardContainer').addEventListener('click', () => { document.getElementById('rewardContainer').classList.toggle('show-qr'); });
     document.getElementById('reward-wx').addEventListener('click', e => e.stopPropagation());
     document.getElementById('reward-zfb').addEventListener('click', e => e.stopPropagation());
@@ -643,358 +247,90 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('spotify-card-wrap').addEventListener('click', () => { window.open('https://open.spotify.com/track/3UkRfA9F62DYYDzqOskoov', '_blank'); });
     document.getElementById('btn-spotify-play').addEventListener('click', (e) => { e.stopPropagation(); togglePlay(e.currentTarget); });
     document.getElementById('btn-vcard').addEventListener('click', () => { if(typeof downloadVCard === 'function') downloadVCard(); });
-
-    if (bullets) {
-        bullets.forEach(b => {
-            b.addEventListener('click', function() { switchPageTo(parseInt(this.dataset.page)); });
-        });
-    }
-
-    if (typeof ClipboardJS !== 'undefined') {
-        var clipboard = new ClipboardJS('#wechatBtn', { text: () => "lllIIllIIlIII" });
-        clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; });
-    }
+    if (bullets) { bullets.forEach(b => { b.addEventListener('click', function() { switchPageTo(parseInt(this.dataset.page)); }); }); }
+    if (typeof ClipboardJS !== 'undefined') { var clipboard = new ClipboardJS('#wechatBtn', { text: () => "lllIIllIIlIII" }); clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; }); }
 });
-
 function updateParticlesDisplay() {
-    const canvas = document.getElementById('shuicheCanvas');
-    if (!canvas) return;
-    if (window.isParticlesEnabled) {
-        canvas.style.display = 'block';
-        if (window.bgEngine && window.bgEngine.start) window.bgEngine.start();
-    } else {
-        canvas.style.display = 'none';
-        if (window.bgEngine && window.bgEngine.stop) window.bgEngine.stop();
-    }
+    const canvas = document.getElementById('shuicheCanvas'); if (!canvas) return;
+    if (window.isParticlesEnabled) { canvas.style.display = 'block'; if (window.bgEngine && window.bgEngine.start) window.bgEngine.start(); }
+    else { canvas.style.display = 'none'; if (window.bgEngine && window.bgEngine.stop) window.bgEngine.stop(); }
 }
-
-let bgLayerIndex = 0; 
+let bgLayerIndex = 0;
 function crossfadeBackground(backgroundValue, isLightTheme) {
-    const currentChangeId = ++bgChangeSequence;
-    const container = document.getElementById('bg-container');
-    if (!container) return;
-
-    const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/);
-    const imageUrl = urlMatch ? urlMatch[1] : null;
-
+    const currentChangeId = ++bgChangeSequence; const container = document.getElementById('bg-container'); if (!container) return;
+    const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/), imageUrl = urlMatch ? urlMatch[1] : null;
     const applyEffect = () => {
         if (currentChangeId !== bgChangeSequence) return;
-        bgLayerIndex++; 
-        const newLayer = document.createElement('div');
-        newLayer.className = 'bg-layer';
-        newLayer.style.zIndex = bgLayerIndex;
-        newLayer.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover` : backgroundValue;
-        container.appendChild(newLayer);
-        void newLayer.offsetWidth;
-
-        document.body.classList.toggle('light', isLightTheme);
-        document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
-
+        bgLayerIndex++; const newLayer = document.createElement('div'); newLayer.className = 'bg-layer'; newLayer.style.zIndex = bgLayerIndex; newLayer.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover` : backgroundValue;
+        container.appendChild(newLayer); void newLayer.offsetWidth;
+        document.body.classList.toggle('light', isLightTheme); document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
         if (!window.userToggledParticles) window.isParticlesEnabled = !isLightTheme;
         if (!window.isParticlesEnabled) updateParticlesDisplay();
-
         requestAnimationFrame(() => { newLayer.style.opacity = '1'; });
-
-        setTimeout(() => {
-            if (currentChangeId !== bgChangeSequence) return; 
-            const layers = container.querySelectorAll('.bg-layer');
-            layers.forEach(layer => { if (layer !== newLayer) layer.remove(); });
-            if (window.isParticlesEnabled) updateParticlesDisplay();
-        }, 850);
+        setTimeout(() => { if (currentChangeId !== bgChangeSequence) return; const layers = container.querySelectorAll('.bg-layer'); layers.forEach(layer => { if (layer !== newLayer) layer.remove(); }); if (window.isParticlesEnabled) updateParticlesDisplay(); }, 850);
     };
-
-    if (imageUrl) {
-        const img = new Image();
-        img.src = imageUrl;
-        img.onload = applyEffect;
-        img.onerror = applyEffect;
-    } else { applyEffect(); }
+    if (imageUrl) { const img = new Image(); img.src = imageUrl; img.onload = applyEffect; img.onerror = applyEffect; } else { applyEffect(); }
 }
-
-function switchBackground(value, isLight = true) {
-    if (value.includes('gradient') || /^(#|rgb|hsl)/.test(value.trim())) { crossfadeBackground(value, isLight); } 
-    else { crossfadeBackground(`url('${value}')`, isLight); }
-}
-function saveAndSwitchBg() {
-    localStorage.setItem('savedBgIndex', currentBgIndex);
-    const preset = bgPresets[currentBgIndex];
-    switchBackground(preset.value, preset.isLight);
-}
-  
+function switchBackground(value, isLight = true) { if (value.includes('gradient') || /^(#|rgb|hsl)/.test(value.trim())) { crossfadeBackground(value, isLight); } else { crossfadeBackground(`url('${value}')`, isLight); } }
 (function initDoubleClickToggle() {
     let lastToggleTime = 0;
     function toggleParticles(e) {
-        let now = new Date().getTime();
-        if (now - lastToggleTime < 500) return;
-        lastToggleTime = now;
+        let now = new Date().getTime(); if (now - lastToggleTime < 500) return; lastToggleTime = now;
         if (e.target && e.target.closest && e.target.closest('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) { return; }
-        window.isParticlesEnabled = !window.isParticlesEnabled;
-        window.userToggledParticles = true;
-        updateParticlesDisplay();
+        window.isParticlesEnabled = !window.isParticlesEnabled; window.userToggledParticles = true; updateParticlesDisplay();
     }
     document.addEventListener('dblclick', toggleParticles);
-    
-    let lastTouchEnd = 0;
-    let isMultiTouch = false;
-
-    // 1. 监听手指按下：只要屏幕上超过1根手指，就标记为“多指/缩放操作”
-    document.addEventListener('touchstart', function(e) {
-        if (e.touches.length > 1) {
-            isMultiTouch = true;
-        }
-    }, { passive: true });
-
-    // 2. 监听手指离开
+    let lastTouchEnd = 0, isMultiTouch = false;
+    document.addEventListener('touchstart', function(e) { if (e.touches.length > 1) { isMultiTouch = true; } }, { passive: true });
     document.addEventListener('touchend', function(e) {
-        // 如果屏幕上还有手指没离开，说明这不是一次完整的单指点击，直接忽略
         if (e.touches.length > 0) return;
-        
-        // 如果刚刚经历过多指操作（双指缩放、双指点击等），结束并重置状态，不触发双击
-        if (isMultiTouch) {
-            isMultiTouch = false;
-            lastTouchEnd = 0; 
-            return;
-        }
-
-        // 纯净的单指双击判断逻辑
-        let now = new Date().getTime();
-        if (now - lastTouchEnd <= 400) { 
-            toggleParticles(e); 
-            lastTouchEnd = 0; 
-        } else { 
-            lastTouchEnd = now; 
-        }
+        if (isMultiTouch) { isMultiTouch = false; lastTouchEnd = 0; return; }
+        let now = new Date().getTime(); if (now - lastTouchEnd <= 400) { toggleParticles(e); lastTouchEnd = 0; } else { lastTouchEnd = now; }
     });
 })();
-
 (function initBackgroundEngine() {
-    const count = 1000; 
-    let scene, camera, renderer, animationId = null, mouseX = 0, mouseY = 0;
-    let windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
-    let clock, geometry, posAttribute, positionArray, velocityArray;
-
+    const count = 1000; let scene, camera, renderer, animationId = null, mouseX = 0, mouseY = 0, windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2, clock, geometry, posAttribute, positionArray, velocityArray;
     function init() {
         if (typeof THREE === 'undefined') { setTimeout(init, 50); return; }
-        clock = new THREE.Clock(); 
-        geometry = new THREE.BufferGeometry();
-        posAttribute = new THREE.BufferAttribute(new Float32Array(6 * count), 3);
-        posAttribute.setUsage(THREE.DynamicDrawUsage);
-        geometry.setAttribute('position', posAttribute);
-        geometry.setAttribute('velocity', new THREE.BufferAttribute(new Float32Array(2 * count), 1));
-        positionArray = posAttribute.array;
-        velocityArray = geometry.getAttribute('velocity').array;
-
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 500);
-        camera.position.z = 200;
-        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('shuicheCanvas'), antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight, false);
-        renderer.setClearColor(0x000000, 0);
-        
-        for (let index = 0; index < count; index++) {
-            const x = Math.random() * 800 - 400, y = Math.random() * 800 - 400, z = Math.random() * 400 - 200;
-            positionArray[6 * index] = x; positionArray[6 * index + 1] = y; positionArray[6 * index + 2] = z;
-            positionArray[6 * index + 3] = x; positionArray[6 * index + 4] = y; positionArray[6 * index + 5] = z;
-        }
+        clock = new THREE.Clock(); geometry = new THREE.BufferGeometry(); posAttribute = new THREE.BufferAttribute(new Float32Array(6 * count), 3); posAttribute.setUsage(THREE.DynamicDrawUsage); geometry.setAttribute('position', posAttribute); geometry.setAttribute('velocity', new THREE.BufferAttribute(new Float32Array(2 * count), 1)); positionArray = posAttribute.array; velocityArray = geometry.getAttribute('velocity').array;
+        scene = new THREE.Scene(); camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 500); camera.position.z = 200; renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('shuicheCanvas'), antialias: true, alpha: true }); renderer.setSize(window.innerWidth, window.innerHeight, false); renderer.setClearColor(0x000000, 0);
+        for (let index = 0; index < count; index++) { const x = Math.random() * 800 - 400, y = Math.random() * 800 - 400, z = Math.random() * 400 - 200; positionArray[6 * index] = x; positionArray[6 * index + 1] = y; positionArray[6 * index + 2] = z; positionArray[6 * index + 3] = x; positionArray[6 * index + 4] = y; positionArray[6 * index + 5] = z; }
         scene.add(new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xffffff })));
-        
         window.addEventListener('resize', debounceResize, { passive: true });
         document.body.addEventListener('pointermove', e => { mouseX = e.clientX - windowHalfX; mouseY = e.clientY - windowHalfY; }, { passive: true });
-        
         if (window.isParticlesEnabled) { clock.start(); anime(); }
     }
-
     let resizeTimeout;
-    function debounceResize() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            windowHalfX = window.innerWidth / 2; windowHalfY = window.innerHeight / 2;
-        }, 100);
-    }
-
+    function debounceResize() { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(() => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); windowHalfX = window.innerWidth / 2; windowHalfY = window.innerHeight / 2; }, 100); }
     function anime() {
-        let delta = clock.getDelta();
-        delta = Math.min(delta, 0.1); 
-        const timeScale = delta / (1 / 60); 
-
-        for (let index = 0; index < count; index++) {
-            velocityArray[2 * index] += 0.015 * timeScale;
-            velocityArray[2 * index + 1] += 0.015 * timeScale;
-            positionArray[6 * index + 2] += (velocityArray[2 * index] + 0.03) * timeScale;
-            positionArray[6 * index + 5] += velocityArray[2 * index + 1] * timeScale;
-            
-            if (positionArray[6 * index + 2] > 200) {
-                let z = Math.random() * 200 - 200;
-                positionArray[6 * index + 2] = z; positionArray[6 * index + 5] = z;
-                velocityArray[2 * index] = 0; velocityArray[2 * index + 1] = 0;
-            }
-        }
-        posAttribute.needsUpdate = true;
-        camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
-        camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
-        camera.lookAt(scene.position);
-        renderer.render(scene, camera);
-        animationId = requestAnimationFrame(anime);
+        let delta = clock.getDelta(); delta = Math.min(delta, 0.1); const timeScale = delta / (1 / 60);
+        for (let index = 0; index < count; index++) { velocityArray[2 * index] += 0.015 * timeScale; velocityArray[2 * index + 1] += 0.015 * timeScale; positionArray[6 * index + 2] += (velocityArray[2 * index] + 0.03) * timeScale; positionArray[6 * index + 5] += velocityArray[2 * index + 1] * timeScale; if (positionArray[6 * index + 2] > 200) { let z = Math.random() * 200 - 200; positionArray[6 * index + 2] = z; positionArray[6 * index + 5] = z; velocityArray[2 * index] = 0; velocityArray[2 * index + 1] = 0; } }
+        posAttribute.needsUpdate = true; camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02; camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02; camera.lookAt(scene.position); renderer.render(scene, camera); animationId = requestAnimationFrame(anime);
     }
-
-    document.addEventListener("visibilitychange", () => {
-        if (document.hidden && animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } 
-        else if (!document.hidden && animationId === null && window.isParticlesEnabled) { clock.start(); anime(); }
-    });
-
-    window.bgEngine = {
-        start: () => { if (animationId === null) { if(clock) clock.start(); anime(); } },
-        stop: () => { if (animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } }
-    };
-    window.bgRenderer = { setClearColor: (c, a) => renderer ? renderer.setClearColor(c, a) : null };
-    window.addEventListener('DOMContentLoaded', init);
+    document.addEventListener("visibilitychange", () => { if (document.hidden && animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } else if (!document.hidden && animationId === null && window.isParticlesEnabled) { clock.start(); anime(); } });
+    window.bgEngine = { start: () => { if (animationId === null) { if(clock) clock.start(); anime(); } }, stop: () => { if (animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } } };
+    window.bgRenderer = { setClearColor: (c, a) => renderer ? renderer.setClearColor(c, a) : null }; window.addEventListener('DOMContentLoaded', init);
 })();
-
 function updateGlowingShadow() { glowingCard.style.boxShadow = '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset'; }
-
-function switchPageTo(page) {
-    if (page < 1 || page > 3) return;
-    currentPage = page;
-    if (pagesContainer) pagesContainer.style.transform = `translateX(-${(page - 1) * 100}%)`;
-    if (bullets) bullets.forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page));
-}
-
-function togglePlay(button) {
-    if (audio.paused) {
-        audio.play(); button.classList.add('playing'); button.querySelector('.btn-text').innerText = 'Pause'; isPlaying = true;
-    } else {
-        audio.pause(); button.classList.remove('playing'); button.querySelector('.btn-text').innerText = 'Play'; isPlaying = false;
-    }
-}
-
-audio.addEventListener('ended', () => {
-    isPlaying = false;
-    const btn = document.querySelector('.play-btn');
-    if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
-});
-
-document.addEventListener('play', e => {
-    document.querySelectorAll('audio').forEach(audioEl => {
-        if (audioEl !== e.target && !audioEl.paused) {
-            audioEl.pause();
-            if (audioEl.id === 'audioPlayer') {
-                const btn = document.querySelector('.play-btn');
-                if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
-                isPlaying = false;
-            }
-        }
-    });
-}, true);
-
+function switchPageTo(page) { if (page < 1 || page > 3) return; currentPage = page; if (pagesContainer) pagesContainer.style.transform = `translateX(-${(page - 1) * 100}%)`; if (bullets) bullets.forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page)); }
+function togglePlay(button) { if (audio.paused) { audio.play(); button.classList.add('playing'); button.querySelector('.btn-text').innerText = 'Pause'; isPlaying = true; } else { audio.pause(); button.classList.remove('playing'); button.querySelector('.btn-text').innerText = 'Play'; isPlaying = false; } }
+audio.addEventListener('ended', () => { isPlaying = false; const btn = document.querySelector('.play-btn'); if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; } });
+document.addEventListener('play', e => { document.querySelectorAll('audio').forEach(audioEl => { if (audioEl !== e.target && !audioEl.paused) { audioEl.pause(); if (audioEl.id === 'audioPlayer') { const btn = document.querySelector('.play-btn'); if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; } isPlaying = false; } } }); }, true);
 function loadMusicPlayer() {
     let indexSong = 0, pendingCurrentTime = 0, isLocked = false, songsLength = null, selectedSong = null, songIsPlayed = false, progress_elmnt = null, songName_elmnt = null, sliderImgs_elmnt = null, singerName_elmnt = null, musicPlayerInfo_elmnt = null, progressBarIsUpdating = false, broadcastGuarantor_elmnt = null, isSwitchingMusic = false, preloadAbortController = null;
-    const root = document.querySelector("#root");
-    const mainAudio = document.getElementById('mainAudio');
-
+    const root = document.querySelector("#root"), mainAudio = document.getElementById('mainAudio');
     window.musicControls = { playPause: handlePlayMusic, next: () => handleChangeMusic({ isPrev: false }), prev: () => handleChangeMusic({ isPrev: true }) };
-
-    function savePlaybackState() {
-        if (!selectedSong) return;
-        const playbackState = { currentSongIndex: indexSong, isPlaying: !selectedSong.paused, volume: selectedSong.volume, currentTime: pendingCurrentTime > 0 ? pendingCurrentTime : selectedSong.currentTime };
-        localStorage.setItem('musicPlayerState', JSON.stringify(playbackState));
-    }
-
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') savePlaybackState(); });
-    window.addEventListener('beforeunload', savePlaybackState);
-    setInterval(savePlaybackState, 5000);
-
-    function updateUIForSong(index) {
-        updateInfo(songName_elmnt, songs[index].songName);
-        updateInfo(singerName_elmnt, songs[index].artist);
-        setProperty(sliderImgs_elmnt, "--index", -index);
-        if ('mediaSession' in navigator) { navigator.mediaSession.metadata = new MediaMetadata({ title: songs[index].songName, artist: songs[index].artist, artwork:[{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }] }); }
-    }
-
-    function restorePlaybackState() {
-        try {
-            const savedState = localStorage.getItem('musicPlayerState');
-            if (!savedState) { updateUIForSong(0); return; }
-            const playbackState = JSON.parse(savedState);
-            if (playbackState.currentSongIndex !== undefined && playbackState.currentSongIndex >= 0 && playbackState.currentSongIndex <= songsLength) {
-                indexSong = playbackState.currentSongIndex;
-                if (playbackState.currentTime !== undefined) pendingCurrentTime = playbackState.currentTime;
-                if (playbackState.volume !== undefined) mainAudio.volume = playbackState.volume;
-                updateUIForSong(indexSong);
-            } else { updateUIForSong(0); }
-        } catch (e) { updateUIForSong(0); }
-    }
-
-    function preloadNextSongHead(nextIndex) {
-        if (!songs[nextIndex] || !songs[nextIndex].files.song) return;
-        const nextUrl = songs[nextIndex].files.song;
-        if (preloadAbortController) preloadAbortController.abort();
-        preloadAbortController = new AbortController();
-        fetch(nextUrl, { headers: { 'Range': 'bytes=0-524288' }, signal: preloadAbortController.signal }).catch(err => {});
-    }
-
-    function handleChangeMusic({ isPrev = false, playListIndex = null }) {
-        if (isLocked) return;
-        let newIndex = playListIndex !== null ? playListIndex : (isPrev ? indexSong - 1 : indexSong + 1);
-        if (newIndex < 0) newIndex = songsLength;
-        if (newIndex > songsLength) newIndex = 0;
-        if (newIndex === indexSong && playListIndex === null) return;
-
-        let wasPlaying = songIsPlayed;
-        isSwitchingMusic = true;
-        indexSong = newIndex;
-        pendingCurrentTime = 0;
-        updateUIForSong(indexSong);
-        mainAudio.src = songs[indexSong].files.song;
-
-        if (wasPlaying) {
-            let playPromise = mainAudio.play();
-            if (playPromise !== undefined) { playPromise.then(() => { isSwitchingMusic = false; }).catch(e => { isSwitchingMusic = false; songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); }); }
-            songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1);
-        } else { isSwitchingMusic = false; if (preloadAbortController) preloadAbortController.abort(); }
-        savePlaybackState();
-    }
-
-    function handlePlayMusic() {
-        if (mainAudio.currentTime === mainAudio.duration && mainAudio.duration > 0) { handleChangeMusic({}); return; }
-        if (!mainAudio.src || mainAudio.src === window.location.href || mainAudio.src === "") {
-            mainAudio.src = songs[indexSong].files.song; mainAudio.play(); songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1);
-        } else { if (mainAudio.paused) { mainAudio.play(); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1); } else { mainAudio.pause(); } }
-    }
-
-    function updateTheProgressBar() {
-        const duration = this.duration; const currentTime = this.currentTime;
-        if (isNaN(duration) || duration === 0) return;
-        const progressRatio = currentTime / duration;
-        setProperty(progress_elmnt, "--scale", progressRatio); setProperty(progress_elmnt, "--width", `${progressRatio * 100}%`);
-    }
-
-    function syncMediaSessionPosition() {
-        if ('mediaSession' in navigator && !isNaN(mainAudio.duration) && isFinite(mainAudio.duration) && mainAudio.duration > 0) {
-            try { let position = mainAudio.currentTime || 0; position = Math.max(0, Math.min(position, mainAudio.duration)); navigator.mediaSession.setPositionState({ duration: mainAudio.duration, playbackRate: mainAudio.playbackRate || 1, position: position }); } catch (err) {}
-        }
-    }
-
-    function handleScrub(e) {
-        e.preventDefault(); let clientX = e.clientX; if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
-        const progressOffsetLeft = progress_elmnt.getBoundingClientRect().left; const progressWidth = progress_elmnt.offsetWidth; const duration = selectedSong.duration;
-        if (isNaN(duration) || duration === 0) return;
-        selectedSong.currentTime = (clientX - progressOffsetLeft) / progressWidth * duration;
-    }
-
-    const songs =[
-        { "bg": "#c9bea28f", "artist": "SCSI-9", "songName": "Senorita Tristeza", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.webp" }, "duration": "5:53" },
-        { "bg": "#0896eba1", "artist": "Paradox Interactive", "songName": "Be Happy", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.webp" }, "duration": "3:22" },
-        { "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.webp" }, "duration": "4:31" },
-        { "bg": "#ffc382", "artist": "La Femme", "songName": "Le jardin", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.webp" }, "duration": "4:00" },
-        { "bg": "#ffcbdc", "artist": "Still Corners", "songName": "Crying", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.webp" }, "duration": "3:28" },
-        { "bg": "#44c16fb5", "artist": "Marvel83'", "songName": "Alone With You", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.webp" }, "duration": "4:53" },
-        { "bg": "#ff4545", "artist": "Timecop1983", "songName": "Nightfall", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.webp" }, "duration": "4:40" },
-        { "bg": "#e5e7e9", "artist": "Lazer Boomerang", "songName": "R3cover", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.webp" }, "duration": "3:34" }
-    ];
-
+    function savePlaybackState() { if (!selectedSong) return; const playbackState = { currentSongIndex: indexSong, isPlaying: !selectedSong.paused, volume: selectedSong.volume, currentTime: pendingCurrentTime > 0 ? pendingCurrentTime : selectedSong.currentTime }; localStorage.setItem('musicPlayerState', JSON.stringify(playbackState)); }
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') savePlaybackState(); }); window.addEventListener('beforeunload', savePlaybackState); setInterval(savePlaybackState, 5000);
+    function updateUIForSong(index) { updateInfo(songName_elmnt, songs[index].songName); updateInfo(singerName_elmnt, songs[index].artist); setProperty(sliderImgs_elmnt, "--index", -index); if ('mediaSession' in navigator) { navigator.mediaSession.metadata = new MediaMetadata({ title: songs[index].songName, artist: songs[index].artist, artwork:[{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }] }); } }
+    function restorePlaybackState() { try { const savedState = localStorage.getItem('musicPlayerState'); if (!savedState) { updateUIForSong(0); return; } const playbackState = JSON.parse(savedState); if (playbackState.currentSongIndex !== undefined && playbackState.currentSongIndex >= 0 && playbackState.currentSongIndex <= songsLength) { indexSong = playbackState.currentSongIndex; if (playbackState.currentTime !== undefined) pendingCurrentTime = playbackState.currentTime; if (playbackState.volume !== undefined) mainAudio.volume = playbackState.volume; updateUIForSong(indexSong); } else { updateUIForSong(0); } } catch (e) { updateUIForSong(0); } }
+    function preloadNextSongHead(nextIndex) { if (!songs[nextIndex] || !songs[nextIndex].files.song) return; const nextUrl = songs[nextIndex].files.song; if (preloadAbortController) preloadAbortController.abort(); preloadAbortController = new AbortController(); fetch(nextUrl, { headers: { 'Range': 'bytes=0-524288' }, signal: preloadAbortController.signal }).catch(err => {}); }
+    function handleChangeMusic({ isPrev = false, playListIndex = null }) { if (isLocked) return; let newIndex = playListIndex !== null ? playListIndex : (isPrev ? indexSong - 1 : indexSong + 1); if (newIndex < 0) newIndex = songsLength; if (newIndex > songsLength) newIndex = 0; if (newIndex === indexSong && playListIndex === null) return; let wasPlaying = songIsPlayed; isSwitchingMusic = true; indexSong = newIndex; pendingCurrentTime = 0; updateUIForSong(indexSong); mainAudio.src = songs[indexSong].files.song; if (wasPlaying) { let playPromise = mainAudio.play(); if (playPromise !== undefined) { playPromise.then(() => { isSwitchingMusic = false; }).catch(e => { isSwitchingMusic = false; songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); }); } songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1); } else { isSwitchingMusic = false; if (preloadAbortController) preloadAbortController.abort(); } savePlaybackState(); }
+    function handlePlayMusic() { if (mainAudio.currentTime === mainAudio.duration && mainAudio.duration > 0) { handleChangeMusic({}); return; } if (!mainAudio.src || mainAudio.src === window.location.href || mainAudio.src === "") { mainAudio.src = songs[indexSong].files.song; mainAudio.play(); songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1); } else { if (mainAudio.paused) { mainAudio.play(); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1); } else { mainAudio.pause(); } } }
+    function updateTheProgressBar() { const duration = this.duration, currentTime = this.currentTime; if (isNaN(duration) || duration === 0) return; const progressRatio = currentTime / duration; setProperty(progress_elmnt, "--scale", progressRatio); setProperty(progress_elmnt, "--width", `${progressRatio * 100}%`); }
+    function syncMediaSessionPosition() { if ('mediaSession' in navigator && !isNaN(mainAudio.duration) && isFinite(mainAudio.duration) && mainAudio.duration > 0) { try { let position = mainAudio.currentTime || 0; position = Math.max(0, Math.min(position, mainAudio.duration)); navigator.mediaSession.setPositionState({ duration: mainAudio.duration, playbackRate: mainAudio.playbackRate || 1, position: position }); } catch (err) {} } }
+    function handleScrub(e) { e.preventDefault(); let clientX = e.clientX; if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX; const progressOffsetLeft = progress_elmnt.getBoundingClientRect().left, progressWidth = progress_elmnt.offsetWidth, duration = selectedSong.duration; if (isNaN(duration) || duration === 0) return; selectedSong.currentTime = (clientX - progressOffsetLeft) / progressWidth * duration; }
+    const songs =[{ "bg": "#c9bea28f", "artist": "SCSI-9", "songName": "Senorita Tristeza", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.webp" }, "duration": "5:53" },{ "bg": "#0896eba1", "artist": "Paradox Interactive", "songName": "Be Happy", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.webp" }, "duration": "3:22" },{ "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.webp" }, "duration": "4:31" },{ "bg": "#ffc382", "artist": "La Femme", "songName": "Le jardin", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.webp" }, "duration": "4:00" },{ "bg": "#ffcbdc", "artist": "Still Corners", "songName": "Crying", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.webp" }, "duration": "3:28" },{ "bg": "#44c16fb5", "artist": "Marvel83'", "songName": "Alone With You", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.webp" }, "duration": "4:53" },{ "bg": "#ff4545", "artist": "Timecop1983", "songName": "Nightfall", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.webp" }, "duration": "4:40" },{ "bg": "#e5e7e9", "artist": "Lazer Boomerang", "songName": "R3cover", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.webp" }, "duration": "3:34" }];
     const musicPlayer = document.createElement("div"); musicPlayer.className = "music-player flex-column";
     const slider = document.createElement("div"); slider.className = "slider center"; slider.onclick = handleResizeSlider;
     const sliderContent = document.createElement("div"); sliderContent.className = "slider__content center";
@@ -1014,566 +350,136 @@ function loadMusicPlayer() {
     progressWrapper.appendChild(progressBar); progressWrapper.appendChild(progressDot); progress.appendChild(progressWrapper);
     sliderControls.append(prevButton, musicInfo, nextButton, progress); slider.append(sliderContent, sliderControls);
     const playlist = document.createElement("ul"); playlist.className = "music-player__playlist list";
-
-    songs.forEach((song, index) => {
-        const listItem = document.createElement("li"); listItem.className = "music-player__song"; listItem.dataset.index = index; 
-        listItem.innerHTML = `<div class="flex-row _align_center"><img src="${song.files.cover}" loading="lazy" class="img music-player__song-img" alt="${song.songName}"><div class="music-player__playlist-info text_trsf-cap"><b class="text_overflow">${song.songName}</b><div class="flex-row _justify_space-btwn"><span class="music-player__subtitle">${song.artist}</span><span class="music-player__song-duration">${song.duration}</span></div></div></div>`;
-        playlist.appendChild(listItem);
-    });
-
-    playlist.addEventListener('click', (e) => {
-        const clickedItem = e.target.closest('.music-player__song');
-        if (clickedItem) { const clickIndex = parseInt(clickedItem.dataset.index, 10); handleChangeMusic({ playListIndex: clickIndex }); }
-    });
-
+    songs.forEach((song, index) => { const listItem = document.createElement("li"); listItem.className = "music-player__song"; listItem.dataset.index = index; listItem.innerHTML = `<div class="flex-row _align_center"><img src="${song.files.cover}" loading="lazy" class="img music-player__song-img" alt="${song.songName}"><div class="music-player__playlist-info text_trsf-cap"><b class="text_overflow">${song.songName}</b><div class="flex-row _justify_space-btwn"><span class="music-player__subtitle">${song.artist}</span><span class="music-player__song-duration">${song.duration}</span></div></div></div>`; playlist.appendChild(listItem); });
+    playlist.addEventListener('click', (e) => { const clickedItem = e.target.closest('.music-player__song'); if (clickedItem) { const clickIndex = parseInt(clickedItem.dataset.index, 10); handleChangeMusic({ playListIndex: clickIndex }); } });
     musicPlayer.append(slider, playlist); root.innerHTML = ''; root.appendChild(musicPlayer);
     songsLength = songs.length - 1; progress_elmnt = document.querySelector(".progress"); sliderImgs_elmnt = document.querySelector(".slider__imgs"); songName_elmnt = document.querySelector(".music-player__singer-name"); musicPlayerInfo_elmnt = document.querySelector(".music-player__info"); singerName_elmnt = document.querySelector(".music-player__subtitle"); broadcastGuarantor_elmnt = document.querySelector(".music-player__broadcast-guarantor"); selectedSong = mainAudio;
     mainAudio.addEventListener('timeupdate', updateTheProgressBar); mainAudio.addEventListener('ended', () => { if (songIsPlayed) handleChangeMusic({}); }); mainAudio.addEventListener('loadedmetadata', () => { if (pendingCurrentTime > 0) { mainAudio.currentTime = pendingCurrentTime; pendingCurrentTime = 0; } syncMediaSessionPosition(); }); mainAudio.addEventListener('durationchange', syncMediaSessionPosition); mainAudio.addEventListener('play', () => { songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; syncMediaSessionPosition(); }); mainAudio.addEventListener('pause', () => { setTimeout(() => { if (mainAudio.paused && !isSwitchingMusic) { songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'; syncMediaSessionPosition(); } }, 100); }); mainAudio.addEventListener('seeked', syncMediaSessionPosition);
     controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); setTimeout(restorePlaybackState, 100);
-
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('previoustrack', () => handleChangeMusic({ isPrev: true }));
-        navigator.mediaSession.setActionHandler('nexttrack', () => handleChangeMusic({ isPrev: false }));
-        navigator.mediaSession.setActionHandler('play', () => { mainAudio.play(); });
-        navigator.mediaSession.setActionHandler('pause', () => { mainAudio.pause(); });
-        navigator.mediaSession.setActionHandler('seekto', (details) => { if (details.seekTime != null) mainAudio.currentTime = details.seekTime; });
-    }
-
-    function handleResizeSlider({ target }) {
-        if (isLocked) return;
-        if (target.classList.contains("music-player__info")) { this.classList.add("resize"); setProperty(this, "--controls-animate", "down running"); }
-        else if (target.classList.contains("music-player__playlist-button")) { this.classList.remove("resize"); setProperty(this, "--controls-animate", "up running"); }
-    }
-    function controlSubtitleAnimation(parent, child) {
-        if (child.classList.contains("animate")) return; const element = child.firstChild;
-        if (child.clientWidth > parent.clientWidth) { child.appendChild(element.cloneNode(true)); child.classList.add("animate"); }
-        setProperty(child.parentElement, "width", `${element.clientWidth}px`);
-    }
+    if ('mediaSession' in navigator) { navigator.mediaSession.setActionHandler('previoustrack', () => handleChangeMusic({ isPrev: true })); navigator.mediaSession.setActionHandler('nexttrack', () => handleChangeMusic({ isPrev: false })); navigator.mediaSession.setActionHandler('play', () => { mainAudio.play(); }); navigator.mediaSession.setActionHandler('pause', () => { mainAudio.pause(); }); navigator.mediaSession.setActionHandler('seekto', (details) => { if (details.seekTime != null) mainAudio.currentTime = details.seekTime; }); }
+    function handleResizeSlider({ target }) { if (isLocked) return; if (target.classList.contains("music-player__info")) { this.classList.add("resize"); setProperty(this, "--controls-animate", "down running"); } else if (target.classList.contains("music-player__playlist-button")) { this.classList.remove("resize"); setProperty(this, "--controls-animate", "up running"); } }
+    function controlSubtitleAnimation(parent, child) { if (child.classList.contains("animate")) return; const element = child.firstChild; if (child.clientWidth > parent.clientWidth) { child.appendChild(element.cloneNode(true)); child.classList.add("animate"); } setProperty(child.parentElement, "width", `${element.clientWidth}px`); }
     function setProperty(target, prop, value = "") { target.style.setProperty(prop, value); }
     function updateInfo(target, value) { while (target.firstChild) target.removeChild(target.firstChild); const targetChild = document.createElement("div"); targetChild.appendChild(document.createTextNode(value)); target.appendChild(targetChild); target.classList.remove("animate"); controlSubtitleAnimation(musicPlayerInfo_elmnt, target); }
     function handleResize() { setProperty(document.documentElement, "--vH", `${window.innerHeight * 0.01}px`); }
     window.addEventListener("resize", handleResize); window.addEventListener("transitionstart", ({ target }) => { if (target === sliderImgs_elmnt) { isLocked = true; setProperty(sliderImgs_elmnt, "will-change", "transform"); } }); window.addEventListener("transitionend", ({ target, propertyName }) => { if (target === sliderImgs_elmnt) isLocked = false; if (target.classList.contains("slider") && propertyName === "height") { controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); } });
-    const stopScrub = () => { if (progressBarIsUpdating) { selectedSong.muted = false; progressBarIsUpdating = false; } };
-    const moveScrub = (e) => { if (progressBarIsUpdating) { e.preventDefault(); handleScrub(e); selectedSong.muted = true; } };
-    window.addEventListener("pointerup", stopScrub); window.addEventListener("pointermove", moveScrub); window.addEventListener("touchend", stopScrub); window.addEventListener("touchmove", moveScrub);
-    handleResize();
+    const stopScrub = () => { if (progressBarIsUpdating) { selectedSong.muted = false; progressBarIsUpdating = false; } }, moveScrub = (e) => { if (progressBarIsUpdating) { e.preventDefault(); handleScrub(e); selectedSong.muted = true; } };
+    window.addEventListener("pointerup", stopScrub); window.addEventListener("pointermove", moveScrub); window.addEventListener("touchend", stopScrub); window.addEventListener("touchmove", moveScrub); handleResize();
 }
-
 function initKeyboardControls() {
     document.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();
-        
-        // 🐾 新增: Z键控制猫咪睡觉和唤醒
-        if (key === 'z') {
-            if (typeof window.onekoSleep === 'function') window.onekoSleep();
-        }
-        
-        // 🐾 新增: S键打开和关闭猫咪皮肤面板
-        if (key === 's') {
-            if (typeof window.onekoToggleSkinMenu === 'function') window.onekoToggleSkinMenu();
-        }
-        
-        // 🎉 新增: N和M键触发彩带和Cat.wav猫叫
-        if (key === 'n' || key === 'm') {
-            triggerConfetti();
-        }
-
-        // 原有的键盘快捷键逻辑
-        if (key === 't') { currentBgIndex = (currentBgIndex + 1) % bgPresets.length; const preset = bgPresets[currentBgIndex]; switchBackground(preset.value, preset.isLight); }
+        if (key === 'z' && typeof window.onekoSleep === 'function') window.onekoSleep();
+        if (key === 's' && typeof window.onekoToggleSkinMenu === 'function') window.onekoToggleSkinMenu();
+        if (key === 'n' || key === 'm') triggerConfetti();
+        if (key === 't') { currentBgIndex = (currentBgIndex + 1) % bgPresets.length; switchBackground(bgPresets[currentBgIndex].value, bgPresets[currentBgIndex].isLight); }
         if (key === '1') { switchBackground(BG_TOP_LEFT, true); currentBgIndex = 0; }
         if (key === '2') { switchBackground(BG_TOP_RIGHT, false); currentBgIndex = 1; }
         if (key === '3') { switchBackground(BG_BOTTOM_LEFT, true); currentBgIndex = 2; }
         if (key === '4') { switchBackground(BG_BOTTOM_RIGHT, true); currentBgIndex = 3; }
         if (key === 'p') { window.isParticlesEnabled = !window.isParticlesEnabled; window.userToggledParticles = true; updateParticlesDisplay(); }
-        
-        if (!e.shiftKey) { 
-            // 左右页面切换
-            if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } 
-            if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } 
-            
-            // ↕️ 新增: 上下方向键控制 Page1 中的滚动吸附效果
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                if (currentPage === 1) {
-                    e.preventDefault(); // 阻止浏览器默认滚动条乱跳
-                    const pageVertical = document.querySelector('#page1 .page-vertical');
-                    const sign = e.key === 'ArrowUp' ? -1 : 1;
-                    // 通过容器的 clientHeight 平滑滚动，完美配合原有的 scroll-snap 滚动吸附属性
-                    pageVertical.scrollBy({ top: sign * pageVertical.clientHeight, behavior: 'smooth' });
-                }
-            }
-        }
-        
-        // 原有的音乐播放器控制逻辑
-        if (window.musicControls) { 
-            if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } 
-            if (e.shiftKey) { 
-                if (e.key === 'ArrowRight') window.musicControls.next(); 
-                if (e.key === 'ArrowLeft') window.musicControls.prev(); 
-            } 
-        }
+        if (!e.shiftKey) { if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } if (e.key === 'ArrowUp' || e.key === 'ArrowDown') { if (currentPage === 1) { e.preventDefault(); const pageVertical = document.querySelector('#page1 .page-vertical'); pageVertical.scrollBy({ top: (e.key === 'ArrowUp' ? -1 : 1) * pageVertical.clientHeight, behavior: 'smooth' }); } } }
+        if (window.musicControls) { if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } if (e.shiftKey) { if (e.key === 'ArrowRight') window.musicControls.next(); if (e.key === 'ArrowLeft') window.musicControls.prev(); } }
     });
 }
-
 const scrollContainer = document.querySelector('.link-scroll-container');
 let scrollTimeout;
-if (scrollContainer) {
-    scrollContainer.addEventListener('scroll', () => { scrollContainer.classList.add('scrolling'); clearTimeout(scrollTimeout); scrollTimeout = setTimeout(() => scrollContainer.classList.remove('scrolling'), 1500); }, { passive: true });
-}
-
+if (scrollContainer) { scrollContainer.addEventListener('scroll', () => { scrollContainer.classList.add('scrolling'); clearTimeout(scrollTimeout); scrollTimeout = setTimeout(() => scrollContainer.classList.remove('scrolling'), 1500); }, { passive: true }); }
 let avatarSound = null;
-async function initAvatarSound() {
-    const audioUrl = "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav";
-    try { const response = await fetch(audioUrl, { cache: 'force-cache' }); const audioBlob = await response.blob(); const blobUrl = URL.createObjectURL(audioBlob); avatarSound = new Audio(blobUrl); avatarSound.volume = 0.35; } 
-    catch (error) { avatarSound = new Audio(audioUrl); avatarSound.volume = 0.35; }
-}
-
+async function initAvatarSound() { const audioUrl = "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav"; try { const response = await fetch(audioUrl, { cache: 'force-cache' }), audioBlob = await response.blob(), blobUrl = URL.createObjectURL(audioBlob); avatarSound = new Audio(blobUrl); avatarSound.volume = 0.35; } catch (error) { avatarSound = new Audio(audioUrl); avatarSound.volume = 0.35; } }
 if ('requestIdleCallback' in window) { requestIdleCallback(() => initAvatarSound()); } else { setTimeout(initAvatarSound, 1500); }
-
-function triggerConfetti() {
-    if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 100 });
-    if (avatarSound) { avatarSound.currentTime = 0; avatarSound.play().catch(e => console.log(e)); }
-}
-
+function triggerConfetti() { if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 100 }); if (avatarSound) { avatarSound.currentTime = 0; avatarSound.play().catch(e => console.log(e)); } }
 const video = document.getElementById('page1Video'); let videoLoaded = false;
-if ('IntersectionObserver' in window && video) {
-    const videoObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) { if (!videoLoaded) { video.src = "music/Movie.MP4"; videoLoaded = true; } video.muted = true; video.play().catch(() => {}); } else { video.pause(); } });
-    }, { threshold: 0.5 });
-    videoObserver.observe(document.getElementById('page1-4'));
-}
+if ('IntersectionObserver' in window && video) { const videoObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { if (!videoLoaded) { video.src = "music/Movie.MP4"; videoLoaded = true; } video.muted = true; video.play().catch(() => {}); } else { video.pause(); } }); }, { threshold: 0.5 }); videoObserver.observe(document.getElementById('page1-4')); }
 if(video) video.addEventListener('click', () => video.muted = false);
-
-window.onload = function() {
-    loadMusicPlayer(); initKeyboardControls();
-    if (document.body.classList.contains('light')) { window.isParticlesEnabled = false; updateParticlesDisplay(); }
-    switchPageTo(2);
-};
-
-
-// ==========================================
-// 🛠️ 修复后的 猫咪 (Oneko) 核心引擎 + 九宫格皮肤更换功能
-// ==========================================
-(async function oneko() {
-  const nekoEl = document.createElement("div");
-
-  // --- 新增：10个可更换的皮肤URL位 (留空，你自己填入精灵图链接) ---
-  const skinList = [
-    { name: "皮肤 1", url: "https://dogpan.com/f/1wOWuq/oneko-.gif" },
-    { name: "皮肤 2", url: "https://dogpan.com/f/pYDPtA/neko.png" },
-    { name: "皮肤 3", url: "https://dogpan.com/f/J6n5FK/calico-tabby.png" },
-    { name: "皮肤 4", url: "https://dogpan.com/f/Kro3H4/colourful.png" },
-    { name: "皮肤 5", url: "https://dogpan.com/f/L9pxIQ/dog.png" },
-    { name: "皮肤 6", url: "https://dogpan.com/f/M8qLHz/kina.png" },
-    { name: "皮肤 7", url: "https://dogpan.com/f/Nkrlfj/lucky.png" },
-    { name: "皮肤 8", url: "https://dogpan.com/f/wpz6Uy/IMG_1251.GIF" },
-    { name: "皮肤 9", url: "https://dogpan.com/f/PNwPc3/peach.png" },
-    { name: "皮肤 10", url: "https://dogpan.com/f/qxEmsX/holiday.png" }
-  ];
-  
-const skinMenu = document.createElement("div");
-  skinMenu.id = "oneko-skin-menu";
-  skinMenu.style.cssText = `
-    position: fixed;
-    display: none;
-    grid-template-columns: repeat(5, 32px); /* 一行 5 个 */
-    grid-template-rows: repeat(2, 32px);    /* 一共 2 行 */
-    gap: 8px;
-background: rgba(255, 255, 255, 0.15); /* 👈 修改背景底色的透明度（0.15是15%白） */
-    backdrop-filter: blur(5px); /* 👈 修改模糊程度（数值越大越模糊） */
-    -webkit-backdrop-filter: blur(5px); /* 👈 必须加上这个，否则在苹果手机/Safari上模糊会失效 */
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 12px;
-    padding: 10px;
-    z-index: 10000;
-box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
-  `;
-
-  //  渲染菜单选项(展示警示状态帧)
-  skinList.forEach(skin => {
-      const item = document.createElement("div");
-      item.style.cssText = `
-          width: 32px; height: 32px;
-          background-color: rgba(0, 0, 0, 0); /* 即使留空也能看见格子方块 */
-          background-image: url('${skin.url}');
-          background-position: -222px -95px; /* 显示猫咪竖起尾巴的“警示”帧 [-7, -3] */
-          image-rendering: pixelated;
-          cursor: pointer;
-          border-radius: 4px;
-          border: 2px solid transparent;
-          transition: border 0.2s, transform 0.2s;
-      `;
-      item.title = skin.name;
-      item.onmouseenter = () => { item.style.border = "1px solid #c299ff"; item.style.transform = "scale(1.1)"; };
-      item.onmouseleave = () => { item.style.border = "1px solid transparent"; item.style.transform = "scale(1)"; };
-      item.onclick = (e) => {
-          e.stopPropagation();
-          changeSkin(skin.url);
-          // 这里去掉了隐藏面板的代码，因此点击选择皮肤后，面板不会收回去
-      };
-      skinMenu.appendChild(item);
-  });
-  document.body.appendChild(skinMenu);
-
-  function changeSkin(url) {
-      if (!url) return; // 如果地址为空，则不替换以防出错
-      nekoEl.style.backgroundImage = `url('${url}')`;
-      localStorage.setItem("oneko:skin", url);
-  }
-
-  function showSkinMenu() {
-      skinMenu.style.display = "grid"; // 显示 Grid 布局
-      const menuWidth = skinMenu.offsetWidth;
-      const menuHeight = skinMenu.offsetHeight;
-      const rect = nekoEl.getBoundingClientRect();
-
-      // 判断靠近屏幕哪边：偏左向右弹出，偏右向左弹出
-      if (rect.left < window.innerWidth / 2) {
-          skinMenu.style.left = `${rect.right + 10}px`;
-      } else {
-          skinMenu.style.left = `${rect.left - menuWidth - 10}px`;
-      }
-
-      // 垂直方向居中对齐，并且防止超出屏幕边缘
-      let topPos = rect.top + (rect.height / 2) - (menuHeight / 2);
-      if (topPos + menuHeight > window.innerHeight) {
-          topPos = window.innerHeight - menuHeight - 10;
-      }
-      if (topPos < 0) topPos = 10;
-
-      skinMenu.style.top = `${topPos}px`;
-  }
-  window.onekoToggleSkinMenu = () => {
-      if (skinMenu.style.display === "grid") {
-          skinMenu.style.display = "none";
-      } else {
-          showSkinMenu();
-      }
-  };
-  
-  
-  // 点击空白处收起皮肤弹窗
-  document.addEventListener("pointerdown", (e) => {
-      // 当面板处于显示状态，并且点击区域既不是猫咪，也不是皮肤面板的内部元素时，才隐藏面板
-      if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) {
-          skinMenu.style.display = "none";
-      }
-  });
-
-  // 恢复猫咪默认在左上角 (32, 32)
-  let nekoPosX = 32,
-    nekoPosY = 32,
-    mousePosX = 32,
-    mousePosY = 32,
-    frameCount = 0,
-    idleTime = 0,
-    idleAnimation = null,
-    idleAnimationFrame = 0,
-    forceSleep = false,
-    grabbing = false,
-    grabStop = true,
-    nudge = false,
-    kuroNeko = false,
-    variant = "classic",
-    lastClickTime = 0,
-    clickCount = 0; // 新增：记录连续点击次数
-
-  function parseLocalStorage(key, fallback) {
-    try { const value = JSON.parse(localStorage.getItem(`oneko:${key}`)); return typeof value === typeof fallback ? value : fallback; } 
-    catch (e) { return fallback; }
-  }
-
-  const nekoSpeed = 10,
-    variants = [ ["classic", "Classic"], ["dog", "Dog"], ["tora", "Tora"], ["maia", "Maia"], ["vaporwave", "Vaporwave"] ],
-    spriteSets = {
-      idle: [[-3, -3]], alert: [[-7, -3]], scratchSelf: [[-5, 0], [-6, 0], [-7, 0]],
-      scratchWallN: [[0, 0], [0, -1]], scratchWallS: [[-7, -1], [-6, -2]], scratchWallE: [[-2, -2], [-2, -3]],
-      scratchWallW: [[-4, 0], [-4, -1]], tired: [[-3, -2]], sleeping: [[-2, 0], [-2, -1]],
-      N: [[-1, -2], [-1, -3]], NE: [[0, -2], [0, -3]], E: [[-3, 0], [-3, -1]], SE: [[-5, -1], [-5, -2]],
-      S: [[-6, -3], [-7, -2]], SW: [[-5, -3], [-6, -1]], W: [[-4, -2], [-4, -3]], NW: [[-1, 0], [-1, -1]],
-    };
-
-  function sleep() {
-    forceSleep = !forceSleep; nudge = false; localStorage.setItem("oneko:forceSleep", forceSleep);
-    if (!forceSleep) { resetIdleAnimation(); return; }
-    mousePosX = nekoPosX; mousePosY = nekoPosY;
-  }
-  window.onekoSleep = sleep;
-
-  function create() {
-    variant = parseLocalStorage("variant", "classic"); kuroNeko = parseLocalStorage("kuroneko", false);
-    if (!variants.some((v) => v[0] === variant)) { variant = "classic"; }
-    
-    // 恢复上次保存的皮肤，如果没有保存则使用一个默认的蓝猫皮肤防空
-    const savedSkin = localStorage.getItem("oneko:skin") || "https://dogpan.com/f/v2MpsA/blue.png";
-
-    nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
-    nekoEl.style.position = "fixed"; nekoEl.style.backgroundImage = `url('${savedSkin}')`;
-    nekoEl.style.imageRendering = "pixelated"; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
-    nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; nekoEl.style.zIndex = "9999";
-    nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
-    document.body.appendChild(nekoEl);
-
-    // 更新鼠标目标的中心逻辑
-    function updateMousePos(e) {
-        // [新增] 判断如果面板正在展开，且鼠标移动到了面板的范围内，停止更新追随坐标 (不进入面板区域)
-        if (skinMenu.style.display === "grid") {
-            const rect = skinMenu.getBoundingClientRect();
-            if (e.clientX >= rect.left && e.clientX <= rect.right &&
-                e.clientY >= rect.top && e.clientY <= rect.bottom) {
-                return; // 鼠标位于面板内时，取消位置捕获，猫咪将停在边上不会跑进去
-            }
-        }
-        
-        let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
-        let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
-        mousePosX = e.clientX + offsetLeft;
-        mousePosY = e.clientY + offsetTop;
-    }
-
-    window.addEventListener("mousemove", (e) => { if (forceSleep) return; updateMousePos(e); });
-    window.addEventListener("pointermove", (e) => { if (forceSleep) return; if (e.pointerType === "touch") updateMousePos(e); });
-
-    // 缩放/恢复页面大小时，把跑偏的猫拉回到可视区域中心
-    function handleResize() {
-        if (window.visualViewport) {
-            let offsetLeft = window.visualViewport.offsetLeft;
-            let offsetTop = window.visualViewport.offsetTop;
-            let vW = window.visualViewport.width;
-            let vH = window.visualViewport.height;
-            // 如果目标超出了你目前能看到的区域，强制拉回屏幕中间
-            if (mousePosX < offsetLeft || mousePosX > offsetLeft + vW || mousePosY < offsetTop || mousePosY > offsetTop + vH) {
-                mousePosX = offsetLeft + vW / 2;
-                mousePosY = offsetTop + vH / 2;
-            }
-        }
-        if (forceSleep) { forceSleep = false; sleep(); }
-    }
-    
-    window.addEventListener("resize", handleResize);
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener("resize", handleResize);
-        window.visualViewport.addEventListener("scroll", handleResize); // 监听手机双指平移拖拽
-    }
-
-let clickTimeout = null; // 用于区分单击和双击
-
-    nekoEl.addEventListener("pointerdown", (e) => {
-      if (e.button !== 0 && e.pointerType === "mouse") return;
-      
-      e.preventDefault(); 
-      grabbing = true;
-      let isDragging = false; // 用来精确判断是否发生了拖拽
-      
-      if (nekoEl.setPointerCapture) { try { nekoEl.setPointerCapture(e.pointerId); } catch (_) {} }
-      
-      let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval;
-
-      const moveHandler = (e) => {
-        e.preventDefault();
-        const deltaX = e.clientX - startX; const deltaY = e.clientY - startY;
-        const absDeltaX = Math.abs(deltaX); const absDeltaY = Math.abs(deltaY);
-
-        // 如果移动距离超过 5 像素，判定为拖拽行为，不再触发点击
-        if (absDeltaX > 5 || absDeltaY > 5) {
-            isDragging = true; 
-        }
-
-        if (absDeltaX > absDeltaY && absDeltaX > 10) { setSprite(deltaX > 0 ? "scratchWallW" : "scratchWallE", frameCount); } 
-        else if (absDeltaY > absDeltaX && absDeltaY > 10) { setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount); }
-
-        if (grabStop || absDeltaX > 10 || absDeltaY > 10 || Math.sqrt(deltaX ** 2 + deltaY ** 2) > 10) {
-          grabStop = false; 
-          clearTimeout(grabInterval);
-          grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150);
-        }
-
-        nekoPosX = startNekoX + deltaX; nekoPosY = startNekoY + deltaY;
-        nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
-      };
-
-      const upHandler = (e) => {
-        grabbing = false; nudge = true; resetIdleAnimation();
-        window.removeEventListener("pointermove", moveHandler); 
-        window.removeEventListener("pointerup", upHandler); 
-        window.removeEventListener("pointercancel", upHandler);
-        if (nekoEl.releasePointerCapture) { try { nekoEl.releasePointerCapture(e.pointerId); } catch (_) {} }
-
-        // 【单击与双击的判断逻辑】
-        if (!isDragging) {
-            const currentTime = Date.now();
-            if (currentTime - lastClickTime < 300) {
-                // 如果 300ms 内连续点击了两次 -> 判定为双击，猫咪睡觉
-                clearTimeout(clickTimeout);
-                sleep();
-                lastClickTime = 0;
-            } else {
-                // 单击 -> 延迟 300ms 等待确认不是双击后，弹出皮肤面板
-                lastClickTime = currentTime;
-                clickTimeout = setTimeout(() => {
-                    if (forceSleep) sleep(); // 如果猫咪睡着了先唤醒
-                    showSkinMenu(); // 弹出选择面板
-                }, 300);
-            }
-        }
-      };
-
-      window.addEventListener("pointermove", moveHandler, { passive: false });
-      window.addEventListener("pointerup", upHandler); 
-      window.addEventListener("pointercancel", upHandler);
+window.onload = function() { loadMusicPlayer(); initKeyboardControls(); if (document.body.classList.contains('light')) { window.isParticlesEnabled = false; updateParticlesDisplay(); } switchPageTo(2); };
+(function initGlitchEffect() {
+    const style = document.createElement('style');
+    style.textContent = `.glitch-text { position: relative; display: inline-block; } .glitch-text::before, .glitch-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; } .glitch-text.active::before { animation: glitch-1 0.5s cubic-bezier(.25, .46, .45, .94) both infinite; color: #0ff; transform: translateX(-0.5px); } .glitch-text.active::after { animation: glitch-2 0.5s cubic-bezier(.25, .46, .45, .94) reverse both infinite; color: #f0f; transform: translateX(0.5px); } @keyframes glitch-1 { 0% { opacity: 0.75; transform: translate(-1px, 1px); } 50% { opacity: 0.5; transform: translate(0.5px, -0.5px); } 100% { opacity: 0.75; transform: translate(-1px, 1px); } } @keyframes glitch-2 { 0% { opacity: 0.75; transform: translate(1px, -1px); } 50% { opacity: 0.5; transform: translate(-0.5px, 0.5px); } 100% { opacity: 0.75; transform: translate(1px, -1px); } }`;
+    document.head.appendChild(style);
+    document.querySelectorAll('.link-card').forEach(card => {
+        const titleSpan = card.querySelector('.link-title'); if (titleSpan && titleSpan.textContent) { const text = titleSpan.textContent.trim(); titleSpan.innerHTML = `<span class="glitch-text" data-text="${text}">${text}</span>`; }
+        const glitchEl = card.querySelector('.glitch-text'), startGlitch = () => { if (glitchEl) glitchEl.classList.add('active'); }, stopGlitch = () => { if (glitchEl) glitchEl.classList.remove('active'); };
+        card.addEventListener('mouseenter', startGlitch); card.addEventListener('mouseleave', stopGlitch);
+        card.addEventListener('touchstart', startGlitch, { passive: true }); card.addEventListener('touchend', stopGlitch); card.addEventListener('touchcancel', stopGlitch);
     });
-
-    nekoEl.addEventListener("contextmenu", (e) => { e.preventDefault(); kuroNeko = !kuroNeko; localStorage.setItem("oneko:kuroneko", kuroNeko); nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; });
-    window.onekoInterval = setInterval(frame, 100);
-  }
-
-  function getSprite(name, frame) { return spriteSets[name][frame % spriteSets[name].length]; }
-  function setSprite(name, frame) { const sprite = getSprite(name, frame); nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`; }
-  function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
-
-function idle() {
-    idleTime += 1; let avalibleIdleAnimations = [];
-    if (idleTime > 10 && Math.floor(Math.random() * 25) == 0 && idleAnimation == null) {
-      avalibleIdleAnimations = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"];
-      
-      let scratchW = false, scratchN = false, scratchE = false, scratchS = false;
-      
-      // 1. 原有的屏幕边缘判定 (加入了视口缩放偏移兼容)
-      let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
-      let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
-      let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-      let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-
-      if (nekoPosX < offsetLeft + 32) scratchW = true;
-      if (nekoPosY < offsetTop + 32) scratchN = true;
-      if (nekoPosX > offsetLeft + vWidth - 32) scratchE = true;
-      if (nekoPosY > offsetTop + vHeight - 32) scratchS = true;
-
-      // 2. 新增：UI 卡片元素的内外边缘判定
-      const cards = document.querySelectorAll('.glowing-card, .spotify-card, .link-card');
-      cards.forEach(card => {
-          const rect = card.getBoundingClientRect();
-          // 如果卡片当前不可见(比如在隐藏的页面里)，则跳过判定
-          if (rect.width === 0 || rect.height === 0) return;
-
-          // 将屏幕坐标系转换与猫咪坐标系一致
-          const rLeft = rect.left + offsetLeft;
-          const rRight = rect.right + offsetLeft;
-          const rTop = rect.top + offsetTop;
-          const rBottom = rect.bottom + offsetTop;
-          const threshold = 32; // 触发挠墙的靠近距离
-
-          // 判断猫咪是否在卡片的垂直高度范围内
-          if (nekoPosY >= rTop - threshold && nekoPosY <= rBottom + threshold) {
-              // 靠近左侧边框
-              if (Math.abs(nekoPosX - rLeft) <= threshold) {
-                  if (nekoPosX <= rLeft) scratchE = true; // 猫在左外侧，朝右挠墙 (面朝卡片)
-                  else scratchW = true;                   // 猫在左内侧，朝左挠墙 (面朝卡片左边缘)
-              }
-              // 靠近右侧边框
-              if (Math.abs(nekoPosX - rRight) <= threshold) {
-                  if (nekoPosX >= rRight) scratchW = true; // 猫在右外侧，朝左挠墙 (面朝卡片)
-                  else scratchE = true;                    // 猫在右内侧，朝右挠墙 (面朝卡片右边缘)
-              }
-          }
-
-          // 判断猫咪是否在卡片的水平宽度范围内
-          if (nekoPosX >= rLeft - threshold && nekoPosX <= rRight + threshold) {
-              // 靠近顶部边框
-              if (Math.abs(nekoPosY - rTop) <= threshold) {
-                  if (nekoPosY <= rTop) scratchS = true;  // 猫在上外侧，朝下挠墙 (面朝卡片)
-                  else scratchN = true;                   // 猫在上内侧，朝上挠墙 (面朝卡片上边缘)
-              }
-              // 靠近底部边框
-              if (Math.abs(nekoPosY - rBottom) <= threshold) {
-                  if (nekoPosY >= rBottom) scratchN = true; // 猫在下外侧，朝上挠墙 (面朝卡片)
-                  else scratchS = true;                     // 猫在下内侧，朝下挠墙 (面朝卡片下边缘)
-              }
-          }
-      });
-
-// 收集所有触发的挠墙动作
-      let wallAnimations = [];
-      if (scratchW) wallAnimations.push("scratchWallW");
-      if (scratchN) wallAnimations.push("scratchWallN");
-      if (scratchE) wallAnimations.push("scratchWallE");
-      if (scratchS) wallAnimations.push("scratchWallS");
-
-      // ====== 核心修改：大幅提高挠墙概率 ======
-      if (wallAnimations.length > 0) {
-          // 如果靠近了边框，设定 80% 的概率强制优先触发挠墙（剩下 20% 概率它才会去睡觉/舔毛）
-          if (Math.random() < 0.4) { 
-              idleAnimation = wallAnimations[Math.floor(Math.random() * wallAnimations.length)];
-          } else {
-              idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
-          }
-      } else {
-          // 如果不在边框附近，就正常从基础动作（睡觉、舔毛等）里随机抽
-          idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
-      }
-    }
-
-    if (forceSleep) idleAnimation = "sleeping";
-
-    switch (idleAnimation) {
-      case "sleeping":
-        if (idleAnimationFrame < 8 && nudge && forceSleep) { setSprite("idle", 0); break; } 
-        else if (nudge) { nudge = false; resetIdleAnimation(); }
-        if (idleAnimationFrame < 8) { setSprite("tired", 0); break; }
-        setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
-        if (idleAnimationFrame > 192 && !forceSleep) resetIdleAnimation();
-        break;
-      case "scratchWallN": case "scratchWallS": case "scratchWallE": case "scratchWallW": case "scratchSelf":
-        setSprite(idleAnimation, idleAnimationFrame); if (idleAnimationFrame > 9) resetIdleAnimation(); break;
-      default: setSprite("idle", 0); return;
-    }
-    idleAnimationFrame += 1;
-  }
-
-  function frame() {
-    frameCount += 1;
-
-    if (grabbing) { grabStop && setSprite("alert", 0); return; }
-
-    const diffX = nekoPosX - mousePosX; const diffY = nekoPosY - mousePosY; const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
-
-    if (forceSleep && Math.abs(diffY) < nekoSpeed && Math.abs(diffX) < nekoSpeed) {
-      nekoPosX = mousePosX; nekoPosY = mousePosY; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`; idle(); return;
-    }
-
-    if ((distance < nekoSpeed || distance < 48) && !forceSleep) { idle(); return; }
-
-    idleAnimation = null; idleAnimationFrame = 0;
-    if (idleTime > 1) { setSprite("alert", 0); idleTime = Math.min(idleTime, 7); idleTime -= 1; return; }
-
-    let direction = diffY / distance > 0.5 ? "N" : "";
-    direction += diffY / distance < -0.5 ? "S" : "";
-    direction += diffX / distance > 0.5 ? "W" : "";
-    direction += diffX / distance < -0.5 ? "E" : "";
-    if (!direction) direction = "idle";
-    setSprite(direction, frameCount);
-
-    nekoPosX -= (diffX / distance) * nekoSpeed; nekoPosY -= (diffY / distance) * nekoSpeed;
-
-    // 把墙壁边缘判定，锁定为你当前“眼睛能看到的区域 (Visual Viewport)”
-    let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
-    let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
-    let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-    let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-
-    let minX = offsetLeft + 16;
-    let maxX = offsetLeft + vWidth - 16;
-    let minY = offsetTop + 16;
-    let maxY = offsetTop + vHeight - 16;
-
-    nekoPosX = Math.min(Math.max(minX, nekoPosX), maxX);
-    nekoPosY = Math.min(Math.max(minY, nekoPosY), maxY);
-
-    nekoEl.style.left = `${nekoPosX - 16}px`;
-    nekoEl.style.top = `${nekoPosY - 16}px`;
-  }
-
-  create();
 })();
-    </script>
+(async function oneko() {
+    const nekoEl = document.createElement("div"), skinList = [{ name: "blue", url: "https://dogpan.com/f/R6m4u5/blue.png" }, { name: "black2", url: "https://dogpan.com/f/QWlVto/black2.png" }, { name: "black", url: "https://dogpan.com/f/PNkPh3/black.png" }, { name: "calico", url: "https://dogpan.com/f/VOqgCg/calico.png" }, { name: "dog", url: "https://dogpan.com/f/W6yOFD/dog.png" }, { name: "holiday", url: "https://dogpan.com/f/XDzDUO/holiday.png" }, { name: "kina", url: "https://dogpan.com/f/YEA6HA/kina.png" }, { name: "lucky", url: "https://dogpan.com/f/Z6BVSQ/lucky.png" }, { name: "marmalade", url: "https://dogpan.com/f/1wlWFq/marmalade.png" }, { name: "mermaid", url: "https://dogpan.com/f/2km8c8/mermaid.png" }, { name: "nekocool", url: "https://dogpan.com/f/31nyI2/nekocool.png" }, { name: "neon", url: "https://dogpan.com/f/4xoLUl/neon.png" }, { name: "pink", url: "https://dogpan.com/f/5ypWh6/pink.png" }, { name: "socks", url: "https://dogpan.com/f/68qmUy/socks.png" }, { name: "usa", url: "https://dogpan.com/f/Nkglij/usa.png" }];
+    const skinMenu = document.createElement("div"); skinMenu.id = "oneko-skin-menu"; skinMenu.style.cssText = `position: fixed; display: none; grid-template-columns: repeat(5, 32px); grid-template-rows: repeat(3, 32px); gap: 8px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 12px; padding: 10px; z-index: 10000; box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;`;
+    skinList.forEach(skin => {
+        const item = document.createElement("div"); item.style.cssText = `width: 32px; height: 32px; background-color: rgba(0, 0, 0, 0); background-image: url('${skin.url}'); background-position: -222px -95px; image-rendering: pixelated; cursor: pointer; border-radius: 4px; border: 2px solid transparent; transition: border 0.2s, transform 0.2s;`;
+        item.onmouseenter = () => { item.style.border = "1px solid #c299ff"; item.style.transform = "scale(1.1)"; }; item.onmouseleave = () => { item.style.border = "1px solid transparent"; item.style.transform = "scale(1)"; }; item.onclick = (e) => { e.stopPropagation(); changeSkin(skin.url); }; skinMenu.appendChild(item);
+    });
+    document.body.appendChild(skinMenu);
+    function changeSkin(url) { if (!url) return; nekoEl.style.backgroundImage = `url('${url}')`; localStorage.setItem("oneko:skin", url); }
+    function showSkinMenu() {
+        skinMenu.style.display = "grid"; const menuWidth = skinMenu.offsetWidth, menuHeight = skinMenu.offsetHeight, rect = nekoEl.getBoundingClientRect();
+        skinMenu.style.left = (rect.left < window.innerWidth / 2) ? `${rect.right + 10}px` : `${rect.left - menuWidth - 10}px`;
+        let topPos = rect.top + (rect.height / 2) - (menuHeight / 2); skinMenu.style.top = `${Math.min(Math.max(10, topPos), window.innerHeight - menuHeight - 10)}px`;
+    }
+    window.onekoToggleSkinMenu = () => { skinMenu.style.display = (skinMenu.style.display === "grid") ? "none" : "grid"; if(skinMenu.style.display === "grid") showSkinMenu(); };
+    document.addEventListener("pointerdown", (e) => { if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) skinMenu.style.display = "none"; });
+    let nekoPosX = 32, nekoPosY = 32, mousePosX = 32, mousePosY = 32, frameCount = 0, idleTime = 0, idleAnimation = null, idleAnimationFrame = 0, forceSleep = false, grabbing = false, grabStop = true, nudge = false, kuroNeko = false, variant = "classic", lastClickTime = 0;
+    const nekoSpeed = 10, spriteSets = { idle: [[-3, -3]], alert: [[-7, -3]], scratchSelf: [[-5, 0], [-6, 0], [-7, 0]], scratchWallN: [[0, 0], [0, -1]], scratchWallS: [[-7, -1], [-6, -2]], scratchWallE: [[-2, -2], [-2, -3]], scratchWallW: [[-4, 0], [-4, -1]], tired: [[-3, -2]], sleeping: [[-2, 0], [-2, -1]], N: [[-1, -2], [-1, -3]], NE: [[0, -2], [0, -3]], E: [[-3, 0], [-3, -1]], SE: [[-5, -1], [-5, -2]], S: [[-6, -3], [-7, -2]], SW: [[-5, -3], [-6, -1]], W: [[-4, -2], [-4, -3]], NW: [[-1, 0], [-1, -1]] };
+    function sleep() { forceSleep = !forceSleep; nudge = false; localStorage.setItem("oneko:forceSleep", forceSleep); if (!forceSleep) resetIdleAnimation(); else { mousePosX = nekoPosX; mousePosY = nekoPosY; } }
+    window.onekoSleep = sleep;
+    function create() {
+        const savedSkin = localStorage.getItem("oneko:skin") || "https://dogpan.com/f/v2MpsA/blue.png";
+        nekoEl.id = "oneko"; nekoEl.style.cssText = `width:32px;height:32px;position:fixed;background-image:url('${savedSkin}');image-rendering:pixelated;left:${nekoPosX-16}px;top:${nekoPosY-16}px;z-index:9999;touch-action:none;user-select:none;`;
+        document.body.appendChild(nekoEl);
+        window.addEventListener("mousemove", (e) => { if (forceSleep) return; if (skinMenu.style.display === "grid") { const rect = skinMenu.getBoundingClientRect(); if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) return; } let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0, offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0; mousePosX = e.clientX + offsetLeft; mousePosY = e.clientY + offsetTop; });
+        nekoEl.addEventListener("pointerdown", (e) => {
+            if (e.button !== 0 && e.pointerType === "mouse") return; e.preventDefault(); grabbing = true; if (nekoEl.setPointerCapture) nekoEl.setPointerCapture(e.pointerId);
+            let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval, isDragging = false;
+            const moveHandler = (e) => {
+                e.preventDefault(); const deltaX = e.clientX - startX, deltaY = e.clientY - startY; if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) isDragging = true;
+                if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) setSprite(deltaX > 0 ? "scratchWallW" : "scratchWallE", frameCount); else if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount);
+                if (grabStop || Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) { grabStop = false; clearTimeout(grabInterval); grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150); }
+                nekoPosX = startNekoX + deltaX; nekoPosY = startNekoY + deltaY; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
+            }, upHandler = (e) => {
+                grabbing = false; nudge = true; resetIdleAnimation(); window.removeEventListener("pointermove", moveHandler); window.removeEventListener("pointerup", upHandler); if (nekoEl.releasePointerCapture) nekoEl.releasePointerCapture(e.pointerId);
+                if (!isDragging) { const currentTime = Date.now(); if (currentTime - lastClickTime < 300) { sleep(); lastClickTime = 0; } else { lastClickTime = currentTime; setTimeout(() => { if (forceSleep) sleep(); showSkinMenu(); }, 300); } }
+            };
+            window.addEventListener("pointermove", moveHandler, { passive: false }); window.addEventListener("pointerup", upHandler);
+        });
+        window.onekoInterval = setInterval(frame, 100);
+    }
+    function setSprite(name, frame) { const sprite = spriteSets[name][frame % spriteSets[name].length]; nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`; }
+    function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
+    function idle() {
+        idleTime += 1; if (idleTime > 10 && Math.floor(Math.random() * 25) == 0 && idleAnimation == null) {
+            let scratchW = false, scratchN = false, scratchE = false, scratchS = false, offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0, offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0, vW = window.visualViewport ? window.visualViewport.width : window.innerWidth, vH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            if (nekoPosX < offsetLeft + 32) scratchW = true; if (nekoPosY < offsetTop + 32) scratchN = true; if (nekoPosX > offsetLeft + vW - 32) scratchE = true; if (nekoPosY > offsetTop + vH - 32) scratchS = true;
+            document.querySelectorAll('.glowing-card, .spotify-card, .link-card').forEach(card => {
+                const rect = card.getBoundingClientRect(); if (rect.width === 0) return;
+                const rL = rect.left + offsetLeft, rR = rect.right + offsetLeft, rT = rect.top + offsetTop, rB = rect.bottom + offsetTop, th = 32;
+                if (nekoPosY >= rT - th && nekoPosY <= rB + th) { if (Math.abs(nekoPosX - rL) <= th) { if (nekoPosX <= rL) scratchE = true; else scratchW = true; } if (Math.abs(nekoPosX - rR) <= th) { if (nekoPosX >= rR) scratchW = true; else scratchE = true; } }
+                if (nekoPosX >= rL - th && nekoPosX <= rR + th) { if (Math.abs(nekoPosY - rT) <= th) { if (nekoPosY <= rT) scratchS = true; else scratchN = true; } if (Math.abs(nekoPosY - rB) <= th) { if (nekoPosY >= rB) scratchN = true; else scratchS = true; } }
+            });
+            let walls = []; if (scratchW) walls.push("scratchWallW"); if (scratchN) walls.push("scratchWallN"); if (scratchE) walls.push("scratchWallE"); if (scratchS) walls.push("scratchWallS");
+            if (walls.length > 0) idleAnimation = (Math.random() < 0.4) ? walls[Math.floor(Math.random() * walls.length)] : (Math.random() < 0.5 ? "scratchSelf" : "sleeping"); else idleAnimation = (Math.random() < 0.5 ? "scratchSelf" : "sleeping");
+        }
+        if (forceSleep) idleAnimation = "sleeping";
+        if (idleAnimation === "sleeping") { if (idleAnimationFrame < 8 && nudge && forceSleep) { setSprite("idle", 0); } else if (nudge) { nudge = false; resetIdleAnimation(); } if (idleAnimationFrame < 8) setSprite("tired", 0); else setSprite("sleeping", Math.floor(idleAnimationFrame / 4)); if (idleAnimationFrame > 192 && !forceSleep) resetIdleAnimation(); }
+        else if (idleAnimation) { setSprite(idleAnimation, idleAnimationFrame); if (idleAnimationFrame > 9) resetIdleAnimation(); } else setSprite("idle", 0);
+        idleAnimationFrame += 1;
+    }
+    function frame() {
+        frameCount += 1; if (grabbing) { if(grabStop) setSprite("alert", 0); return; }
+        const diffX = nekoPosX - mousePosX, diffY = nekoPosY - mousePosY, dist = Math.sqrt(diffX ** 2 + diffY ** 2);
+        if (forceSleep && Math.abs(diffY) < nekoSpeed && Math.abs(diffX) < nekoSpeed) { nekoPosX = mousePosX; nekoPosY = mousePosY; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`; idle(); return; }
+        if ((dist < nekoSpeed || dist < 48) && !forceSleep) { idle(); return; }
+        idleAnimation = null; idleAnimationFrame = 0; if (idleTime > 1) { setSprite("alert", 0); idleTime = Math.max(idleTime - 1, 0); return; }
+        let dir = diffY / dist > 0.5 ? "N" : (diffY / dist < -0.5 ? "S" : ""); dir += diffX / dist > 0.5 ? "W" : (diffX / dist < -0.5 ? "E" : "");
+        setSprite(dir || "idle", frameCount);
+        nekoPosX -= (diffX / dist) * nekoSpeed; nekoPosY -= (diffY / dist) * nekoSpeed;
+        let v = window.visualViewport, oL = v ? v.offsetLeft : 0, oT = v ? v.offsetTop : 0, vW = v ? v.width : window.innerWidth, vH = v ? v.height : window.innerHeight;
+        nekoPosX = Math.min(Math.max(oL + 16, nekoPosX), oL + vW - 16); nekoPosY = Math.min(Math.max(oT + 16, nekoPosY), oT + vH - 16);
+        nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
+    }
+    create();
+})();
+</script>
 </body>
 </html>
