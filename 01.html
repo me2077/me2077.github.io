@@ -657,15 +657,15 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
     const container = document.getElementById('bg-container');
     if (!container) return;
 
-    // 1. 提取 URL
+    // 1. 提取 URL 
     let cleanUrl = backgroundValue;
     const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/);
     if (urlMatch) cleanUrl = urlMatch[1];
 
-    // 2. 判断类型
+    // 2. 判断是否为视频文件
     const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(cleanUrl);
 
-    // 3. 定义执行切换的函数
+    // 3. 核心切换逻辑
     const startTransition = (contentElement = null) => {
         if (currentChangeId !== bgChangeSequence) return;
         
@@ -675,13 +675,11 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
         newLayer.style.zIndex = bgLayerIndex;
 
         if (isVideo && contentElement) {
-            // 如果是视频，把准备好的视频标签放进去
             contentElement.style.width = "100%";
             contentElement.style.height = "100%";
             contentElement.style.objectFit = "cover";
             newLayer.appendChild(contentElement);
         } else {
-            // 如果是图片、颜色或渐变
             if (cleanUrl.startsWith('http') || cleanUrl.startsWith('images/') || cleanUrl.startsWith('./')) {
                 newLayer.style.background = `url('${cleanUrl}') center/cover no-repeat`;
             } else {
@@ -691,28 +689,38 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
 
         container.appendChild(newLayer);
 
-        // 更新全局UI状态
+        // --- 修复粒子逻辑开始 ---
+        // 切换 Body 的 light 类
         document.body.classList.toggle('light', isLightTheme);
         document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
-        if (!window.userToggledParticles) window.isParticlesEnabled = !isLightTheme;
+
+        // 如果用户没手动双击切换过粒子，则根据背景明暗自动开关
+        if (!window.userToggledParticles) {
+            window.isParticlesEnabled = !isLightTheme; 
+        }
         
-        // 关键步骤：触发重绘并开始 0.8s 的过渡动画
+        // 无论如何，都要调用更新函数来刷新 Canvas 的显示/隐藏状态
+        updateParticlesDisplay(); 
+        // --- 修复粒子逻辑结束 ---
+
+        void newLayer.offsetWidth; // 触发重绘
+
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 newLayer.style.opacity = '1';
             });
         });
 
-        // 动画结束后清理旧层
         setTimeout(() => {
             if (currentChangeId !== bgChangeSequence) return;
             const layers = container.querySelectorAll('.bg-layer');
             layers.forEach(layer => { if (layer !== newLayer) layer.remove(); });
-            if (window.isParticlesEnabled) updateParticlesDisplay();
+            // 确保在层清理后粒子显示正确
+            updateParticlesDisplay(); 
         }, 850);
     };
 
-    // 4. 预加载逻辑：确保内容准备好后再开始过渡
+    // 4. 预加载逻辑
     if (isVideo) {
         const video = document.createElement('video');
         video.src = cleanUrl;
@@ -720,17 +728,15 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
         video.loop = true;
         video.playsInline = true;
         video.autoplay = true;
-        
-        // 当视频第一帧准备好播放时，再开始淡入动画
         video.onloadeddata = () => startTransition(video);
-        video.onerror = () => startTransition(); // 失败则尝试普通切换
+        video.onerror = () => startTransition();
     } else if (cleanUrl.startsWith('http') || cleanUrl.startsWith('images/')) {
         const img = new Image();
         img.src = cleanUrl;
         img.onload = () => startTransition();
         img.onerror = () => startTransition();
     } else {
-        startTransition(); // 纯色或渐变直接切换
+        startTransition();
     }
 }
 
