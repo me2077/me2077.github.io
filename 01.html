@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png" fetchpriority="high">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -13,7 +14,6 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://me2077.github.io" crossorigin>
 
-    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png">
     <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG">
     <link rel="preload" as="font" type="font/woff" href="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/fonts/icomoon.woff" crossorigin>
 
@@ -29,6 +29,11 @@
     <script src="js/vCard.js" defer></script>
 
     <style>
+        #bg-container .init-bg {
+            background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover no-repeat;
+            opacity: 1;
+            z-index: 0;
+        }
         :root {
             --glow-sens: 30;
             --dark: hsl(260, 25%, 10%);
@@ -112,7 +117,18 @@
             opacity: 0; transition: opacity 0.8s ease-in-out; transform: translateZ(0);
             will-change: opacity; contain: strict;
         }
-
+.bg-layer video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover; /* 关键：确保视频铺满 */
+}
+      
         canvas { position: fixed; inset: 0; width: 100%; height: 100dvh; z-index: -1; }
 
         .glowing-card {
@@ -177,22 +193,19 @@
     text-align: center; 
     width: 100%; 
     font-size: 18px; 
-    /* 👇 恢复到 0.3s 原版的干净利落 */
     transition: transform 0.3s ease, text-shadow 0.3s ease; 
 }
 
-/* 电脑端鼠标悬停 */
 @media (hover: hover) {
     .link-card:hover .link-title {
         transform: scale(1.05);
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
 }
 
-/* 移动端手指按下 */
 .link-card:active .link-title {
-    transform: scale(1.05);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    transform: scale(1.15);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
         .spotify-card {
@@ -231,15 +244,6 @@
         .bullet::before { content: ""; position: absolute; inset: -20px 0; }
         .bullet.active { opacity: 1; background: #c299ff; box-shadow: 0px 0px 20px rgba(194, 153, 255, 5); }
 
-        body:not(.light) .crt::after, body:not(.light) .crt::before {
-            content: " "; display: block; position: fixed; inset: 0; pointer-events: none; z-index: 2;
-        }
-        body:not(.light) .crt::after { background: rgba(18, 16, 16, 0); opacity: 0; }
-        body:not(.light) .crt::before {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 100%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-        }
-
         #page1 { padding: 0; }
         #page1 .page-vertical { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior: contain; position: relative; -ms-overflow-style: none; scrollbar-width: none; }
         #page1 .page-vertical::-webkit-scrollbar { display: none; }
@@ -262,7 +266,6 @@
     transform: scale(0.5); 
     contain: paint; 
     will-change: transform; 
-    /* 删除了 margin-top: -10px; */
 }
 
         .reward-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-style: italic; cursor: pointer; position: relative; width: 100%; -webkit-tap-highlight-color: transparent; }
@@ -272,8 +275,6 @@
     display: flex; 
     justify-content: center; 
     align-items: center; 
-    
-    /* 👇 新增：让整个图片区域（包含动图和二维码）往上移动 */
     transform: translateY(-26px); 
 }
       
@@ -297,8 +298,6 @@
     transition: opacity 0.5s ease; 
     opacity: 0; 
     pointer-events: none; 
-    
-    /* 👇 关键修改：强制顶部对齐，并保持完美水平居中 */
     top: 0; 
     left: 0; 
     right: 0; 
@@ -314,7 +313,6 @@
     align-items: center; 
     width: 100%; 
     height: 32px; 
-    /* 去掉了原来的 margin-top: 21px; */
 }
 .reward-text-old { 
     position: absolute; 
@@ -327,8 +325,6 @@
     transition: opacity 0.5s ease; 
     opacity: 1; 
     white-space: nowrap; 
-
-    /* 👇 1. 单独控制【猫爪一伸...】的高低。负数往上移，正数往下移 */
     transform: translateY(0px); 
 }
 
@@ -338,8 +334,6 @@
     transition: opacity 0.5s ease; 
     pointer-events: none; 
     text-align: center; 
-
-    /* 👇 2. 单独控制【微信/支付宝】整体的高低。负数往上移，正数往下移 */
     transform: translateY(-18px); 
 }
 
@@ -350,12 +344,9 @@
     text-underline-offset: 2px; 
     display: block; 
     line-height: 1.5; 
-
-    /* 👇 3. 单独控制【微信】和【支付宝】这两行字彼此之间的上下间距 */
     margin-bottom: 0px; 
 }
 
-/* 补充：让最后一行支付宝文字底部不需要多余的间距 */
 .reward-text-new a:last-child {
     margin-bottom: 0; 
 }
@@ -464,10 +455,10 @@
 
 <body class="light">
     <div id="bg-container">
-        <div class="bg-layer" style="background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover; opacity: 1; z-index: 0;"></div>
+        <div class="bg-layer init-bg"></div>
     </div>
 
-    <div class="crt">
+    <div>
         <div class="alist-widget-wrapper">
             <div class="glowing-card">
                 <div class="inner">
@@ -582,12 +573,9 @@
     <canvas id="shuicheCanvas"></canvas>
 
 <script>
-// ==========================================
-// 🎨 全局背景与主题配置区
-// ==========================================
 const BG_TOP_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png';
 const BG_TOP_RIGHT = '#000000';
-const BG_BOTTOM_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG';
+const BG_BOTTOM_LEFT = 'https://media.giphy.com/media/3ohs4ucXR6NYRxmpTa/giphy.gif?cid=ecf05e47e8884b2ffeec40b107180e597210fbcf53b824b6&ep=v1_user_favorites&rid=giphy.gif&ct=g';
 const BG_BOTTOM_RIGHT = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
 
 window.isParticlesEnabled = !document.body.classList.contains('light');
@@ -669,42 +657,83 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
     const container = document.getElementById('bg-container');
     if (!container) return;
 
+    // 1. 提取 URL
+    let cleanUrl = backgroundValue;
     const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/);
-    const imageUrl = urlMatch ? urlMatch[1] : null;
+    if (urlMatch) cleanUrl = urlMatch[1];
 
-    const applyEffect = () => {
+    // 2. 判断类型
+    const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(cleanUrl);
+
+    // 3. 定义执行切换的函数
+    const startTransition = (contentElement = null) => {
         if (currentChangeId !== bgChangeSequence) return;
-        bgLayerIndex++; 
+        
+        bgLayerIndex++;
         const newLayer = document.createElement('div');
         newLayer.className = 'bg-layer';
         newLayer.style.zIndex = bgLayerIndex;
-        newLayer.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover` : backgroundValue;
-        container.appendChild(newLayer);
-        void newLayer.offsetWidth;
 
+        if (isVideo && contentElement) {
+            // 如果是视频，把准备好的视频标签放进去
+            contentElement.style.width = "100%";
+            contentElement.style.height = "100%";
+            contentElement.style.objectFit = "cover";
+            newLayer.appendChild(contentElement);
+        } else {
+            // 如果是图片、颜色或渐变
+            if (cleanUrl.startsWith('http') || cleanUrl.startsWith('images/') || cleanUrl.startsWith('./')) {
+                newLayer.style.background = `url('${cleanUrl}') center/cover no-repeat`;
+            } else {
+                newLayer.style.background = backgroundValue;
+            }
+        }
+
+        container.appendChild(newLayer);
+
+        // 更新全局UI状态
         document.body.classList.toggle('light', isLightTheme);
         document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
-
         if (!window.userToggledParticles) window.isParticlesEnabled = !isLightTheme;
-        if (!window.isParticlesEnabled) updateParticlesDisplay();
+        
+        // 关键步骤：触发重绘并开始 0.8s 的过渡动画
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                newLayer.style.opacity = '1';
+            });
+        });
 
-        requestAnimationFrame(() => { newLayer.style.opacity = '1'; });
-
+        // 动画结束后清理旧层
         setTimeout(() => {
-            if (currentChangeId !== bgChangeSequence) return; 
+            if (currentChangeId !== bgChangeSequence) return;
             const layers = container.querySelectorAll('.bg-layer');
             layers.forEach(layer => { if (layer !== newLayer) layer.remove(); });
             if (window.isParticlesEnabled) updateParticlesDisplay();
         }, 850);
     };
 
-    if (imageUrl) {
+    // 4. 预加载逻辑：确保内容准备好后再开始过渡
+    if (isVideo) {
+        const video = document.createElement('video');
+        video.src = cleanUrl;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.autoplay = true;
+        
+        // 当视频第一帧准备好播放时，再开始淡入动画
+        video.onloadeddata = () => startTransition(video);
+        video.onerror = () => startTransition(); // 失败则尝试普通切换
+    } else if (cleanUrl.startsWith('http') || cleanUrl.startsWith('images/')) {
         const img = new Image();
-        img.src = imageUrl;
-        img.onload = applyEffect;
-        img.onerror = applyEffect;
-    } else { applyEffect(); }
+        img.src = cleanUrl;
+        img.onload = () => startTransition();
+        img.onerror = () => startTransition();
+    } else {
+        startTransition(); // 纯色或渐变直接切换
+    }
 }
+
 
 function switchBackground(value, isLight = true) {
     if (value.includes('gradient') || /^(#|rgb|hsl)/.test(value.trim())) { crossfadeBackground(value, isLight); } 
@@ -727,26 +756,21 @@ function switchBackground(value, isLight = true) {
     let lastTouchEnd = 0;
     let isMultiTouch = false;
 
-    // 1. 监听手指按下：只要屏幕上超过1根手指，就标记为“多指/缩放操作”
     document.addEventListener('touchstart', function(e) {
         if (e.touches.length > 1) {
             isMultiTouch = true;
         }
     }, { passive: true });
 
-    // 2. 监听手指离开
     document.addEventListener('touchend', function(e) {
-        // 如果屏幕上还有手指没离开，说明这不是一次完整的单指点击，直接忽略
         if (e.touches.length > 0) return;
         
-        // 如果刚刚经历过多指操作（双指缩放、双指点击等），结束并重置状态，不触发双击
         if (isMultiTouch) {
             isMultiTouch = false;
             lastTouchEnd = 0; 
             return;
         }
 
-        // 纯净的单指双击判断逻辑
         let now = new Date().getTime();
         if (now - lastTouchEnd <= 400) { 
             toggleParticles(e); 
@@ -1053,22 +1077,18 @@ function initKeyboardControls() {
     document.addEventListener('keydown', (e) => {
         const key = e.key.toLowerCase();
         
-        // 🐾 新增: Z键控制猫咪睡觉和唤醒
         if (key === 'z') {
             if (typeof window.onekoSleep === 'function') window.onekoSleep();
         }
         
-        // 🐾 新增: S键打开和关闭猫咪皮肤面板
         if (key === 's') {
             if (typeof window.onekoToggleSkinMenu === 'function') window.onekoToggleSkinMenu();
         }
         
-        // 🎉 新增: N和M键触发彩带和Cat.wav猫叫
         if (key === 'n' || key === 'm') {
             triggerConfetti();
         }
 
-        // 原有的键盘快捷键逻辑
         if (key === 't') { currentBgIndex = (currentBgIndex + 1) % bgPresets.length; const preset = bgPresets[currentBgIndex]; switchBackground(preset.value, preset.isLight); }
         if (key === '1') { switchBackground(BG_TOP_LEFT, true); currentBgIndex = 0; }
         if (key === '2') { switchBackground(BG_TOP_RIGHT, false); currentBgIndex = 1; }
@@ -1077,23 +1097,19 @@ function initKeyboardControls() {
         if (key === 'p') { window.isParticlesEnabled = !window.isParticlesEnabled; window.userToggledParticles = true; updateParticlesDisplay(); }
         
         if (!e.shiftKey) { 
-            // 左右页面切换
             if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } 
             if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } 
             
-            // ↕️ 新增: 上下方向键控制 Page1 中的滚动吸附效果
             if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                 if (currentPage === 1) {
-                    e.preventDefault(); // 阻止浏览器默认滚动条乱跳
+                    e.preventDefault(); 
                     const pageVertical = document.querySelector('#page1 .page-vertical');
                     const sign = e.key === 'ArrowUp' ? -1 : 1;
-                    // 通过容器的 clientHeight 平滑滚动，完美配合原有的 scroll-snap 滚动吸附属性
                     pageVertical.scrollBy({ top: sign * pageVertical.clientHeight, behavior: 'smooth' });
                 }
             }
         }
         
-        // 原有的音乐播放器控制逻辑
         if (window.musicControls) { 
             if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } 
             if (e.shiftKey) { 
@@ -1139,7 +1155,6 @@ window.onload = function() {
     switchPageTo(2);
 };
 
-// === 👇 link-card 赛博朋克故障效果初始化 👇 ===
     const style = document.createElement('style');
     style.textContent = `
         .glitch-text {
@@ -1157,19 +1172,16 @@ window.onload = function() {
             opacity: 0;
             pointer-events: none;
         }
-        /* 👇 青色偏移量：从 -2px 缩小到 -1px */
         .glitch-text.active::before {
-            animation: glitch-1 0.6s cubic-bezier(.25, .46, .45, .94) both infinite;
+            animation: glitch-1 0.5s cubic-bezier(.25, .46, .45, .94) both infinite;
             color: #0ff;
             transform: translateX(-0.5px); 
         }
-        /* 👇 紫色偏移量：从 2px 缩小到 1px */
         .glitch-text.active::after {
-            animation: glitch-2 0.6s cubic-bezier(.25, .46, .45, .94) reverse both infinite;
+            animation: glitch-2 0.5s cubic-bezier(.25, .46, .45, .94) reverse both infinite;
             color: #f0f;
             transform: translateX(0.5px); 
         }
-        /* 👇 下面动画里的跳动幅度也整体缩小一半 */
         @keyframes glitch-1 {
             0% { opacity: 0.75; transform: translate(-1px, 1px); }
             50% { opacity: 0.5; transform: translate(0.5px, -0.5px); }
@@ -1183,8 +1195,6 @@ window.onload = function() {
     `;
     document.head.appendChild(style);
 
-    // ... 下面的事件监听代码保持不变 ...
-
     const linkCards = document.querySelectorAll('.link-card');
     linkCards.forEach(card => {
         const titleSpan = card.querySelector('.link-title');
@@ -1197,35 +1207,17 @@ window.onload = function() {
         const startGlitch = () => { if (glitchEl) glitchEl.classList.add('active'); };
         const stopGlitch = () => { if (glitchEl) glitchEl.classList.remove('active'); };
 
-        // 电脑端：鼠标移入移出
         card.addEventListener('mouseenter', startGlitch);
         card.addEventListener('mouseleave', stopGlitch);
 
-        // 移动端：手指按下、松开、或滑动取消
         card.addEventListener('touchstart', startGlitch, { passive: true });
         card.addEventListener('touchend', stopGlitch);
         card.addEventListener('touchcancel', stopGlitch);
     });
-    // === 👆 新增结束 👆 ===
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-// ==========================================
-// 🛠️ 修复后的 猫咪 (Oneko) 核心引擎 + 九宫格皮肤更换功能
-// ==========================================
 (async function oneko() {
   const nekoEl = document.createElement("div");
 
-  // --- 新增：10个可更换的皮肤URL位 (留空，你自己填入精灵图链接) ---
 const skinList = [
     { name: "blue", url: "https://dogpan.com/f/R6m4u5/blue.png" },
     { name: "black2", url: "https://dogpan.com/f/QWlVto/black2.png" },
@@ -1249,27 +1241,26 @@ const skinMenu = document.createElement("div");
   skinMenu.style.cssText = `
     position: fixed;
     display: none;
-    grid-template-columns: repeat(5, 32px); /* 一行 5 个 */
-    grid-template-rows: repeat(3, 32px);    /* 一共 3 行 */
+    grid-template-columns: repeat(5, 32px);
+    grid-template-rows: repeat(3, 32px);
     gap: 8px;
-background: rgba(255, 255, 255, 0.15); /* 👈 修改背景底色的透明度（0.15是15%白） */
-    backdrop-filter: blur(5px); /* 👈 修改模糊程度（数值越大越模糊） */
-    -webkit-backdrop-filter: blur(5px); /* 👈 必须加上这个，否则在苹果手机/Safari上模糊会失效 */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 12px;
     padding: 10px;
     z-index: 10000;
-box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
+    box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
   `;
 
-  //  渲染菜单选项(展示警示状态帧)
   skinList.forEach(skin => {
       const item = document.createElement("div");
       item.style.cssText = `
           width: 32px; height: 32px;
-          background-color: rgba(0, 0, 0, 0); /* 即使留空也能看见格子方块 */
+          background-color: rgba(0, 0, 0, 0);
           background-image: url('${skin.url}');
-          background-position: -222px -95px; /* 显示猫咪竖起尾巴的“警示”帧 [-7, -3] */
+          background-position: -222px -95px;
           image-rendering: pixelated;
           cursor: pointer;
           border-radius: 4px;
@@ -1282,32 +1273,29 @@ box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
       item.onclick = (e) => {
           e.stopPropagation();
           changeSkin(skin.url);
-          // 这里去掉了隐藏面板的代码，因此点击选择皮肤后，面板不会收回去
       };
       skinMenu.appendChild(item);
   });
   document.body.appendChild(skinMenu);
 
   function changeSkin(url) {
-      if (!url) return; // 如果地址为空，则不替换以防出错
+      if (!url) return;
       nekoEl.style.backgroundImage = `url('${url}')`;
       localStorage.setItem("oneko:skin", url);
   }
 
   function showSkinMenu() {
-      skinMenu.style.display = "grid"; // 显示 Grid 布局
+      skinMenu.style.display = "grid";
       const menuWidth = skinMenu.offsetWidth;
       const menuHeight = skinMenu.offsetHeight;
       const rect = nekoEl.getBoundingClientRect();
 
-      // 判断靠近屏幕哪边：偏左向右弹出，偏右向左弹出
       if (rect.left < window.innerWidth / 2) {
           skinMenu.style.left = `${rect.right + 10}px`;
       } else {
           skinMenu.style.left = `${rect.left - menuWidth - 10}px`;
       }
 
-      // 垂直方向居中对齐，并且防止超出屏幕边缘
       let topPos = rect.top + (rect.height / 2) - (menuHeight / 2);
       if (topPos + menuHeight > window.innerHeight) {
           topPos = window.innerHeight - menuHeight - 10;
@@ -1325,15 +1313,12 @@ box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
   };
   
   
-  // 点击空白处收起皮肤弹窗
   document.addEventListener("pointerdown", (e) => {
-      // 当面板处于显示状态，并且点击区域既不是猫咪，也不是皮肤面板的内部元素时，才隐藏面板
       if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) {
           skinMenu.style.display = "none";
       }
   });
 
-  // 恢复猫咪默认在左上角 (32, 32)
   let nekoPosX = 32,
     nekoPosY = 32,
     mousePosX = 32,
@@ -1349,7 +1334,7 @@ box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
     kuroNeko = false,
     variant = "classic",
     lastClickTime = 0,
-    clickCount = 0; // 新增：记录连续点击次数
+    clickCount = 0;
 
   function parseLocalStorage(key, fallback) {
     try { const value = JSON.parse(localStorage.getItem(`oneko:${key}`)); return typeof value === typeof fallback ? value : fallback; } 
@@ -1377,7 +1362,6 @@ box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
     variant = parseLocalStorage("variant", "classic"); kuroNeko = parseLocalStorage("kuroneko", false);
     if (!variants.some((v) => v[0] === variant)) { variant = "classic"; }
     
-    // 恢复上次保存的皮肤，如果没有保存则使用一个默认的蓝猫皮肤防空
     const savedSkin = localStorage.getItem("oneko:skin") || "https://dogpan.com/f/v2MpsA/blue.png";
 
     nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
@@ -1387,14 +1371,12 @@ box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
     nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
     document.body.appendChild(nekoEl);
 
-    // 更新鼠标目标的中心逻辑
     function updateMousePos(e) {
-        // [新增] 判断如果面板正在展开，且鼠标移动到了面板的范围内，停止更新追随坐标 (不进入面板区域)
         if (skinMenu.style.display === "grid") {
             const rect = skinMenu.getBoundingClientRect();
             if (e.clientX >= rect.left && e.clientX <= rect.right &&
                 e.clientY >= rect.top && e.clientY <= rect.bottom) {
-                return; // 鼠标位于面板内时，取消位置捕获，猫咪将停在边上不会跑进去
+                return;
             }
         }
         
@@ -1407,14 +1389,12 @@ box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
     window.addEventListener("mousemove", (e) => { if (forceSleep) return; updateMousePos(e); });
     window.addEventListener("pointermove", (e) => { if (forceSleep) return; if (e.pointerType === "touch") updateMousePos(e); });
 
-    // 缩放/恢复页面大小时，把跑偏的猫拉回到可视区域中心
     function handleResize() {
         if (window.visualViewport) {
             let offsetLeft = window.visualViewport.offsetLeft;
             let offsetTop = window.visualViewport.offsetTop;
             let vW = window.visualViewport.width;
             let vH = window.visualViewport.height;
-            // 如果目标超出了你目前能看到的区域，强制拉回屏幕中间
             if (mousePosX < offsetLeft || mousePosX > offsetLeft + vW || mousePosY < offsetTop || mousePosY > offsetTop + vH) {
                 mousePosX = offsetLeft + vW / 2;
                 mousePosY = offsetTop + vH / 2;
@@ -1426,17 +1406,17 @@ box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
     window.addEventListener("resize", handleResize);
     if (window.visualViewport) {
         window.visualViewport.addEventListener("resize", handleResize);
-        window.visualViewport.addEventListener("scroll", handleResize); // 监听手机双指平移拖拽
+        window.visualViewport.addEventListener("scroll", handleResize);
     }
 
-let clickTimeout = null; // 用于区分单击和双击
+let clickTimeout = null;
 
     nekoEl.addEventListener("pointerdown", (e) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
       
       e.preventDefault(); 
       grabbing = true;
-      let isDragging = false; // 用来精确判断是否发生了拖拽
+      let isDragging = false;
       
       if (nekoEl.setPointerCapture) { try { nekoEl.setPointerCapture(e.pointerId); } catch (_) {} }
       
@@ -1447,7 +1427,6 @@ let clickTimeout = null; // 用于区分单击和双击
         const deltaX = e.clientX - startX; const deltaY = e.clientY - startY;
         const absDeltaX = Math.abs(deltaX); const absDeltaY = Math.abs(deltaY);
 
-        // 如果移动距离超过 5 像素，判定为拖拽行为，不再触发点击
         if (absDeltaX > 5 || absDeltaY > 5) {
             isDragging = true; 
         }
@@ -1472,20 +1451,17 @@ let clickTimeout = null; // 用于区分单击和双击
         window.removeEventListener("pointercancel", upHandler);
         if (nekoEl.releasePointerCapture) { try { nekoEl.releasePointerCapture(e.pointerId); } catch (_) {} }
 
-        // 【单击与双击的判断逻辑】
         if (!isDragging) {
             const currentTime = Date.now();
             if (currentTime - lastClickTime < 300) {
-                // 如果 300ms 内连续点击了两次 -> 判定为双击，猫咪睡觉
                 clearTimeout(clickTimeout);
                 sleep();
                 lastClickTime = 0;
             } else {
-                // 单击 -> 延迟 300ms 等待确认不是双击后，弹出皮肤面板
                 lastClickTime = currentTime;
                 clickTimeout = setTimeout(() => {
-                    if (forceSleep) sleep(); // 如果猫咪睡着了先唤醒
-                    showSkinMenu(); // 弹出选择面板
+                    if (forceSleep) sleep();
+                    showSkinMenu();
                 }, 300);
             }
         }
@@ -1511,7 +1487,6 @@ function idle() {
       
       let scratchW = false, scratchN = false, scratchE = false, scratchS = false;
       
-      // 1. 原有的屏幕边缘判定 (加入了视口缩放偏移兼容)
       let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
       let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
       let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
@@ -1522,66 +1497,53 @@ function idle() {
       if (nekoPosX > offsetLeft + vWidth - 32) scratchE = true;
       if (nekoPosY > offsetTop + vHeight - 32) scratchS = true;
 
-      // 2. 新增：UI 卡片元素的内外边缘判定
       const cards = document.querySelectorAll('.glowing-card, .spotify-card, .link-card');
       cards.forEach(card => {
           const rect = card.getBoundingClientRect();
-          // 如果卡片当前不可见(比如在隐藏的页面里)，则跳过判定
           if (rect.width === 0 || rect.height === 0) return;
 
-          // 将屏幕坐标系转换与猫咪坐标系一致
           const rLeft = rect.left + offsetLeft;
           const rRight = rect.right + offsetLeft;
           const rTop = rect.top + offsetTop;
           const rBottom = rect.bottom + offsetTop;
-          const threshold = 32; // 触发挠墙的靠近距离
+          const threshold = 32;
 
-          // 判断猫咪是否在卡片的垂直高度范围内
           if (nekoPosY >= rTop - threshold && nekoPosY <= rBottom + threshold) {
-              // 靠近左侧边框
               if (Math.abs(nekoPosX - rLeft) <= threshold) {
-                  if (nekoPosX <= rLeft) scratchE = true; // 猫在左外侧，朝右挠墙 (面朝卡片)
-                  else scratchW = true;                   // 猫在左内侧，朝左挠墙 (面朝卡片左边缘)
+                  if (nekoPosX <= rLeft) scratchE = true;
+                  else scratchW = true;
               }
-              // 靠近右侧边框
               if (Math.abs(nekoPosX - rRight) <= threshold) {
-                  if (nekoPosX >= rRight) scratchW = true; // 猫在右外侧，朝左挠墙 (面朝卡片)
-                  else scratchE = true;                    // 猫在右内侧，朝右挠墙 (面朝卡片右边缘)
+                  if (nekoPosX >= rRight) scratchW = true;
+                  else scratchE = true;
               }
           }
 
-          // 判断猫咪是否在卡片的水平宽度范围内
           if (nekoPosX >= rLeft - threshold && nekoPosX <= rRight + threshold) {
-              // 靠近顶部边框
               if (Math.abs(nekoPosY - rTop) <= threshold) {
-                  if (nekoPosY <= rTop) scratchS = true;  // 猫在上外侧，朝下挠墙 (面朝卡片)
-                  else scratchN = true;                   // 猫在上内侧，朝上挠墙 (面朝卡片上边缘)
+                  if (nekoPosY <= rTop) scratchS = true;
+                  else scratchN = true;
               }
-              // 靠近底部边框
               if (Math.abs(nekoPosY - rBottom) <= threshold) {
-                  if (nekoPosY >= rBottom) scratchN = true; // 猫在下外侧，朝上挠墙 (面朝卡片)
-                  else scratchS = true;                     // 猫在下内侧，朝下挠墙 (面朝卡片下边缘)
+                  if (nekoPosY >= rBottom) scratchN = true;
+                  else scratchS = true;
               }
           }
       });
 
-// 收集所有触发的挠墙动作
       let wallAnimations = [];
       if (scratchW) wallAnimations.push("scratchWallW");
       if (scratchN) wallAnimations.push("scratchWallN");
       if (scratchE) wallAnimations.push("scratchWallE");
       if (scratchS) wallAnimations.push("scratchWallS");
 
-      // ====== 核心修改：大幅提高挠墙概率 ======
       if (wallAnimations.length > 0) {
-          // 如果靠近了边框，设定 80% 的概率强制优先触发挠墙（剩下 20% 概率它才会去睡觉/舔毛）
           if (Math.random() < 0.4) { 
               idleAnimation = wallAnimations[Math.floor(Math.random() * wallAnimations.length)];
           } else {
               idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
           }
       } else {
-          // 如果不在边框附近，就正常从基础动作（睡觉、舔毛等）里随机抽
           idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
       }
     }
@@ -1628,7 +1590,6 @@ function idle() {
 
     nekoPosX -= (diffX / distance) * nekoSpeed; nekoPosY -= (diffY / distance) * nekoSpeed;
 
-    // 把墙壁边缘判定，锁定为你当前“眼睛能看到的区域 (Visual Viewport)”
     let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
     let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
     let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
