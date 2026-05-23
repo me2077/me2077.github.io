@@ -117,17 +117,17 @@
             opacity: 0; transition: opacity 0.8s ease-in-out; transform: translateZ(0);
             will-change: opacity; contain: strict;
         }
-        .bg-layer video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            object-fit: cover; 
-        }
+.bg-layer video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover; /* 关键：确保视频铺满 */
+}
       
         canvas { position: fixed; inset: 0; width: 100%; height: 100dvh; z-index: -1; }
 
@@ -142,7 +142,57 @@
             transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
             will-change: background, box-shadow, border;
         }
+/* 新增：.glowing-card 旋转流光边框层 */
+.glowing-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px; /* 保持与卡片一致的圆角 */
+    padding: 2.5px; /* 边框粗细 */
+    
+    /* 金-白-金流光配色 */
+    background: conic-gradient(
+        from var(--gradient-angle),
+        transparent 40%,
+        #bf953f 60%,
+        #fcf6ba 75%,
+        #b38728 90%,
+        transparent
+    );
+    
+    /* 镂空遮罩，只显示 padding 区域的边框 */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    
+    animation: rotate-stream 8s linear infinite;
+    pointer-events: none;
+    z-index: 2; /* 确保边框层在内容之上 */
+}
 
+/* 新增：.glowing-card 外部辉光层 */
+.glowing-card::after {
+    content: "";
+    position: absolute;
+    inset: -2px; /* 稍微向外扩张 */
+    border-radius: 22px;
+    padding: 2px;
+    background: conic-gradient(
+        from var(--gradient-angle),
+        transparent 70%,
+        rgba(252, 246, 186, 0.5) 85%,
+        transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    filter: blur(4px); /* 模糊边缘产生外发光效果 */
+    animation: rotate-stream 8s linear infinite;
+    pointer-events: none;
+    z-index: -1; /* 处于卡片背景层下方 */
+}
         .theme-toggle, .day-toggle {
             position: absolute; width: 24px; height: 24px; cursor: pointer; z-index: 10;
             opacity: 0.5; transition: opacity 0.3s, transform 0.1s ease;
@@ -188,64 +238,95 @@
         .link-card:hover { background: var(--link-card-hover-bg); transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease; }
         .link-icon { width: 36px; height: 36px; margin-left: 16px; }
       
-        .link-title { 
-            text-align: center; 
-            width: 100%; 
-            font-size: 18px; 
-            transition: transform 0.3s ease, text-shadow 0.3s ease; 
-        }
+      
+.link-title { 
+    text-align: center; 
+    width: 100%; 
+    font-size: 18px; 
+    transition: transform 0.3s ease, text-shadow 0.3s ease; 
+}
 
-        @media (hover: hover) {
-            .link-card:hover .link-title {
-                transform: scale(1.05);
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            }
-        }
+@media (hover: hover) {
+    .link-card:hover .link-title {
+        transform: scale(1.05);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+}
 
-        .link-card:active .link-title {
-            transform: scale(1.05);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
+.link-card:active .link-title {
+    transform: scale(1.05);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+      
+/* 注册自定义属性，确保旋转平滑 */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 
-/* 针对 vCard 按钮恢复普通卡片一致的视觉 */
+/* 旋转动画轨迹 */
+@keyframes rotate-stream {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+/* 针对 vCard 按钮的特殊处理 */
 #btn-vcard {
     position: relative;
-    background: var(--link-card-bg);
-    z-index: 1;
+    border: none; /* 移除原有边框，改用流光边框 */
+    background: var(--link-card-bg); /* 保持你要求的透明度 */
+    z-index: 1; /* 确保内容在光效之上 */
 }
 
-/* 全局流光 SVG 与路径样式 */
-#link-border-glow-svg {
+/* 流光边框层 */
+#btn-vcard::before {
+    content: "";
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
+    border-radius: 20px; /* 与 link-card 保持一致 */
+    padding: 1.5px; /* 边框粗细 */
+    
+    /* 配色：金-白-金 */
+    background: conic-gradient(
+        from var(--gradient-angle),
+        transparent 40%,
+        #bf953f 60%,
+        #fcf6ba 75%,
+        #b38728 90%,
+        transparent
+    );
+    
+    /* 镂空黑科技：只显示 padding 区域的颜色 */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    
+    animation: rotate-stream 3s linear infinite;
     pointer-events: none;
-    z-index: 5;
-    overflow: visible;
 }
 
-#glow-path {
-    fill: none;
-    stroke: url(#glow-gradient);
-    stroke-width: 2.5px;
-    filter: url(#glow-blur);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* 硬件加速的无限流动动画 - 放慢速度至 24s，加长流光至 320px */
-#glow-path.glow-path-active {
-    stroke-dasharray: 360 var(--path-length, 2500);
-    animation: flowAnimation 35s linear infinite;
-}
-
-@keyframes flowAnimation {
-    0% {
-        stroke-dashoffset: var(--path-length, 2500);
-    }
-    100% {
-        stroke-dashoffset: 0;
-    }
+/* 外发光层（增加氛围感，不需要可删） */
+#btn-vcard::after {
+    content: "";
+    position: absolute;
+    inset: -2px; /* 稍微向外扩张一点点 */
+    border-radius: 22px;
+    padding: 2px;
+    background: conic-gradient(
+        from var(--gradient-angle),
+        transparent 70%,
+        rgba(252, 246, 186, 0.5) 85%,
+        transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    filter: blur(4px); /* 模糊边缘产生辉光 */
+    animation: rotate-stream 3s linear infinite;
+    pointer-events: none;
+    z-index: -1;
 }
         .spotify-card {
             display: flex; justify-content: space-between; align-items: center; max-width: 251px;
@@ -290,103 +371,105 @@
         #page1, #page1 .page-vertical, #page1 .subpage { overflow-x: hidden; }
 
         .media-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-        .glitch-img { 
-            width: 100%; 
-            max-width: 100%; 
-            max-height: 100%; 
-            border-radius: 15px; 
-            display: block; 
-            object-fit: cover; 
-        }
-        .pixel-scale-box { 
-            width: 200px; 
-            height: 180px; 
-            position: relative; 
-            transform: scale(0.5); 
-            contain: paint; 
-            will-change: transform; 
-        }
+.glitch-img { 
+    width: 100%; 
+    max-width: 100%; 
+    max-height: 100%; 
+    border-radius: 15px; 
+    display: block; 
+    object-fit: cover; 
+}
+.pixel-scale-box { 
+    width: 200px; 
+    height: 180px; 
+    position: relative; 
+    transform: scale(0.5); 
+    contain: paint; 
+    will-change: transform; 
+}
 
         .reward-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-style: italic; cursor: pointer; position: relative; width: 100%; -webkit-tap-highlight-color: transparent; }
-        .reward-media { 
-            position: relative; 
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            transform: translateY(-26px); 
-        }
+.reward-media { 
+    position: relative; 
+    width: 100%; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    transform: translateY(-26px); 
+}
       
-        .reward-gif { 
-            width: 100%; 
-            max-width: 100%; 
-            max-height: 100%; 
-            border-radius: 18px; 
-            transition: opacity 0.5s ease; 
-            opacity: 1; 
-            display: block; 
-            object-fit: cover; 
-        }
-
-        .reward-qr { 
-            position: absolute; 
-            width: 340px; 
-            height: 340px; 
-            border-radius: 18px; 
-            transition: opacity 0.5s ease; 
-            opacity: 0; 
-            pointer-events: none; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            margin: 0 auto; 
-        }
       
-        .reward-texts { 
-            position: absolute;
-            bottom: 35px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            width: 100%; 
-            height: 32px; 
-        }
-        .reward-text-old { 
-            position: absolute; 
-            color: inherit; 
-            font-size: 24px; 
-            text-align: center; 
-            text-decoration: underline; 
-            text-underline-offset: 2px; 
-            margin: 0; 
-            transition: opacity 0.5s ease; 
-            opacity: 1; 
-            white-space: nowrap; 
-            transform: translateY(0px); 
-        }
+.reward-gif { 
+    width: 100%; 
+    max-width: 100%; 
+    max-height: 100%; 
+    border-radius: 18px; 
+    transition: opacity 0.5s ease; 
+    opacity: 1; 
+    display: block; 
+    object-fit: cover; 
+}
 
-        .reward-text-new { 
-            position: absolute; 
-            opacity: 0; 
-            transition: opacity 0.5s ease; 
-            pointer-events: none; 
-            text-align: center; 
-            transform: translateY(-18px); 
-        }
+.reward-qr { 
+    position: absolute; 
+    width: 340px; 
+    height: 340px; 
+    border-radius: 18px; 
+    transition: opacity 0.5s ease; 
+    opacity: 0; 
+    pointer-events: none; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    margin: 0 auto; 
+}
+      
+      
+.reward-texts { 
+    position: absolute;
+    bottom: 35px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    width: 100%; 
+    height: 32px; 
+}
+.reward-text-old { 
+    position: absolute; 
+    color: inherit; 
+    font-size: 24px; 
+    text-align: center; 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+    margin: 0; 
+    transition: opacity 0.5s ease; 
+    opacity: 1; 
+    white-space: nowrap; 
+    transform: translateY(0px); 
+}
 
-        .reward-text-new a { 
-            color: inherit; 
-            font-size: 24px; 
-            text-decoration: underline; 
-            text-underline-offset: 2px; 
-            display: block; 
-            line-height: 1.5; 
-            margin-bottom: 0px; 
-        }
+.reward-text-new { 
+    position: absolute; 
+    opacity: 0; 
+    transition: opacity 0.5s ease; 
+    pointer-events: none; 
+    text-align: center; 
+    transform: translateY(-18px); 
+}
 
-        .reward-text-new a:last-child {
-            margin-bottom: 0; 
-        }
+.reward-text-new a { 
+    color: inherit; 
+    font-size: 24px; 
+    text-decoration: underline; 
+    text-underline-offset: 2px; 
+    display: block; 
+    line-height: 1.5; 
+    margin-bottom: 0px; 
+}
+
+.reward-text-new a:last-child {
+    margin-bottom: 0; 
+}
         .show-qr .reward-gif, .show-qr .reward-text-old { opacity: 0; pointer-events: none; }
         .show-qr .reward-qr, .show-qr .reward-text-new { opacity: 1; pointer-events: auto; }
         .pixel-art {
@@ -633,147 +716,10 @@ const bgPresets =[
 ];
 let currentBgIndex = 0;
 
-
-
-// 动态计算卡片位置，生成带有平滑 S 弧桥接的无缝圆角流动路径
-function updateBorderGlowPath() {
-    const container = document.querySelector('.link-scroll-container');
-    if (!container) return;
-    
-    let svg = document.getElementById('link-border-glow-svg');
-    if (!svg) {
-        svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.id = 'link-border-glow-svg';
-        container.appendChild(svg);
-        
-        svg.innerHTML = `
-            <defs>
-                <linearGradient id="glow-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#bf953f" stop-opacity="0" />
-                    <stop offset="30%" stop-color="#bf953f" stop-opacity="0.85" />
-                    <stop offset="50%" stop-color="#fcf6ba" stop-opacity="1" />
-                    <stop offset="70%" stop-color="#b38728" stop-opacity="0.85" />
-                    <stop offset="100%" stop-color="#b38728" stop-opacity="0" />
-                </linearGradient>
-                <filter id="glow-blur" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="3.5" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-            <path id="glow-path" fill="none" />
-        `;
-    }
-    
-    svg.style.width = container.scrollWidth + 'px';
-    svg.style.height = container.scrollHeight + 'px';
-    
-    const cards = Array.from(container.querySelectorAll('.link-card'));
-    if (cards.length === 0) return;
-    
-    const containerRect = container.getBoundingClientRect();
-    const cardRects = cards.map(card => {
-        const rect = card.getBoundingClientRect();
-        return {
-            x: rect.left - containerRect.left + container.scrollLeft,
-            y: rect.top - containerRect.top + container.scrollTop,
-            w: rect.width,
-            h: rect.height
-        };
-    });
-    
-    let d = "";
-    const r = 20; // 对应卡片 20px 的 border-radius 圆角
-    
-  
-  
-    // 1. 向下流动阶段 (卡片之间改用 S 型弧线过渡平滑桥接，彻底告别直角)
-    cardRects.forEach((rect, i) => {
-        const { x, y, w, h } = rect;
-        if (i === 0) {
-            d += `M ${x} ${y + r}`;
-            d += ` Q ${x} ${y} ${x + r} ${y}`;                      // 左上圆角
-            d += ` L ${x + w - r} ${y}`;                            // 顶边
-            d += ` Q ${x + w} ${y} ${x + w} ${y + r}`;              // 右上圆角
-            d += ` L ${x + w} ${y + h - r}`;                        // 右边
-            d += ` Q ${x + w} ${y + h} ${x + w - r} ${y + h}`;      // 右下圆角
-            d += ` L ${x + r} ${y + h}`;                            // 底边
-            
-            // 弧线桥接过渡到 Card 1 的左侧向下起点
-            const next = cardRects[i + 1];
-            d += ` Q ${x} ${y + h} ${next.x} ${next.y + r}`;
-        } else if (i % 2 === 1) { // 奇数卡 (左侧向下 ↓，底边向右 →)
-            d += ` L ${x} ${y + h - r}`;                            // 左边
-            d += ` Q ${x} ${y + h} ${x + r} ${y + h}`;              // 左下圆角
-            d += ` L ${x + w - r} ${y + h}`;                        // 底边
-            
-            if (i < cardRects.length - 1) {
-                // 弧线桥接过渡到下一张卡的右侧向下起点
-                const next = cardRects[i + 1];
-                d += ` Q ${x + w} ${y + h} ${next.x + next.w} ${next.y + r}`;
-            } else {
-                // 如果是最后一张卡，收尾右下圆角
-                d += ` Q ${x + w} ${y + h} ${x + w} ${y + h - r}`;
-            }
-        } else { // 偶数卡 (右侧向下 ↓，底边向左 ←)
-            d += ` L ${x + w} ${y + h - r}`;                        // 右边
-            d += ` Q ${x + w} ${y + h} ${x + w - r} ${y + h}`;      // 右下圆角
-            d += ` L ${x + r} ${y + h}`;                            // 底边
-            
-            if (i < cardRects.length - 1) {
-                // 弧线桥接过渡到下一张卡的左侧向下起点
-                const next = cardRects[i + 1];
-                d += ` Q ${x} ${y + h} ${next.x} ${next.y + r}`;
-            } else {
-                // 如果是最后一张卡，收尾左下圆角
-                d += ` Q ${x} ${y + h} ${x} ${y + h - r}`;
-            }
-        }
-    });
-    
-    // 2. 向上返回阶段 (采用对应的反向 S 弧桥接向上，完成完美环抱闭环)
-    for (let i = cardRects.length - 1; i >= 0; i--) {
-        const { x, y, w, h } = cardRects[i];
-        if (i === 0) {
-            d += ` L ${x} ${y + r}`;
-        } else if (i % 2 === 1) { // 奇数卡 (向上折返：右边 ↑ -> 顶边 ←)
-            d += ` L ${x + w} ${y + r}`;                            // 右边
-            d += ` Q ${x + w} ${y} ${x + w - r} ${y}`;              // 右上圆角
-            d += ` L ${x + r} ${y}`;                                // 顶边
-            
-            // 弧线桥接过渡到上一张卡的左下位置
-            const prev = cardRects[i - 1];
-            d += ` Q ${x} ${y} ${prev.x} ${prev.y + prev.h - r}`;
-        } else { // 偶数卡 (向上折返：左边 ↑ -> 顶边 →)
-            d += ` L ${x} ${y + r}`;                                // 左边
-            d += ` Q ${x} ${y} ${x + r} ${y}`;                      // 左上圆角
-            d += ` L ${x + w - r} ${y}`;                            // 顶边
-            
-            // 弧线桥接过渡到上一张卡的右下位置
-            const prev = cardRects[i - 1];
-            d += ` Q ${x + w} ${y} ${prev.x + prev.w} ${prev.y + prev.h - r}`;
-        }
-    }
-    
-    d += " Z"; // 形成闭合
-    
-    const pathEl = document.getElementById('glow-path');
-    if (pathEl) {
-        pathEl.setAttribute('d', d);
-        const length = pathEl.getTotalLength();
-        document.documentElement.style.setProperty('--path-length', length);
-        pathEl.classList.add('glow-path-active');
-    }
-}
-
-
 document.addEventListener('DOMContentLoaded', () => {
     pagesContainer = document.querySelector('.pages');
     bullets = document.querySelectorAll('.bullet');
 
-    // 绑定主题和背景事件
     document.getElementById('btn-theme-light').addEventListener('click', () => switchBackground(BG_TOP_LEFT, true));
     document.getElementById('btn-theme-dark').addEventListener('click', () => switchBackground(BG_TOP_RIGHT, false));
     document.getElementById('btn-bg-1').addEventListener('click', () => switchBackground(BG_BOTTOM_LEFT, true));
@@ -811,10 +757,6 @@ document.addEventListener('DOMContentLoaded', () => {
         var clipboard = new ClipboardJS('#wechatBtn', { text: () => "lllIIllIIlIII" });
         clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; });
     }
-
-    // 初始化流光效果
-    updateBorderGlowPath();
-    window.addEventListener('resize', updateBorderGlowPath);
 });
 
 function updateParticlesDisplay() {
@@ -835,12 +777,15 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
     const container = document.getElementById('bg-container');
     if (!container) return;
 
+    // 1. 提取 URL 
     let cleanUrl = backgroundValue;
     const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/);
     if (urlMatch) cleanUrl = urlMatch[1];
 
+    // 2. 判断是否为视频文件
     const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(cleanUrl);
 
+    // 3. 核心切换逻辑
     const startTransition = (contentElement = null) => {
         if (currentChangeId !== bgChangeSequence) return;
         
@@ -864,16 +809,21 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
 
         container.appendChild(newLayer);
 
+        // --- 修复粒子逻辑开始 ---
+        // 切换 Body 的 light 类
         document.body.classList.toggle('light', isLightTheme);
         document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
 
+        // 如果用户没手动双击切换过粒子，则根据背景明暗自动开关
         if (!window.userToggledParticles) {
             window.isParticlesEnabled = !isLightTheme; 
         }
         
+        // 无论如何，都要调用更新函数来刷新 Canvas 的显示/隐藏状态
         updateParticlesDisplay(); 
+        // --- 修复粒子逻辑结束 ---
 
-        void newLayer.offsetWidth; 
+        void newLayer.offsetWidth; // 触发重绘
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -885,10 +835,12 @@ function crossfadeBackground(backgroundValue, isLightTheme) {
             if (currentChangeId !== bgChangeSequence) return;
             const layers = container.querySelectorAll('.bg-layer');
             layers.forEach(layer => { if (layer !== newLayer) layer.remove(); });
+            // 确保在层清理后粒子显示正确
             updateParticlesDisplay(); 
         }, 850);
     };
 
+    // 4. 预加载逻辑
     if (isVideo) {
         const video = document.createElement('video');
         video.src = cleanUrl;
@@ -1048,11 +1000,6 @@ function switchPageTo(page) {
     currentPage = page;
     if (pagesContainer) pagesContainer.style.transform = `translateX(-${(page - 1) * 100}%)`;
     if (bullets) bullets.forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page));
-    
-    // 切换到第二页时，待 DOM 呈现后重新计算流动边框坐标
-    if (page === 2) {
-        setTimeout(updateBorderGlowPath, 150);
-    }
 }
 
 function togglePlay(button) {
@@ -1250,9 +1197,6 @@ function loadMusicPlayer() {
     const moveScrub = (e) => { if (progressBarIsUpdating) { e.preventDefault(); handleScrub(e); selectedSong.muted = true; } };
     window.addEventListener("pointerup", stopScrub); window.addEventListener("pointermove", moveScrub); window.addEventListener("touchend", stopScrub); window.addEventListener("touchmove", moveScrub);
     handleResize();
-
-    // 播放器加载完毕后，延时刷新一下流光边框的几何尺寸
-    setTimeout(updateBorderGlowPath, 350);
 }
 
 function initKeyboardControls() {
@@ -1305,11 +1249,7 @@ function initKeyboardControls() {
 const scrollContainer = document.querySelector('.link-scroll-container');
 let scrollTimeout;
 if (scrollContainer) {
-    scrollContainer.addEventListener('scroll', () => { 
-        scrollContainer.classList.add('scrolling'); 
-        clearTimeout(scrollTimeout); 
-        scrollTimeout = setTimeout(() => scrollContainer.classList.remove('scrolling'), 1500); 
-    }, { passive: true });
+    scrollContainer.addEventListener('scroll', () => { scrollContainer.classList.add('scrolling'); clearTimeout(scrollTimeout); scrollTimeout = setTimeout(() => scrollContainer.classList.remove('scrolling'), 1500); }, { passive: true });
 }
 
 let avatarSound = null;
@@ -1795,7 +1735,6 @@ function idle() {
 
   create();
 })();
-  
     </script>
 </body>
 </html>
