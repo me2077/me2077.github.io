@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebGL Stripe Shader Simulation</title>
+  <style>
+    body {
+      background: #333;
+      color: #fff;
+      font-family: sans-serif;
+    }
+    body,
+    html {
+      margin: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+    canvas { width:100%; height: 100%; display: block; }
+  </style>
+</head>
+<body>
+
+<!-- 顶点着色器 -->
+<script type="text/vertex" id="vertShader">#version 300 es
+in vec3 position;
+in vec2 uv;
+in vec3 normal;
+out vec2 v_uv;
+out vec3 v_n;
+out vec3 v_pos;
+  
+out vec3 c;
+  
+uniform float u_time;
+uniform vec2 u_resolution;
+uniform vec2 u_position;
+uniform float u_zoom;
+uniform float u_seed;
+  
+vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d ) {
+    return a + b*cos( 6.28318*(c*t+d) );
+}
+
+vec3 random3(vec3 c) {
+	float j = 4096.0*sin(dot(c,vec3(17.0, 59.4, 15.0)));
+	vec3 r;
+	r.z = fract(512.0*j);
+	j *= .125;
+	r.x = fract(512.0*j);
+	j *= .125;
+	r.y = fract(512.0*j);
+	return r-0.5;
+}
+
+const float F3 =  0.3333333;
+const float G3 =  0.1666667;
+
+float simplex3d(vec3 p) {
+	 vec3 s = floor(p + dot(p, vec3(F3)));
+	 vec3 x = p - s + dot(s, vec3(G3));
+	 vec3 e = step(vec3(0.0), x - x.yzx);
+	 vec3 i1 = e*(1.0 - e.zxy);
+	 vec3 i2 = 1.0 - e.zxy*(1.0 - e);
+	 vec3 x1 = x - i1 + G3;
+	 vec3 x2 = x - i2 + 2.0*G3;
+	 vec3 x3 = x - 1.0 + 3.0*G3;
+	 vec4 w, d;
+	 w.x = dot(x, x);
+	 w.y = dot(x1, x1);
+	 w.z = dot(x2, x2);
+	 w.w = dot(x3, x3);
+	 w = max(0.6 - w, 0.0);
+	 d.x = dot(random3(s), x);
+	 d.y = dot(random3(s + i1), x1);
+	 d.z = dot(random3(s + i2), x2);
+	 d.w = dot(random3(s + 1.0), x3);
+	 w *= w;
+	 w *= w;
+	 d *= w;
+	 return dot(d, vec4(52.0));
+}
+  
+#define numOctaves 3
+float fbm( in vec3 x, in float H ) {    
+    float G = exp2(-H);
+    float f = 1.0;
+    float a = 1.0;
+    float t = 0.0;
+    for( int i=0; i<numOctaves; i++ ) {
+        t += a*simplex3d(f*x);
+        f *= 2.5;
+        a *= G;
+    }
+    return t;
+}
+  
+vec2 getScreenSpace() {
+  vec2 uv = (position.xy * u_resolution.xy - 0.5 * u_resolution.xy) / min(u_resolution.y, u_resolution.x);
+  return uv;
+}
+
+float smin(float a, float b, float k) {
+    float h = clamp(0.5 + 0.5*(a-b)/k, 0.0, 1.0);
+    return mix(a, b, h) - k*h*(1.0-h);
+}
+
+void main() {
+  mat2 rot = mat2(1,0,0,1);
+  vec2 tuv = position.xy * rot * u_zoom+u_position*2.;
+  float n = simplex3d(vec3(tuv*.5, -1000.+u_time));
+  float nc = n;
+  n += simplex3d(vec3(tuv*2.*.3+4.7, -1000.+u_time*.5)*2.)*.8;
+  float ncol = simplex3d(vec3(100.+tuv*.1, -1000.+u_time*.5)*2.)*.8;
+  
+  vec3 offset = vec3(
+    (nc*-.5)/u_zoom*.5*min(u_resolution.y, u_resolution.x),
+    n/u_zoom*.5*min(u_resolution.y, u_resolution.x), 
+    -(n*.5+.5)
+  );
+  vec3 pos = position;
+  pos *= vec3(u_resolution.xy, 1.);
+  pos += offset;
+  pos /= vec3(u_resolution.xy, 1.);
+  pos.xy *= rot;
+  offset /= vec3(u_resolution.xy, 1.);
+  
+  c = pal(nc*.5+u_seed, vec3(.7),vec3(.3),vec3(1.0,.95,.9),vec3(0.0,0.33,0.67));
+  pos.z = smin(pos.z, -1., -0.2);
+  
+  gl_Position = vec4(pos, 1.0);
+  v_uv = uv;
+  v_pos = pos.xyz;
+  v_n = offset;
+}
+</script>
+
+<!-- 片元着色器 -->
+<script type="text/fragment" id="fragShader">#version 300 es
+precision highp float;
+
+uniform vec2 u_resolution;
+uniform float u_time;
+uniform vec2 u_mouse;
+uniform sampler2D s_noise;
+uniform sampler2D b_noise;
+
+in vec2 v_uv;
+in vec3 c;
+in vec3 v_n;
+in vec3 v_pos;
+
+out vec4 colour;
+
+vec2 getScreenSpace() {
+  vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.y, u_resolution.x);
+  return uv;
+}
+
+float ndot(vec2 a, vec2 b ) { return a.x*b.x - a.y*b.y; }
+
+float sdRhombus( in vec2 p, in vec2 b ) {
+    p = abs(p);
+    float h = clamp( ndot(b-2.0*p,b)/dot(b,b), -1.0, 1.0 );
+    float d = length( p-0.5*b*vec2(1.0-h,1.0+h) );
+    return d * sign( p.x*b.y + p.y*b.x - b.x*b.y );
+}
+
+void main() {
+  vec2 uv = getScreenSpace();
+  uv *= 1.;
+  float m = abs(fract(v_uv.y*100. * max(.2, smoothstep(.6, -.6, uv.y+uv.x)) - u_time * 5.) - .5) - .3;
+  
+  vec2 vv_uv = v_uv * (u_resolution.y > u_resolution.x ? vec2((u_resolution.x / u_resolution.y), 1.) : vec2(1., (u_resolution.y / u_resolution.x)));
+  vv_uv = fract(vv_uv*20.) - .5;
+  m = length(vv_uv)-.4;
+  m = sdRhombus(vv_uv, vec2(.5));
+  
+  vec3 U = dFdx(v_pos);
+  vec3 V = dFdy(v_pos);
+  vec3 n = normalize(cross(U, V));
+  
+  float mask = smoothstep(fwidth(m), 0., m);
+  float ls = dot(n, normalize(vec3(10, -10, 10)))+.5;
+
+  colour = vec4(vec3(c*ls),1);
+}
+</script>
+
+<!-- 核心修复 -->
+<script type="module">
+  import { 
+    Renderer,
+    Program,
+    Mesh,
+    Plane,
+    Uniform,
+  } from 'https://esm.sh/wtc-gl@1.0.0-beta.43';
+  import { Vec2, Vec3, Vec4, Mat2, Mat3, Mat4, Quat } from 'https://esm.sh/wtc-math';
+
+  const vertex = document.getElementById('vertShader').innerText.replace('%%rn%%', `${.1+Math.random()*.3}+${Math.random()*Math.PI}`);
+  const fragment = document.getElementById('fragShader').innerText;
+
+  console.clear()
+
+  class StripeHeader {
+    uniforms
+    dimensions
+    autoResize = true
+    onBeforeRender
+    onAfterRender
+
+    u_time
+    u_resolution
+
+    gl
+    renderer
+    program
+    mesh
+
+    lastTime = 0
+
+    constructor({
+      vertex,
+      fragment,
+      dimensions = new Vec2(window.innerWidth, window.innerHeight),
+      container = document.body,
+      autoResize = true,
+      uniforms = {},
+      onInit = (renderer) => {},
+      onBeforeRender = (t) => {},
+      onAfterRender = (t) => {},
+      rendererProps = { antialias: true }
+    } = {}) {
+      this.onBeforeRender = onBeforeRender.bind(this)
+      this.onAfterRender = onAfterRender.bind(this)
+      this.render = this.render.bind(this)
+      this.resize = this.resize.bind(this)
+      this.autoResize = autoResize
+
+      this.dimensions = dimensions
+
+      this.u_time = new Uniform({ name: 'time', value: 0, kind: 'float' })
+      this.u_resolution = new Uniform({
+        name: 'resolution',
+        value: this.dimensions.array,
+        kind: 'float_vec2'
+      })
+      this.u_seed = new Uniform({
+        name: 'seed',
+        value: Math.random()*10000+1000,
+        kind: 'float'
+      })
+
+      this.uniforms = Object.assign({}, uniforms, {
+        u_time: this.u_time,
+        u_resolution: this.u_resolution,
+        u_seed: this.u_seed
+      })
+
+      this.renderer = new Renderer(rendererProps)
+      onInit(this.renderer)
+      this.gl = this.renderer.gl
+      container.appendChild(this.gl.canvas)
+      this.gl.clearColor(1, 1, 1, 1)
+
+      if (this.autoResize) {
+        window.addEventListener('resize', this.resize, false)
+        this.resize()
+      } else {
+        this.renderer.dimensions = dimensions
+        this.u_resolution.value = this.dimensions.scaleNew(
+          this.renderer.dpr
+        ).array
+      }
+
+      const geometry = new Plane(this.gl, {
+        width: 4,
+        height: 4,
+        widthSegments: Math.floor(window.innerWidth / 20),
+        heightSegments: Math.floor(window.innerHeight / 5),
+      });
+
+      this.program = new Program(this.gl, {
+        vertex,
+        fragment,
+        uniforms: this.uniforms
+      })
+
+      this.mesh = new Mesh(this.gl, { geometry, program: this.program })
+
+      this.playing = true
+    }
+
+    resize() {
+      this.dimensions = new Vec2(window.innerWidth, window.innerHeight)
+      this.u_resolution.value = this.dimensions.scaleNew(this.renderer.dpr).array
+      this.renderer.dimensions = this.dimensions
+      
+      const geometry = new Plane(this.gl, {
+        width: 3,
+        height: 3,
+        widthSegments: Math.floor(window.innerWidth / 20),
+        heightSegments: Math.floor(window.innerHeight / 5),
+      });
+      this.mesh = new Mesh(this.gl, { geometry, program: this.program })
+    }
+
+    resetTime() {
+      this.lastTime = 0;
+    }
+
+    render(t) {
+      const diff = t - this.lastTime
+      this.lastTime = t
+
+      if (this.playing) {
+        requestAnimationFrame(this.render)
+      }
+
+      const v = this.u_time.value
+      this.u_time.value = v + diff * 0.00005
+
+      this.onBeforeRender(t)
+
+      if (this.post) this.post.render(this.renderer, { scene: this.mesh })
+      else this.renderer.render({ scene: this.mesh })
+
+      this.onAfterRender(t)
+    }
+
+    #post
+    set post(p) {
+      if (p.render) {
+        this.#post = p
+      }
+    }
+    get post() {
+      return this.#post || null
+    }
+
+    _playing = false;
+    set playing(v) {
+      if (this._playing !== true && v === true) {
+        requestAnimationFrame(this.render)
+        this._playing = true
+      } else {
+        this.lastTime = 0
+        this._playing = false
+      }
+    }
+    get playing() {
+      return this._playing === true
+    }
+  }
+
+// 修改后：
+const FSWrapper = new StripeHeader({
+  fragment,
+  vertex,
+  dimensions: new Vec2(1920, 1080), // 1. 强制固定内部渲染分辨率为电脑级 1080P
+  autoResize: false                 // 2. 关闭响应式尺寸调整
+});
+  const { gl, uniforms } = FSWrapper;
+
+  let angle = 0.;
+  uniforms.u_position = new Uniform({
+    name: "position",
+    value: [0,2],
+    kind: "vec2"
+  });
+  uniforms.u_zoom = new Uniform({
+    name: "zoom",
+    value: 1.,
+    kind: "float"
+  });
+  uniforms.u_rotation = new Uniform({
+    name: "rotation",
+    value: angle,
+    kind: "float"
+  });
+
+  let zoom = uniforms.u_zoom.value;
+  let tzoom = 1.;
+  let velocity = new Vec2(0,0);
+  let lastmouse = new Vec2(0,0);
+  let startmouse = new Vec2(0,0);
+  let startrotation = angle;
+  let rotation = angle;
+  let pointerdown = false;
+  let keys = {
+    rotation: false
+  }
+  let rotating = false;
+  let zooming = false;
+
+  window.addEventListener('keydown', (e) => {
+    if(e.key === 'Control') {
+      keys.rotation = true;
+    }
+    e.preventDefault();
+  });
+  window.addEventListener('keyup', (e) => {
+    if(e.key === 'Control') {
+      keys.rotation = false;
+    }
+    e.preventDefault();
+  });
+
+  window.addEventListener('pointerdown', (e)=> {
+    if(!keys.rotation) {
+      pointerdown = true;
+      lastmouse = new Vec2(e.x,e.y);
+    } else {
+      rotating = true;
+      const thismouse = new Vec2(e.x,e.y);
+      startrotation = rotation + new Vec2(window.innerWidth*.5, window.innerHeight*.5).subtract(thismouse).angle;
+    }
+    startmouse = lastmouse.clone();
+  });
+  window.addEventListener('pointerup', (e)=> {
+    pointerdown = false;
+    rotating = false;
+  });
+  window.addEventListener('pointermove', (e)=> {
+    if(zooming) return;
+    if(rotating) {
+      const thismouse = new Vec2(e.x,e.y);
+      rotation = startrotation - new Vec2(window.innerWidth*.5, window.innerHeight*.5).subtract(thismouse).angle;
+    } else if(pointerdown) {
+        const thismouse = new Vec2(e.x,e.y);
+        let dd = 1./Math.min(window.innerWidth, window.innerHeight);
+        dd *= uniforms.u_zoom.value;
+        const diff = lastmouse.subtract(thismouse);
+
+        const c = Math.cos(uniforms.u_rotation.value);
+        const s = Math.sin(uniforms.u_rotation.value);
+        const mat = new Mat2(c, s, -s, c);
+
+        velocity = diff.clone();
+        uniforms.u_position.value = new Vec2(...uniforms.u_position.value).add(diff.transformByMat2New(mat).multiply(new Vec2(dd, -dd))).array;
+        lastmouse = thismouse;
+      }
+  });
+
+  const runmouse = function(d) {
+    const scalar = pointerdown ? .1 : .98;
+    if(velocity.length > 0.01) {
+      velocity.scale(scalar);
+      
+      const c = Math.cos(uniforms.u_rotation.value);
+      const s = Math.sin(uniforms.u_rotation.value);
+      const mat = new Mat2(c, s, -s, c);
+      
+      let dd = 1./Math.min(window.innerWidth, window.innerHeight);
+      dd *= uniforms.u_zoom.value;
+      uniforms.u_position.value = new Vec2(...uniforms.u_position.value).add(velocity.transformByMat2New(mat).multiplyNew(new Vec2(dd, -dd))).array;
+    }
+    zoom += (tzoom - zoom) * .1;
+    uniforms.u_zoom.value = zoom;
+    uniforms.u_rotation.value = rotation;
+    requestAnimationFrame(runmouse);
+  }
+  requestAnimationFrame(runmouse);
+</script>
+</body>
+</html>
