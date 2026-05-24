@@ -180,8 +180,10 @@ void main() {
   vec3 V = dFdy(v_pos);
   vec3 n = normalize(cross(U, V));
   
-  float mask = smoothstep(fwidth(m), 0., m);
-  float ls = dot(n, normalize(vec3(10, -10, 10)))+.5;
+vec3 lightDir = normalize(vec3(10.0, -10.0, 10.0));
+
+float d = dot(n, lightDir) * 0.5 + 0.5;
+float ls = smoothstep(0.1, 0.9, d);
 
   colour = vec4(vec3(c*ls),1);
 }
@@ -274,12 +276,13 @@ void main() {
         ).array
       }
 
-      const geometry = new Plane(this.gl, {
-        width: 4,
-        height: 4,
-        widthSegments: Math.floor(window.innerWidth / 20),
-        heightSegments: Math.floor(window.innerHeight / 5),
-      });
+// 修改后：
+const geometry = new Plane(this.gl, {
+  width: 4,
+  height: 4,
+  widthSegments: 100,  // 固定网格横向数量，不再随屏幕变
+  heightSegments: 100, // 定网格纵向
+});
 
       this.program = new Program(this.gl, {
         vertex,
@@ -297,12 +300,13 @@ void main() {
       this.u_resolution.value = this.dimensions.scaleNew(this.renderer.dpr).array
       this.renderer.dimensions = this.dimensions
       
-      const geometry = new Plane(this.gl, {
-        width: 3,
-        height: 3,
-        widthSegments: Math.floor(window.innerWidth / 20),
-        heightSegments: Math.floor(window.innerHeight / 5),
-      });
+// 修改后：
+const geometry = new Plane(this.gl, {
+  width: 4,            // 修复 Bug：改回 4，与 construc
+  height: 4,           // 修复 Bug：改回 4
+  widthSegments: 100,  // 固定为 100
+  heightSegments: 100, // 固定为 100
+});
       this.mesh = new Mesh(this.gl, { geometry, program: this.program })
     }
 
@@ -354,13 +358,10 @@ void main() {
     }
   }
 
-// 修改后：
-const FSWrapper = new StripeHeader({
-  fragment,
-  vertex,
-  dimensions: new Vec2(1920, 1080), // 1. 强制固定内部渲染分辨率为电脑级 1080P
-  autoResize: false                 // 2. 关闭响应式尺寸调整
-});
+  const FSWrapper = new StripeHeader({
+    fragment,
+    vertex
+  });
   const { gl, uniforms } = FSWrapper;
 
   let angle = 0.;
@@ -465,3 +466,4 @@ const FSWrapper = new StripeHeader({
 </script>
 </body>
 </html>
+
