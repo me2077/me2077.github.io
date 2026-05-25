@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
+    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png" fetchpriority="high">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -13,7 +15,6 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preconnect" href="https://me2077.github.io" crossorigin>
 
-    <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png">
     <link rel="preload" as="image" href="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG">
     <link rel="preload" as="font" type="font/woff" href="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/fonts/icomoon.woff" crossorigin>
 
@@ -29,6 +30,11 @@
     <script src="js/vCard.js" defer></script>
 
     <style>
+        #bg-container .init-bg {
+            background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover no-repeat;
+            opacity: 1;
+            z-index: 0;
+        }
         :root {
             --glow-sens: 30;
             --dark: hsl(260, 25%, 10%);
@@ -112,7 +118,18 @@
             opacity: 0; transition: opacity 0.8s ease-in-out; transform: translateZ(0);
             will-change: opacity; contain: strict;
         }
-
+        .bg-layer video, .bg-layer canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+      
         canvas { position: fixed; inset: 0; width: 100%; height: 100dvh; z-index: -1; }
 
         .glowing-card {
@@ -143,7 +160,13 @@
         .icon-scale-active { transform: scale(1.2) !important; opacity: 0.7 !important; }
         .icon-shrink-force { transform: scale(1) !important; }
 
-        .alist-widget-wrapper { padding: 20px; z-index: 1; height: 100%; box-sizing: border-box; }
+        .alist-widget-wrapper { 
+            position: relative;
+            z-index: 10;
+            padding: 20px; 
+            height: 100%; 
+            box-sizing: border-box; 
+        }
         .profile-header { padding: 15px 2px 12px; position: relative; }
         .profile-pic { width: 200px; height: 200px; margin: -60px auto; filter: brightness(0.88); cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .link-section { width: 100%; height: 100%; overflow: hidden; padding: 0; }
@@ -172,28 +195,24 @@
         .link-card:hover { background: var(--link-card-hover-bg); transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease; }
         .link-icon { width: 36px; height: 36px; margin-left: 16px; }
       
-      
-.link-title { 
-    text-align: center; 
-    width: 100%; 
-    font-size: 18px; 
-    transition: transform 0.3s ease, text-shadow 0.3s ease;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-}
+        .link-title { 
+            text-align: center; 
+            width: 100%; 
+            font-size: 18px; 
+            transition: transform 0.3s ease, text-shadow 0.3s ease; 
+        }
 
-/* 1. 仅在真正有鼠标的设备（电脑端）上启用 Hover，避免手机端效果“卡住” */
-@media (hover: hover) {
-    .link-card:hover .link-title {
-        transform: scale(1.05);
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-    }
-}
+        @media (hover: hover) {
+            .link-card:hover .link-title {
+                transform: scale(1.05);
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            }
+        }
 
-/* 2. 所有设备通用（尤其针对移动端）：手指按下的瞬间触发放大和阴影 */
-.link-card:active .link-title {
-    transform: scale(1.05);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-}
+        .link-card:active .link-title {
+            transform: scale(1.05);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
 
         .spotify-card {
             display: flex; justify-content: space-between; align-items: center; max-width: 251px;
@@ -225,20 +244,18 @@
 
         .spotify-cover { width: 75px; height: 75px; border-radius: 12px; overflow: hidden; flex-shrink: 0; margin-left: 8px; }
         .spotify-cover img { width: 100%; height: 100%; object-fit: cover; }
-        #shuicheCanvas { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; display: none; }
+        #shuicheCanvas { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            z-index: 1;
+            pointer-events: none; 
+            display: none; 
+        }
         .pagination { display: flex; justify-content: center; gap: 5px; margin-top: -8px; margin-bottom: 10px; }
         .bullet { width: 85px; height: 6px; background: var(--fg); opacity: 0.2; border-radius: 10%; cursor: pointer; transition: all 0.3s; position: relative; }
         .bullet::before { content: ""; position: absolute; inset: -20px 0; }
         .bullet.active { opacity: 1; background: #c299ff; box-shadow: 0px 0px 20px rgba(194, 153, 255, 5); }
-
-        body:not(.light) .crt::after, body:not(.light) .crt::before {
-            content: " "; display: block; position: fixed; inset: 0; pointer-events: none; z-index: 2;
-        }
-        body:not(.light) .crt::after { background: rgba(18, 16, 16, 0); opacity: 0; }
-        body:not(.light) .crt::before {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 100%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-        }
 
         #page1 { padding: 0; }
         #page1 .page-vertical { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior: contain; position: relative; -ms-overflow-style: none; scrollbar-width: none; }
@@ -247,118 +264,103 @@
         #page1, #page1 .page-vertical, #page1 .subpage { overflow-x: hidden; }
 
         .media-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
-.glitch-img { 
-    width: 100%; 
-    max-width: 100%; 
-    max-height: 100%; 
-    border-radius: 15px; 
-    display: block; 
-    object-fit: cover; 
-}
-.pixel-scale-box { 
-    width: 200px; 
-    height: 180px; 
-    position: relative; 
-    transform: scale(0.5); 
-    contain: paint; 
-    will-change: transform; 
-    /* 删除了 margin-top: -10px; */
-}
+        .glitch-img { 
+            width: 100%; 
+            max-width: 100%; 
+            max-height: 100%; 
+            border-radius: 15px; 
+            display: block; 
+            object-fit: cover; 
+        }
+        .pixel-scale-box { 
+            width: 200px; 
+            height: 180px; 
+            position: relative; 
+            transform: scale(0.5); 
+            contain: paint; 
+            will-change: transform; 
+        }
 
         .reward-wrapper { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-style: italic; cursor: pointer; position: relative; width: 100%; -webkit-tap-highlight-color: transparent; }
-.reward-media { 
-    position: relative; 
-    width: 100%; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    
-    /* 👇 新增：让整个图片区域（包含动图和二维码）往上移动 */
-    transform: translateY(-26px); 
-}
+        .reward-media { 
+            position: relative; 
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            transform: translateY(-26px); 
+        }
       
+        .reward-gif { 
+            width: 100%; 
+            max-width: 100%; 
+            max-height: 100%; 
+            border-radius: 18px; 
+            transition: opacity 0.5s ease; 
+            opacity: 1; 
+            display: block; 
+            object-fit: cover; 
+        }
+
+        .reward-qr { 
+            position: absolute; 
+            width: 340px; 
+            height: 340px; 
+            border-radius: 18px; 
+            transition: opacity 0.5s ease; 
+            opacity: 0; 
+            pointer-events: none; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            margin: 0 auto; 
+        }
       
-.reward-gif { 
-    width: 100%; 
-    max-width: 100%; 
-    max-height: 100%; 
-    border-radius: 18px; 
-    transition: opacity 0.5s ease; 
-    opacity: 1; 
-    display: block; 
-    object-fit: cover; 
-}
+        .reward-texts { 
+            position: absolute;
+            bottom: 35px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            width: 100%; 
+            height: 32px; 
+        }
+        .reward-text-old { 
+            position: absolute; 
+            color: inherit; 
+            font-size: 24px; 
+            text-align: center; 
+            text-decoration: underline; 
+            text-underline-offset: 2px; 
+            margin: 0; 
+            transition: opacity 0.5s ease; 
+            opacity: 1; 
+            white-space: nowrap; 
+            transform: translateY(0px); 
+        }
 
-.reward-qr { 
-    position: absolute; 
-    width: 340px; 
-    height: 340px; 
-    border-radius: 18px; 
-    transition: opacity 0.5s ease; 
-    opacity: 0; 
-    pointer-events: none; 
-    
-    /* 👇 关键修改：强制顶部对齐，并保持完美水平居中 */
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    margin: 0 auto; 
-}
-      
-      
-.reward-texts { 
-    position: absolute;
-    bottom: 35px; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    width: 100%; 
-    height: 32px; 
-    /* 去掉了原来的 margin-top: 21px; */
-}
-.reward-text-old { 
-    position: absolute; 
-    color: inherit; 
-    font-size: 24px; 
-    text-align: center; 
-    text-decoration: underline; 
-    text-underline-offset: 2px; 
-    margin: 0; 
-    transition: opacity 0.5s ease; 
-    opacity: 1; 
-    white-space: nowrap; 
+        .reward-text-new { 
+            position: absolute; 
+            opacity: 0; 
+            transition: opacity 0.5s ease; 
+            pointer-events: none; 
+            text-align: center; 
+            transform: translateY(-18px); 
+        }
 
-    /* 👇 1. 单独控制【猫爪一伸...】的高低。负数往上移，正数往下移 */
-    transform: translateY(0px); 
-}
+        .reward-text-new a { 
+            color: inherit; 
+            font-size: 24px; 
+            text-decoration: underline; 
+            text-underline-offset: 2px; 
+            display: block; 
+            line-height: 1.5; 
+            margin-bottom: 0px; 
+        }
 
-.reward-text-new { 
-    position: absolute; 
-    opacity: 0; 
-    transition: opacity 0.5s ease; 
-    pointer-events: none; 
-    text-align: center; 
-
-    /* 👇 2. 单独控制【微信/支付宝】整体的高低。负数往上移，正数往下移 */
-    transform: translateY(-18px); 
-}
-
-.reward-text-new a { 
-    color: inherit; 
-    font-size: 24px; 
-    text-decoration: underline; 
-    text-underline-offset: 2px; 
-    display: block; 
-    line-height: 1.5; 
-
-    /* 👇 3. 单独控制【微信】和【支付宝】这两行字彼此之间的上下间距 */
-    margin-bottom: 0px; 
-}
-
-/* 补充：让最后一行支付宝文字底部不需要多余的间距 */
-.reward-text-new a:last-child {
-    margin-bottom: 0; 
-}
+        .reward-text-new a:last-child {
+            margin-bottom: 0; 
+        }
         .show-qr .reward-gif, .show-qr .reward-text-old { opacity: 0; pointer-events: none; }
         .show-qr .reward-qr, .show-qr .reward-text-new { opacity: 1; pointer-events: auto; }
         .pixel-art {
@@ -464,10 +466,10 @@
 
 <body class="light">
     <div id="bg-container">
-        <div class="bg-layer" style="background: url('https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png') center/cover; opacity: 1; z-index: 0;"></div>
+        <div class="bg-layer init-bg"></div>
     </div>
 
-    <div class="crt">
+    <div>
         <div class="alist-widget-wrapper">
             <div class="glowing-card">
                 <div class="inner">
@@ -581,1061 +583,1502 @@
 
     <canvas id="shuicheCanvas"></canvas>
 
-<script>
-// ==========================================
-// 🎨 全局背景与主题配置区
-// ==========================================
-const BG_TOP_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png';
-const BG_TOP_RIGHT = '#000000';
-const BG_BOTTOM_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/C3.JPG';
-const BG_BOTTOM_RIGHT = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
+    <!-- WebGL Shader Background Module -->
+    <script type="module">
+        import { 
+            Renderer,
+            Program,
+            Mesh,
+            Plane,
+            Uniform,
+        } from 'https://esm.sh/wtc-gl@1.0.0-beta.43';
+        import { Vec2, Vec3, Vec4, Mat2, Mat3, Mat4, Quat } from 'https://esm.sh/wtc-math';
 
-window.isParticlesEnabled = !document.body.classList.contains('light');
-window.userToggledParticles = false; 
-let bgChangeSequence = 0;
-let currentPage = 2;
-const glowingCard = document.querySelector('.glowing-card');
-const audio = document.getElementById('audioPlayer');
-let isPlaying = false;
-let pagesContainer;
-let bullets;
-
-const bgPresets =[
-    { name: 'top-left',    value: BG_TOP_LEFT,     isLight: true },
-    { name: 'top-right',   value: BG_TOP_RIGHT,    isLight: false },
-    { name: 'bottom-left', value: BG_BOTTOM_LEFT,  isLight: true },
-    { name: 'bottom-right',value: BG_BOTTOM_RIGHT, isLight: true }
-];
-let currentBgIndex = 0;
-
-document.addEventListener('DOMContentLoaded', () => {
-    pagesContainer = document.querySelector('.pages');
-    bullets = document.querySelectorAll('.bullet');
-
-    document.getElementById('btn-theme-light').addEventListener('click', () => switchBackground(BG_TOP_LEFT, true));
-    document.getElementById('btn-theme-dark').addEventListener('click', () => switchBackground(BG_TOP_RIGHT, false));
-    document.getElementById('btn-bg-1').addEventListener('click', () => switchBackground(BG_BOTTOM_LEFT, true));
-    document.getElementById('btn-bg-2').addEventListener('click', () => switchBackground(BG_BOTTOM_RIGHT, true));
-
-    document.querySelectorAll('.theme-toggle, .day-toggle').forEach(button => {
-        const resetScale = () => { button.classList.remove('icon-shrink-force', 'icon-scale-active'); };
-        button.addEventListener('mouseenter', resetScale);
-        button.addEventListener('mouseleave', resetScale);
-        button.addEventListener('click', function() {
-            resetScale();
-            this.classList.add('icon-scale-active');
-            setTimeout(() => { 
-                this.classList.remove('icon-scale-active');
-                this.classList.add('icon-shrink-force'); 
-            }, 350);
-        });
-    });
-
-    document.getElementById('rewardContainer').addEventListener('click', () => { document.getElementById('rewardContainer').classList.toggle('show-qr'); });
-    document.getElementById('reward-wx').addEventListener('click', e => e.stopPropagation());
-    document.getElementById('reward-zfb').addEventListener('click', e => e.stopPropagation());
-    document.getElementById('profile-pic').addEventListener('click', triggerConfetti);
-    document.getElementById('spotify-card-wrap').addEventListener('click', () => { window.open('https://open.spotify.com/track/3UkRfA9F62DYYDzqOskoov', '_blank'); });
-    document.getElementById('btn-spotify-play').addEventListener('click', (e) => { e.stopPropagation(); togglePlay(e.currentTarget); });
-    document.getElementById('btn-vcard').addEventListener('click', () => { if(typeof downloadVCard === 'function') downloadVCard(); });
-
-    if (bullets) {
-        bullets.forEach(b => {
-            b.addEventListener('click', function() { switchPageTo(parseInt(this.dataset.page)); });
-        });
-    }
-
-    if (typeof ClipboardJS !== 'undefined') {
-        var clipboard = new ClipboardJS('#wechatBtn', { text: () => "lllIIllIIlIII" });
-        clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; });
-    }
-});
-
-function updateParticlesDisplay() {
-    const canvas = document.getElementById('shuicheCanvas');
-    if (!canvas) return;
-    if (window.isParticlesEnabled) {
-        canvas.style.display = 'block';
-        if (window.bgEngine && window.bgEngine.start) window.bgEngine.start();
-    } else {
-        canvas.style.display = 'none';
-        if (window.bgEngine && window.bgEngine.stop) window.bgEngine.stop();
-    }
-}
-
-let bgLayerIndex = 0; 
-function crossfadeBackground(backgroundValue, isLightTheme) {
-    const currentChangeId = ++bgChangeSequence;
-    const container = document.getElementById('bg-container');
-    if (!container) return;
-
-    const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/);
-    const imageUrl = urlMatch ? urlMatch[1] : null;
-
-    const applyEffect = () => {
-        if (currentChangeId !== bgChangeSequence) return;
-        bgLayerIndex++; 
-        const newLayer = document.createElement('div');
-        newLayer.className = 'bg-layer';
-        newLayer.style.zIndex = bgLayerIndex;
-        newLayer.style.background = backgroundValue.startsWith('url') ? `${backgroundValue} center/cover` : backgroundValue;
-        container.appendChild(newLayer);
-        void newLayer.offsetWidth;
-
-        document.body.classList.toggle('light', isLightTheme);
-        document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
-
-        if (!window.userToggledParticles) window.isParticlesEnabled = !isLightTheme;
-        if (!window.isParticlesEnabled) updateParticlesDisplay();
-
-        requestAnimationFrame(() => { newLayer.style.opacity = '1'; });
-
-        setTimeout(() => {
-            if (currentChangeId !== bgChangeSequence) return; 
-            const layers = container.querySelectorAll('.bg-layer');
-            layers.forEach(layer => { if (layer !== newLayer) layer.remove(); });
-            if (window.isParticlesEnabled) updateParticlesDisplay();
-        }, 850);
-    };
-
-    if (imageUrl) {
-        const img = new Image();
-        img.src = imageUrl;
-        img.onload = applyEffect;
-        img.onerror = applyEffect;
-    } else { applyEffect(); }
-}
-
-function switchBackground(value, isLight = true) {
-    if (value.includes('gradient') || /^(#|rgb|hsl)/.test(value.trim())) { crossfadeBackground(value, isLight); } 
-    else { crossfadeBackground(`url('${value}')`, isLight); }
-}
-
-(function initDoubleClickToggle() {
-    let lastToggleTime = 0;
-    function toggleParticles(e) {
-        let now = new Date().getTime();
-        if (now - lastToggleTime < 500) return;
-        lastToggleTime = now;
-        if (e.target && e.target.closest && e.target.closest('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) { return; }
-        window.isParticlesEnabled = !window.isParticlesEnabled;
-        window.userToggledParticles = true;
-        updateParticlesDisplay();
-    }
-    document.addEventListener('dblclick', toggleParticles);
-    
-    let lastTouchEnd = 0;
-    let isMultiTouch = false;
-
-    // 1. 监听手指按下：只要屏幕上超过1根手指，就标记为“多指/缩放操作”
-    document.addEventListener('touchstart', function(e) {
-        if (e.touches.length > 1) {
-            isMultiTouch = true;
-        }
-    }, { passive: true });
-
-    // 2. 监听手指离开
-    document.addEventListener('touchend', function(e) {
-        // 如果屏幕上还有手指没离开，说明这不是一次完整的单指点击，直接忽略
-        if (e.touches.length > 0) return;
+        const vertShader = `#version 300 es
+        in vec3 position;
+        in vec2 uv;
+        in vec3 normal;
+        out vec2 v_uv;
+        out vec3 v_n;
+        out vec3 v_pos;
         
-        // 如果刚刚经历过多指操作（双指缩放、双指点击等），结束并重置状态，不触发双击
-        if (isMultiTouch) {
-            isMultiTouch = false;
-            lastTouchEnd = 0; 
-            return;
+        out vec3 c;
+        
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_position;
+        uniform float u_zoom;
+        uniform float u_seed;
+        
+        vec3 pal( in float t, in vec3 a, in vec3 b, in vec3 c, in vec3 d ) {
+            return a + b*cos( 6.28318*(c*t+d) );
         }
 
-        // 纯净的单指双击判断逻辑
-        let now = new Date().getTime();
-        if (now - lastTouchEnd <= 400) { 
-            toggleParticles(e); 
-            lastTouchEnd = 0; 
-        } else { 
-            lastTouchEnd = now; 
+        vec3 random3(vec3 c) {
+            float j = 4096.0*sin(dot(c,vec3(17.0, 59.4, 15.0)));
+            vec3 r;
+            r.z = fract(512.0*j);
+            j *= .125;
+            r.x = fract(512.0*j);
+            j *= .125;
+            r.y = fract(512.0*j);
+            return r-0.5;
         }
-    });
-})();
 
-(function initBackgroundEngine() {
-    const count = 1000; 
-    let scene, camera, renderer, animationId = null, mouseX = 0, mouseY = 0;
-    let windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
-    let clock, geometry, posAttribute, positionArray, velocityArray;
+        const float F3 =  0.3333333;
+        const float G3 =  0.1666667;
 
-    function init() {
-        if (typeof THREE === 'undefined') { setTimeout(init, 50); return; }
-        clock = new THREE.Clock(); 
-        geometry = new THREE.BufferGeometry();
-        posAttribute = new THREE.BufferAttribute(new Float32Array(6 * count), 3);
-        posAttribute.setUsage(THREE.DynamicDrawUsage);
-        geometry.setAttribute('position', posAttribute);
-        geometry.setAttribute('velocity', new THREE.BufferAttribute(new Float32Array(2 * count), 1));
-        positionArray = posAttribute.array;
-        velocityArray = geometry.getAttribute('velocity').array;
-
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 500);
-        camera.position.z = 200;
-        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('shuicheCanvas'), antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight, false);
-        renderer.setClearColor(0x000000, 0);
-        
-        for (let index = 0; index < count; index++) {
-            const x = Math.random() * 800 - 400, y = Math.random() * 800 - 400, z = Math.random() * 400 - 200;
-            positionArray[6 * index] = x; positionArray[6 * index + 1] = y; positionArray[6 * index + 2] = z;
-            positionArray[6 * index + 3] = x; positionArray[6 * index + 4] = y; positionArray[6 * index + 5] = z;
+        float simplex3d(vec3 p) {
+             vec3 s = floor(p + dot(p, vec3(F3)));
+             vec3 x = p - s + dot(s, vec3(G3));
+             vec3 e = step(vec3(0.0), x - x.yzx);
+             vec3 i1 = e*(1.0 - e.zxy);
+             vec3 i2 = 1.0 - e.zxy*(1.0 - e);
+             vec3 x1 = x - i1 + G3;
+             vec3 x2 = x - i2 + 2.0*G3;
+             vec3 x3 = x - 1.0 + 3.0*G3;
+             vec4 w, d;
+             w.x = dot(x, x);
+             w.y = dot(x1, x1);
+             w.z = dot(x2, x2);
+             w.w = dot(x3, x3);
+             w = max(0.6 - w, 0.0);
+             d.x = dot(random3(s), x);
+             d.y = dot(random3(s + i1), x1);
+             d.z = dot(random3(s + i2), x2);
+             d.w = dot(random3(s + 1.0), x3);
+             w *= w;
+             w *= w;
+             d *= w;
+             return dot(d, vec4(52.0));
         }
-        scene.add(new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xffffff })));
         
-        window.addEventListener('resize', debounceResize, { passive: true });
-        document.body.addEventListener('pointermove', e => { mouseX = e.clientX - windowHalfX; mouseY = e.clientY - windowHalfY; }, { passive: true });
-        
-        if (window.isParticlesEnabled) { clock.start(); anime(); }
-    }
-
-    let resizeTimeout;
-    function debounceResize() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            windowHalfX = window.innerWidth / 2; windowHalfY = window.innerHeight / 2;
-        }, 100);
-    }
-
-    function anime() {
-        let delta = clock.getDelta();
-        delta = Math.min(delta, 0.1); 
-        const timeScale = delta / (1 / 60); 
-
-        for (let index = 0; index < count; index++) {
-            velocityArray[2 * index] += 0.015 * timeScale;
-            velocityArray[2 * index + 1] += 0.015 * timeScale;
-            positionArray[6 * index + 2] += (velocityArray[2 * index] + 0.03) * timeScale;
-            positionArray[6 * index + 5] += velocityArray[2 * index + 1] * timeScale;
-            
-            if (positionArray[6 * index + 2] > 200) {
-                let z = Math.random() * 200 - 200;
-                positionArray[6 * index + 2] = z; positionArray[6 * index + 5] = z;
-                velocityArray[2 * index] = 0; velocityArray[2 * index + 1] = 0;
+        #define numOctaves 3
+        float fbm( in vec3 x, in float H ) {    
+            float G = exp2(-H);
+            float f = 1.0;
+            float a = 1.0;
+            float t = 0.0;
+            for( int i=0; i<numOctaves; i++ ) {
+                t += a*simplex3d(f*x);
+                f *= 2.5;
+                a *= G;
             }
+            return t;
         }
-        posAttribute.needsUpdate = true;
-        camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
-        camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
-        camera.lookAt(scene.position);
-        renderer.render(scene, camera);
-        animationId = requestAnimationFrame(anime);
-    }
+        
+        vec2 getScreenSpace() {
+          vec2 uv = (position.xy * u_resolution.xy - 0.5 * u_resolution.xy) / min(u_resolution.y, u_resolution.x);
+          return uv;
+        }
 
-    document.addEventListener("visibilitychange", () => {
-        if (document.hidden && animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } 
-        else if (!document.hidden && animationId === null && window.isParticlesEnabled) { clock.start(); anime(); }
-    });
+        float smin(float a, float b, float k) {
+            float h = clamp(0.5 + 0.5*(a-b)/k, 0.0, 1.0);
+            return mix(a, b, h) - k*h*(1.0-h);
+        }
 
-    window.bgEngine = {
-        start: () => { if (animationId === null) { if(clock) clock.start(); anime(); } },
-        stop: () => { if (animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } }
-    };
-    window.bgRenderer = { setClearColor: (c, a) => renderer ? renderer.setClearColor(c, a) : null };
-    window.addEventListener('DOMContentLoaded', init);
-})();
+        void main() {
+          mat2 rot = mat2(1,0,0,1);
+          vec2 tuv = position.xy * rot * u_zoom+u_position*2.;
+          float n = simplex3d(vec3(tuv*.5, -1000.+u_time));
+          float nc = n;
+          n += simplex3d(vec3(tuv*2.*.3+4.7, -1000.+u_time*.5)*2.)*.8;
+          float ncol = simplex3d(vec3(100.+tuv*.1, -1000.+u_time*.5)*2.)*.8;
+          
+          vec3 offset = vec3(
+            (nc*-.5)/u_zoom*.5*min(u_resolution.y, u_resolution.x),
+            n/u_zoom*.5*min(u_resolution.y, u_resolution.x), 
+            -(n*.5+.5)
+          );
+          vec3 pos = position;
+          pos *= vec3(u_resolution.xy, 1.);
+          pos += offset;
+          pos /= vec3(u_resolution.xy, 1.);
+          pos.xy *= rot;
+          offset /= vec3(u_resolution.xy, 1.);
+          
+          c = pal(nc*.5+u_seed, vec3(.7),vec3(.3),vec3(1.0,.95,.9),vec3(0.0,0.33,0.67));
+          pos.z = smin(pos.z, -1., -0.2);
+          
+          gl_Position = vec4(pos, 1.0);
+          v_uv = uv;
+          v_pos = pos.xyz;
+          v_n = offset;
+        }
+        `;
 
-function updateGlowingShadow() { glowingCard.style.boxShadow = '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset'; }
+        const fragShader = `#version 300 es
+        precision highp float;
 
-function switchPageTo(page) {
-    if (page < 1 || page > 3) return;
-    currentPage = page;
-    if (pagesContainer) pagesContainer.style.transform = `translateX(-${(page - 1) * 100}%)`;
-    if (bullets) bullets.forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page));
-}
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform vec2 u_mouse;
+        uniform sampler2D s_noise;
+        uniform sampler2D b_noise;
 
-function togglePlay(button) {
-    if (audio.paused) {
-        audio.play(); button.classList.add('playing'); button.querySelector('.btn-text').innerText = 'Pause'; isPlaying = true;
-    } else {
-        audio.pause(); button.classList.remove('playing'); button.querySelector('.btn-text').innerText = 'Play'; isPlaying = false;
-    }
-}
+        in vec2 v_uv;
+        in vec3 c;
+        in vec3 v_n;
+        in vec3 v_pos;
 
-audio.addEventListener('ended', () => {
-    isPlaying = false;
-    const btn = document.querySelector('.play-btn');
-    if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
-});
+        out vec4 colour;
 
-document.addEventListener('play', e => {
-    document.querySelectorAll('audio').forEach(audioEl => {
-        if (audioEl !== e.target && !audioEl.paused) {
-            audioEl.pause();
-            if (audioEl.id === 'audioPlayer') {
-                const btn = document.querySelector('.play-btn');
-                if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
-                isPlaying = false;
+        vec2 getScreenSpace() {
+          vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.y, u_resolution.x);
+          return uv;
+        }
+
+        float ndot(vec2 a, vec2 b ) { return a.x*b.x - a.y*b.y; }
+
+        float sdRhombus( in vec2 p, in vec2 b ) {
+            p = abs(p);
+            float h = clamp( ndot(b-2.0*p,b)/dot(b,b), -1.0, 1.0 );
+            float d = length( p-0.5*b*vec2(1.0-h,1.0+h) );
+            return d * sign( p.x*b.y + p.y*b.x - b.x*b.y );
+        }
+
+        void main() {
+          vec2 uv = getScreenSpace();
+          uv *= 1.;
+          float m = abs(fract(v_uv.y*100. * max(.2, smoothstep(.6, -.6, uv.y+uv.x)) - u_time * 5.) - .5) - .3;
+          
+          vec2 vv_uv = v_uv * (u_resolution.y > u_resolution.x ? vec2((u_resolution.x / u_resolution.y), 1.) : vec2(1., (u_resolution.y / u_resolution.x)));
+          vv_uv = fract(vv_uv*20.) - .5;
+          m = length(vv_uv)-.4;
+          m = sdRhombus(vv_uv, vec2(.5));
+          
+          vec3 U = dFdx(v_pos);
+          vec3 V = dFdy(v_pos);
+          vec3 n = normalize(cross(U, V));
+          
+          float mask = smoothstep(fwidth(m), 0., m);
+        vec3 lightDir = normalize(vec3(10.0, -10.0, 10.0));
+
+        float d = dot(n, lightDir) * 0.8 + 0.8;
+        float ls = smoothstep(0.3, 1.5, d);
+
+        colour = vec4(vec3(c * ls), 1.0);
+        }
+        `;
+
+        class StripeHeader {
+            uniforms;
+            dimensions;
+            autoResize = true;
+            onBeforeRender;
+            onAfterRender;
+            u_time;
+            u_resolution;
+            u_seed;
+            gl;
+            renderer;
+            program;
+            mesh;
+            lastTime = 0;
+            _playing = false;
+
+            constructor({
+                vertex,
+                fragment,
+                dimensions = new Vec2(window.innerWidth, window.innerHeight),
+                container,
+                autoResize = true,
+                uniforms = {},
+                onBeforeRender = () => {},
+                onAfterRender = () => {}
+            } = {}) {
+                this.onBeforeRender = onBeforeRender.bind(this);
+                this.onAfterRender = onAfterRender.bind(this);
+                this.render = this.render.bind(this);
+                this.resize = this.resize.bind(this);
+                this.autoResize = autoResize;
+                this.dimensions = dimensions;
+
+                this.u_time = new Uniform({ name: 'time', value: 0, kind: 'float' });
+                this.u_resolution = new Uniform({
+                    name: 'resolution',
+                    value: this.dimensions.array,
+                    kind: 'float_vec2'
+                });
+                this.u_seed = new Uniform({
+                    name: 'seed',
+                    value: Math.random() * 10000 + 1000,
+                    kind: 'float'
+                });
+
+                this.uniforms = Object.assign({}, uniforms, {
+                    u_time: this.u_time,
+                    u_resolution: this.u_resolution,
+                    u_seed: this.u_seed
+                });
+
+                this.renderer = new Renderer({ antialias: true });
+                this.gl = this.renderer.gl;
+                container.appendChild(this.gl.canvas);
+                this.gl.clearColor(1, 1, 1, 1);
+
+                if (this.autoResize) {
+                    window.addEventListener('resize', this.resize, false);
+                    this.resize();
+                } else {
+                    this.renderer.dimensions = dimensions;
+                    this.u_resolution.value = this.dimensions.scaleNew(this.renderer.dpr).array;
+                }
+
+                const geometry = new Plane(this.gl, {
+                    width: 4,
+                    height: 4,
+                    widthSegments: Math.floor(window.innerWidth / 20),
+                    heightSegments: Math.floor(window.innerHeight / 5),
+                });
+
+                this.program = new Program(this.gl, {
+                    vertex,
+                    fragment,
+                    uniforms: this.uniforms
+                });
+
+                this.mesh = new Mesh(this.gl, { geometry, program: this.program });
+                this.playing = true;
             }
-        }
-    });
-}, true);
 
-function loadMusicPlayer() {
-    let indexSong = 0, pendingCurrentTime = 0, isLocked = false, songsLength = null, selectedSong = null, songIsPlayed = false, progress_elmnt = null, songName_elmnt = null, sliderImgs_elmnt = null, singerName_elmnt = null, musicPlayerInfo_elmnt = null, progressBarIsUpdating = false, broadcastGuarantor_elmnt = null, isSwitchingMusic = false, preloadAbortController = null;
-    const root = document.querySelector("#root");
-    const mainAudio = document.getElementById('mainAudio');
+            resize() {
+                this.dimensions = new Vec2(window.innerWidth, window.innerHeight);
+                this.u_resolution.value = this.dimensions.scaleNew(this.renderer.dpr).array;
+                this.renderer.dimensions = this.dimensions;
+                
+                const geometry = new Plane(this.gl, {
+                    width: 3,
+                    height: 3,
+                    widthSegments: Math.floor(window.innerWidth / 20),
+                    heightSegments: Math.floor(window.innerHeight / 5),
+                });
+                this.mesh = new Mesh(this.gl, { geometry, program: this.program });
+            }
 
-    window.musicControls = { playPause: handlePlayMusic, next: () => handleChangeMusic({ isPrev: false }), prev: () => handleChangeMusic({ isPrev: true }) };
+            render(t) {
+                const diff = t - this.lastTime;
+                this.lastTime = t;
 
-    function savePlaybackState() {
-        if (!selectedSong) return;
-        const playbackState = { currentSongIndex: indexSong, isPlaying: !selectedSong.paused, volume: selectedSong.volume, currentTime: pendingCurrentTime > 0 ? pendingCurrentTime : selectedSong.currentTime };
-        localStorage.setItem('musicPlayerState', JSON.stringify(playbackState));
-    }
+                if (this.playing) {
+                    this.animationFrameId = requestAnimationFrame(this.render);
+                }
 
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') savePlaybackState(); });
-    window.addEventListener('beforeunload', savePlaybackState);
-    setInterval(savePlaybackState, 5000);
+                const v = this.u_time.value;
+                this.u_time.value = v + diff * 0.00005;
 
-    function updateUIForSong(index) {
-        updateInfo(songName_elmnt, songs[index].songName);
-        updateInfo(singerName_elmnt, songs[index].artist);
-        setProperty(sliderImgs_elmnt, "--index", -index);
-        if ('mediaSession' in navigator) { navigator.mediaSession.metadata = new MediaMetadata({ title: songs[index].songName, artist: songs[index].artist, artwork:[{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }] }); }
-    }
+                this.onBeforeRender(t);
+                this.renderer.render({ scene: this.mesh });
+                this.onAfterRender(t);
+            }
 
-    function restorePlaybackState() {
-        try {
-            const savedState = localStorage.getItem('musicPlayerState');
-            if (!savedState) { updateUIForSong(0); return; }
-            const playbackState = JSON.parse(savedState);
-            if (playbackState.currentSongIndex !== undefined && playbackState.currentSongIndex >= 0 && playbackState.currentSongIndex <= songsLength) {
-                indexSong = playbackState.currentSongIndex;
-                if (playbackState.currentTime !== undefined) pendingCurrentTime = playbackState.currentTime;
-                if (playbackState.volume !== undefined) mainAudio.volume = playbackState.volume;
-                updateUIForSong(indexSong);
-            } else { updateUIForSong(0); }
-        } catch (e) { updateUIForSong(0); }
-    }
+            set playing(v) {
+                if (this._playing !== true && v === true) {
+                    this.lastTime = performance.now();
+                    this.animationFrameId = requestAnimationFrame(this.render);
+                    this._playing = true;
+                } else if (v === false) {
+                    cancelAnimationFrame(this.animationFrameId);
+                    this.lastTime = 0;
+                    this._playing = false;
+                }
+            }
 
-    function preloadNextSongHead(nextIndex) {
-        if (!songs[nextIndex] || !songs[nextIndex].files.song) return;
-        const nextUrl = songs[nextIndex].files.song;
-        if (preloadAbortController) preloadAbortController.abort();
-        preloadAbortController = new AbortController();
-        fetch(nextUrl, { headers: { 'Range': 'bytes=0-524288' }, signal: preloadAbortController.signal }).catch(err => {});
-    }
+            get playing() {
+                return this._playing === true;
+            }
 
-    function handleChangeMusic({ isPrev = false, playListIndex = null }) {
-        if (isLocked) return;
-        let newIndex = playListIndex !== null ? playListIndex : (isPrev ? indexSong - 1 : indexSong + 1);
-        if (newIndex < 0) newIndex = songsLength;
-        if (newIndex > songsLength) newIndex = 0;
-        if (newIndex === indexSong && playListIndex === null) return;
-
-        let wasPlaying = songIsPlayed;
-        isSwitchingMusic = true;
-        indexSong = newIndex;
-        pendingCurrentTime = 0;
-        updateUIForSong(indexSong);
-        mainAudio.src = songs[indexSong].files.song;
-
-        if (wasPlaying) {
-            let playPromise = mainAudio.play();
-            if (playPromise !== undefined) { playPromise.then(() => { isSwitchingMusic = false; }).catch(e => { isSwitchingMusic = false; songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); }); }
-            songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1);
-        } else { isSwitchingMusic = false; if (preloadAbortController) preloadAbortController.abort(); }
-        savePlaybackState();
-    }
-
-    function handlePlayMusic() {
-        if (mainAudio.currentTime === mainAudio.duration && mainAudio.duration > 0) { handleChangeMusic({}); return; }
-        if (!mainAudio.src || mainAudio.src === window.location.href || mainAudio.src === "") {
-            mainAudio.src = songs[indexSong].files.song; mainAudio.play(); songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1);
-        } else { if (mainAudio.paused) { mainAudio.play(); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1); } else { mainAudio.pause(); } }
-    }
-
-    function updateTheProgressBar() {
-        const duration = this.duration; const currentTime = this.currentTime;
-        if (isNaN(duration) || duration === 0) return;
-        const progressRatio = currentTime / duration;
-        setProperty(progress_elmnt, "--scale", progressRatio); setProperty(progress_elmnt, "--width", `${progressRatio * 100}%`);
-    }
-
-    function syncMediaSessionPosition() {
-        if ('mediaSession' in navigator && !isNaN(mainAudio.duration) && isFinite(mainAudio.duration) && mainAudio.duration > 0) {
-            try { let position = mainAudio.currentTime || 0; position = Math.max(0, Math.min(position, mainAudio.duration)); navigator.mediaSession.setPositionState({ duration: mainAudio.duration, playbackRate: mainAudio.playbackRate || 1, position: position }); } catch (err) {}
-        }
-    }
-
-    function handleScrub(e) {
-        e.preventDefault(); let clientX = e.clientX; if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
-        const progressOffsetLeft = progress_elmnt.getBoundingClientRect().left; const progressWidth = progress_elmnt.offsetWidth; const duration = selectedSong.duration;
-        if (isNaN(duration) || duration === 0) return;
-        selectedSong.currentTime = (clientX - progressOffsetLeft) / progressWidth * duration;
-    }
-
-    const songs =[
-        { "bg": "#c9bea28f", "artist": "SCSI-9", "songName": "Senorita Tristeza", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.webp" }, "duration": "5:53" },
-        { "bg": "#0896eba1", "artist": "Paradox Interactive", "songName": "Be Happy", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.webp" }, "duration": "3:22" },
-        { "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.webp" }, "duration": "4:31" },
-        { "bg": "#ffc382", "artist": "La Femme", "songName": "Le jardin", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.webp" }, "duration": "4:00" },
-        { "bg": "#ffcbdc", "artist": "Still Corners", "songName": "Crying", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.webp" }, "duration": "3:28" },
-        { "bg": "#44c16fb5", "artist": "Marvel83'", "songName": "Alone With You", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.webp" }, "duration": "4:53" },
-        { "bg": "#ff4545", "artist": "Timecop1983", "songName": "Nightfall", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.webp" }, "duration": "4:40" },
-        { "bg": "#e5e7e9", "artist": "Lazer Boomerang", "songName": "R3cover", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.webp" }, "duration": "3:34" }
-    ];
-
-    const musicPlayer = document.createElement("div"); musicPlayer.className = "music-player flex-column";
-    const slider = document.createElement("div"); slider.className = "slider center"; slider.onclick = handleResizeSlider;
-    const sliderContent = document.createElement("div"); sliderContent.className = "slider__content center";
-    const playlistButton = document.createElement("button"); playlistButton.className = "music-player__playlist-button center button"; playlistButton.innerHTML = '<i class="icon-playlist"></i>';
-    const broadcastGuarantor = document.createElement("button"); broadcastGuarantor.className = "music-player__broadcast-guarantor center button"; broadcastGuarantor.onclick = handlePlayMusic; broadcastGuarantor.innerHTML = '<i class="icon-play"></i><i class="icon-pause"></i>';
-    const sliderImgs = document.createElement("div"); sliderImgs.className = "slider__imgs flex-row";
-    songs.forEach(({ files: { cover }, songName }) => { const img = document.createElement("img"); img.src = cover; img.loading = "lazy"; img.className = "img"; img.alt = songName; sliderImgs.appendChild(img); });
-    sliderContent.append(playlistButton, broadcastGuarantor, sliderImgs);
-    const sliderControls = document.createElement("div"); sliderControls.className = "slider__controls center";
-    const prevButton = document.createElement("button"); prevButton.className = "slider__switch-button flex-row button"; prevButton.innerHTML = '<i class="icon-back"></i>'; prevButton.onclick = () => handleChangeMusic({ isPrev: true });
-    const musicInfo = document.createElement("div"); musicInfo.className = "music-player__info text_trsf-cap"; musicInfo.innerHTML = `<div><div class="music-player__singer-name"><div>${songs[0].songName}</div></div></div><div><div class="music-player__subtitle"><div>${songs[0].artist}</div></div></div>`;
-    const nextButton = document.createElement("button"); nextButton.className = "slider__switch-button flex-row button"; nextButton.innerHTML = '<i class="icon-next"></i>'; nextButton.onclick = () => handleChangeMusic({ isPrev: false });
-    const progress = document.createElement("div"); progress.className = "progress center"; progress.onpointerdown = (e) => { e.preventDefault(); handleScrub(e); progressBarIsUpdating = true; };
-    const progressWrapper = document.createElement("div"); progressWrapper.className = "progress__wrapper";
-    const progressBar = document.createElement("div"); progressBar.className = "progress__bar";
-    const progressDot = document.createElement("div"); progressDot.className = "progress__dot";
-    progressWrapper.appendChild(progressBar); progressWrapper.appendChild(progressDot); progress.appendChild(progressWrapper);
-    sliderControls.append(prevButton, musicInfo, nextButton, progress); slider.append(sliderContent, sliderControls);
-    const playlist = document.createElement("ul"); playlist.className = "music-player__playlist list";
-
-    songs.forEach((song, index) => {
-        const listItem = document.createElement("li"); listItem.className = "music-player__song"; listItem.dataset.index = index; 
-        listItem.innerHTML = `<div class="flex-row _align_center"><img src="${song.files.cover}" loading="lazy" class="img music-player__song-img" alt="${song.songName}"><div class="music-player__playlist-info text_trsf-cap"><b class="text_overflow">${song.songName}</b><div class="flex-row _justify_space-btwn"><span class="music-player__subtitle">${song.artist}</span><span class="music-player__song-duration">${song.duration}</span></div></div></div>`;
-        playlist.appendChild(listItem);
-    });
-
-    playlist.addEventListener('click', (e) => {
-        const clickedItem = e.target.closest('.music-player__song');
-        if (clickedItem) { const clickIndex = parseInt(clickedItem.dataset.index, 10); handleChangeMusic({ playListIndex: clickIndex }); }
-    });
-
-    musicPlayer.append(slider, playlist); root.innerHTML = ''; root.appendChild(musicPlayer);
-    songsLength = songs.length - 1; progress_elmnt = document.querySelector(".progress"); sliderImgs_elmnt = document.querySelector(".slider__imgs"); songName_elmnt = document.querySelector(".music-player__singer-name"); musicPlayerInfo_elmnt = document.querySelector(".music-player__info"); singerName_elmnt = document.querySelector(".music-player__subtitle"); broadcastGuarantor_elmnt = document.querySelector(".music-player__broadcast-guarantor"); selectedSong = mainAudio;
-    mainAudio.addEventListener('timeupdate', updateTheProgressBar); mainAudio.addEventListener('ended', () => { if (songIsPlayed) handleChangeMusic({}); }); mainAudio.addEventListener('loadedmetadata', () => { if (pendingCurrentTime > 0) { mainAudio.currentTime = pendingCurrentTime; pendingCurrentTime = 0; } syncMediaSessionPosition(); }); mainAudio.addEventListener('durationchange', syncMediaSessionPosition); mainAudio.addEventListener('play', () => { songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; syncMediaSessionPosition(); }); mainAudio.addEventListener('pause', () => { setTimeout(() => { if (mainAudio.paused && !isSwitchingMusic) { songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'; syncMediaSessionPosition(); } }, 100); }); mainAudio.addEventListener('seeked', syncMediaSessionPosition);
-    controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); setTimeout(restorePlaybackState, 100);
-
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('previoustrack', () => handleChangeMusic({ isPrev: true }));
-        navigator.mediaSession.setActionHandler('nexttrack', () => handleChangeMusic({ isPrev: false }));
-        navigator.mediaSession.setActionHandler('play', () => { mainAudio.play(); });
-        navigator.mediaSession.setActionHandler('pause', () => { mainAudio.pause(); });
-        navigator.mediaSession.setActionHandler('seekto', (details) => { if (details.seekTime != null) mainAudio.currentTime = details.seekTime; });
-    }
-
-    function handleResizeSlider({ target }) {
-        if (isLocked) return;
-        if (target.classList.contains("music-player__info")) { this.classList.add("resize"); setProperty(this, "--controls-animate", "down running"); }
-        else if (target.classList.contains("music-player__playlist-button")) { this.classList.remove("resize"); setProperty(this, "--controls-animate", "up running"); }
-    }
-    function controlSubtitleAnimation(parent, child) {
-        if (child.classList.contains("animate")) return; const element = child.firstChild;
-        if (child.clientWidth > parent.clientWidth) { child.appendChild(element.cloneNode(true)); child.classList.add("animate"); }
-        setProperty(child.parentElement, "width", `${element.clientWidth}px`);
-    }
-    function setProperty(target, prop, value = "") { target.style.setProperty(prop, value); }
-    function updateInfo(target, value) { while (target.firstChild) target.removeChild(target.firstChild); const targetChild = document.createElement("div"); targetChild.appendChild(document.createTextNode(value)); target.appendChild(targetChild); target.classList.remove("animate"); controlSubtitleAnimation(musicPlayerInfo_elmnt, target); }
-    function handleResize() { setProperty(document.documentElement, "--vH", `${window.innerHeight * 0.01}px`); }
-    window.addEventListener("resize", handleResize); window.addEventListener("transitionstart", ({ target }) => { if (target === sliderImgs_elmnt) { isLocked = true; setProperty(sliderImgs_elmnt, "will-change", "transform"); } }); window.addEventListener("transitionend", ({ target, propertyName }) => { if (target === sliderImgs_elmnt) isLocked = false; if (target.classList.contains("slider") && propertyName === "height") { controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); } });
-    const stopScrub = () => { if (progressBarIsUpdating) { selectedSong.muted = false; progressBarIsUpdating = false; } };
-    const moveScrub = (e) => { if (progressBarIsUpdating) { e.preventDefault(); handleScrub(e); selectedSong.muted = true; } };
-    window.addEventListener("pointerup", stopScrub); window.addEventListener("pointermove", moveScrub); window.addEventListener("touchend", stopScrub); window.addEventListener("touchmove", moveScrub);
-    handleResize();
-}
-
-function initKeyboardControls() {
-    document.addEventListener('keydown', (e) => {
-        const key = e.key.toLowerCase();
-        
-        // 🐾 新增: Z键控制猫咪睡觉和唤醒
-        if (key === 'z') {
-            if (typeof window.onekoSleep === 'function') window.onekoSleep();
-        }
-        
-        // 🐾 新增: S键打开和关闭猫咪皮肤面板
-        if (key === 's') {
-            if (typeof window.onekoToggleSkinMenu === 'function') window.onekoToggleSkinMenu();
-        }
-        
-        // 🎉 新增: N和M键触发彩带和Cat.wav猫叫
-        if (key === 'n' || key === 'm') {
-            triggerConfetti();
-        }
-
-        // 原有的键盘快捷键逻辑
-        if (key === 't') { currentBgIndex = (currentBgIndex + 1) % bgPresets.length; const preset = bgPresets[currentBgIndex]; switchBackground(preset.value, preset.isLight); }
-        if (key === '1') { switchBackground(BG_TOP_LEFT, true); currentBgIndex = 0; }
-        if (key === '2') { switchBackground(BG_TOP_RIGHT, false); currentBgIndex = 1; }
-        if (key === '3') { switchBackground(BG_BOTTOM_LEFT, true); currentBgIndex = 2; }
-        if (key === '4') { switchBackground(BG_BOTTOM_RIGHT, true); currentBgIndex = 3; }
-        if (key === 'p') { window.isParticlesEnabled = !window.isParticlesEnabled; window.userToggledParticles = true; updateParticlesDisplay(); }
-        
-        if (!e.shiftKey) { 
-            // 左右页面切换
-            if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } 
-            if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } 
-            
-            // ↕️ 新增: 上下方向键控制 Page1 中的滚动吸附效果
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                if (currentPage === 1) {
-                    e.preventDefault(); // 阻止浏览器默认滚动条乱跳
-                    const pageVertical = document.querySelector('#page1 .page-vertical');
-                    const sign = e.key === 'ArrowUp' ? -1 : 1;
-                    // 通过容器的 clientHeight 平滑滚动，完美配合原有的 scroll-snap 滚动吸附属性
-                    pageVertical.scrollBy({ top: sign * pageVertical.clientHeight, behavior: 'smooth' });
+            destroy() {
+                this.playing = false;
+                window.removeEventListener('resize', this.resize);
+                if (this.gl && this.gl.canvas && this.gl.canvas.parentNode) {
+                    this.gl.canvas.parentNode.removeChild(this.gl.canvas);
                 }
             }
         }
-        
-        // 原有的音乐播放器控制逻辑
-        if (window.musicControls) { 
-            if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } 
-            if (e.shiftKey) { 
-                if (e.key === 'ArrowRight') window.musicControls.next(); 
-                if (e.key === 'ArrowLeft') window.musicControls.prev(); 
-            } 
-        }
-    });
-}
 
-const scrollContainer = document.querySelector('.link-scroll-container');
-let scrollTimeout;
-if (scrollContainer) {
-    scrollContainer.addEventListener('scroll', () => { scrollContainer.classList.add('scrolling'); clearTimeout(scrollTimeout); scrollTimeout = setTimeout(() => scrollContainer.classList.remove('scrolling'), 1500); }, { passive: true });
-}
+        // 初始化 WebGL 的全局钩子，由 crossfadeBackground 触发
+        window.initWebGLShaderBg = function (container) {
+            const vShaderSource = vertShader.replace('%%rn%%', `${.1 + Math.random() * .3}+${Math.random() * Math.PI}`);
+            
+            const FSWrapper = new StripeHeader({
+                fragment: fragShader,
+                vertex: vShaderSource,
+                container: container
+            });
 
-let avatarSound = null;
-async function initAvatarSound() {
-    const audioUrl = "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav";
-    try { const response = await fetch(audioUrl, { cache: 'force-cache' }); const audioBlob = await response.blob(); const blobUrl = URL.createObjectURL(audioBlob); avatarSound = new Audio(blobUrl); avatarSound.volume = 0.35; } 
-    catch (error) { avatarSound = new Audio(audioUrl); avatarSound.volume = 0.35; }
-}
+            const { uniforms } = FSWrapper;
+            let angle = 0.;
+            uniforms.u_position = new Uniform({
+                name: "position",
+                value: [0, 2],
+                kind: "vec2"
+            });
+            uniforms.u_zoom = new Uniform({
+                name: "zoom",
+                value: 1.,
+                kind: "float"
+            });
+            uniforms.u_rotation = new Uniform({
+                name: "rotation",
+                value: angle,
+                kind: "float"
+            });
 
-if ('requestIdleCallback' in window) { requestIdleCallback(() => initAvatarSound()); } else { setTimeout(initAvatarSound, 1500); }
+            let zoom = uniforms.u_zoom.value;
+            let tzoom = 1.;
+            let velocity = new Vec2(0, 0);
+            let lastmouse = new Vec2(0, 0);
+            let startmouse = new Vec2(0, 0);
+            let startrotation = angle;
+            let rotation = angle;
+            let pointerdown = false;
+            let keys = { rotation: false };
+            let rotating = false;
+            let zooming = false;
+            let interactionFrameId;
 
-function triggerConfetti() {
-    if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 100 });
-    if (avatarSound) { avatarSound.currentTime = 0; avatarSound.play().catch(e => console.log(e)); }
-}
+            const handleKeyDown = (e) => {
+                if (e.key === 'Control') keys.rotation = true;
+            };
+            const handleKeyUp = (e) => {
+                if (e.key === 'Control') keys.rotation = false;
+            };
 
-const video = document.getElementById('page1Video'); let videoLoaded = false;
-if ('IntersectionObserver' in window && video) {
-    const videoObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => { if (entry.isIntersecting) { if (!videoLoaded) { video.src = "music/Movie.MP4"; videoLoaded = true; } video.muted = true; video.play().catch(() => {}); } else { video.pause(); } });
-    }, { threshold: 0.5 });
-    videoObserver.observe(document.getElementById('page1-4'));
-}
-if(video) video.addEventListener('click', () => video.muted = false);
+            const handlePointerDown = (e) => {
+                if (!keys.rotation) {
+                    pointerdown = true;
+                    lastmouse = new Vec2(e.clientX, e.clientY);
+                } else {
+                    rotating = true;
+                    const thismouse = new Vec2(e.clientX, e.clientY);
+                    startrotation = rotation + new Vec2(window.innerWidth * .5, window.innerHeight * .5).subtract(thismouse).angle;
+                }
+                startmouse = lastmouse.clone();
+            };
 
-window.onload = function() {
-    loadMusicPlayer(); initKeyboardControls();
-    if (document.body.classList.contains('light')) { window.isParticlesEnabled = false; updateParticlesDisplay(); }
-    switchPageTo(2);
-};
+            const handlePointerUp = () => {
+                pointerdown = false;
+                rotating = false;
+            };
 
-// === 👇 新增：link-card 赛博朋克故障效果初始化 👇 ===
-    const style = document.createElement('style');
-    style.textContent = `
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-        }
-        .glitch-text::before,
-        .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            pointer-events: none; /* 防止遮挡鼠标点击 */
-        }
-        .glitch-text.active::before {
-            animation: glitch-1 0.4s cubic-bezier(.25, .46, .45, .94) both infinite;
-            color: #0ff;
-            transform: translateX(-2px);
-        }
-        .glitch-text.active::after {
-            animation: glitch-2 0.4s cubic-bezier(.25, .46, .45, .94) reverse both infinite;
-            color: #f0f;
-            transform: translateX(2px);
-        }
-        @keyframes glitch-1 {
-            0% { opacity: 0.75; transform: translate(-2px, 2px); }
-            50% { opacity: 0.5; transform: translate(1px, -1px); }
-            100% { opacity: 0.75; transform: translate(-2px, 2px); }
-        }
-        @keyframes glitch-2 {
-            0% { opacity: 0.75; transform: translate(2px, -2px); }
-            50% { opacity: 0.5; transform: translate(-1px, 1px); }
-            100% { opacity: 0.75; transform: translate(2px, -2px); }
-        }
-    `;
-    document.head.appendChild(style);
+            const handlePointerMove = (e) => {
+                if (zooming) return;
+                if (rotating) {
+                    const thismouse = new Vec2(e.clientX, e.clientY);
+                    rotation = startrotation - new Vec2(window.innerWidth * .5, window.innerHeight * .5).subtract(thismouse).angle;
+                } else if (pointerdown) {
+                    const thismouse = new Vec2(e.clientX, e.clientY);
+                    let dd = 1. / Math.min(window.innerWidth, window.innerHeight);
+                    dd *= uniforms.u_zoom.value;
+                    const diff = lastmouse.subtract(thismouse);
 
+                    const c = Math.cos(uniforms.u_rotation.value);
+                    const s = Math.sin(uniforms.u_rotation.value);
+                    const mat = new Mat2(c, s, -s, c);
 
-const linkCards = document.querySelectorAll('.link-card');
-    linkCards.forEach(card => {
-        const titleSpan = card.querySelector('.link-title');
-        if (titleSpan && titleSpan.textContent) {
-            const text = titleSpan.textContent.trim();
-            titleSpan.innerHTML = `<span class="glitch-text" data-text="${text}">${text}</span>`;
-        }
+                    velocity = diff.clone();
+                    uniforms.u_position.value = new Vec2(...uniforms.u_position.value).add(diff.transformByMat2New(mat).multiply(new Vec2(dd, -dd))).array;
+                    lastmouse = thismouse;
+                }
+            };
 
-        const glitchEl = card.querySelector('.glitch-text');
+            window.addEventListener('keydown', handleKeyDown);
+            window.addEventListener('keyup', handleKeyUp);
+            container.addEventListener('pointerdown', handlePointerDown);
+            window.addEventListener('pointerup', handlePointerUp);
+            window.addEventListener('pointermove', handlePointerMove);
 
-        // 定义开启和关闭闪烁的函数
-        const startGlitch = () => { if (glitchEl) glitchEl.classList.add('active'); };
-        const stopGlitch = () => { if (glitchEl) glitchEl.classList.remove('active'); };
+            const runmouse = function () {
+                const scalar = pointerdown ? .1 : .98;
+                if (velocity.length > 0.01) {
+                    velocity.scale(scalar);
+                    const c = Math.cos(uniforms.u_rotation.value);
+                    const s = Math.sin(uniforms.u_rotation.value);
+                    const mat = new Mat2(c, s, -s, c);
+                    
+                    let dd = 1. / Math.min(window.innerWidth, window.innerHeight);
+                    dd *= uniforms.u_zoom.value;
+                    uniforms.u_position.value = new Vec2(...uniforms.u_position.value).add(velocity.transformByMat2New(mat).multiplyNew(new Vec2(dd, -dd))).array;
+                }
+                zoom += (tzoom - zoom) * .1;
+                uniforms.u_zoom.value = zoom;
+                uniforms.u_rotation.value = rotation;
+                
+                if (FSWrapper.playing) {
+                    interactionFrameId = requestAnimationFrame(runmouse);
+                }
+            };
+            interactionFrameId = requestAnimationFrame(runmouse);
 
-        // 💻 电脑端：鼠标移入移出
-        card.addEventListener('mouseenter', startGlitch);
-        card.addEventListener('mouseleave', stopGlitch);
+            // 返回清理销毁方法
+            return () => {
+                cancelAnimationFrame(interactionFrameId);
+                window.removeEventListener('keydown', handleKeyDown);
+                window.removeEventListener('keyup', handleKeyUp);
+                container.removeEventListener('pointerdown', handlePointerDown);
+                window.removeEventListener('pointerup', handlePointerUp);
+                window.removeEventListener('pointermove', handlePointerMove);
+                FSWrapper.destroy();
+            };
+        };
+    </script>
 
-        // 📱 移动端：手指按下、松开、或滑动取消
-        card.addEventListener('touchstart', startGlitch, { passive: true });
-        card.addEventListener('touchend', stopGlitch);
-        card.addEventListener('touchcancel', stopGlitch); // 当手指滑动屏幕导致点击取消时也停止
-    });
-  
-  
-  
-// ==========================================
-// 🛠️ 修复后的 猫咪 (Oneko) 核心引擎 + 九宫格皮肤更换功能
-// ==========================================
-(async function oneko() {
-  const nekoEl = document.createElement("div");
+    <script>
+        const BG_TOP_LEFT = 'https://media.giphy.com/media/3o6gE0D9CIgZe8MXDy/giphy.gif?cid=ecf05e479daaaf29d3d537d6769f3c62b58f45914c5094c5&ep=v1_user_favorites&rid=giphy.gif&ct=g';
+        const BG_TOP_RIGHT = '#0e0e0e';
+        // 将此变量对应替换为 WebGL Shader 调用标识
+        const BG_BOTTOM_LEFT = 'webgl-shader';
+        const BG_BOTTOM_RIGHT = 'https://media.giphy.com/media/JPWmKhZCUzJ9d7Mku0/giphy.gif?cid=ecf05e479daaaf29d3d537d6769f3c62b58f45914c5094c5&ep=v1_user_favorites&rid=giphy.gif&ct=g';
 
-  // --- 新增：10个可更换的皮肤URL位 (留空，你自己填入精灵图链接) ---
-const skinList = [
-    { name: "blue", url: "https://dogpan.com/f/R6m4u5/blue.png" },
-    { name: "black2", url: "https://dogpan.com/f/QWlVto/black2.png" },
-    { name: "black", url: "https://dogpan.com/f/PNkPh3/black.png" },
-    { name: "calico", url: "https://dogpan.com/f/VOqgCg/calico.png" },
-    { name: "dog", url: "https://dogpan.com/f/W6yOFD/dog.png" },
-    { name: "holiday", url: "https://dogpan.com/f/XDzDUO/holiday.png" },
-    { name: "kina", url: "https://dogpan.com/f/YEA6HA/kina.png" },
-    { name: "lucky", url: "https://dogpan.com/f/Z6BVSQ/lucky.png" },
-    { name: "marmalade", url: "https://dogpan.com/f/1wlWFq/marmalade.png" },
-    { name: "mermaid", url: "https://dogpan.com/f/2km8c8/mermaid.png" },
-    { name: "nekocool", url: "https://dogpan.com/f/31nyI2/nekocool.png" },
-    { name: "neon", url: "https://dogpan.com/f/4xoLUl/neon.png" },
-    { name: "pink", url: "https://dogpan.com/f/5ypWh6/pink.png" },
-    { name: "socks", url: "https://dogpan.com/f/68qmUy/socks.png" },
-    { name: "usa", url: "https://dogpan.com/f/Nkglij/usa.png" }
-];
-  
-const skinMenu = document.createElement("div");
-  skinMenu.id = "oneko-skin-menu";
-  skinMenu.style.cssText = `
-    position: fixed;
-    display: none;
-    grid-template-columns: repeat(5, 32px); /* 一行 5 个 */
-    grid-template-rows: repeat(3, 32px);    /* 一共 3 行 */
-    gap: 8px;
-background: rgba(255, 255, 255, 0.15); /* 👈 修改背景底色的透明度（0.15是15%白） */
-    backdrop-filter: blur(5px); /* 👈 修改模糊程度（数值越大越模糊） */
-    -webkit-backdrop-filter: blur(5px); /* 👈 必须加上这个，否则在苹果手机/Safari上模糊会失效 */
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 12px;
-    padding: 10px;
-    z-index: 10000;
-box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
-  `;
+        window.isParticlesEnabled = !document.body.classList.contains('light');
+        window.userToggledParticles = false; 
+        let bgChangeSequence = 0;
+        let currentPage = 2;
+        const glowingCard = document.querySelector('.glowing-card');
+        const audio = document.getElementById('audioPlayer');
+        let isPlaying = false;
+        let pagesContainer;
+        let bullets;
 
-  //  渲染菜单选项(展示警示状态帧)
-  skinList.forEach(skin => {
-      const item = document.createElement("div");
-      item.style.cssText = `
-          width: 32px; height: 32px;
-          background-color: rgba(0, 0, 0, 0); /* 即使留空也能看见格子方块 */
-          background-image: url('${skin.url}');
-          background-position: -222px -95px; /* 显示猫咪竖起尾巴的“警示”帧 [-7, -3] */
-          image-rendering: pixelated;
-          cursor: pointer;
-          border-radius: 4px;
-          border: 2px solid transparent;
-          transition: border 0.2s, transform 0.2s;
-      `;
-      item.title = skin.name;
-      item.onmouseenter = () => { item.style.border = "1px solid #c299ff"; item.style.transform = "scale(1.1)"; };
-      item.onmouseleave = () => { item.style.border = "1px solid transparent"; item.style.transform = "scale(1)"; };
-      item.onclick = (e) => {
-          e.stopPropagation();
-          changeSkin(skin.url);
-          // 这里去掉了隐藏面板的代码，因此点击选择皮肤后，面板不会收回去
-      };
-      skinMenu.appendChild(item);
-  });
-  document.body.appendChild(skinMenu);
+        const bgPresets =[
+            { name: 'top-left',    value: BG_TOP_LEFT,     isLight: true },
+            { name: 'top-right',   value: BG_TOP_RIGHT,    isLight: false },
+            { name: 'bottom-left', value: BG_BOTTOM_LEFT,  isLight: true },
+            { name: 'bottom-right',value: BG_BOTTOM_RIGHT, isLight: true }
+        ];
+        let currentBgIndex = 0;
 
-  function changeSkin(url) {
-      if (!url) return; // 如果地址为空，则不替换以防出错
-      nekoEl.style.backgroundImage = `url('${url}')`;
-      localStorage.setItem("oneko:skin", url);
-  }
+        document.addEventListener('DOMContentLoaded', () => {
+            pagesContainer = document.querySelector('.pages');
+            bullets = document.querySelectorAll('.bullet');
 
-  function showSkinMenu() {
-      skinMenu.style.display = "grid"; // 显示 Grid 布局
-      const menuWidth = skinMenu.offsetWidth;
-      const menuHeight = skinMenu.offsetHeight;
-      const rect = nekoEl.getBoundingClientRect();
+            document.getElementById('btn-theme-light').addEventListener('click', () => switchBackground(BG_TOP_LEFT, true));
+            document.getElementById('btn-theme-dark').addEventListener('click', () => switchBackground(BG_TOP_RIGHT, false));
+            document.getElementById('btn-bg-1').addEventListener('click', () => switchBackground(BG_BOTTOM_LEFT, true));
+            document.getElementById('btn-bg-2').addEventListener('click', () => switchBackground(BG_BOTTOM_RIGHT, true));
 
-      // 判断靠近屏幕哪边：偏左向右弹出，偏右向左弹出
-      if (rect.left < window.innerWidth / 2) {
-          skinMenu.style.left = `${rect.right + 10}px`;
-      } else {
-          skinMenu.style.left = `${rect.left - menuWidth - 10}px`;
-      }
+            document.querySelectorAll('.theme-toggle, .day-toggle').forEach(button => {
+                const resetScale = () => { button.classList.remove('icon-shrink-force', 'icon-scale-active'); };
+                button.addEventListener('mouseenter', resetScale);
+                button.addEventListener('mouseleave', resetScale);
+                button.addEventListener('click', function() {
+                    resetScale();
+                    this.classList.add('icon-scale-active');
+                    setTimeout(() => { 
+                        this.classList.remove('icon-scale-active');
+                        this.classList.add('icon-shrink-force'); 
+                    }, 350);
+                });
+            });
 
-      // 垂直方向居中对齐，并且防止超出屏幕边缘
-      let topPos = rect.top + (rect.height / 2) - (menuHeight / 2);
-      if (topPos + menuHeight > window.innerHeight) {
-          topPos = window.innerHeight - menuHeight - 10;
-      }
-      if (topPos < 0) topPos = 10;
+            document.getElementById('rewardContainer').addEventListener('click', () => { document.getElementById('rewardContainer').classList.toggle('show-qr'); });
+            document.getElementById('reward-wx').addEventListener('click', e => e.stopPropagation());
+            document.getElementById('reward-zfb').addEventListener('click', e => e.stopPropagation());
+            document.getElementById('profile-pic').addEventListener('click', triggerConfetti);
+            document.getElementById('spotify-card-wrap').addEventListener('click', () => { window.open('https://open.spotify.com/track/3UkRfA9F62DYYDzqOskoov', '_blank'); });
+            document.getElementById('btn-spotify-play').addEventListener('click', (e) => { e.stopPropagation(); togglePlay(e.currentTarget); });
+            document.getElementById('btn-vcard').addEventListener('click', () => { if(typeof downloadVCard === 'function') downloadVCard(); });
 
-      skinMenu.style.top = `${topPos}px`;
-  }
-  window.onekoToggleSkinMenu = () => {
-      if (skinMenu.style.display === "grid") {
-          skinMenu.style.display = "none";
-      } else {
-          showSkinMenu();
-      }
-  };
-  
-  
-  // 点击空白处收起皮肤弹窗
-  document.addEventListener("pointerdown", (e) => {
-      // 当面板处于显示状态，并且点击区域既不是猫咪，也不是皮肤面板的内部元素时，才隐藏面板
-      if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) {
-          skinMenu.style.display = "none";
-      }
-  });
-
-  // 恢复猫咪默认在左上角 (32, 32)
-  let nekoPosX = 32,
-    nekoPosY = 32,
-    mousePosX = 32,
-    mousePosY = 32,
-    frameCount = 0,
-    idleTime = 0,
-    idleAnimation = null,
-    idleAnimationFrame = 0,
-    forceSleep = false,
-    grabbing = false,
-    grabStop = true,
-    nudge = false,
-    kuroNeko = false,
-    variant = "classic",
-    lastClickTime = 0,
-    clickCount = 0; // 新增：记录连续点击次数
-
-  function parseLocalStorage(key, fallback) {
-    try { const value = JSON.parse(localStorage.getItem(`oneko:${key}`)); return typeof value === typeof fallback ? value : fallback; } 
-    catch (e) { return fallback; }
-  }
-
-  const nekoSpeed = 10,
-    variants = [ ["classic", "Classic"], ["dog", "Dog"], ["tora", "Tora"], ["maia", "Maia"], ["vaporwave", "Vaporwave"] ],
-    spriteSets = {
-      idle: [[-3, -3]], alert: [[-7, -3]], scratchSelf: [[-5, 0], [-6, 0], [-7, 0]],
-      scratchWallN: [[0, 0], [0, -1]], scratchWallS: [[-7, -1], [-6, -2]], scratchWallE: [[-2, -2], [-2, -3]],
-      scratchWallW: [[-4, 0], [-4, -1]], tired: [[-3, -2]], sleeping: [[-2, 0], [-2, -1]],
-      N: [[-1, -2], [-1, -3]], NE: [[0, -2], [0, -3]], E: [[-3, 0], [-3, -1]], SE: [[-5, -1], [-5, -2]],
-      S: [[-6, -3], [-7, -2]], SW: [[-5, -3], [-6, -1]], W: [[-4, -2], [-4, -3]], NW: [[-1, 0], [-1, -1]],
-    };
-
-  function sleep() {
-    forceSleep = !forceSleep; nudge = false; localStorage.setItem("oneko:forceSleep", forceSleep);
-    if (!forceSleep) { resetIdleAnimation(); return; }
-    mousePosX = nekoPosX; mousePosY = nekoPosY;
-  }
-  window.onekoSleep = sleep;
-
-  function create() {
-    variant = parseLocalStorage("variant", "classic"); kuroNeko = parseLocalStorage("kuroneko", false);
-    if (!variants.some((v) => v[0] === variant)) { variant = "classic"; }
-    
-    // 恢复上次保存的皮肤，如果没有保存则使用一个默认的蓝猫皮肤防空
-    const savedSkin = localStorage.getItem("oneko:skin") || "https://dogpan.com/f/v2MpsA/blue.png";
-
-    nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
-    nekoEl.style.position = "fixed"; nekoEl.style.backgroundImage = `url('${savedSkin}')`;
-    nekoEl.style.imageRendering = "pixelated"; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
-    nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; nekoEl.style.zIndex = "9999";
-    nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
-    document.body.appendChild(nekoEl);
-
-    // 更新鼠标目标的中心逻辑
-    function updateMousePos(e) {
-        // [新增] 判断如果面板正在展开，且鼠标移动到了面板的范围内，停止更新追随坐标 (不进入面板区域)
-        if (skinMenu.style.display === "grid") {
-            const rect = skinMenu.getBoundingClientRect();
-            if (e.clientX >= rect.left && e.clientX <= rect.right &&
-                e.clientY >= rect.top && e.clientY <= rect.bottom) {
-                return; // 鼠标位于面板内时，取消位置捕获，猫咪将停在边上不会跑进去
+            if (bullets) {
+                bullets.forEach(b => {
+                    b.addEventListener('click', function() { switchPageTo(parseInt(this.dataset.page)); });
+                });
             }
-        }
-        
-        let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
-        let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
-        mousePosX = e.clientX + offsetLeft;
-        mousePosY = e.clientY + offsetTop;
-    }
 
-    window.addEventListener("mousemove", (e) => { if (forceSleep) return; updateMousePos(e); });
-    window.addEventListener("pointermove", (e) => { if (forceSleep) return; if (e.pointerType === "touch") updateMousePos(e); });
-
-    // 缩放/恢复页面大小时，把跑偏的猫拉回到可视区域中心
-    function handleResize() {
-        if (window.visualViewport) {
-            let offsetLeft = window.visualViewport.offsetLeft;
-            let offsetTop = window.visualViewport.offsetTop;
-            let vW = window.visualViewport.width;
-            let vH = window.visualViewport.height;
-            // 如果目标超出了你目前能看到的区域，强制拉回屏幕中间
-            if (mousePosX < offsetLeft || mousePosX > offsetLeft + vW || mousePosY < offsetTop || mousePosY > offsetTop + vH) {
-                mousePosX = offsetLeft + vW / 2;
-                mousePosY = offsetTop + vH / 2;
+            if (typeof ClipboardJS !== 'undefined') {
+                var clipboard = new ClipboardJS('#wechatBtn', { text: () => "lllIIllIIlIII" });
+                clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; });
             }
-        }
-        if (forceSleep) { forceSleep = false; sleep(); }
-    }
-    
-    window.addEventListener("resize", handleResize);
-    if (window.visualViewport) {
-        window.visualViewport.addEventListener("resize", handleResize);
-        window.visualViewport.addEventListener("scroll", handleResize); // 监听手机双指平移拖拽
-    }
+        });
 
-let clickTimeout = null; // 用于区分单击和双击
-
-    nekoEl.addEventListener("pointerdown", (e) => {
-      if (e.button !== 0 && e.pointerType === "mouse") return;
-      
-      e.preventDefault(); 
-      grabbing = true;
-      let isDragging = false; // 用来精确判断是否发生了拖拽
-      
-      if (nekoEl.setPointerCapture) { try { nekoEl.setPointerCapture(e.pointerId); } catch (_) {} }
-      
-      let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval;
-
-      const moveHandler = (e) => {
-        e.preventDefault();
-        const deltaX = e.clientX - startX; const deltaY = e.clientY - startY;
-        const absDeltaX = Math.abs(deltaX); const absDeltaY = Math.abs(deltaY);
-
-        // 如果移动距离超过 5 像素，判定为拖拽行为，不再触发点击
-        if (absDeltaX > 5 || absDeltaY > 5) {
-            isDragging = true; 
-        }
-
-        if (absDeltaX > absDeltaY && absDeltaX > 10) { setSprite(deltaX > 0 ? "scratchWallW" : "scratchWallE", frameCount); } 
-        else if (absDeltaY > absDeltaX && absDeltaY > 10) { setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount); }
-
-        if (grabStop || absDeltaX > 10 || absDeltaY > 10 || Math.sqrt(deltaX ** 2 + deltaY ** 2) > 10) {
-          grabStop = false; 
-          clearTimeout(grabInterval);
-          grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150);
-        }
-
-        nekoPosX = startNekoX + deltaX; nekoPosY = startNekoY + deltaY;
-        nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
-      };
-
-      const upHandler = (e) => {
-        grabbing = false; nudge = true; resetIdleAnimation();
-        window.removeEventListener("pointermove", moveHandler); 
-        window.removeEventListener("pointerup", upHandler); 
-        window.removeEventListener("pointercancel", upHandler);
-        if (nekoEl.releasePointerCapture) { try { nekoEl.releasePointerCapture(e.pointerId); } catch (_) {} }
-
-        // 【单击与双击的判断逻辑】
-        if (!isDragging) {
-            const currentTime = Date.now();
-            if (currentTime - lastClickTime < 300) {
-                // 如果 300ms 内连续点击了两次 -> 判定为双击，猫咪睡觉
-                clearTimeout(clickTimeout);
-                sleep();
-                lastClickTime = 0;
+        function updateParticlesDisplay() {
+            const canvas = document.getElementById('shuicheCanvas');
+            if (!canvas) return;
+            if (window.isParticlesEnabled) {
+                canvas.style.display = 'block';
+                if (window.bgEngine && window.bgEngine.start) window.bgEngine.start();
             } else {
-                // 单击 -> 延迟 300ms 等待确认不是双击后，弹出皮肤面板
-                lastClickTime = currentTime;
-                clickTimeout = setTimeout(() => {
-                    if (forceSleep) sleep(); // 如果猫咪睡着了先唤醒
-                    showSkinMenu(); // 弹出选择面板
-                }, 300);
+                canvas.style.display = 'none';
+                if (window.bgEngine && window.bgEngine.stop) window.bgEngine.stop();
             }
         }
-      };
 
-      window.addEventListener("pointermove", moveHandler, { passive: false });
-      window.addEventListener("pointerup", upHandler); 
-      window.addEventListener("pointercancel", upHandler);
-    });
+        let bgLayerIndex = 0; 
+        function crossfadeBackground(backgroundValue, isLightTheme) {
+            const currentChangeId = ++bgChangeSequence;
+            const container = document.getElementById('bg-container');
+            if (!container) return;
 
-    nekoEl.addEventListener("contextmenu", (e) => { e.preventDefault(); kuroNeko = !kuroNeko; localStorage.setItem("oneko:kuroneko", kuroNeko); nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; });
-    window.onekoInterval = setInterval(frame, 100);
-  }
+            let cleanUrl = backgroundValue;
+            const urlMatch = backgroundValue.match(/url\(['"]?(.*?)['"]?\)/);
+            if (urlMatch) cleanUrl = urlMatch[1];
 
-  function getSprite(name, frame) { return spriteSets[name][frame % spriteSets[name].length]; }
-  function setSprite(name, frame) { const sprite = getSprite(name, frame); nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`; }
-  function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
+            const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(cleanUrl);
+            const isWebGL = backgroundValue === 'webgl-shader';
 
-function idle() {
-    idleTime += 1; let avalibleIdleAnimations = [];
-    if (idleTime > 10 && Math.floor(Math.random() * 25) == 0 && idleAnimation == null) {
-      avalibleIdleAnimations = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"];
+            const startTransition = (contentElement = null) => {
+                if (currentChangeId !== bgChangeSequence) return;
+                
+                bgLayerIndex++;
+                const newLayer = document.createElement('div');
+                newLayer.className = 'bg-layer';
+                newLayer.style.zIndex = bgLayerIndex;
+
+                if (isWebGL) {
+                    // 初始化 WebGL 着色器并赋予该 Layer DOM 容器
+                    if (typeof window.initWebGLShaderBg === 'function') {
+                        const cleanupFn = window.initWebGLShaderBg(newLayer);
+                        // 把销毁回调附在容器上，之后删除图层时自动清理
+                        newLayer._cleanup = cleanupFn;
+                    }
+                } else if (isVideo && contentElement) {
+                    contentElement.style.width = "100%";
+                    contentElement.style.height = "100%";
+                    contentElement.style.objectFit = "cover";
+                    newLayer.appendChild(contentElement);
+                } else {
+                    if (cleanUrl.startsWith('http') || cleanUrl.startsWith('images/') || cleanUrl.startsWith('./')) {
+                        newLayer.style.background = `url('${cleanUrl}') center/cover no-repeat`;
+                    } else {
+                        newLayer.style.background = backgroundValue;
+                    }
+                }
+
+                container.appendChild(newLayer);
+
+                document.body.classList.toggle('light', isLightTheme);
+                document.documentElement.style.setProperty('--fg', isLightTheme ? 'black' : '#f0f0f0');
+
+                if (!window.userToggledParticles) {
+                    window.isParticlesEnabled = !isLightTheme; 
+                }
+                
+                updateParticlesDisplay(); 
+
+                void newLayer.offsetWidth; // 强行触发重绘渲染
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        newLayer.style.opacity = '1';
+                    });
+                });
+
+                setTimeout(() => {
+                    if (currentChangeId !== bgChangeSequence) return;
+                    const layers = container.querySelectorAll('.bg-layer');
+                    layers.forEach(layer => { 
+                        if (layer !== newLayer) {
+                            if (typeof layer._cleanup === 'function') {
+                                layer._cleanup(); // 执行清理操作，停止 WebGL 循环渲染
+                            }
+                            layer.remove(); 
+                        }
+                    });
+                    updateParticlesDisplay(); 
+                }, 850);
+            };
+
+            // 预加载流程分支
+            if (isWebGL) {
+                startTransition();
+            } else if (isVideo) {
+                const video = document.createElement('video');
+                video.src = cleanUrl;
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.autoplay = true;
+                video.onloadeddata = () => startTransition(video);
+                video.onerror = () => startTransition();
+            } else if (cleanUrl.startsWith('http') || cleanUrl.startsWith('images/')) {
+                const img = new Image();
+                img.src = cleanUrl;
+                img.onload = () => startTransition();
+                img.onerror = () => startTransition();
+            } else {
+                startTransition();
+            }
+        }
+
+        function switchBackground(value, isLight = true) {
+            if (value === 'webgl-shader') {
+                crossfadeBackground(value, isLight);
+            } else if (value.includes('gradient') || /^(#|rgb|hsl)/.test(value.trim())) { 
+                crossfadeBackground(value, isLight); 
+            } else { 
+                crossfadeBackground(`url('${value}')`, isLight); 
+            }
+        }
+
+        (function initDoubleClickToggle() {
+            let lastToggleTime = 0;
+            function toggleParticles(e) {
+                let now = new Date().getTime();
+                if (now - lastToggleTime < 500) return;
+                lastToggleTime = now;
+                if (e.target && e.target.closest && e.target.closest('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) { return; }
+                window.isParticlesEnabled = !window.isParticlesEnabled;
+                window.userToggledParticles = true;
+                updateParticlesDisplay();
+            }
+            document.addEventListener('dblclick', toggleParticles);
+            
+            let lastTouchEnd = 0;
+            let isMultiTouch = false;
+
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length > 1) {
+                    isMultiTouch = true;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchend', function(e) {
+                if (e.touches.length > 0) return;
+                
+                if (isMultiTouch) {
+                    isMultiTouch = false;
+                    lastTouchEnd = 0; 
+                    return;
+                }
+
+                let now = new Date().getTime();
+                if (now - lastTouchEnd <= 400) { 
+                    toggleParticles(e); 
+                    lastTouchEnd = 0; 
+                } else { 
+                    lastTouchEnd = now; 
+                }
+            });
+        })();
+
+        (function initBackgroundEngine() {
+            const count = 1000; 
+            let scene, camera, renderer, animationId = null, mouseX = 0, mouseY = 0;
+            let windowHalfX = window.innerWidth / 2, windowHalfY = window.innerHeight / 2;
+            let clock, geometry, posAttribute, positionArray, velocityArray;
+
+            function init() {
+                if (typeof THREE === 'undefined') { setTimeout(init, 50); return; }
+                clock = new THREE.Clock(); 
+                geometry = new THREE.BufferGeometry();
+                posAttribute = new THREE.BufferAttribute(new Float32Array(6 * count), 3);
+                posAttribute.setUsage(THREE.DynamicDrawUsage);
+                geometry.setAttribute('position', posAttribute);
+                geometry.setAttribute('velocity', new THREE.BufferAttribute(new Float32Array(2 * count), 1));
+                positionArray = posAttribute.array;
+                velocityArray = geometry.getAttribute('velocity').array;
+
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 500);
+                camera.position.z = 200;
+                renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('shuicheCanvas'), antialias: true, alpha: true });
+                renderer.setSize(window.innerWidth, window.innerHeight, false);
+                renderer.setClearColor(0x000000, 0);
+                
+                for (let index = 0; index < count; index++) {
+                    const x = Math.random() * 800 - 400, y = Math.random() * 800 - 400, z = Math.random() * 400 - 200;
+                    positionArray[6 * index] = x; positionArray[6 * index + 1] = y; positionArray[6 * index + 2] = z;
+                    positionArray[6 * index + 3] = x; positionArray[6 * index + 4] = y; positionArray[6 * index + 5] = z;
+                }
+                scene.add(new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ color: 0xffffff })));
+                
+                window.addEventListener('resize', debounceResize, { passive: true });
+                document.body.addEventListener('pointermove', e => { mouseX = e.clientX - windowHalfX; mouseY = e.clientY - windowHalfY; }, { passive: true });
+                
+                if (window.isParticlesEnabled) { clock.start(); anime(); }
+            }
+
+            let resizeTimeout;
+            function debounceResize() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    windowHalfX = window.innerWidth / 2; windowHalfY = window.innerHeight / 2;
+                }, 100);
+            }
+
+            function anime() {
+                let delta = clock.getDelta();
+                delta = Math.min(delta, 0.1); 
+                const timeScale = delta / (1 / 60); 
+
+                for (let index = 0; index < count; index++) {
+                    velocityArray[2 * index] += 0.015 * timeScale;
+                    velocityArray[2 * index + 1] += 0.015 * timeScale;
+                    positionArray[6 * index + 2] += (velocityArray[2 * index] + 0.03) * timeScale;
+                    positionArray[6 * index + 5] += velocityArray[2 * index + 1] * timeScale;
+                    
+                    if (positionArray[6 * index + 2] > 200) {
+                        let z = Math.random() * 200 - 200;
+                        positionArray[6 * index + 2] = z; positionArray[6 * index + 5] = z;
+                        velocityArray[2 * index] = 0; velocityArray[2 * index + 1] = 0;
+                    }
+                }
+                posAttribute.needsUpdate = true;
+                camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
+                camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+                renderer.render(scene, camera);
+                animationId = requestAnimationFrame(anime);
+            }
+
+            document.addEventListener("visibilitychange", () => {
+                if (document.hidden && animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } 
+                else if (!document.hidden && animationId === null && window.isParticlesEnabled) { clock.start(); anime(); }
+            });
+
+            window.bgEngine = {
+                start: () => { if (animationId === null) { if(clock) clock.start(); anime(); } },
+                stop: () => { if (animationId !== null) { cancelAnimationFrame(animationId); animationId = null; } }
+            };
+            window.bgRenderer = { setClearColor: (c, a) => renderer ? renderer.setClearColor(c, a) : null };
+            window.addEventListener('DOMContentLoaded', init);
+        })();
+
+        function updateGlowingShadow() { glowingCard.style.boxShadow = '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset'; }
+
+        function switchPageTo(page) {
+            if (page < 1 || page > 3) return;
+            currentPage = page;
+            if (pagesContainer) pagesContainer.style.transform = `translateX(-${(page - 1) * 100}%)`;
+            if (bullets) bullets.forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page));
+        }
+
+        function togglePlay(button) {
+            if (audio.paused) {
+                audio.play(); button.classList.add('playing'); button.querySelector('.btn-text').innerText = 'Pause'; isPlaying = true;
+            } else {
+                audio.pause(); button.classList.remove('playing'); button.querySelector('.btn-text').innerText = 'Play'; isPlaying = false;
+            }
+        }
+
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            const btn = document.querySelector('.play-btn');
+            if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
+        });
+
+        document.addEventListener('play', e => {
+            document.querySelectorAll('audio').forEach(audioEl => {
+                if (audioEl !== e.target && !audioEl.paused) {
+                    audioEl.pause();
+                    if (audioEl.id === 'audioPlayer') {
+                        const btn = document.querySelector('.play-btn');
+                        if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
+                        isPlaying = false;
+                    }
+                }
+            });
+        }, true);
+
+        function loadMusicPlayer() {
+            let indexSong = 0, pendingCurrentTime = 0, isLocked = false, songsLength = null, selectedSong = null, songIsPlayed = false, progress_elmnt = null, songName_elmnt = null, sliderImgs_elmnt = null, singerName_elmnt = null, musicPlayerInfo_elmnt = null, progressBarIsUpdating = false, broadcastGuarantor_elmnt = null, isSwitchingMusic = false, preloadAbortController = null;
+            const root = document.querySelector("#root");
+            const mainAudio = document.getElementById('mainAudio');
+
+            window.musicControls = { playPause: handlePlayMusic, next: () => handleChangeMusic({ isPrev: false }), prev: () => handleChangeMusic({ isPrev: true }) };
+
+            function savePlaybackState() {
+                if (!selectedSong) return;
+                const playbackState = { currentSongIndex: indexSong, isPlaying: !selectedSong.paused, volume: selectedSong.volume, currentTime: pendingCurrentTime > 0 ? pendingCurrentTime : selectedSong.currentTime };
+                localStorage.setItem('musicPlayerState', JSON.stringify(playbackState));
+            }
+
+            document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') savePlaybackState(); });
+            window.addEventListener('beforeunload', savePlaybackState);
+            setInterval(savePlaybackState, 5000);
+
+            function updateUIForSong(index) {
+                updateInfo(songName_elmnt, songs[index].songName);
+                updateInfo(singerName_elmnt, songs[index].artist);
+                setProperty(sliderImgs_elmnt, "--index", -index);
+                if ('mediaSession' in navigator) { navigator.mediaSession.metadata = new MediaMetadata({ title: songs[index].songName, artist: songs[index].artist, artwork:[{ src: songs[index].files.cover, sizes: '512x512', type: 'image/jpeg' }] }); }
+            }
+
+            function restorePlaybackState() {
+                try {
+                    const savedState = localStorage.getItem('musicPlayerState');
+                    if (!savedState) { updateUIForSong(0); return; }
+                    const playbackState = JSON.parse(savedState);
+                    if (playbackState.currentSongIndex !== undefined && playbackState.currentSongIndex >= 0 && playbackState.currentSongIndex <= songsLength) {
+                        indexSong = playbackState.currentSongIndex;
+                        if (playbackState.currentTime !== undefined) pendingCurrentTime = playbackState.currentTime;
+                        if (playbackState.volume !== undefined) mainAudio.volume = playbackState.volume;
+                        updateUIForSong(indexSong);
+                    } else { updateUIForSong(0); }
+                } catch (e) { updateUIForSong(0); }
+            }
+
+            function preloadNextSongHead(nextIndex) {
+                if (!songs[nextIndex] || !songs[nextIndex].files.song) return;
+                const nextUrl = songs[nextIndex].files.song;
+                if (preloadAbortController) preloadAbortController.abort();
+                preloadAbortController = new AbortController();
+                fetch(nextUrl, { headers: { 'Range': 'bytes=0-524288' }, signal: preloadAbortController.signal }).catch(err => {});
+            }
+
+            function handleChangeMusic({ isPrev = false, playListIndex = null }) {
+                if (isLocked) return;
+                let newIndex = playListIndex !== null ? playListIndex : (isPrev ? indexSong - 1 : indexSong + 1);
+                if (newIndex < 0) newIndex = songsLength;
+                if (newIndex > songsLength) newIndex = 0;
+                if (newIndex === indexSong && playListIndex === null) return;
+
+                let wasPlaying = songIsPlayed;
+                isSwitchingMusic = true;
+                indexSong = newIndex;
+                pendingCurrentTime = 0;
+                updateUIForSong(indexSong);
+                mainAudio.src = songs[indexSong].files.song;
+
+                if (wasPlaying) {
+                    let playPromise = mainAudio.play();
+                    if (playPromise !== undefined) { playPromise.then(() => { isSwitchingMusic = false; }).catch(e => { isSwitchingMusic = false; songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); }); }
+                    songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1);
+                } else { isSwitchingMusic = false; if (preloadAbortController) preloadAbortController.abort(); }
+                savePlaybackState();
+            }
+
+            function handlePlayMusic() {
+                if (mainAudio.currentTime === mainAudio.duration && mainAudio.duration > 0) { handleChangeMusic({}); return; }
+                if (!mainAudio.src || mainAudio.src === window.location.href || mainAudio.src === "") {
+                    mainAudio.src = songs[indexSong].files.song; mainAudio.play(); songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1);
+                } else { if (mainAudio.paused) { mainAudio.play(); preloadNextSongHead((indexSong + 1) > songsLength ? 0 : indexSong + 1); } else { mainAudio.pause(); } }
+            }
+
+            function updateTheProgressBar() {
+                const duration = this.duration; const currentTime = this.currentTime;
+                if (isNaN(duration) || duration === 0) return;
+                const progressRatio = currentTime / duration;
+                setProperty(progress_elmnt, "--scale", progressRatio); setProperty(progress_elmnt, "--width", `${progressRatio * 100}%`);
+            }
+
+            function syncMediaSessionPosition() {
+                if ('mediaSession' in navigator && !isNaN(mainAudio.duration) && isFinite(mainAudio.duration) && mainAudio.duration > 0) {
+                    try { let position = mainAudio.currentTime || 0; position = Math.max(0, Math.min(position, mainAudio.duration)); navigator.mediaSession.setPositionState({ duration: mainAudio.duration, playbackRate: mainAudio.playbackRate || 1, position: position }); } catch (err) {}
+                }
+            }
+
+            function handleScrub(e) {
+                e.preventDefault(); let clientX = e.clientX; if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
+                const progressOffsetLeft = progress_elmnt.getBoundingClientRect().left; const progressWidth = progress_elmnt.offsetWidth; const duration = selectedSong.duration;
+                if (isNaN(duration) || duration === 0) return;
+                selectedSong.currentTime = (clientX - progressOffsetLeft) / progressWidth * duration;
+            }
+
+            const songs =[
+                { "bg": "#c9bea28f", "artist": "SCSI-9", "songName": "Senorita Tristeza", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Senorita Tristeza.webp" }, "duration": "5:53" },
+                { "bg": "#0896eba1", "artist": "Paradox Interactive", "songName": "Be Happy", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Be Happy.webp" }, "duration": "3:22" },
+                { "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Jupiter.webp" }, "duration": "4:31" },
+                { "bg": "#ffc382", "artist": "La Femme", "songName": "Le jardin", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Le jardin.webp" }, "duration": "4:00" },
+                { "bg": "#ffcbdc", "artist": "Still Corners", "songName": "Crying", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Crying.webp" }, "duration": "3:28" },
+                { "bg": "#44c16fb5", "artist": "Marvel83'", "songName": "Alone With You", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Alone With You.webp" }, "duration": "4:53" },
+                { "bg": "#ff4545", "artist": "Timecop1983", "songName": "Nightfall", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/Nightfall.webp" }, "duration": "4:40" },
+                { "bg": "#e5e7e9", "artist": "Lazer Boomerang", "songName": "R3cover", "files": { "song": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.mp3", "cover": "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/music/R3cover.webp" }, "duration": "3:34" }
+            ];
+
+            const musicPlayer = document.createElement("div"); musicPlayer.className = "music-player flex-column";
+            const slider = document.createElement("div"); slider.className = "slider center"; slider.onclick = handleResizeSlider;
+            const sliderContent = document.createElement("div"); sliderContent.className = "slider__content center";
+            const playlistButton = document.createElement("button"); playlistButton.className = "music-player__playlist-button center button"; playlistButton.innerHTML = '<i class="icon-playlist"></i>';
+            const broadcastGuarantor = document.createElement("button"); broadcastGuarantor.className = "music-player__broadcast-guarantor center button"; broadcastGuarantor.onclick = handlePlayMusic; broadcastGuarantor.innerHTML = '<i class="icon-play"></i><i class="icon-pause"></i>';
+            const sliderImgs = document.createElement("div"); sliderImgs.className = "slider__imgs flex-row";
+            songs.forEach(({ files: { cover }, songName }) => { const img = document.createElement("img"); img.src = cover; img.loading = "lazy"; img.className = "img"; img.alt = songName; sliderImgs.appendChild(img); });
+            sliderContent.append(playlistButton, broadcastGuarantor, sliderImgs);
+            const sliderControls = document.createElement("div"); sliderControls.className = "slider__controls center";
+            const prevButton = document.createElement("button"); prevButton.className = "slider__switch-button flex-row button"; prevButton.innerHTML = '<i class="icon-back"></i>'; prevButton.onclick = () => handleChangeMusic({ isPrev: true });
+            const musicInfo = document.createElement("div"); musicInfo.className = "music-player__info text_trsf-cap"; musicInfo.innerHTML = `<div><div class="music-player__singer-name"><div>${songs[0].songName}</div></div></div><div><div class="music-player__subtitle"><div>${songs[0].artist}</div></div></div>`;
+            const nextButton = document.createElement("button"); nextButton.className = "slider__switch-button flex-row button"; nextButton.innerHTML = '<i class="icon-next"></i>'; nextButton.onclick = () => handleChangeMusic({ isPrev: false });
+            const progress = document.createElement("div"); progress.className = "progress center"; progress.onpointerdown = (e) => { e.preventDefault(); handleScrub(e); progressBarIsUpdating = true; };
+            const progressWrapper = document.createElement("div"); progressWrapper.className = "progress__wrapper";
+            const progressBar = document.createElement("div"); progressBar.className = "progress__bar";
+            const progressDot = document.createElement("div"); progressDot.className = "progress__dot";
+            progressWrapper.appendChild(progressBar); progressWrapper.appendChild(progressDot); progress.appendChild(progressWrapper);
+            sliderControls.append(prevButton, musicInfo, nextButton, progress); slider.append(sliderContent, sliderControls);
+            const playlist = document.createElement("ul"); playlist.className = "music-player__playlist list";
+
+            songs.forEach((song, index) => {
+                const listItem = document.createElement("li"); listItem.className = "music-player__song"; listItem.dataset.index = index; 
+                listItem.innerHTML = `<div class="flex-row _align_center"><img src="${song.files.cover}" loading="lazy" class="img music-player__song-img" alt="${song.songName}"><div class="music-player__playlist-info text_trsf-cap"><b class="text_overflow">${song.songName}</b><div class="flex-row _justify_space-btwn"><span class="music-player__subtitle">${song.artist}</span><span class="music-player__song-duration">${song.duration}</span></div></div></div>`;
+                playlist.appendChild(listItem);
+            });
+
+            playlist.addEventListener('click', (e) => {
+                const clickedItem = e.target.closest('.music-player__song');
+                if (clickedItem) { const clickIndex = parseInt(clickedItem.dataset.index, 10); handleChangeMusic({ playListIndex: clickIndex }); }
+            });
+
+            musicPlayer.append(slider, playlist); root.innerHTML = ''; root.appendChild(musicPlayer);
+            songsLength = songs.length - 1; progress_elmnt = document.querySelector(".progress"); sliderImgs_elmnt = document.querySelector(".slider__imgs"); songName_elmnt = document.querySelector(".music-player__singer-name"); musicPlayerInfo_elmnt = document.querySelector(".music-player__info"); singerName_elmnt = document.querySelector(".music-player__subtitle"); broadcastGuarantor_elmnt = document.querySelector(".music-player__broadcast-guarantor"); selectedSong = mainAudio;
+            mainAudio.addEventListener('timeupdate', updateTheProgressBar); mainAudio.addEventListener('ended', () => { if (songIsPlayed) handleChangeMusic({}); }); mainAudio.addEventListener('loadedmetadata', () => { if (pendingCurrentTime > 0) { mainAudio.currentTime = pendingCurrentTime; pendingCurrentTime = 0; } syncMediaSessionPosition(); }); mainAudio.addEventListener('durationchange', syncMediaSessionPosition); mainAudio.addEventListener('play', () => { songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; syncMediaSessionPosition(); }); mainAudio.addEventListener('pause', () => { setTimeout(() => { if (mainAudio.paused && !isSwitchingMusic) { songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'; syncMediaSessionPosition(); } }, 100); }); mainAudio.addEventListener('seeked', syncMediaSessionPosition);
+            controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); setTimeout(restorePlaybackState, 100);
+
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.setActionHandler('previoustrack', () => handleChangeMusic({ isPrev: true }));
+                navigator.mediaSession.setActionHandler('nexttrack', () => handleChangeMusic({ isPrev: false }));
+                navigator.mediaSession.setActionHandler('play', () => { mainAudio.play(); });
+                navigator.mediaSession.setActionHandler('pause', () => { mainAudio.pause(); });
+                navigator.mediaSession.setActionHandler('seekto', (details) => { if (details.seekTime != null) mainAudio.currentTime = details.seekTime; });
+            }
+
+            function handleResizeSlider({ target }) {
+                if (isLocked) return;
+                if (target.classList.contains("music-player__info")) { this.classList.add("resize"); setProperty(this, "--controls-animate", "down running"); }
+                else if (target.classList.contains("music-player__playlist-button")) { this.classList.remove("resize"); setProperty(this, "--controls-animate", "up running"); }
+            }
+            function controlSubtitleAnimation(parent, child) {
+                if (child.classList.contains("animate")) return; const element = child.firstChild;
+                if (child.clientWidth > parent.clientWidth) { child.appendChild(element.cloneNode(true)); child.classList.add("animate"); }
+                setProperty(child.parentElement, "width", `${element.clientWidth}px`);
+            }
+            function setProperty(target, prop, value = "") { target.style.setProperty(prop, value); }
+            function updateInfo(target, value) { while (target.firstChild) target.removeChild(target.firstChild); const targetChild = document.createElement("div"); targetChild.appendChild(document.createTextNode(value)); target.appendChild(targetChild); target.classList.remove("animate"); controlSubtitleAnimation(musicPlayerInfo_elmnt, target); }
+            function handleResize() { setProperty(document.documentElement, "--vH", `${window.innerHeight * 0.01}px`); }
+            window.addEventListener("resize", handleResize); window.addEventListener("transitionstart", ({ target }) => { if (target === sliderImgs_elmnt) { isLocked = true; setProperty(sliderImgs_elmnt, "will-change", "transform"); } }); window.addEventListener("transitionend", ({ target, propertyName }) => { if (target === sliderImgs_elmnt) isLocked = false; if (target.classList.contains("slider") && propertyName === "height") { controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); } });
+            const stopScrub = () => { if (progressBarIsUpdating) { selectedSong.muted = false; progressBarIsUpdating = false; } };
+            const moveScrub = (e) => { if (progressBarIsUpdating) { e.preventDefault(); handleScrub(e); selectedSong.muted = true; } };
+            window.addEventListener("pointerup", stopScrub); window.addEventListener("pointermove", moveScrub); window.addEventListener("touchend", stopScrub); window.addEventListener("touchmove", moveScrub);
+            handleResize();
+        }
+
+        function initKeyboardControls() {
+            document.addEventListener('keydown', (e) => {
+                const key = e.key.toLowerCase();
+                
+                if (key === 'z') {
+                    if (typeof window.onekoSleep === 'function') window.onekoSleep();
+                }
+                
+                if (key === 's') {
+                    if (typeof window.onekoToggleSkinMenu === 'function') window.onekoToggleSkinMenu();
+                }
+                
+                if (key === 'n' || key === 'm') {
+                    triggerConfetti();
+                }
+
+                if (key === 't') { currentBgIndex = (currentBgIndex + 1) % bgPresets.length; const preset = bgPresets[currentBgIndex]; switchBackground(preset.value, preset.isLight); }
+                if (key === '1') { switchBackground(BG_TOP_LEFT, true); currentBgIndex = 0; }
+                if (key === '2') { switchBackground(BG_TOP_RIGHT, false); currentBgIndex = 1; }
+                if (key === '3') { switchBackground(BG_BOTTOM_LEFT, true); currentBgIndex = 2; }
+                if (key === '4') { switchBackground(BG_BOTTOM_RIGHT, true); currentBgIndex = 3; }
+                if (key === 'p') { window.isParticlesEnabled = !window.isParticlesEnabled; window.userToggledParticles = true; updateParticlesDisplay(); }
+                
+                if (!e.shiftKey) { 
+                    if (e.key === 'ArrowRight') { let next = currentPage + 1; if (next > 3) next = 1; switchPageTo(next); } 
+                    if (e.key === 'ArrowLeft') { let prev = currentPage - 1; if (prev < 1) prev = 3; switchPageTo(prev); } 
+                    
+                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                        if (currentPage === 1) {
+                            e.preventDefault(); 
+                            const pageVertical = document.querySelector('#page1 .page-vertical');
+                            const sign = e.key === 'ArrowUp' ? -1 : 1;
+                            pageVertical.scrollBy({ top: sign * pageVertical.clientHeight, behavior: 'smooth' });
+                        }
+                    }
+                }
+                
+                if (window.musicControls) { 
+                    if (e.code === 'Space') { e.preventDefault(); window.musicControls.playPause(); } 
+                    if (e.shiftKey) { 
+                        if (e.key === 'ArrowRight') window.musicControls.next(); 
+                        if (e.key === 'ArrowLeft') window.musicControls.prev(); 
+                    } 
+                }
+            });
+        }
+
+        const scrollContainer = document.querySelector('.link-scroll-container');
+        let scrollTimeout;
+        if (scrollContainer) {
+            scrollContainer.addEventListener('scroll', () => { scrollContainer.classList.add('scrolling'); clearTimeout(scrollTimeout); scrollTimeout = setTimeout(() => scrollContainer.classList.remove('scrolling'), 1500); }, { passive: true });
+        }
+
+        let avatarSound = null;
+        async function initAvatarSound() {
+            const audioUrl = "https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/Cat.wav";
+            try { const response = await fetch(audioUrl, { cache: 'force-cache' }); const audioBlob = await response.blob(); const blobUrl = URL.createObjectURL(audioBlob); avatarSound = new Audio(blobUrl); avatarSound.volume = 0.35; } 
+            catch (error) { avatarSound = new Audio(audioUrl); avatarSound.volume = 0.35; }
+        }
+
+        if ('requestIdleCallback' in window) { requestIdleCallback(() => initAvatarSound()); } else { setTimeout(initAvatarSound, 1500); }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') confetti({ particleCount: 150, spread: 100 });
+            if (avatarSound) { avatarSound.currentTime = 0; avatarSound.play().catch(e => console.log(e)); }
+        }
+
+        const video = document.getElementById('page1Video'); let videoLoaded = false;
+        if ('IntersectionObserver' in window && video) {
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) { if (!videoLoaded) { video.src = "music/Movie.MP4"; videoLoaded = true; } video.muted = true; video.play().catch(() => {}); } else { video.pause(); } });
+            }, { threshold: 0.5 });
+            videoObserver.observe(document.getElementById('page1-4'));
+        }
+        if(video) video.addEventListener('click', () => video.muted = false);
+
+        window.onload = function() {
+            loadMusicPlayer(); initKeyboardControls();
+            if (document.body.classList.contains('light')) { window.isParticlesEnabled = false; updateParticlesDisplay(); }
+            switchPageTo(2);
+        };
+
+        const style = document.createElement('style');
+        style.textContent = `
+            .glitch-text {
+                position: relative;
+                display: inline-block;
+            }
+            .glitch-text::before,
+            .glitch-text::after {
+                content: attr(data-text);
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                pointer-events: none;
+            }
+            .glitch-text.active::before {
+                animation: glitch-1 0.5s cubic-bezier(.25, .46, .45, .94) both infinite;
+                color: #0ff;
+                transform: translateX(-0.5px); 
+            }
+            .glitch-text.active::after {
+                animation: glitch-2 0.5s cubic-bezier(.25, .46, .45, .94) reverse both infinite;
+                color: #f0f;
+                transform: translateX(0.5px); 
+            }
+            @keyframes glitch-1 {
+                0% { opacity: 0.75; transform: translate(-1px, 1px); }
+                50% { opacity: 0.5; transform: translate(0.5px, -0.5px); }
+                100% { opacity: 0.75; transform: translate(-1px, 1px); }
+            }
+            @keyframes glitch-2 {
+                0% { opacity: 0.75; transform: translate(1px, -1px); }
+                50% { opacity: 0.5; transform: translate(-0.5px, 0.5px); }
+                100% { opacity: 0.75; transform: translate(1px, -1px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        const linkCards = document.querySelectorAll('.link-card');
+        linkCards.forEach(card => {
+            const titleSpan = card.querySelector('.link-title');
+            if (titleSpan && titleSpan.textContent) {
+                const text = titleSpan.textContent.trim();
+                titleSpan.innerHTML = `<span class="glitch-text" data-text="${text}">${text}</span>`;
+            }
+
+            const glitchEl = card.querySelector('.glitch-text');
+            const startGlitch = () => { if (glitchEl) glitchEl.classList.add('active'); };
+            const stopGlitch = () => { if (glitchEl) glitchEl.classList.remove('active'); };
+
+            card.addEventListener('mouseenter', startGlitch);
+            card.addEventListener('mouseleave', stopGlitch);
+
+            card.addEventListener('touchstart', startGlitch, { passive: true });
+            card.addEventListener('touchend', stopGlitch);
+            card.addEventListener('touchcancel', stopGlitch);
+        });
       
-      let scratchW = false, scratchN = false, scratchE = false, scratchS = false;
-      
-      // 1. 原有的屏幕边缘判定 (加入了视口缩放偏移兼容)
-      let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
-      let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
-      let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-      let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        (async function oneko() {
+            const nekoEl = document.createElement("div");
 
-      if (nekoPosX < offsetLeft + 32) scratchW = true;
-      if (nekoPosY < offsetTop + 32) scratchN = true;
-      if (nekoPosX > offsetLeft + vWidth - 32) scratchE = true;
-      if (nekoPosY > offsetTop + vHeight - 32) scratchS = true;
+            const skinList = [
+                { name: "blue", url: "https://dogpan.com/f/R6m4u5/blue.png" },
+                { name: "black2", url: "https://dogpan.com/f/QWlVto/black2.png" },
+                { name: "black", url: "https://dogpan.com/f/PNkPh3/black.png" },
+                { name: "calico", url: "https://dogpan.com/f/VOqgCg/calico.png" },
+                { name: "dog", url: "https://dogpan.com/f/W6yOFD/dog.png" },
+                { name: "holiday", url: "https://dogpan.com/f/XDzDUO/holiday.png" },
+                { name: "kina", url: "https://dogpan.com/f/YEA6HA/kina.png" },
+                { name: "lucky", url: "https://dogpan.com/f/Z6BVSQ/lucky.png" },
+                { name: "marmalade", url: "https://dogpan.com/f/1wlWFq/marmalade.png" },
+                { name: "mermaid", url: "https://dogpan.com/f/2km8c8/mermaid.png" },
+                { name: "nekocool", url: "https://dogpan.com/f/31nyI2/nekocool.png" },
+                { name: "neon", url: "https://dogpan.com/f/4xoLUl/neon.png" },
+                { name: "pink", url: "https://dogpan.com/f/5ypWh6/pink.png" },
+                { name: "socks", url: "https://dogpan.com/f/68qmUy/socks.png" },
+                { name: "usa", url: "https://dogpan.com/f/Nkglij/usa.png" }
+            ];
+          
+            const skinMenu = document.createElement("div");
+            skinMenu.id = "oneko-skin-menu";
+            skinMenu.style.cssText = `
+                position: fixed;
+                display: none;
+                grid-template-columns: repeat(5, 32px);
+                grid-template-rows: repeat(3, 32px);
+                gap: 8px;
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                border-radius: 12px;
+                padding: 10px;
+                z-index: 10000;
+                box-shadow: 0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255, 255, 255, 0.4) inset;
+            `;
 
-      // 2. 新增：UI 卡片元素的内外边缘判定
-      const cards = document.querySelectorAll('.glowing-card, .spotify-card, .link-card');
-      cards.forEach(card => {
-          const rect = card.getBoundingClientRect();
-          // 如果卡片当前不可见(比如在隐藏的页面里)，则跳过判定
-          if (rect.width === 0 || rect.height === 0) return;
+            skinList.forEach(skin => {
+                const item = document.createElement("div");
+                item.style.cssText = `
+                    width: 32px; height: 32px;
+                    background-color: rgba(0, 0, 0, 0);
+                    background-image: url('${skin.url}');
+                    background-position: -222px -95px;
+                    image-rendering: pixelated;
+                    cursor: pointer;
+                    border-radius: 4px;
+                    border: 2px solid transparent;
+                    transition: border 0.2s, transform 0.2s;
+                `;
+                item.title = skin.name;
+                item.onmouseenter = () => { item.style.border = "1px solid #c299ff"; item.style.transform = "scale(1.1)"; };
+                item.onmouseleave = () => { item.style.border = "1px solid transparent"; item.style.transform = "scale(1)"; };
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    changeSkin(skin.url);
+                };
+                skinMenu.appendChild(item);
+            });
+            document.body.appendChild(skinMenu);
 
-          // 将屏幕坐标系转换与猫咪坐标系一致
-          const rLeft = rect.left + offsetLeft;
-          const rRight = rect.right + offsetLeft;
-          const rTop = rect.top + offsetTop;
-          const rBottom = rect.bottom + offsetTop;
-          const threshold = 32; // 触发挠墙的靠近距离
+            function changeSkin(url) {
+                if (!url) return;
+                nekoEl.style.backgroundImage = `url('${url}')`;
+                localStorage.setItem("oneko:skin", url);
+            }
 
-          // 判断猫咪是否在卡片的垂直高度范围内
-          if (nekoPosY >= rTop - threshold && nekoPosY <= rBottom + threshold) {
-              // 靠近左侧边框
-              if (Math.abs(nekoPosX - rLeft) <= threshold) {
-                  if (nekoPosX <= rLeft) scratchE = true; // 猫在左外侧，朝右挠墙 (面朝卡片)
-                  else scratchW = true;                   // 猫在左内侧，朝左挠墙 (面朝卡片左边缘)
-              }
-              // 靠近右侧边框
-              if (Math.abs(nekoPosX - rRight) <= threshold) {
-                  if (nekoPosX >= rRight) scratchW = true; // 猫在右外侧，朝左挠墙 (面朝卡片)
-                  else scratchE = true;                    // 猫在右内侧，朝右挠墙 (面朝卡片右边缘)
-              }
-          }
+            function showSkinMenu() {
+                skinMenu.style.display = "grid";
+                const menuWidth = skinMenu.offsetWidth;
+                const menuHeight = skinMenu.offsetHeight;
+                const rect = nekoEl.getBoundingClientRect();
 
-          // 判断猫咪是否在卡片的水平宽度范围内
-          if (nekoPosX >= rLeft - threshold && nekoPosX <= rRight + threshold) {
-              // 靠近顶部边框
-              if (Math.abs(nekoPosY - rTop) <= threshold) {
-                  if (nekoPosY <= rTop) scratchS = true;  // 猫在上外侧，朝下挠墙 (面朝卡片)
-                  else scratchN = true;                   // 猫在上内侧，朝上挠墙 (面朝卡片上边缘)
-              }
-              // 靠近底部边框
-              if (Math.abs(nekoPosY - rBottom) <= threshold) {
-                  if (nekoPosY >= rBottom) scratchN = true; // 猫在下外侧，朝上挠墙 (面朝卡片)
-                  else scratchS = true;                     // 猫在下内侧，朝下挠墙 (面朝卡片下边缘)
-              }
-          }
-      });
+                if (rect.left < window.innerWidth / 2) {
+                    skinMenu.style.left = `${rect.right + 10}px`;
+                } else {
+                    skinMenu.style.left = `${rect.left - menuWidth - 10}px`;
+                }
 
-// 收集所有触发的挠墙动作
-      let wallAnimations = [];
-      if (scratchW) wallAnimations.push("scratchWallW");
-      if (scratchN) wallAnimations.push("scratchWallN");
-      if (scratchE) wallAnimations.push("scratchWallE");
-      if (scratchS) wallAnimations.push("scratchWallS");
+                let topPos = rect.top + (rect.height / 2) - (menuHeight / 2);
+                if (topPos + menuHeight > window.innerHeight) {
+                    topPos = window.innerHeight - menuHeight - 10;
+                }
+                if (topPos < 0) topPos = 10;
 
-      // ====== 核心修改：大幅提高挠墙概率 ======
-      if (wallAnimations.length > 0) {
-          // 如果靠近了边框，设定 80% 的概率强制优先触发挠墙（剩下 20% 概率它才会去睡觉/舔毛）
-          if (Math.random() < 0.4) { 
-              idleAnimation = wallAnimations[Math.floor(Math.random() * wallAnimations.length)];
-          } else {
-              idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
-          }
-      } else {
-          // 如果不在边框附近，就正常从基础动作（睡觉、舔毛等）里随机抽
-          idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
-      }
-    }
+                skinMenu.style.top = `${topPos}px`;
+            }
+            window.onekoToggleSkinMenu = () => {
+                if (skinMenu.style.display === "grid") {
+                    skinMenu.style.display = "none";
+                } else {
+                    showSkinMenu();
+                }
+            };
+            
+            document.addEventListener("pointerdown", (e) => {
+                if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) {
+                    skinMenu.style.display = "none";
+                }
+            });
 
-    if (forceSleep) idleAnimation = "sleeping";
+            let nekoPosX = 32,
+                nekoPosY = 32,
+                mousePosX = 32,
+                mousePosY = 32,
+                frameCount = 0,
+                idleTime = 0,
+                idleAnimation = null,
+                idleAnimationFrame = 0,
+                forceSleep = false,
+                grabbing = false,
+                grabStop = true,
+                nudge = false,
+                kuroNeko = false,
+                variant = "classic",
+                lastClickTime = 0,
+                clickCount = 0;
 
-    switch (idleAnimation) {
-      case "sleeping":
-        if (idleAnimationFrame < 8 && nudge && forceSleep) { setSprite("idle", 0); break; } 
-        else if (nudge) { nudge = false; resetIdleAnimation(); }
-        if (idleAnimationFrame < 8) { setSprite("tired", 0); break; }
-        setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
-        if (idleAnimationFrame > 192 && !forceSleep) resetIdleAnimation();
-        break;
-      case "scratchWallN": case "scratchWallS": case "scratchWallE": case "scratchWallW": case "scratchSelf":
-        setSprite(idleAnimation, idleAnimationFrame); if (idleAnimationFrame > 9) resetIdleAnimation(); break;
-      default: setSprite("idle", 0); return;
-    }
-    idleAnimationFrame += 1;
-  }
+            function parseLocalStorage(key, fallback) {
+                try { const value = JSON.parse(localStorage.getItem(`oneko:${key}`)); return typeof value === typeof fallback ? value : fallback; } 
+                catch (e) { return fallback; }
+            }
 
-  function frame() {
-    frameCount += 1;
+            const nekoSpeed = 10,
+                variants = [ ["classic", "Classic"], ["dog", "Dog"], ["tora", "Tora"], ["maia", "Maia"], ["vaporwave", "Vaporwave"] ],
+                spriteSets = {
+                    idle: [[-3, -3]], alert: [[-7, -3]], scratchSelf: [[-5, 0], [-6, 0], [-7, 0]],
+                    scratchWallN: [[0, 0], [0, -1]], scratchWallS: [[-7, -1], [-6, -2]], scratchWallE: [[-2, -2], [-2, -3]],
+                    scratchWallW: [[-4, 0], [-4, -1]], tired: [[-3, -2]], sleeping: [[-2, 0], [-2, -1]],
+                    N: [[-1, -2], [-1, -3]], NE: [[0, -2], [0, -3]], E: [[-3, 0], [-3, -1]], SE: [[-5, -1], [-5, -2]],
+                    S: [[-6, -3], [-7, -2]], SW: [[-5, -3], [-6, -1]], W: [[-4, -2], [-4, -3]], NW: [[-1, 0], [-1, -1]],
+                };
 
-    if (grabbing) { grabStop && setSprite("alert", 0); return; }
+            function sleep() {
+                forceSleep = !forceSleep; nudge = false; localStorage.setItem("oneko:forceSleep", forceSleep);
+                if (!forceSleep) { resetIdleAnimation(); return; }
+                mousePosX = nekoPosX; mousePosY = nekoPosY;
+            }
+            window.onekoSleep = sleep;
 
-    const diffX = nekoPosX - mousePosX; const diffY = nekoPosY - mousePosY; const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
+            function create() {
+                variant = parseLocalStorage("variant", "classic"); kuroNeko = parseLocalStorage("kuroneko", false);
+                if (!variants.some((v) => v[0] === variant)) { variant = "classic"; }
+                
+                const savedSkin = localStorage.getItem("oneko:skin") || "https://dogpan.com/f/v2MpsA/blue.png";
 
-    if (forceSleep && Math.abs(diffY) < nekoSpeed && Math.abs(diffX) < nekoSpeed) {
-      nekoPosX = mousePosX; nekoPosY = mousePosY; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`; idle(); return;
-    }
+                nekoEl.id = "oneko"; nekoEl.style.width = "32px"; nekoEl.style.height = "32px";
+                nekoEl.style.position = "fixed"; nekoEl.style.backgroundImage = `url('${savedSkin}')`;
+                nekoEl.style.imageRendering = "pixelated"; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
+                nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; nekoEl.style.zIndex = "9999";
+                nekoEl.style.touchAction = "none"; nekoEl.style.userSelect = "none"; nekoEl.style.webkitUserSelect = "none";
+                document.body.appendChild(nekoEl);
 
-    if ((distance < nekoSpeed || distance < 48) && !forceSleep) { idle(); return; }
+                function updateMousePos(e) {
+                    if (skinMenu.style.display === "grid") {
+                        const rect = skinMenu.getBoundingClientRect();
+                        if (e.clientX >= rect.left && e.clientX <= rect.right &&
+                            e.clientY >= rect.top && e.clientY <= rect.bottom) {
+                            return;
+                        }
+                    }
+                    
+                    let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
+                    let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
+                    mousePosX = e.clientX + offsetLeft;
+                    mousePosY = e.clientY + offsetTop;
+                }
 
-    idleAnimation = null; idleAnimationFrame = 0;
-    if (idleTime > 1) { setSprite("alert", 0); idleTime = Math.min(idleTime, 7); idleTime -= 1; return; }
+                window.addEventListener("mousemove", (e) => { if (forceSleep) return; updateMousePos(e); });
+                window.addEventListener("pointermove", (e) => { if (forceSleep) return; if (e.pointerType === "touch") updateMousePos(e); });
 
-    let direction = diffY / distance > 0.5 ? "N" : "";
-    direction += diffY / distance < -0.5 ? "S" : "";
-    direction += diffX / distance > 0.5 ? "W" : "";
-    direction += diffX / distance < -0.5 ? "E" : "";
-    if (!direction) direction = "idle";
-    setSprite(direction, frameCount);
+                function handleResize() {
+                    if (window.visualViewport) {
+                        let offsetLeft = window.visualViewport.offsetLeft;
+                        let offsetTop = window.visualViewport.offsetTop;
+                        let vW = window.visualViewport.width;
+                        let vH = window.visualViewport.height;
+                        if (mousePosX < offsetLeft || mousePosX > offsetLeft + vW || mousePosY < offsetTop || mousePosY > offsetTop + vH) {
+                            mousePosX = offsetLeft + vW / 2;
+                            mousePosY = offsetTop + vH / 2;
+                        }
+                    }
+                    if (forceSleep) { forceSleep = false; sleep(); }
+                }
+                
+                window.addEventListener("resize", handleResize);
+                if (window.visualViewport) {
+                    window.visualViewport.addEventListener("resize", handleResize);
+                    window.visualViewport.addEventListener("scroll", handleResize);
+                }
 
-    nekoPosX -= (diffX / distance) * nekoSpeed; nekoPosY -= (diffY / distance) * nekoSpeed;
+                let clickTimeout = null;
 
-    // 把墙壁边缘判定，锁定为你当前“眼睛能看到的区域 (Visual Viewport)”
-    let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
-    let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
-    let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-    let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+                nekoEl.addEventListener("pointerdown", (e) => {
+                    if (e.button !== 0 && e.pointerType === "mouse") return;
+                    
+                    e.preventDefault(); 
+                    grabbing = true;
+                    let isDragging = false;
+                    
+                    if (nekoEl.setPointerCapture) { try { nekoEl.setPointerCapture(e.pointerId); } catch (_) {} }
+                    
+                    let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval;
 
-    let minX = offsetLeft + 16;
-    let maxX = offsetLeft + vWidth - 16;
-    let minY = offsetTop + 16;
-    let maxY = offsetTop + vHeight - 16;
+                    const moveHandler = (e) => {
+                        e.preventDefault();
+                        const deltaX = e.clientX - startX; const deltaY = e.clientY - startY;
+                        const absDeltaX = Math.abs(deltaX); const absDeltaY = Math.abs(deltaY);
 
-    nekoPosX = Math.min(Math.max(minX, nekoPosX), maxX);
-    nekoPosY = Math.min(Math.max(minY, nekoPosY), maxY);
+                        if (absDeltaX > 5 || absDeltaY > 5) {
+                            isDragging = true; 
+                        }
 
-    nekoEl.style.left = `${nekoPosX - 16}px`;
-    nekoEl.style.top = `${nekoPosY - 16}px`;
-  }
+                        if (absDeltaX > absDeltaY && absDeltaX > 10) { setSprite(deltaX > 0 ? "scratchWallW" : "scratchWallE", frameCount); } 
+                        else if (absDeltaY > absDeltaX && absDeltaY > 10) { setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount); }
 
-  create();
-})();
+                        if (grabStop || absDeltaX > 10 || absDeltaY > 10 || Math.sqrt(deltaX ** 2 + deltaY ** 2) > 10) {
+                            grabStop = false; 
+                            clearTimeout(grabInterval);
+                            grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150);
+                        }
+
+                        nekoPosX = startNekoX + deltaX; nekoPosY = startNekoY + deltaY;
+                        nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`;
+                    };
+
+                    const upHandler = (e) => {
+                        grabbing = false; nudge = true; resetIdleAnimation();
+                        window.removeEventListener("pointermove", moveHandler); 
+                        window.removeEventListener("pointerup", upHandler); 
+                        window.removeEventListener("pointercancel", upHandler);
+                        if (nekoEl.releasePointerCapture) { try { nekoEl.releasePointerCapture(e.pointerId); } catch (_) {} }
+
+                        if (!isDragging) {
+                            const currentTime = Date.now();
+                            if (currentTime - lastClickTime < 300) {
+                                clearTimeout(clickTimeout);
+                                sleep();
+                                lastClickTime = 0;
+                            } else {
+                                lastClickTime = currentTime;
+                                clickTimeout = setTimeout(() => {
+                                    if (forceSleep) sleep();
+                                    showSkinMenu();
+                                }, 300);
+                            }
+                        }
+                    };
+
+                    window.addEventListener("pointermove", moveHandler, { passive: false });
+                    window.addEventListener("pointerup", upHandler); 
+                    window.addEventListener("pointercancel", upHandler);
+                });
+
+                nekoEl.addEventListener("contextmenu", (e) => { e.preventDefault(); kuroNeko = !kuroNeko; localStorage.setItem("oneko:kuroneko", kuroNeko); nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; });
+                window.onekoInterval = setInterval(frame, 100);
+            }
+
+            function getSprite(name, frame) { return spriteSets[name][frame % spriteSets[name].length]; }
+            function setSprite(name, frame) { const sprite = getSprite(name, frame); nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`; }
+            function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
+
+            function idle() {
+                idleTime += 1; let avalibleIdleAnimations = [];
+                if (idleTime > 10 && Math.floor(Math.random() * 25) == 0 && idleAnimation == null) {
+                    avalibleIdleAnimations = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"];
+                    
+                    let scratchW = false, scratchN = false, scratchE = false, scratchS = false;
+                    
+                    let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
+                    let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
+                    let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+                    let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+                    if (nekoPosX < offsetLeft + 32) scratchW = true;
+                    if (nekoPosY < offsetTop + 32) scratchN = true;
+                    if (nekoPosX > offsetLeft + vWidth - 32) scratchE = true;
+                    if (nekoPosY > offsetTop + vHeight - 32) scratchS = true;
+
+                    const cards = document.querySelectorAll('.glowing-card, .spotify-card, .link-card');
+                    cards.forEach(card => {
+                        const rect = card.getBoundingClientRect();
+                        if (rect.width === 0 || rect.height === 0) return;
+
+                        const rLeft = rect.left + offsetLeft;
+                        const rRight = rect.right + offsetLeft;
+                        const rTop = rect.top + offsetTop;
+                        const rBottom = rect.bottom + offsetTop;
+                        const threshold = 32;
+
+                        if (nekoPosY >= rTop - threshold && nekoPosY <= rBottom + threshold) {
+                            if (Math.abs(nekoPosX - rLeft) <= threshold) {
+                                if (nekoPosX <= rLeft) scratchE = true;
+                                else scratchW = true;
+                            }
+                            if (Math.abs(nekoPosX - rRight) <= threshold) {
+                                if (nekoPosX >= rRight) scratchW = true;
+                                else scratchE = true;
+                            }
+                        }
+
+                        if (nekoPosX >= rLeft - threshold && nekoPosX <= rRight + threshold) {
+                            if (Math.abs(nekoPosY - rTop) <= threshold) {
+                                if (nekoPosY <= rTop) scratchS = true;
+                                else scratchN = true;
+                            }
+                            if (Math.abs(nekoPosY - rBottom) <= threshold) {
+                                if (nekoPosY >= rBottom) scratchN = true;
+                                else scratchS = true;
+                            }
+                        }
+                    });
+
+                    let wallAnimations = [];
+                    if (scratchW) wallAnimations.push("scratchWallW");
+                    if (scratchN) wallAnimations.push("scratchWallN");
+                    if (scratchE) wallAnimations.push("scratchWallE");
+                    if (scratchS) wallAnimations.push("scratchWallS");
+
+                    if (wallAnimations.length > 0) {
+                        if (Math.random() < 0.4) { 
+                            idleAnimation = wallAnimations[Math.floor(Math.random() * wallAnimations.length)];
+                        } else {
+                            idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
+                        }
+                    } else {
+                        idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
+                    }
+                }
+
+                if (forceSleep) idleAnimation = "sleeping";
+
+                switch (idleAnimation) {
+                    case "sleeping":
+                        if (idleAnimationFrame < 8 && nudge && forceSleep) { setSprite("idle", 0); break; } 
+                        else if (nudge) { nudge = false; resetIdleAnimation(); }
+                        if (idleAnimationFrame < 8) { setSprite("tired", 0); break; }
+                        setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
+                        if (idleAnimationFrame > 192 && !forceSleep) resetIdleAnimation();
+                        break;
+                    case "scratchWallN": case "scratchWallS": case "scratchWallE": case "scratchWallW": case "scratchSelf":
+                        setSprite(idleAnimation, idleAnimationFrame); if (idleAnimationFrame > 9) resetIdleAnimation(); break;
+                    default: setSprite("idle", 0); return;
+                }
+                idleAnimationFrame += 1;
+            }
+
+            function frame() {
+                frameCount += 1;
+
+                if (grabbing) { grabStop && setSprite("alert", 0); return; }
+
+                const diffX = nekoPosX - mousePosX; const diffY = nekoPosY - mousePosY; const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
+
+                if (forceSleep && Math.abs(diffY) < nekoSpeed && Math.abs(diffX) < nekoSpeed) {
+                    nekoPosX = mousePosX; nekoPosY = mousePosY; nekoEl.style.left = `${nekoPosX - 16}px`; nekoEl.style.top = `${nekoPosY - 16}px`; idle(); return;
+                }
+
+                if ((distance < nekoSpeed || distance < 48) && !forceSleep) { idle(); return; }
+
+                idleAnimation = null; idleAnimationFrame = 0;
+                if (idleTime > 1) { setSprite("alert", 0); idleTime = Math.min(idleTime, 7); idleTime -= 1; return; }
+
+                let direction = diffY / distance > 0.5 ? "N" : "";
+                direction += diffY / distance < -0.5 ? "S" : "";
+                direction += diffX / distance > 0.5 ? "W" : "";
+                direction += diffX / distance < -0.5 ? "E" : "";
+                if (!direction) direction = "idle";
+                setSprite(direction, frameCount);
+
+                nekoPosX -= (diffX / distance) * nekoSpeed; nekoPosY -= (diffY / distance) * nekoSpeed;
+
+                let offsetLeft = window.visualViewport ? window.visualViewport.offsetLeft : 0;
+                let offsetTop = window.visualViewport ? window.visualViewport.offsetTop : 0;
+                let vWidth = window.visualViewport ? window.visualViewport.width : window.innerWidth;
+                let vHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+                let minX = offsetLeft + 16;
+                let maxX = offsetLeft + vWidth - 16;
+                let minY = offsetTop + 16;
+                let maxY = offsetTop + vHeight - 16;
+
+                nekoPosX = Math.min(Math.max(minX, nekoPosX), maxX);
+                nekoPosY = Math.min(Math.max(minY, nekoPosY), maxY);
+
+                nekoEl.style.left = `${nekoPosX - 16}px`;
+                nekoEl.style.top = `${nekoPosY - 16}px`;
+            }
+
+            create();
+        })();
     </script>
 </body>
 </html>
