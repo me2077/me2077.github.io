@@ -1,11 +1,12 @@
-```html
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rainbow Road - @XorDev</title>
+    <title>Rainbow Road</title>
     <style>
+        /* 页面样式重置，确保画布全屏且无滚动条 */
         html, body {
             margin: 0;
             padding: 0;
@@ -13,7 +14,6 @@
             height: 100%;
             overflow: hidden;
             background-color: #000;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         #canvas {
@@ -21,55 +21,11 @@
             width: 100vw;
             height: 100vh;
         }
-
-        .info-panel {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            color: rgba(255, 255, 255, 0.7);
-            background: rgba(0, 0, 0, 0.6);
-            padding: 12px 20px;
-            border-radius: 12px;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            max-width: 80%;
-        }
-
-        .title {
-            font-weight: 600;
-            font-size: 1rem;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-
-        .author {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        @media (max-width: 640px) {
-            .info-panel {
-                bottom: 15px;
-                left: 15px;
-                padding: 10px 16px;
-            }
-            .title {
-                font-size: 0.9rem;
-            }
-        }
     </style>
 </head>
 <body>
 
     <canvas id="canvas"></canvas>
-
-    <div class="info-panel">
-        <div class="title">Rainbow Road</div>
-        <div class="author">Shader by @XorDev</div>
-    </div>
 
     <script>
         // --- 顶点着色器 (GLSL ES 3.00) ---
@@ -80,7 +36,7 @@
             }
         `;
 
-        // --- 片段着色器 (GLSL ES 3.00 - 已进行严谨的类型和编译兼容性修正) ---
+        // --- 片段着色器 (GLSL ES 3.00) ---
         const fsSource = `#version 300 es
             precision highp float;
             out vec4 fragColor;
@@ -94,7 +50,7 @@
                 vec2 r = iResolution.xy;
                 vec2 o = vec2(0.0);
                 
-                // 显式初始化输出颜色（避免某些GPU驱动因未完全初始化而产生黑屏）
+                // 初始化输出颜色
                 O = vec4(0.0);
                 
                 // 渲染 50 个光柱
@@ -103,7 +59,6 @@
                     o = (I + I - r) / r.y * i + cos(i * vec2(0.8, 0.5) + iTime);
                     
                     // 光源颜色计算与距离衰减
-                    // 显式将 clamp 的参数和除数转换为精确的浮点数，确保编译通过
                     float dist = length(o - vec2(clamp(o.x, -4.0, 4.0), i + o.x * sin(i) * 0.1 - 4.0));
                     O += (cos(i + vec4(0.0, 2.0, 4.0, 0.0)) + 1.0) / max(i * i, 5.0) * 0.1 / (i / 1000.0 + dist / i);
                 }
@@ -116,13 +71,12 @@
             }
         `;
 
-        // 使用 WebGL2 提高现代浏览器和设备的兼容性
+        // 使用 WebGL2
         const canvas = document.getElementById('canvas');
         const gl = canvas.getContext('webgl2');
 
         if (!gl) {
-            console.error('WebGL2 context not available, trying WebGL1...');
-            // 如果 WebGL2 失败，可以提供后备提示，但目前主流设备均已支持 WebGL2
+            console.error('无法获取 WebGL2 上下文');
             alert('您的浏览器或设备不支持 WebGL2，请尝试更新系统或浏览器。');
         }
 
@@ -177,7 +131,6 @@
 
         // 处理画布缩放
         function resizeCanvas() {
-            // 获取设备的像素比，限幅在最大 2 倍，防止极高分屏卡顿
             const devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2); 
             const displayWidth  = Math.floor(canvas.clientWidth * devicePixelRatio);
             const displayHeight = Math.floor(canvas.clientHeight * devicePixelRatio);
@@ -219,4 +172,4 @@
 </body>
 </html>
 
-```
+
