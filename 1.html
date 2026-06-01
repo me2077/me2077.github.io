@@ -73,7 +73,7 @@
             --glowing-card-backdrop: blur(7px);
             --link-card-bg: rgb(255 255 255 / 7%);
             --link-card-hover-bg: rgb(255 255 255 / 25%);
-            --link-card-border: rgb(255 255 255 / 45%);
+            --link-card-border: rgb(255 255 255 / 55%);
             --link-card-box-shadow: 0px 4px 3px #0001, 0 0 25px #fffa inset;
             --spotify-card-bg: rgb(255 255 255 / 7%);
             --spotify-card-border: rgb(255 255 255 / 60%);
@@ -118,17 +118,27 @@
             opacity: 0; transition: opacity 0.8s ease-in-out; transform: translateZ(0);
             will-change: opacity; contain: strict;
         }
-        .bg-layer video, .bg-layer canvas {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-        }
+.bg-layer video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+/* 独立控制 canvas 避免受 DPR 物理像素影响而放大 */
+.bg-layer canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+}
+
       
         canvas { position: fixed; inset: 0; width: 100%; height: 100dvh; z-index: -1; }
 
@@ -213,7 +223,83 @@
             transform: scale(1.05);
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
+/* 注册自定义属性，确保旋转平滑 */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 
+/* 旋转动画轨迹 */
+@keyframes rotate-stream {
+  0% { --gradient-angle: 0deg; }
+  100% { --gradient-angle: 360deg; }
+}
+      
+/* 针对 vCard 按钮的特殊处理 */
+#btn-vcard {
+    position: relative;
+              border: 1px solid var(--link-card-border); 
+    background: var(--link-card-bg); /* 保持原有的透明背景 */
+    z-index: 1; /* 确保内容在光效之上 */
+    transition: background 0.3s ease, box-shadow 0.3s ease; /* 平滑过渡效果 */
+}
+
+/* 解决权重覆盖问题，显式添加悬停背景 */
+#btn-vcard:hover {
+    background: var(--link-card-hover-bg);
+}
+
+/* 流光边框层 */
+#btn-vcard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 20px; /* 与 link-card 保持一致 */
+    padding: 1.5px; /* 边框粗细 */
+    
+    /* 配色：金-白-金 */
+    background: conic-gradient(
+        from var(--gradient-angle),
+        transparent 40%,
+        #bf953f 60%,
+        #fcf6ba 75%,
+        #b38728 90%,
+        transparent
+    );
+    
+    /* 镂空：只显示 padding 区域的颜色 */
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    
+    animation: rotate-stream 3s linear infinite;
+    pointer-events: none;
+}
+
+/* 外发光层 */
+#btn-vcard::after {
+    content: "";
+    position: absolute;
+    inset: -2px; /* 稍微向外扩张 */
+    border-radius: 22px;
+    padding: 2px;
+    background: conic-gradient(
+        from var(--gradient-angle),
+        transparent 70%,
+        rgba(252, 246, 186, 0.5) 85%,
+        transparent
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    filter: blur(4px); /* 模糊边缘产生辉光 */
+    animation: rotate-stream 3s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
         .spotify-card {
             display: flex; justify-content: space-between; align-items: center; max-width: 251px;
             height: 160px; background: var(--spotify-card-bg); border-radius: 25px; padding: 10.8px 20px;
@@ -754,10 +840,17 @@
           float mask = smoothstep(fwidth(m), 0., m);
         vec3 lightDir = normalize(vec3(10.0, -10.0, 10.0));
 
-        float d = dot(n, lightDir) * 0.8 + 0.8;
-        float ls = smoothstep(0.3, 1.5, d);
+        float d = dot(n, lightDir) * 0.1 + 0.2;
+        float ls = smoothstep(0.01, 0.35, d);
 
-        colour = vec4(vec3(c * ls), 1.0);
+vec3 finalColor = c * ls;
+float gray = dot(finalColor, vec3(0.2126, 0.7152, 0.0722)); // 计算灰度值
+
+// 这里的 0.5 即为饱和度系数：0.0为黑白，1.0为原始，2.0为高饱和。您可以根据需要修改这个数值
+vec3 saturatedColor = mix(vec3(gray), finalColor, 0.3); 
+
+colour = vec4(saturatedColor, 1.0);
+
         }
         `;
 
@@ -946,6 +1039,9 @@
             };
 
             const handlePointerDown = (e) => {
+                // 过滤掉卡片、按钮、小猫、分页圆点等交互元素的点击，防止拖拽卡片时背景跟着乱动
+                if (e.target.closest('a, button, .glowing-card, #oneko, #oneko-skin-menu, .bullet')) return;
+                
                 if (!keys.rotation) {
                     pointerdown = true;
                     lastmouse = new Vec2(e.clientX, e.clientY);
@@ -956,6 +1052,7 @@
                 }
                 startmouse = lastmouse.clone();
             };
+
 
             const handlePointerUp = () => {
                 pointerdown = false;
@@ -985,7 +1082,7 @@
 
             window.addEventListener('keydown', handleKeyDown);
             window.addEventListener('keyup', handleKeyUp);
-            container.addEventListener('pointerdown', handlePointerDown);
+            window.addEventListener('pointerdown', handlePointerDown);
             window.addEventListener('pointerup', handlePointerUp);
             window.addEventListener('pointermove', handlePointerMove);
 
@@ -1016,7 +1113,7 @@
                 cancelAnimationFrame(interactionFrameId);
                 window.removeEventListener('keydown', handleKeyDown);
                 window.removeEventListener('keyup', handleKeyUp);
-                container.removeEventListener('pointerdown', handlePointerDown);
+                window.removeEventListener('pointerdown', handlePointerDown);
                 window.removeEventListener('pointerup', handlePointerUp);
                 window.removeEventListener('pointermove', handlePointerMove);
                 FSWrapper.destroy();
@@ -1025,11 +1122,13 @@
     </script>
 
     <script>
-        const BG_TOP_LEFT = 'https://media.giphy.com/media/3o6gE0D9CIgZe8MXDy/giphy.gif?cid=ecf05e479daaaf29d3d537d6769f3c62b58f45914c5094c5&ep=v1_user_favorites&rid=giphy.gif&ct=g';
+        const BG_TOP_LEFT = 'https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/AAA.png';
         const BG_TOP_RIGHT = '#0e0e0e';
         // 将此变量对应替换为 WebGL Shader 调用标识
         const BG_BOTTOM_LEFT = 'webgl-shader';
-        const BG_BOTTOM_RIGHT = 'https://media.giphy.com/media/JPWmKhZCUzJ9d7Mku0/giphy.gif?cid=ecf05e479daaaf29d3d537d6769f3c62b58f45914c5094c5&ep=v1_user_favorites&rid=giphy.gif&ct=g';
+
+        const BG_BOTTOM_RIGHT = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
+
 
         window.isParticlesEnabled = !document.body.classList.contains('light');
         window.userToggledParticles = false; 
