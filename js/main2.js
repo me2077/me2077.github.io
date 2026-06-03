@@ -23,7 +23,7 @@ void main(){vec2 uv=getScreenSpace();uv*=1.;float m=abs(fract(v_uv.y*100.*max(.2
 class StripeHeader {
     uniforms;dimensions;autoResize=true;onBeforeRender;onAfterRender;u_time;u_resolution;u_seed;gl;renderer;program;mesh;lastTime=0;_playing=false;
     constructor({vertex,fragment,dimensions=new Vec2(window.innerWidth,window.innerHeight),container,autoResize=true,uniforms={}}={}){
-        this.onBeforeRender=()=>{};this.onAfterRender=()=>{};this.render=this.render.bind(this);this.resize=this.resize.bind(this);this.autoResize=autoResize;this.dimensions=dimensions;
+        this.onBeforeRender=()=>{} ;this.onAfterRender=()=>{};this.render=this.render.bind(this);this.resize=this.resize.bind(this);this.autoResize=autoResize;this.dimensions=dimensions;
         this.u_time=new Uniform({name:'time',value:0,kind:'float'});
         this.u_resolution=new Uniform({name:'resolution',value:this.dimensions.array,kind:'float_vec2'});
         this.u_seed=new Uniform({name:'seed',value:Math.random()*10000+1000,kind:'float'});
@@ -219,7 +219,7 @@ function switchBackground(value,isLight=true){
     });
     window.bgEngine={
         start:()=>{if(animationId===null){if(clock)clock.start();anime();}},
-        stop:()=>{if(animationId !==null){cancelAnimationFrame(animationId);animationId=null;}}
+        stop:()=>{if(animationId!==null){cancelAnimationFrame(animationId);animationId=null;}}
     };
     window.bgRenderer={setClearColor:(c,a)=>renderer?renderer.setClearColor(c,a):null};window.addEventListener('DOMContentLoaded',init);
 })();
@@ -366,7 +366,6 @@ function initKeyboardControls(){
         const key=e.key.toLowerCase();
         if(key==='z'){if(typeof window.onekoSleep==='function')window.onekoSleep();}
         if(key==='s'){if(typeof window.onekoToggleSkinMenu==='function')window.onekoToggleSkinMenu();}
-        if(key==='c'){if(typeof window.onekoCycleSkin==='function')window.onekoCycleSkin();}
         if(key==='n'||key==='m'){triggerConfetti();}
         if(key==='t'){currentBgIndex=(currentBgIndex+1)%bgPresets.length;const preset=bgPresets[currentBgIndex];switchBackground(preset.value,preset.isLight);}
         if(key==='1'){switchBackground(BG_TOP_LEFT,true);currentBgIndex=0;}if(key==='2'){switchBackground(BG_TOP_RIGHT,false);currentBgIndex=1;}if(key==='3'){switchBackground(BG_BOTTOM_LEFT,true);currentBgIndex=2;}if(key==='4'){switchBackground(BG_BOTTOM_RIGHT,true);currentBgIndex=3;}
@@ -453,10 +452,6 @@ linkCards.forEach(card=>{
         if(topPos<0)topPos=10;skinMenu.style.top=`${topPos}px`;
     }
     window.onekoToggleSkinMenu=()=>{if(skinMenu.style.display==="grid"){skinMenu.style.display="none";}else{showSkinMenu();}};
-    window.onekoCycleSkin=()=>{
-        const currentSkin=localStorage.getItem("oneko:skin")||"images/oneko-classic.gif";
-        let idx=skinList.findIndex(s=>s.url===currentSkin);idx=(idx+1)%skinList.length;changeSkin(skinList[idx].url);
-    };
     document.addEventListener("pointerdown",(e)=>{if(skinMenu.style.display==="grid"&&e.target!==nekoEl&&!skinMenu.contains(e.target)){skinMenu.style.display="none";}});
     let nekoPosX=32,nekoPosY=32,mousePosX=32,mousePosY=32,frameCount=0,idleTime=0,idleAnimation=null,idleAnimationFrame=0,forceSleep=false,grabbing=false,grabStop=true,nudge=false,kuroNeko=false,variant="classic",lastClickTime=0,clickCount=0;
     function parseLocalStorage(key,fallback){try{const value=JSON.parse(localStorage.getItem(`oneko:${key}`));return typeof value===typeof fallback?value:fallback;}catch(e){return fallback;}}
