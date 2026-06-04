@@ -193,38 +193,46 @@ function switchBackground(value,isLight=true){
     else{crossfadeBackground(`url('${value}')`,isLight);}
 }
 
-(function initDoubleClickToggle(){
-    let lastToggleTime=0;
-    function toggleParticles(e){
-        let now=new Date().getTime();if(now-lastToggleTime<500)return;lastToggleTime=now;
-        if(e.target&&e.target.closest&&e.target.closest('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')){return;}
-        window.isParticlesEnabled=!window.isParticlesEnabled;window.userToggledParticles=true;updateParticlesDisplay();
-    }
-    document.addEventListener('dblclick',toggleParticles);let lastTouchEnd=0;let isMultiTouch=false;
-    document.addEventListener('touchstart',function(e){if(e.touches.length>1){isMultiTouch=true;}},{passive:true});
-    document.addEventListener('touchend',function(e){
-        if(e.touches.length>0)return;if(isMultiTouch){isMultiTouch=false;lastTouchEnd=0;return;}
-        let now=new Date().getTime();if(now-lastTouchEnd<=400){toggleParticles(e);lastTouchEnd=0;}else{lastTouchEnd=now;}
-    });
-})();
-// 新增：三击屏幕切换表情特效开关
-(function initTripleClickToggle(){
-    let clickCount = 0;
-    let clickTimeout;
-    document.addEventListener('click', (e) => {
-        // 避开按钮、链接、卡片、小猫等可交互元素
+// 统一点击管理器：完美区分双击（粒子）和三击（表情）
+(function initUnifiedTapToggle() {
+    let tapCount = 0;
+    let tapTimeout;
+    let lastTapTime = 0;
+
+    function handleMultiTap(e) {
+        // 过滤掉按钮、链接、小猫等可交互元素，避免影响正常点击操作
         if (e.target && e.target.closest('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) {
+            tapCount = 0;
             return;
         }
-        clickCount++;
-        clearTimeout(clickTimeout);
-        clickTimeout = setTimeout(() => {
-            if (clickCount === 3) {
+
+        const now = Date.now();
+        // 如果两次点击间隔超过 350 毫秒，判定为不连贯点击，重置计数
+        if (now - lastTapTime > 350) {
+            tapCount = 0;
+        }
+        
+        tapCount++;
+        lastTapTime = now;
+        clearTimeout(tapTimeout);
+
+        // 延迟判定，等待看用户是否会继续点击
+        tapTimeout = setTimeout(() => {
+            if (tapCount === 2) {
+                // 正好双击：切换粒子特效
+                window.isParticlesEnabled = !window.isParticlesEnabled;
+                window.userToggledParticles = true;
+                updateParticlesDisplay();
+            } else if (tapCount === 3) {
+                // 正好三击：切换表情尾随特效
                 window.isEmojiCursorEnabled = !window.isEmojiCursorEnabled;
             }
-            clickCount = 0; // 超时后重置计数器
-        }, 320); // 320毫秒内连续点击3次生效
-    });
+            tapCount = 0; // 判定结束，重置计数
+        }, 280); // 280毫秒判定窗口，兼顾灵敏度与区分度
+    }
+
+    // 绑定统一的点击监听
+    document.addEventListener('click', handleMultiTap);
 })();
 (function initBackgroundEngine(){
     const count=1000;let scene,camera,renderer,animationId=null,mouseX=0,mouseY=0;let windowHalfX=window.innerWidth/2,windowHalfY=window.innerHeight/2;let clock,geometry,posAttribute,positionArray,velocityArray;
