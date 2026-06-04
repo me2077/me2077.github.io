@@ -86,7 +86,7 @@ window.initWebGLShaderBg=function(container){
         cancelAnimationFrame(interactionFrameId);window.removeEventListener('keydown',handleKeyDown);window.removeEventListener('keyup',handleKeyUp);window.removeEventListener('pointerdown',handlePointerDown);window.removeEventListener('pointerup',handlePointerUp);window.removeEventListener('pointermove',handlePointerMove);FSWrapper.destroy();
     };
 };
-
+window.isEmojiCursorEnabled = false;
 // ==================== 1. 背景常量定义 ====================
 const BG_TOP_LEFT='images/A1.webp';
 const BG_TOP_RIGHT='#0e0e0e';
@@ -207,7 +207,25 @@ function switchBackground(value,isLight=true){
         let now=new Date().getTime();if(now-lastTouchEnd<=400){toggleParticles(e);lastTouchEnd=0;}else{lastTouchEnd=now;}
     });
 })();
-
+// 新增：三击屏幕切换表情特效开关
+(function initTripleClickToggle(){
+    let clickCount = 0;
+    let clickTimeout;
+    document.addEventListener('click', (e) => {
+        // 避开按钮、链接、卡片、小猫等可交互元素
+        if (e.target && e.target.closest('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) {
+            return;
+        }
+        clickCount++;
+        clearTimeout(clickTimeout);
+        clickTimeout = setTimeout(() => {
+            if (clickCount === 3) {
+                window.isEmojiCursorEnabled = !window.isEmojiCursorEnabled;
+            }
+            clickCount = 0; // 超时后重置计数器
+        }, 320); // 320毫秒内连续点击3次生效
+    });
+})();
 (function initBackgroundEngine(){
     const count=1000;let scene,camera,renderer,animationId=null,mouseX=0,mouseY=0;let windowHalfX=window.innerWidth/2,windowHalfY=window.innerHeight/2;let clock,geometry,posAttribute,positionArray,velocityArray;
     function init(){
@@ -417,6 +435,9 @@ if(key==='4'){
     switchBackground(preset.value, preset.isLight);
 }
         if(key==='p'){window.isParticlesEnabled=!window.isParticlesEnabled;window.userToggledParticles=true;updateParticlesDisplay();}
+if(key==='e'){
+    window.isEmojiCursorEnabled = !window.isEmojiCursorEnabled;
+}
         if(!e.shiftKey){
             if(e.key==='ArrowRight'){let next=currentPage+1;if(next>3)next=1;switchPageTo(next);}
             if(e.key==='ArrowLeft'){let prev=currentPage-1;if(prev<1)prev=3;switchPageTo(prev);}
@@ -606,4 +627,39 @@ linkCards.forEach(card=>{
         nekoPosX=Math.min(Math.max(minX,nekoPosX),maxX);nekoPosY=Math.min(Math.max(minY,nekoPosY),maxY);nekoEl.style.left=`${nekoPosX-16}px`;nekoEl.style.top=`${nekoPosY-16}px`;
     }
     create();
+})();
+// 表情符号鼠标尾随特效脚本
+(function emojiCursor() {
+    var possibleEmoji = ["🤪","🥳","💙","🥰","⭐","🌈","❤","🧡","💛","💚","💜","🏳️‍🌈","🦋","⌘","^^",":)","(^◡^)","≧◠‿◠≦"];
+    var particles = []; var cursor = { x: 0, y: 0 }; var lastTime = 0;
+    function init() { bindEvents(); loop(); }
+    function bindEvents() { document.addEventListener('pointermove', onPointerMove, { passive: true }); }
+    function onPointerMove(e) {
+        // 如果开关未开启，则不产生表情粒子
+        if (!window.isEmojiCursorEnabled) return; 
+        
+        const now = Date.now(); if (now - lastTime < 18) return; lastTime = now; 
+        cursor.x = e.clientX; 
+        cursor.y = e.clientY; 
+        // 修正原脚本：因使用 position: fixed，不再需要累加 window.scrollY
+        addParticle(cursor.x, cursor.y, possibleEmoji[Math.floor(Math.random() * possibleEmoji.length)]); 
+    }
+    function addParticle(x, y, character) { var particle = new Particle(); particle.init(x, y, character); particles.push(particle); }
+    function updateParticles() { 
+        for (let i = 0; i < particles.length; i++) { particles[i].update(); } 
+        for (let i = particles.length - 1; i >= 0; i--) { if (particles[i].lifeSpan < 0) { particles[i].die(); particles.splice(i, 1); } } 
+    }
+    function loop() { requestAnimationFrame(loop); updateParticles(); }
+    function Particle() {
+        this.lifeSpan = 100;
+        this.init = function(x, y, character) {
+            this.velocity = { x: (Math.random() - 0.5) * 1.2, y: 1 }; this.position = { x: x, y: y };
+            this.element = document.createElement('span'); this.element.innerHTML = character;
+            this.element.style.position = "fixed"; this.element.style.left = "0"; this.element.style.top = "0"; this.element.style.pointerEvents = "none"; this.element.style.zIndex = "999999"; this.element.style.fontSize = "16px"; this.element.style.willChange = "transform";
+            document.body.appendChild(this.element); this.update();
+        };
+        this.update = function() { this.position.x += this.velocity.x; this.position.y += this.velocity.y; this.lifeSpan--; const scale = this.lifeSpan / 100; this.element.style.transform = `translate3d(${this.position.x}px, ${this.position.y}px, 0) scale(${scale})`; };
+        this.die = function() { this.element.remove(); };
+    }
+    init();
 })();
