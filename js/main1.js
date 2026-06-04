@@ -228,7 +228,7 @@ function switchBackground(value,isLight=true){
                 window.isEmojiCursorEnabled = !window.isEmojiCursorEnabled;
             }
             tapCount = 0; // 判定结束，重置计数
-        }, 280); // 280毫秒判定窗口，兼顾灵敏度与区分度
+        }, 200); // 280毫秒判定窗口，兼顾灵敏度与区分度
     }
 
     // 绑定统一的点击监听
