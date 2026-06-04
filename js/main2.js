@@ -23,7 +23,7 @@ void main(){vec2 uv=getScreenSpace();uv*=1.;float m=abs(fract(v_uv.y*100.*max(.2
 class StripeHeader {
     uniforms;dimensions;autoResize=true;onBeforeRender;onAfterRender;u_time;u_resolution;u_seed;gl;renderer;program;mesh;lastTime=0;_playing=false;
     constructor({vertex,fragment,dimensions=new Vec2(window.innerWidth,window.innerHeight),container,autoResize=true,uniforms={}}={}){
-        this.onBeforeRender=()=>{} ;this.onAfterRender=()=>{};this.render=this.render.bind(this);this.resize=this.resize.bind(this);this.autoResize=autoResize;this.dimensions=dimensions;
+        this.onBeforeRender=()=>{};this.onAfterRender=()=>{};this.render=this.render.bind(this);this.resize=this.resize.bind(this);this.autoResize=autoResize;this.dimensions=dimensions;
         this.u_time=new Uniform({name:'time',value:0,kind:'float'});
         this.u_resolution=new Uniform({name:'resolution',value:this.dimensions.array,kind:'float_vec2'});
         this.u_seed=new Uniform({name:'seed',value:Math.random()*10000+1000,kind:'float'});
@@ -87,16 +87,49 @@ window.initWebGLShaderBg=function(container){
     };
 };
 
-const BG_TOP_LEFT='images/A1.webp';const BG_TOP_RIGHT='#0e0e0e';const BG_BOTTOM_LEFT='webgl-shader';const BG_BOTTOM_RIGHT='linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
-window.isParticlesEnabled=!document.body.classList.contains('light');window.userToggledParticles=false;let bgChangeSequence=0;let currentPage=2;const glowingCard=document.querySelector('.glowing-card');const audio=document.getElementById('audioPlayer');let isPlaying=false;let pagesContainer;let bullets;
-const bgPresets=[{name:'top-left',value:BG_TOP_LEFT,isLight:true},{name:'top-right',value:BG_TOP_RIGHT,isLight:false},{name:'bottom-left',value:BG_BOTTOM_LEFT,isLight:true},{name:'bottom-right',value:BG_BOTTOM_RIGHT,isLight:true}];let currentBgIndex=0;
+// ==================== 1. 背景常量定义 ====================
+const BG_TOP_LEFT='images/A1.webp';
+const BG_TOP_RIGHT='#0e0e0e';
+const BG_BOTTOM_LEFT='webgl-shader';
+const BG_BOTTOM_RIGHT_1='linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
+const BG_BOTTOM_RIGHT_2='images/D2.jpg'; // 新增的图片背景
+
+// ==================== 2. 【必须补回的全局变量声明】 ====================
+window.isParticlesEnabled=!document.body.classList.contains('light');
+window.userToggledParticles=false;
+let bgChangeSequence=0;
+let currentPage=2;
+const glowingCard=document.querySelector('.glowing-card');
+const audio=document.getElementById('audioPlayer');
+let isPlaying=false;
+let pagesContainer;
+let bullets;
+
+// ==================== 3. 预设数组配置 ====================
+const bgPresets=[
+    {name:'top-left',value:BG_TOP_LEFT,isLight:true},
+    {name:'top-right',value:BG_TOP_RIGHT,isLight:false},
+    {name:'bottom-left',value:BG_BOTTOM_LEFT,isLight:true},
+    {name:'bottom-right-1',value:BG_BOTTOM_RIGHT_1,isLight:true}, // 索引为 3
+    {name:'bottom-right-2',value:BG_BOTTOM_RIGHT_2,isLight:true}  // 索引为 4
+];
+let currentBgIndex=0;
 
 document.addEventListener('DOMContentLoaded',()=>{
     pagesContainer=document.querySelector('.pages');bullets=document.querySelectorAll('.bullet');
     document.getElementById('btn-theme-light').addEventListener('click',()=>switchBackground(BG_TOP_LEFT,true));
     document.getElementById('btn-theme-dark').addEventListener('click',()=>switchBackground(BG_TOP_RIGHT,false));
     document.getElementById('btn-bg-1').addEventListener('click',()=>switchBackground(BG_BOTTOM_LEFT,true));
-    document.getElementById('btn-bg-2').addEventListener('click',()=>switchBackground(BG_BOTTOM_RIGHT,true));
+// 修改后：点击时在两个右下角背景之间轮流切换
+document.getElementById('btn-bg-2').addEventListener('click', () => {
+    if (currentBgIndex === 3) {
+        currentBgIndex = 4;
+    } else {
+        currentBgIndex = 3;
+    }
+    const preset = bgPresets[currentBgIndex];
+    switchBackground(preset.value, preset.isLight);
+});
     document.querySelectorAll('.theme-toggle, .day-toggle').forEach(button=>{
         const resetScale=()=>{button.classList.remove('icon-shrink-force','icon-scale-active');};
         button.addEventListener('mouseenter',resetScale);button.addEventListener('mouseleave',resetScale);
@@ -219,7 +252,7 @@ function switchBackground(value,isLight=true){
     });
     window.bgEngine={
         start:()=>{if(animationId===null){if(clock)clock.start();anime();}},
-        stop:()=>{if(animationId!==null){cancelAnimationFrame(animationId);animationId=null;}}
+        stop:()=>{if(animationId !==null){cancelAnimationFrame(animationId);animationId=null;}}
     };
     window.bgRenderer={setClearColor:(c,a)=>renderer?renderer.setClearColor(c,a):null};window.addEventListener('DOMContentLoaded',init);
 })();
@@ -366,9 +399,23 @@ function initKeyboardControls(){
         const key=e.key.toLowerCase();
         if(key==='z'){if(typeof window.onekoSleep==='function')window.onekoSleep();}
         if(key==='s'){if(typeof window.onekoToggleSkinMenu==='function')window.onekoToggleSkinMenu();}
+        if(key==='c'){if(typeof window.onekoCycleSkin==='function')window.onekoCycleSkin();}
         if(key==='n'||key==='m'){triggerConfetti();}
         if(key==='t'){currentBgIndex=(currentBgIndex+1)%bgPresets.length;const preset=bgPresets[currentBgIndex];switchBackground(preset.value,preset.isLight);}
-        if(key==='1'){switchBackground(BG_TOP_LEFT,true);currentBgIndex=0;}if(key==='2'){switchBackground(BG_TOP_RIGHT,false);currentBgIndex=1;}if(key==='3'){switchBackground(BG_BOTTOM_LEFT,true);currentBgIndex=2;}if(key==='4'){switchBackground(BG_BOTTOM_RIGHT,true);currentBgIndex=3;}
+// 修改后：
+if(key==='1'){switchBackground(BG_TOP_LEFT,true);currentBgIndex=0;}
+if(key==='2'){switchBackground(BG_TOP_RIGHT,false);currentBgIndex=1;}
+if(key==='3'){switchBackground(BG_BOTTOM_LEFT,true);currentBgIndex=2;}
+if(key==='4'){
+    // 如果当前已经是渐变（3），就切到新图片（4）；否则切回渐变（3）
+    if (currentBgIndex === 3) {
+        currentBgIndex = 4;
+    } else {
+        currentBgIndex = 3;
+    }
+    const preset = bgPresets[currentBgIndex];
+    switchBackground(preset.value, preset.isLight);
+}
         if(key==='p'){window.isParticlesEnabled=!window.isParticlesEnabled;window.userToggledParticles=true;updateParticlesDisplay();}
         if(!e.shiftKey){
             if(e.key==='ArrowRight'){let next=currentPage+1;if(next>3)next=1;switchPageTo(next);}
@@ -452,6 +499,10 @@ linkCards.forEach(card=>{
         if(topPos<0)topPos=10;skinMenu.style.top=`${topPos}px`;
     }
     window.onekoToggleSkinMenu=()=>{if(skinMenu.style.display==="grid"){skinMenu.style.display="none";}else{showSkinMenu();}};
+    window.onekoCycleSkin=()=>{
+        const currentSkin=localStorage.getItem("oneko:skin")||"images/oneko-classic.gif";
+        let idx=skinList.findIndex(s=>s.url===currentSkin);idx=(idx+1)%skinList.length;changeSkin(skinList[idx].url);
+    };
     document.addEventListener("pointerdown",(e)=>{if(skinMenu.style.display==="grid"&&e.target!==nekoEl&&!skinMenu.contains(e.target)){skinMenu.style.display="none";}});
     let nekoPosX=32,nekoPosY=32,mousePosX=32,mousePosY=32,frameCount=0,idleTime=0,idleAnimation=null,idleAnimationFrame=0,forceSleep=false,grabbing=false,grabStop=true,nudge=false,kuroNeko=false,variant="classic",lastClickTime=0,clickCount=0;
     function parseLocalStorage(key,fallback){try{const value=JSON.parse(localStorage.getItem(`oneko:${key}`));return typeof value===typeof fallback?value:fallback;}catch(e){return fallback;}}
