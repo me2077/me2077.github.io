@@ -274,8 +274,9 @@
         }
         .pagination { display: flex; justify-content: center; gap: 5px; margin-top: -8px; margin-bottom: 10px; }
         .bullet { width: 85px; height: 6px; background: var(--fg); opacity: 0.2; border-radius: 10%; cursor: pointer; transition: all 0.3s; position: relative; }
-        .bullet::before { content: ""; position: absolute; inset: -20px 0; }
+        .bullet::before { content: ""; position: absolute; inset: -35px 0; }
         .bullet.active { opacity: 1; background: #c299ff; box-shadow: 0px 0px 20px rgba(194, 153, 255, 5); }
+
 
         #page1 { padding: 0; }
         #page1 .page-vertical { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: y mandatory; scroll-behavior: smooth; overscroll-behavior: contain; position: relative; -ms-overflow-style: none; scrollbar-width: none; }
@@ -499,21 +500,24 @@
         .link-scroll-container, .music-player__playlist { overflow-y: auto; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--fg) 40%, transparent) transparent; }
         .link-scroll-container.scrolling::-webkit-scrollbar-thumb, .link-scroll-container:hover::-webkit-scrollbar-thumb, .music-player__playlist.scrolling::-webkit-scrollbar-thumb, .music-player__playlist:hover::-webkit-scrollbar-thumb { opacity: 1; }
 
-       /* 👇 修改后的歌单行样式，加入了悬停放大效果 👇 */
+        /* 效果一：优雅向右平移 */
         .music-player__song { 
             --gap: 0.5em; 
             cursor: pointer; 
             margin-bottom: var(--gap); 
             padding-bottom: var(--gap); 
             border-bottom: 0.8px solid #d8d8d859; 
-            transition: transform 0.2s ease-in-out; /* 顺滑的过渡效果 */
-            transform-origin: center; /* 以中心为基准进行缩放 */
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         }
         @media (hover: hover) {
             .music-player__song:hover {
-                transform: scale(1.03); /* 悬停时整行稍微放大，数值可根据喜好微调 */
+                transform: translateX(6px); /* 向右平移 6 像素 */
+                opacity: 0.85; /* 微调透明度提升呼吸感 */
             }
         }
+
+      
+      
         .music-player__song audio { display: none; }
         .music-player__song-img { width: var(--cover-size); height: var(--cover-size); border-radius: var(--border-radius); }
         .music-player__playlist-info { width: 100%; overflow: hidden; line-height: 1.2; font-size: 1em; margin-left: 1.2em; }
