@@ -175,15 +175,12 @@ canvas{position:fixed;inset:0;width:100%;height:100dvh;z-index:-1}
 .music-player__playlist-info b{display:block;margin-left:0;padding-left:0;text-align:left;width:calc(100% - 50px)}
 .music-player__playlist-info .music-player__subtitle{display:block;text-align:left;margin-left:0;padding-left:0;flex-grow:1}
 .music-player__song-duration{flex-shrink:0;margin-left:10px;font-weight:bold;font-size:0.8em;color:inherit;opacity:0.55}
+
 .music-player__playlist-button i,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__playlist-info b,.music-player__playlist-info .music-player__subtitle{transition:transform .2s ease}
 .music-player__broadcast-guarantor{top:50%;left:50%;transform:translate(-50%,-50%)}
 .slider__switch-button{font-size:2.5em;height:max-content}
-@media (hover:hover){
-.music-player__playlist-button:hover i,.slider__switch-button:hover{transform:scale(1.2)}
-.music-player__broadcast-guarantor:hover{transform:translate(-50%,-50%) scale(1.2)}
-}
-.music-player__song:hover .music-player__playlist-info b,
-.music-player__song:hover .music-player__playlist-info .music-player__subtitle{transform:translateX(6px)}
+@media(hover:hover){.music-player__playlist-button:hover i,.slider__switch-button:hover{transform:scale(1.2)}.music-player__broadcast-guarantor:hover{transform:translate(-50%,-50%) scale(1.2)}.music-player__song:hover .music-player__playlist-info b,.music-player__song:hover .music-player__playlist-info .music-player__subtitle{transform:translateX(6px)}}
+      
 .loading-spinner{display:inline-block;width:40px;height:40px;border:4px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:var(--fg);animation:spin 1s ease-in-out infinite;transition:border-top-color 0.8s ease}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{margin-top:10px;font-size:16px}
