@@ -1,11 +1,10 @@
 
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>客户端列表 - 体验优化版</title>
+  <title>客户端列表 - 弹窗排版优化版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -53,7 +52,7 @@
       --ui-text-dimmed: var(--ui-color-neutral-400);
       --ui-text-muted: var(--ui-color-neutral-500);
       --ui-text-toned: var(--ui-color-neutral-600);
-      --ui-text: var(--ui-color-neutral-700);
+      --ui-text: var(--ui-text-focused, var(--ui-color-neutral-700));
       --ui-text-highlighted: var(--ui-color-neutral-900);
       --ui-text-inverted: #fff;
       --ui-bg: #fff;
@@ -800,14 +799,14 @@
   </div>
 
   <!-- ==================== 5. 全新 GitHub 实时 Release 弹窗 (Modal) ==================== -->
-  <!-- 遮罩层默认隐去且不能进行鼠标交互 (使用 opacity-0 和 pointer-events-none 作为初始态进行无闪烁平滑淡入) -->
-  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 overflow-y-auto p-4 sm:p-6 md:p-8 flex items-start justify-center transition-all duration-300">
+  <!-- 遮罩层默认隐去且不能进行鼠标交互 (使用 bg-white/40 高毛玻璃，完美对应截图 1，摒弃截图 2 黑色背景) -->
+  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-4 md:p-6 lg:p-8 flex items-center justify-center transition-all duration-300">
     
-    <!-- 弹窗主体卡片 (页面大小样式最大宽度 7xl，完美匹配外部主要卡片，对应截图 2 & 截图 4) -->
-    <div id="modal-card" class="bg-white rounded-2xl w-full max-w-7xl shadow-2xl border border-slate-200 relative my-4 sm:my-8 transition-all duration-300 transform scale-95 opacity-0 flex flex-col">
+    <!-- 弹窗主体卡片 (页面大小样式最大宽度 7xl，支持移动端满屏自适应，内部弹性垂直排版，对应截图 2, 3 & 4) -->
+    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[90vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden">
       
-      <!-- 弹窗顶部标头 -->
-      <div class="border-b border-slate-100 p-6 flex justify-between items-start gap-4">
+      <!-- 弹窗顶部标头 (对应修改 1: flex-shrink-0 固定不滚动) -->
+      <div class="border-b border-slate-100 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white z-10">
         <div class="space-y-1.5">
           <div class="flex flex-wrap items-center gap-2">
             <h2 id="modal-client-name" class="text-xl font-bold text-slate-900">VPN 客户端下载</h2>
@@ -820,8 +819,8 @@
         </button>
       </div>
 
-      <!-- 弹窗核心区域 -->
-      <div class="p-6 space-y-6 flex-1">
+      <!-- 弹窗核心滚动区域 (对应修改 1: 独立滚动) -->
+      <div class="p-4 sm:p-6 space-y-6 flex-1 overflow-y-auto">
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -841,7 +840,7 @@
           </a>
         </div>
 
-        <!-- 成功加载的主渲染页面 (截图 2) -->
+        <!-- 成功加载的主渲染页面 -->
         <div id="modal-loaded-state" class="hidden space-y-6">
           
           <!-- 第一层：官网/仓库跳转 -->
@@ -879,7 +878,7 @@
             </div>
           </div>
 
-          <!-- 第四层：版本说明 (优化：不设置滚动条，自适应高，展示全部内容，对应修改1) -->
+          <!-- 第四层：版本说明 (优化：不设置滚动条，自适应高，展示全部内容，对应修改 1) -->
           <div class="border border-slate-200 rounded-xl overflow-hidden mt-4">
             <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex justify-between items-center">
               <span class="font-semibold text-slate-800 text-sm">版本说明</span>
@@ -921,7 +920,7 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 -->
+            <!-- 资产下载文件列表 (对应修改 3: 优化自适应无彩色胶囊底色的灰色平台字样) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4">
               <div class="overflow-x-auto">
                 <table class="w-full text-left min-w-[700px]">
@@ -946,8 +945,8 @@
 
       </div>
 
-      <!-- 弹窗尾部关闭键 -->
-      <div class="border-t border-slate-100 p-4 bg-slate-50/50 rounded-b-2xl flex justify-end">
+      <!-- 弹窗尾部关闭键 (对应修改 1: flex-shrink-0 固定不滚动) -->
+      <div class="border-t border-slate-100 p-4 bg-slate-50/50 rounded-b-none sm:rounded-b-2xl flex justify-end flex-shrink-0 bg-white z-10">
         <button id="modal-close-btn" class="font-medium inline-flex items-center px-4 py-2 text-sm text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors rounded-lg gap-2">
           <span class="iconify i-lucide:x size-4"></span>关闭
         </button>
@@ -956,7 +955,7 @@
     </div>
   </div>
 
-  <!-- JavaScript 平台筛选、深度检索及 GitHub Release 实时加载逻辑 -->
+  <!-- JavaScript 控制逻辑 -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const platformBtn = document.getElementById('platform-btn');
@@ -1006,7 +1005,7 @@
       let fetchedReleases = [];
       let activeReleaseIndex = 0;
 
-      // 下拉选单默认项高亮
+      // 下拉菜单配置
       const initialActiveItem = document.querySelector('.menu-item[data-val="all"]');
       if (initialActiveItem) {
         initialActiveItem.classList.add('bg-slate-100', 'font-medium');
@@ -1027,7 +1026,7 @@
         modalReleaseMenu.classList.add('hidden');
       });
 
-      // 综合大列表数据筛选逻辑
+      // 主页面大列表过滤逻辑
       function filterData() {
         const query = searchInput.value.toLowerCase().trim();
         let visibleCount = 0;
@@ -1070,7 +1069,6 @@
         }
       }
 
-      // 菜单项选择
       menuItems.forEach(item => {
         item.addEventListener('click', () => {
           selectedPlatform = item.getAttribute('data-val');
@@ -1094,27 +1092,26 @@
 
       searchInput.addEventListener('input', filterData);
 
-      // ==================== 弹窗实时数据加载与过渡机制 ====================
+      // ==================== 6. Modal 弹出窗口逻辑 (过渡动画深度优化，解决闪烁) ====================
       const viewDownloadButtons = document.querySelectorAll('.view-download-btn');
 
       viewDownloadButtons.forEach(btn => {
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
 
-          // A. 优化：禁止底下背景滚动 (对应修改4)
+          // A. 优化 4: 固定底层大卡片，不能滚动
           document.body.classList.add('overflow-hidden');
 
-          // B. 优化：不保留上一次弹窗的文件检索字词及平台选择状态 (对应修改2)
+          // B. 优化 2: 重置资产检索框，不保留上一次状态
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // C. 优化：展示弹窗渐变效果（利用 opacity 与 pointer-events 替换 hidden，配合主体 scale 平滑缩放，对应修改5）
+          // C. 优化 5: 启动双层渐变淡入动画，避免闪烁
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
           modalCard.classList.remove('scale-95', 'opacity-0');
           modalCard.classList.add('scale-100', 'opacity-100');
 
-          // 初始化重置弹窗内的状态块
           modalLoadingState.classList.remove('hidden');
           modalLoadedState.classList.add('hidden');
           modalErrorState.classList.add('hidden');
@@ -1124,7 +1121,6 @@
           const clientDesc = btn.getAttribute('data-desc');
           const websiteUrl = btn.getAttribute('data-website');
 
-          // 从触发源复制各类徽章元素
           const activeRow = btn.closest('tr');
           const rowBadgeContainers = activeRow.cells[0].querySelectorAll('span');
           modalClientBadges.innerHTML = '';
@@ -1161,12 +1157,12 @@
         });
       });
 
-      // 优化：过渡关闭弹窗并解冻底层背景滚动 (对应修改4 & 修改5)
+      // 优化 5: 完美的渐变平滑淡出关闭逻辑
       function closeModal() {
-        // 解冻底层背景
+        // 放开底层卡片滚动锁
         document.body.classList.remove('overflow-hidden');
 
-        // 双层平滑 CSS 渐变淡出
+        // 双层平缓淡出，无布局闪烁
         downloadModal.classList.remove('opacity-100', 'pointer-events-auto');
         downloadModal.classList.add('opacity-0', 'pointer-events-none');
         modalCard.classList.remove('scale-100', 'opacity-100');
@@ -1236,7 +1232,7 @@
       assetSearchInput.addEventListener('input', renderAssetsTable);
       assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 渲染和分类 Release 资产列表表格
+      // 渲染资产列表表格
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1272,12 +1268,12 @@
             year: 'numeric', month: '2-digit', day: '2-digit'
           });
 
-          // 自动获取扩展名/架构小徽章
+          // 自动拆分后缀/架构小胶囊标签
           const extBadges = getExtensionBadges(asset.name);
 
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
-          // 修改 3：文件列表中的平台、大小、下载量使用完全一样的 text-slate-600 字体大小与颜色
+          // 优化 3: 平台、大小、下载量、更新日期全部统一使用 text-slate-600 同样的颜色与样式（无彩色标签，对应截图 3）
           tr.innerHTML = `
             <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate">
               <div class="flex flex-col">
@@ -1287,10 +1283,10 @@
                 </div>
               </div>
             </td>
-            <td class="p-3 text-sm text-slate-600">${platform}</td>
-            <td class="p-3 text-sm text-slate-600">${sizeFormatted}</td>
-            <td class="p-3 text-sm text-slate-600">${downloadsText}</td>
-            <td class="p-3 text-sm text-slate-600">${dateFormatted}</td>
+            <td class="p-3 text-sm text-slate-600 font-normal">${platform}</td>
+            <td class="p-3 text-sm text-slate-600 font-normal">${sizeFormatted}</td>
+            <td class="p-3 text-sm text-slate-600 font-normal">${downloadsText}</td>
+            <td class="p-3 text-sm text-slate-600 font-normal">${dateFormatted}</td>
             <td class="p-3 text-sm text-right sticky right-0 bg-white/90">
               <a href="${asset.browser_download_url}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg">
                 <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
@@ -1301,7 +1297,7 @@
         });
       }
 
-      // 智能平台识别
+      // 智能识别平台
       function detectPlatform(filename) {
         const lower = filename.toLowerCase();
         if (lower.endsWith('.apk') || lower.includes('android')) return 'Android';
