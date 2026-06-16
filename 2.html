@@ -1,11 +1,10 @@
-
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>客户端列表 - 极致排版优化版</title>
+  <!-- 引入 viewport-fit=cover 适配刘海屏 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>客户端列表 - 极致体验修正版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -197,6 +196,41 @@
     .prose-slate pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
     .prose-slate pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
     .prose-slate a { color: #0091ff; text-decoration: underline; }
+
+    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 (对应修改 2 & 修改 3) ==================== */
+    @media (max-width: 639px) {
+      #modal-card {
+        height: 100dvh !important; /* 动态视口高度，有效消除 Safari 地址栏变动产生的黑底空隙 */
+        padding-top: env(safe-area-inset-top, 0px); /* 自动沉入顶部刘海安全区域下方 */
+        padding-bottom: env(safe-area-inset-bottom, 0px); /* 自动沉入底部 Home 条安全区域上方 */
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+      
+      body {
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+    }
+
+    /* 优化移动端滚动条可见性 (对应修改 3) */
+    #modal-scroll-body {
+      -webkit-overflow-scrolling: touch; /* 惯性回弹平滑硬件加速 */
+    }
+
+    /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
+    #modal-scroll-body::-webkit-scrollbar {
+      display: block !important;
+      width: 6px !important;
+      height: 6px !important;
+    }
+    #modal-scroll-body::-webkit-scrollbar-thumb {
+      background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
+      border-radius: 9999px !important;
+    }
+    #modal-scroll-body::-webkit-scrollbar-track {
+      background-color: transparent !important;
+    }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex justify-center">
@@ -800,10 +834,10 @@
   </div>
 
   <!-- ==================== 5. 全新 GitHub 实时 Release 弹窗 (Modal) ==================== -->
-  <!-- 遮罩层使用 bg-white/40 高毛玻璃，平滑淡入无闪烁 -->
+  <!-- 遮罩层使用 bg-white/40 高毛玻璃，平滑淡入无闪烁，完美对应截图 1，摒弃截图 2 黑色背景 -->
   <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-4 md:p-6 lg:p-8 flex items-center justify-center transition-all duration-300">
     
-    <!-- 弹窗主体卡片 (对应修改 1：调整电脑端大小为 max-w-6xl，使其视觉比例像截图 2 首页卡片一样美观适中) -->
+    <!-- 弹窗主体卡片 (对应修改 1：调整电脑端大小为 max-w-6xl，使其视觉比例像截图 2 首页卡片一样美观适中；内部弹性垂直排版) -->
     <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[90vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl">
       
       <!-- 弹窗顶部标头 (flex-shrink-0 固定不随内容滚动) -->
@@ -820,8 +854,8 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 -->
-      <div id="modal-scroll-body" class="p-4 sm:p-6 space-y-6 flex-1 overflow-y-auto">
+      <!-- 弹窗核心滚动区域 (对应修改 1：移除原本底部的固定关闭按钮 Footer 栏。现在无边距贴合底部边缘，只有滚动到最底部才显示) -->
+      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-0 sm:pb-0 space-y-6 flex-1 overflow-y-auto">
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -879,7 +913,7 @@
             </div>
           </div>
 
-          <!-- 第四层：版本说明 (不设置滚动条，自适应高，展示全部内容) -->
+          <!-- 第四层：版本说明 (优化：不设置滚动条，自适应高，展示全部内容) -->
           <div class="border border-slate-200 rounded-xl overflow-hidden mt-4">
             <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex justify-between items-center">
               <span class="font-semibold text-slate-800 text-sm">版本说明</span>
@@ -921,7 +955,7 @@
             </section>
 
             <!-- 资产下载文件列表 (平台、大小、下载量、更新日期全部统一使用 text-slate-600) -->
-            <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4">
+            <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto">
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
@@ -939,13 +973,6 @@
               </div>
             </div>
 
-          </div>
-
-          <!-- 弹窗尾部关闭键 (对应修改 2: 移入滚动容器的最底部，负边距贴合底部边缘，只有滚动到最底部才显示) -->
-          <div class="border-t border-slate-100 p-4 bg-slate-50/50 rounded-b-none sm:rounded-b-2xl flex justify-end mt-6 -mx-4 -mb-4 sm:-mx-6 sm:-mb-6">
-            <button id="modal-close-btn" class="font-medium inline-flex items-center px-4 py-2 text-sm text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors rounded-lg gap-2">
-              <span class="iconify i-lucide:x size-4"></span>关闭
-            </button>
           </div>
 
         </div>
@@ -971,7 +998,6 @@
       const downloadModal = document.getElementById('download-modal');
       const modalCard = document.getElementById('modal-card');
       const modalCloseX = document.getElementById('modal-close-x');
-      const modalCloseBtn = document.getElementById('modal-close-btn');
       const modalClientName = document.getElementById('modal-client-name');
       const modalClientDesc = document.getElementById('modal-client-desc');
       const modalClientBadges = document.getElementById('modal-client-badges');
@@ -1099,14 +1125,14 @@
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
 
-          // 固定背景，禁止滚动
+          // A. 优化 4: 固定底层大卡片，不能滚动
           document.body.classList.add('overflow-hidden');
 
-          // 重置资产检索框与平台选择状态
+          // B. 优化 2: 重置资产检索框与平台选择状态
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // 双层平缓淡入，避免任何页面布局闪烁
+          // C. 优化 5: 启动双层渐变淡入动画，避免任何页面布局闪烁
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
           modalCard.classList.remove('scale-95', 'opacity-0');
@@ -1157,9 +1183,12 @@
         });
       });
 
+      // 优化 5: 完美的渐变平滑淡出关闭逻辑
       function closeModal() {
+        // 放开底层卡片滚动锁
         document.body.classList.remove('overflow-hidden');
 
+        // 双层平缓淡出，无布局闪烁
         downloadModal.classList.remove('opacity-100', 'pointer-events-auto');
         downloadModal.classList.add('opacity-0', 'pointer-events-none');
         modalCard.classList.remove('scale-100', 'opacity-100');
@@ -1167,7 +1196,6 @@
       }
 
       modalCloseX.addEventListener('click', closeModal);
-      modalCloseBtn.addEventListener('click', closeModal);
       downloadModal.addEventListener('click', (e) => {
         if (e.target === downloadModal) closeModal();
       });
