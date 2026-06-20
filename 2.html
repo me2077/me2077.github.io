@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 页面极简微调版</title>
+  <title>客户端列表 - 体验优化最终版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -90,6 +90,13 @@
     }
     .ring-inverted {
       --tw-ring-color: var(--ui-border-inverted) !important;
+    }
+
+    /* 修复外部卡片右边框缺失：改用真实的 border，防止内阴影被 sticky 单元格背景覆盖 */
+    div[data-slot="root"].ring-default {
+      border: 1px solid var(--ui-border) !important;
+      box-shadow: none !important;
+      overflow: hidden;
     }
 
     /* 输入框点击高亮蓝 */
@@ -235,7 +242,7 @@
     }
   </style>
 </head>
-<body class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex justify-center"> <!-- 修改 2：页面主体背景修改为白色 -->
+<body class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex justify-center">
 
   <!-- 网页的主卡片外框 (max-w-6xl 尺寸) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-2 sm:p-4">
