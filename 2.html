@@ -1,10 +1,12 @@
+
+
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 极致体验修正版</title>
+  <title>客户端列表 - 极致排版精修版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -235,7 +237,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (max-w-6xl 尺寸) -->
+  <!-- 网页的主卡片外框 (max-w-6xl 尺寸，与弹窗尺寸保持一致) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-2 sm:p-4">
     
     <div class="space-y-5 p-4 sm:p-5">
@@ -854,7 +856,7 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (对应修改 1：移除原本底部的固定关闭按钮 Footer 栏。现在无边距贴合底部边缘，只有滚动到最底部才显示) -->
+      <!-- 弹窗核心滚动区域 (对应修改 1 & 修改 2：移除原本底部的固定关闭按钮 Footer 栏。现在无边距贴合底部边缘，只有滚动到最底部才显示) -->
       <div id="modal-scroll-body" class="p-4 sm:p-6 pb-0 sm:pb-0 space-y-6 flex-1 overflow-y-auto">
         
         <!-- 加载中状态 (截图 1) -->
@@ -960,12 +962,12 @@
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
                     <tr class="bg-slate-50/50">
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider">文件名</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider">平台</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider">大小</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider">下载量</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider">更新</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right sticky right-0 bg-slate-50/50">操作</th>
+                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">文件名</th>
+                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">平台</th>
+                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">大小</th>
+                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">下载量</th>
+                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">更新</th>
+                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right sticky right-0 bg-slate-50/50 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
                   <tbody id="assets-tbody" class="divide-y divide-slate-100"></tbody>
@@ -1125,14 +1127,14 @@
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
 
-          // A. 优化 4: 固定底层大卡片，不能滚动
+          // A. 开启页面时锁定底部背景滚动
           document.body.classList.add('overflow-hidden');
 
-          // B. 优化 2: 重置资产检索框与平台选择状态
+          // B. 重置资产检索状态
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // C. 优化 5: 启动双层渐变淡入动画，避免任何页面布局闪烁
+          // C. 双层过渡淡入
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
           modalCard.classList.remove('scale-95', 'opacity-0');
@@ -1183,12 +1185,9 @@
         });
       });
 
-      // 优化 5: 完美的渐变平滑淡出关闭逻辑
       function closeModal() {
-        // 放开底层卡片滚动锁
         document.body.classList.remove('overflow-hidden');
 
-        // 双层平缓淡出，无布局闪烁
         downloadModal.classList.remove('opacity-100', 'pointer-events-auto');
         downloadModal.classList.add('opacity-0', 'pointer-events-none');
         modalCard.classList.remove('scale-100', 'opacity-100');
@@ -1257,7 +1256,7 @@
       assetSearchInput.addEventListener('input', renderAssetsTable);
       assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 7. 重构后的弹窗资产筛选逻辑 (涵盖“文件名”和“平台”检索，支持 win / mac / linux 模糊检索，对应修改 3)
+      // 7. 重构后的弹窗资产筛选逻辑
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1308,8 +1307,9 @@
 
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
+          // 优化 2: 平台、大小、下载量、下载字样在移动端强制不换行 (加入 whitespace-nowrap 类，解决 squished 问题)
           tr.innerHTML = `
-            <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate">
+            <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate whitespace-nowrap">
               <div class="flex flex-col">
                 <span class="truncate" title="${asset.name}">${asset.name}</span>
                 <div class="flex flex-wrap gap-1 mt-1">
@@ -1317,12 +1317,12 @@
                 </div>
               </div>
             </td>
-            <td class="p-3 text-sm text-slate-600 font-normal">${platform}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal">${sizeFormatted}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal">${downloadsText}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal">${dateFormatted}</td>
-            <td class="p-3 text-sm text-right sticky right-0 bg-white/90">
-              <a href="${asset.browser_download_url}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg">
+            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${platform}</td>
+            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${sizeFormatted}</td>
+            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${downloadsText}</td>
+            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${dateFormatted}</td>
+            <td class="p-3 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
+              <a href="${asset.browser_download_url}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg whitespace-nowrap">
                 <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
               </a>
             </td>
