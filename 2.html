@@ -4,9 +4,9 @@
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
-  <!-- 引入 viewport-fit=cover 适配刘海屏 -->
+  <!-- 引入 viewport-fit=cover 适配刘海屏与安全区域 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 极致排版精修版</title>
+  <title>客户端列表 - 底部贴合精修版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -199,7 +199,7 @@
     .prose-slate pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
     .prose-slate a { color: #0091ff; text-decoration: underline; }
 
-    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 (对应修改 2 & 修改 3) ==================== */
+    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
     @media (max-width: 639px) {
       #modal-card {
         height: 100dvh !important; /* 动态视口高度，有效消除 Safari 地址栏变动产生的黑底空隙 */
@@ -215,7 +215,7 @@
       }
     }
 
-    /* 优化移动端滚动条可见性 (对应修改 3) */
+    /* 优化移动端滚动条可见性 */
     #modal-scroll-body {
       -webkit-overflow-scrolling: touch; /* 惯性回弹平滑硬件加速 */
     }
@@ -237,7 +237,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (max-w-6xl 尺寸，与弹窗尺寸保持一致) -->
+  <!-- 网页的主卡片外框 (max-w-6xl 尺寸) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-2 sm:p-4">
     
     <div class="space-y-5 p-4 sm:p-5">
@@ -366,7 +366,7 @@
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Meta 内核的 macOS Clash 图形客户端。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Meta内核的 macOS Clash 图形客户端。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -382,7 +382,7 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="MetaCubeX/ClashX.Meta" data-name="ClashX.Meta" data-desc="基于 Meta 内核的 macOS Clash 图形客户端。" data-website="https://github.com/MetaCubeX/ClashX.Meta">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="MetaCubeX/ClashX.Meta" data-name="ClashX.Meta" data-desc="基于 Meta内核的 macOS Clash 图形客户端。" data-website="https://github.com/MetaCubeX/ClashX.Meta">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/MetaCubeX/ClashX.Meta" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
@@ -836,11 +836,11 @@
   </div>
 
   <!-- ==================== 5. 全新 GitHub 实时 Release 弹窗 (Modal) ==================== -->
-  <!-- 遮罩层使用 bg-white/40 高毛玻璃，平滑淡入无闪烁，完美对应截图 1，摒弃截图 2 黑色背景 -->
-  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-4 md:p-6 lg:p-8 flex items-center justify-center transition-all duration-300">
+  <!-- 遮罩层使用 bg-white/40 高毛玻璃，平滑淡入无闪烁，完美对应截图 1 亮色磨砂，并将垂直排列设为底部贴合（items-end） -->
+  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:px-4 md:px-6 lg:px-8 flex items-end justify-center transition-all duration-300">
     
-    <!-- 弹窗主体卡片 (对应修改 1：调整电脑端大小为 max-w-6xl，使其视觉比例像截图 2 首页卡片一样美观适中；内部弹性垂直排版) -->
-    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[90vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl">
+    <!-- 弹窗主体卡片 (对应修改 1：移除所有底边距，卡片底边和浏览器窗口底边贴合。顶部设圆角，底部无圆角：rounded-t-2xl rounded-b-none) -->
+    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[90vh] rounded-none sm:rounded-t-2xl sm:rounded-b-none shadow-2xl border-none sm:border-t sm:border-x border-slate-200 relative transition-all duration-300 transform translate-y-10 opacity-0 flex flex-col overflow-hidden max-w-6xl">
       
       <!-- 弹窗顶部标头 (flex-shrink-0 固定不随内容滚动) -->
       <div class="border-b border-slate-100 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white z-10">
@@ -856,8 +856,8 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (对应修改 1 & 修改 2：移除原本底部的固定关闭按钮 Footer 栏。现在无边距贴合底部边缘，只有滚动到最底部才显示) -->
-      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-0 sm:pb-0 space-y-6 flex-1 overflow-y-auto">
+      <!-- 弹窗核心滚动区域 (完美对应修改 1: 设置底部 Padding 为 0（pb-0 sm:pb-0），使文件表格的最底边紧密无缝贴合白卡底边缘) -->
+      <div id="modal-scroll-body" class="pt-4 px-4 sm:pt-6 sm:px-6 pb-0 sm:pb-0 space-y-6 flex-1 overflow-y-auto">
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -915,7 +915,7 @@
             </div>
           </div>
 
-          <!-- 第四层：版本说明 (优化：不设置滚动条，自适应高，展示全部内容) -->
+          <!-- 第四层：版本说明 (不设置滚动条，自适应高，展示全部内容) -->
           <div class="border border-slate-200 rounded-xl overflow-hidden mt-4">
             <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex justify-between items-center">
               <span class="font-semibold text-slate-800 text-sm">版本说明</span>
@@ -956,8 +956,8 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (平台、大小、下载量、更新日期全部统一使用 text-slate-600) -->
-            <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
+            <!-- 资产下载文件列表 (末尾元素 mb-0 并将底角完美融入白卡边界) -->
+            <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0 sm:rounded-b-none border-b-0">
               <div class="overflow-x-auto">
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
@@ -1134,11 +1134,11 @@
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // C. 双层过渡淡入
+          // C. 滑动滑入式平滑淡入（修改 1: 从底部 translation-y 滑动浮现，更具质感）
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
-          modalCard.classList.remove('scale-95', 'opacity-0');
-          modalCard.classList.add('scale-100', 'opacity-100');
+          modalCard.classList.remove('translate-y-10', 'opacity-0');
+          modalCard.classList.add('translate-y-0', 'opacity-100');
 
           modalLoadingState.classList.remove('hidden');
           modalLoadedState.classList.add('hidden');
@@ -1188,10 +1188,11 @@
       function closeModal() {
         document.body.classList.remove('overflow-hidden');
 
+        // 双层平缓淡出，无布局闪烁
         downloadModal.classList.remove('opacity-100', 'pointer-events-auto');
         downloadModal.classList.add('opacity-0', 'pointer-events-none');
-        modalCard.classList.remove('scale-100', 'opacity-100');
-        modalCard.classList.add('scale-95', 'opacity-0');
+        modalCard.classList.remove('translate-y-0', 'opacity-100');
+        modalCard.classList.add('translate-y-10', 'opacity-0');
       }
 
       modalCloseX.addEventListener('click', closeModal);
@@ -1307,7 +1308,7 @@
 
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
-          // 优化 2: 平台、大小、下载量、下载字样在移动端强制不换行 (加入 whitespace-nowrap 类，解决 squished 问题)
+          // 平台、大小、下载量、下载字样在移动端绝对禁止换行 (加入 whitespace-nowrap 类)
           tr.innerHTML = `
             <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate whitespace-nowrap">
               <div class="flex flex-col">
