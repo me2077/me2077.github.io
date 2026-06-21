@@ -1,12 +1,11 @@
 
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 精修优化版</title>
+  <title>客户端列表 - GitHub 修复运行版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -102,7 +101,8 @@
     /* 输入框点击高亮蓝 */
     #search-input:focus, #search-input:focus-visible,
     #asset-search-input:focus, #asset-search-input:focus-visible,
-    #asset-platform-select:focus, #asset-platform-select:focus-visible {
+    #asset-platform-select:focus, #asset-platform-select:focus-visible,
+    #release-menu-search:focus, #release-menu-search:focus-visible {
       outline: none !important;
       border-color: transparent !important;
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
@@ -304,7 +304,7 @@
         </div>
       </section>
 
-      <!-- 结果数量显示 (总客户端修正为 10，对应修改 1) -->
+      <!-- 结果数量显示 -->
       <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
         <span>显示 <span id="visible-count" class="font-medium">10</span> / 10 个客户端</span>
         <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100">Android</span>
@@ -327,7 +327,7 @@
               </thead>
               <tbody id="client-tbody" class="isolate divide-y divide-default">
                 
-                <!-- 1. FlClash (iOS已被移除，对应修改 1；定制重新排序中第1位，对应修改 2) -->
+                <!-- 1. FlClash -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -658,7 +658,7 @@
                   </td>
                 </tr>
 
-                <!-- 10. sing-box (增加了 Android 平台支持标签，对应修改 1) -->
+                <!-- 10. sing-box -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -726,7 +726,7 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，对应修改 2 彻底清除底部关闭面板和占位) -->
+      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
       <div id="modal-scroll-body" class="p-4 sm:p-6 pb-0 sm:pb-0 space-y-6 flex-1 overflow-y-auto">
         
         <!-- 加载中状态 (截图 1) -->
@@ -750,19 +750,31 @@
         <!-- 成功加载的主渲染页面 -->
         <div id="modal-loaded-state" class="hidden space-y-6 pb-0">
           
-          <!-- 第二层：GitHub Releases 版本下拉菜单 (第一层官网仓库与第三层摘要子卡片已被完全删除，对应修改 2 移除占位) -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位) -->
           <div class="space-y-2">
-            <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
+            <div class="flex flex-col space-y-0.5">
+              <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
+              <p id="modal-releases-subtitle" class="text-xs text-slate-400"></p>
+            </div>
             <div class="relative w-full md:w-80">
               <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary">
                 <span id="modal-release-text" class="truncate font-medium">请选择版本</span>
                 <span class="iconify i-lucide:chevron-down text-slate-400 size-5"></span>
               </button>
-              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-60 overflow-y-auto"></div>
+              
+              <!-- 带检索搜索框的高级 Release 选择选单 -->
+              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-80 overflow-y-auto">
+                <!-- 顶置检索输入框 (Search...) -->
+                <div class="p-2 sticky top-0 bg-white border-b border-slate-100 z-10">
+                  <input id="release-menu-search" type="text" placeholder="Search..." class="w-full rounded-md border border-slate-200 px-2.5 py-1.5 text-xs outline-none transition-shadow">
+                </div>
+                <!-- 动态渲染的版本项容器 -->
+                <div id="release-menu-items"></div>
+              </div>
             </div>
           </div>
 
-          <!-- 第四层：版本说明 (不设置滚动条，自适应高，展示全部内容) -->
+          <!-- 第二层：版本说明 (不设置滚动条，自适应高，展示全部内容) -->
           <div class="border border-slate-200 rounded-xl overflow-hidden mt-4">
             <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex justify-between items-center">
               <span class="font-semibold text-slate-800 text-sm">版本说明</span>
@@ -771,7 +783,7 @@
             <div id="release-notes-content" class="p-6 text-sm text-slate-700 prose prose-slate max-w-none leading-relaxed"></div>
           </div>
 
-          <!-- 第五层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件) -->
+          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件) -->
           <div class="pt-4 border-t border-slate-100 space-y-4 pb-4 sm:pb-6">
             <h3 class="text-base font-bold text-slate-800">版本 assets</h3>
             
@@ -803,7 +815,7 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (优化：无缝贴合底部边缘，取消底部边距，完全移除底部关闭面板及占位，对应修改 2) -->
+            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto">
                 <table class="w-full text-left min-w-[700px]">
@@ -857,9 +869,12 @@
       const modalFallbackBtn = document.getElementById('modal-fallback-btn');
       const modalLoadedState = document.getElementById('modal-loaded-state');
 
+      const modalReleasesSubtitle = document.getElementById('modal-releases-subtitle');
       const modalReleaseBtn = document.getElementById('modal-release-btn');
       const modalReleaseMenu = document.getElementById('modal-release-menu');
       const modalReleaseText = document.getElementById('modal-release-text');
+      const releaseMenuSearch = document.getElementById('release-menu-search');
+      const releaseMenuItems = document.getElementById('release-menu-items');
 
       const releaseNotesTag = document.getElementById('release-notes-tag');
       const releaseNotesContent = document.getElementById('release-notes-content');
@@ -996,6 +1011,7 @@
           modalClientName.textContent = clientName;
           modalClientDesc.textContent = clientDesc;
 
+          modalReleasesSubtitle.textContent = `${repoPath} · 获取中...`;
           modalFallbackBtn.href = `https://github.com/${repoPath}/releases`;
 
           try {
@@ -1007,6 +1023,8 @@
 
             modalLoadingState.classList.add('hidden');
             modalLoadedState.classList.remove('hidden');
+
+            modalReleasesSubtitle.textContent = `${repoPath} · ${fetchedReleases.length} 个版本`;
 
             activeReleaseIndex = 0;
             buildReleaseMenu();
@@ -1034,31 +1052,69 @@
         if (e.target === downloadModal) closeModal();
       });
 
+      // 版本 Releases 按钮点击触发
       modalReleaseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         modalReleaseMenu.classList.toggle('hidden');
+        if (!modalReleaseMenu.classList.contains('hidden')) {
+          releaseMenuSearch.value = ''; // 清空检索词
+          buildReleaseMenu(); // 还原列表
+          setTimeout(() => releaseMenuSearch.focus(), 50); // 自动聚焦检索输入框
+        }
       });
 
-      function buildReleaseMenu() {
-        modalReleaseMenu.innerHTML = '';
+      // 版本 Releases 选单内置检索输入监听
+      releaseMenuSearch.addEventListener('click', (e) => e.stopPropagation()); // 防止点击输入框关闭菜单
+      releaseMenuSearch.addEventListener('input', () => {
+        buildReleaseMenu(releaseMenuSearch.value.trim().toLowerCase());
+      });
+
+      // 构建带检索及双行排版的高级 Releases 选择选单 (完美对照截图 2)
+      function buildReleaseMenu(query = '') {
+        releaseMenuItems.innerHTML = '';
         fetchedReleases.forEach((rel, index) => {
+          const tagName = rel.tag_name;
+          const relName = rel.name || rel.tag_name;
+          const fullText = `${tagName} ${relName}`.toLowerCase();
+
+          // 检索过滤
+          if (query && !fullText.includes(query)) {
+            return;
+          }
+
           const btn = document.createElement('button');
-          btn.className = "w-full text-left px-4 py-2 hover:bg-slate-50 transition-colors truncate block text-sm text-slate-700";
-          btn.textContent = `${rel.tag_name} • ${rel.name || rel.tag_name}`;
-          btn.addEventListener('click', () => {
+          const isSelected = (index === activeReleaseIndex);
+          btn.className = `w-full text-left px-4 py-2.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 ${isSelected ? 'bg-slate-50/80 font-medium' : ''}`;
+          
+          const date = new Date(rel.published_at);
+          const formattedDate = date.toLocaleDateString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit'
+          }).replace(/\//g, '/'); // 保证 YYYY/MM/DD
+
+          btn.innerHTML = `
+            <div class="space-y-0.5 truncate flex-1 pointer-events-none">
+              <p class="font-semibold text-slate-800 text-sm truncate">${tagName} · ${relName}</p>
+              <p class="text-xs text-slate-400 font-normal">${formattedDate} · ${rel.assets.length} 个文件</p>
+            </div>
+            <span class="check-mark iconify i-lucide:check text-slate-900 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
+          `;
+
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             activeReleaseIndex = index;
             modalReleaseMenu.classList.add('hidden');
             renderSelectedRelease();
           });
-          modalReleaseMenu.appendChild(btn);
+          releaseMenuItems.appendChild(btn);
         });
       }
 
+      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片（subcardTitle 等元素）的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
 
-        modalReleaseText.textContent = `${rel.tag_name} • ${rel.name || rel.tag_name}`;
+        modalReleaseText.textContent = `${rel.tag_name} · ${rel.name || rel.tag_name}`;
 
         releaseNotesTag.textContent = rel.tag_name;
         if (rel.body) {
@@ -1073,7 +1129,7 @@
       assetSearchInput.addEventListener('input', renderAssetsTable);
       assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 7. 重构后的弹窗资产筛选逻辑
+      // 7. 弹窗资产筛选逻辑
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1124,7 +1180,6 @@
 
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
-          // 优化 2: 平台、大小、下载量、下载字样在移动端强制不换行 (加入 whitespace-nowrap 类，解决 squished 问题)
           tr.innerHTML = `
             <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate whitespace-nowrap">
               <div class="flex flex-col">
