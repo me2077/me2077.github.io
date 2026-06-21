@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - Releases 选单完美重置版</title>
+  <title>客户端列表 - 颜色修正完结版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -51,7 +50,7 @@
       --ui-success: #10b981;   /* 绿色 */
 
       --ui-text-dimmed: var(--ui-color-neutral-400);
-      --ui-text-muted: var(--ui-color-neutral-50);
+      --ui-text-muted: var(--ui-color-neutral-500);  /* 修正：由 50 修复回 500，完美解决文本隐形问题 */
       --ui-text-toned: var(--ui-color-neutral-600);
       --ui-text: var(--ui-text-focused, var(--ui-color-neutral-700));
       --ui-text-highlighted: var(--ui-color-neutral-900);
@@ -157,7 +156,7 @@
     }
     .i-lucide\:search {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
     }
     .i-lucide\:chevron-down {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
@@ -248,13 +247,13 @@
     }
   </style>
 </head>
-<!-- 页面主体底色白色，移动端左右外补丁设为 px-2 (8px，对应修改) -->
+<!-- 修改：body 左右边距设为 px-2 (8px) -->
 <body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (移动端内补丁从 p-2 (8px) 缩减至 p-1 (4px)，对应修改) -->
+  <!-- 网页的主卡片外框 (手机端内边距 p-1 (4px) 节省横向空间) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
-    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)，对应修改) -->
+    <!-- 修改：大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px) -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -318,7 +317,7 @@
         <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100">Android</span>
       </div>
 
-      <!-- 表格区域 (移除了 absolute separator 彻底解决右侧断裂) -->
+      <!-- 表格区域 -->
       <div data-slot="root" class="bg-default ring ring-default overflow-hidden rounded-xl">
         <div data-slot="body" class="p-0 sm:p-0">
           <div data-slot="root" class="relative overflow-auto overflow-x-auto">
@@ -666,7 +665,7 @@
                   </td>
                 </tr>
 
-                <!-- 10. sing-box -->
+                <!-- 10. sing-box (增加了 Android 平台支持标签) -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -758,7 +757,7 @@
         <!-- 成功加载的主渲染页面 -->
         <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
-          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位) -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
@@ -895,8 +894,8 @@
       let selectedPlatform = 'all';
       let fetchedReleases = [];
       let activeReleaseIndex = 0;
-      
-      // A. 新增状态管理标记：判断是否为跨客户端切换 (对应最新修改)
+
+      // A. 新增状态管理标记：判断是否为跨客户端切换
       let needsReleaseScrollReset = false;
 
       // 下拉菜单配置
@@ -996,7 +995,7 @@
           // A. 开启页面时锁定底部背景滚动
           document.body.classList.add('overflow-hidden');
           
-          // B. 标记切换客户端：通知下拉菜单在下一次可见时执行重置 (对应最新修改)
+          // B. 标记切换客户端：通知下拉菜单在下一次可见时执行重置
           needsReleaseScrollReset = true;
 
           // 强制重置滚动条位置
@@ -1048,7 +1047,6 @@
 
             activeReleaseIndex = 0;
             
-            // 此处由于 modalReleaseMenu 是隐藏的，不再执行无效的 scrollTop = 0 赋值
             buildReleaseMenu(); // 初始化构建菜单
             renderSelectedRelease();
 
@@ -1084,7 +1082,7 @@
         modalReleaseMenu.classList.toggle('hidden');
         if (!modalReleaseMenu.classList.contains('hidden')) {
           
-          // 仅在发生了跨客户端切换时，在展现的这一秒执行首展重置与清空
+          // 修改 1：仅在发生了跨客户端切换时，在展开的时刻执行一次性重置与清空，保留用户上次滚动到的绝对位置
           if (needsReleaseScrollReset) {
             modalReleaseMenu.scrollTop = 0; // 精准重置滚动轴
             releaseMenuSearch.value = ''; // 清空检索词
@@ -1138,7 +1136,7 @@
             e.stopPropagation();
             activeReleaseIndex = index;
 
-            // 动态更新单选对勾及背景高亮状态，不重新加载整个 DOM 树以完美锁死上一次的滚动位置
+            // 动态更新单选对勾及背景高亮状态，不重新加载整个 DOM 树以完美锁死上一次的滚动位置 (对应最新修改)
             const allButtons = releaseMenuItems.querySelectorAll('button');
             allButtons.forEach((btnEl, btnIndex) => {
               const check = btnEl.querySelector('.check-mark');
@@ -1160,7 +1158,7 @@
         });
       }
 
-      // 彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
+      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
