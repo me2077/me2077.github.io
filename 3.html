@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 体验极佳移动精修版</title>
+  <title>客户端列表 - 弹窗滚动条重置版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -195,8 +195,8 @@
     }
 
     .bg-default\/75 {
-      background-color: rgba(255, 255, 255, 0.75);
-
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
     }
 
     /* 4. GitHub 风格的 Markdown 解析辅助 CSS */
@@ -235,8 +235,8 @@
     /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
     #modal-scroll-body::-webkit-scrollbar {
       display: block !important;
-      width: 6px !important;
-      height: 6px !important;
+      width: 6px;
+      height: 6px;
     }
     #modal-scroll-body::-webkit-scrollbar-thumb {
       background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
@@ -247,13 +247,13 @@
     }
   </style>
 </head>
-<!-- 修改 1：将 body 的移动端左右外边距从 px-4（16px）缩减为 px-2（8px） -->
+<!-- 页面底色白色，移动端外边距 px-2 -->
 <body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (修改 2：手机端内补丁从 p-2 (8px) 缩减至 p-1 (4px) 节省横向空间) -->
+  <!-- 网页的主卡片外框 (移动端内边距 p-1) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
-    <!-- 修改 3：将卡片内部的内容容器内边距由 p-4（16px）缩减为 p-2（8px） -->
+    <!-- 客户端内容容器 (移动端内边距 p-2) -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -674,7 +674,7 @@
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理代理平台核心仓库，可作为多平台内核与生态入口。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理平台核心仓库，可作为多平台内核与生态入口。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -755,9 +755,9 @@
         </div>
 
         <!-- 成功加载的主渲染页面 -->
-        <div id="modal-loaded-state" class="hidden space-y-6 pb-0">
+        <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
-          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
@@ -790,7 +790,7 @@
             <div id="release-notes-content" class="p-6 text-sm text-slate-700 prose prose-slate max-w-none leading-relaxed"></div>
           </div>
 
-          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件) -->
+          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件，修改 2: 移除了 border-t 顶部分割线) -->
           <div class="space-y-4 pb-0">
             <h3 class="text-base font-bold text-slate-800">版本 assets</h3>
             
@@ -823,7 +823,7 @@
             </section>
 
             <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距) -->
-            <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
+            <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0" id="assets-table-wrapper">
               <div class="overflow-x-auto">
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
@@ -888,6 +888,8 @@
 
       const assetSearchInput = document.getElementById('asset-search-input');
       const assetPlatformSelect = document.getElementById('asset-platform-select');
+      const assetsTableWrapper = document.getElementById('assets-table-wrapper');
+      const modalScrollBody = document.getElementById('modal-scroll-body');
 
       let selectedPlatform = 'all';
       let fetchedReleases = [];
@@ -989,6 +991,11 @@
 
           // A. 开启页面时锁定底部背景滚动
           document.body.classList.add('overflow-hidden');
+
+          // 重置所有内部滚动条位置 (适配修改需求)
+          if (modalScrollBody) modalScrollBody.scrollTop = 0;
+          if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
+          if (modalReleaseMenu) modalReleaseMenu.scrollTop = 0;
 
           // B. 重置资产检索状态
           assetSearchInput.value = '';
@@ -1116,7 +1123,7 @@
         });
       }
 
-      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
+      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片（subcardTitle 等元素）的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1191,7 +1198,7 @@
 
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
-          // 优化 1 & 2：加上代理加速链接，并增加一键拷贝逻辑 (自带极致顺滑视觉反馈)
+          // 优化 2: 平台、大小、下载量、下载字样在移动端强制不换行 (加入 whitespace-nowrap 类，解决 squished 问题)
           tr.innerHTML = `
             <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate whitespace-nowrap">
               <div class="flex flex-col">
