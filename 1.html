@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 极致排版精修版</title>
+  <title>客户端列表 - 体验精修版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -31,7 +30,7 @@
       --text-xl: 1.25rem;
       --text-xl--line-height: 1.4;
       
-      --default-transition-duration: .15s;
+      --default-transition-duration: .2s;
       --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     }
 
@@ -53,7 +52,7 @@
       --ui-text-dimmed: var(--ui-color-neutral-400);
       --ui-text-muted: var(--ui-color-neutral-500);
       --ui-text-toned: var(--ui-color-neutral-600);
-      --ui-text: var(--ui-color-neutral-700);
+      --ui-text: var(--ui-text-focused, var(--ui-color-neutral-700));
       --ui-text-highlighted: var(--ui-color-neutral-900);
       --ui-text-inverted: #fff;
       --ui-bg: #fff;
@@ -67,34 +66,105 @@
       --ui-border-inverted: var(--ui-color-neutral-900);
     }
 
-    .bg-default { background-color: var(--ui-bg) !important; }
-    .bg-elevated { background-color: var(--ui-bg-elevated) !important; }
-    .text-default { color: var(--ui-text) !important; }
-    .text-muted { color: var(--ui-text-muted) !important; }
-    .text-dimmed { color: var(--ui-text-dimmed) !important; }
-    .text-highlighted { color: var(--ui-text-highlighted) !important; }
+    .dark {
+      --ui-bg: #0f172a; /* 护眼暗色 */
+      --ui-bg-muted: #0b0f19; /* 暗黑色背景 */
+      --ui-bg-elevated: #1e293b;
+      --ui-bg-accented: #334155;
+      --ui-bg-inverted: #ffffff;
+      
+      --ui-text: #94a3b8;
+      --ui-text-dimmed: #475569;
+      --ui-text-muted: #64748b;
+      --ui-text-toned: #cbd5e1;
+      --ui-text-highlighted: #f8fafc;
+      --ui-text-inverted: #0f172a;
+      
+      --ui-border: #1e293b;
+      --ui-border-muted: #1e293b;
+      --ui-border-accented: #334155;
+      --ui-border-inverted: #ffffff;
+    }
 
-    /* Ring 边框类 */
-    .ring {
-      box-shadow: inset 0 0 0 1px var(--tw-ring-color, var(--ui-border)) !important;
+    /* 全局背景色过渡 */
+    body {
+      background-color: var(--ui-bg-muted) !important;
+      color: var(--ui-text) !important;
+      transition: background-color 0.25s ease, color 0.25s ease !important;
     }
-    .ring-inset {
-      --tw-ring-inset: inset;
+
+    /* 3. 颜色类与底层 CSS 变量联动 */
+    .bg-white, .bg-default, .bg-default\/75 { 
+      background-color: var(--ui-bg) !important; 
     }
-    .ring-accented {
-      --tw-ring-color: var(--ui-border-accented) !important;
+    .bg-slate-50, .bg-slate-50\/50, .bg-slate-100 { 
+      background-color: var(--ui-bg-elevated) !important; 
     }
-    .ring-default {
-      --tw-ring-color: var(--ui-border) !important;
+    .hover\:bg-slate-50:hover { 
+      background-color: var(--ui-bg-elevated) !important; 
     }
-    .ring-inverted {
-      --tw-ring-color: var(--ui-border-inverted) !important;
+    .hover\:bg-slate-100:hover { 
+      background-color: var(--ui-bg-accented) !important; 
+    }
+    .bg-elevated { 
+      background-color: var(--ui-bg-elevated) !important; 
+    }
+
+    .text-slate-900, .text-slate-800 { 
+      color: var(--ui-text-highlighted) !important; 
+    }
+    .text-slate-700, .text-slate-600 { 
+      color: var(--ui-text) !important; 
+    }
+    .text-slate-500 { 
+      color: var(--ui-text-muted) !important; 
+    }
+    .text-slate-400 { 
+      color: var(--ui-text-dimmed) !important; 
+    }
+    .text-default { 
+      color: var(--ui-text) !important; 
+    }
+    .text-muted { 
+      color: var(--ui-text-muted) !important; 
+    }
+    .text-dimmed { 
+      color: var(--ui-text-dimmed) !important; 
+    }
+    .text-highlighted { 
+      color: var(--ui-text-highlighted) !important; 
+    }
+
+    /* 边框映射类 */
+    .border-slate-100, .border-slate-200, .border-slate-200\/60 {
+      border-color: var(--ui-border) !important;
+    }
+    .divide-slate-100 > * + * {
+      border-color: var(--ui-border) !important;
+    }
+
+    /* 修复外部主列表卡片右边框缺失：改用真实的 border，防止内阴影被 sticky 单元格背景覆盖 */
+    div[data-slot="root"].ring-default {
+      border: 1px solid var(--ui-border) !important;
+      box-shadow: none !important;
+      overflow: hidden;
+    }
+
+    /* 优化 1: 彻底隐藏 buggy 的绝对定位表格分割线，让 native border 100% 贯穿渲染 */
+    tr[data-slot="separator"] {
+      display: none !important;
+    }
+
+    /* 表头下分割线优化：直接挂在 th 元素上，自适应任意横向滚动宽度 */
+    thead th {
+      border-bottom: 1px solid var(--ui-border-accented) !important;
     }
 
     /* 输入框点击高亮蓝 */
     #search-input:focus, #search-input:focus-visible,
     #asset-search-input:focus, #asset-search-input:focus-visible,
-    #asset-platform-select:focus, #asset-platform-select:focus-visible {
+    #asset-platform-select:focus, #asset-platform-select:focus-visible,
+    #release-menu-search:focus, #release-menu-search:focus-visible {
       outline: none !important;
       border-color: transparent !important;
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
@@ -109,32 +179,19 @@
     .text-inverted { color: var(--ui-text-inverted) !important; }
 
     /* 表格分割线 */
-    table {
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-    thead th {
-      border-bottom: 1px solid var(--ui-border) !important;
-    }
     tbody tr td {
       border-bottom: 1px solid var(--ui-border-muted) !important;
     }
-    tbody tr:last-child td {
-      border-bottom: none !important;
+
+    /* 4. 磨砂玻璃自适应遮罩层 */
+    #download-modal {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+    .dark #download-modal {
+      background-color: rgba(15, 23, 42, 0.4) !important;
     }
 
-    .bg-\(--ui-border-accented\) {
-      background-color: var(--ui-border-accented) !important;
-    }
-
-    /* 2 列过滤栅格 */
-    @media (min-width: 64rem) {
-      .lg\:grid-cols-\[minmax\(0\,1\.4fr\)_minmax\(0\,0\.7fr\)\] {
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.7fr);
-      }
-    }
-
-    /* 3. 纯 CSS 遮罩 Lucide 图标 */
+    /* 5. 纯 CSS 遮罩 Lucide 图标 */
     .iconify {
       display: inline-block;
       width: 1.25em;
@@ -173,73 +230,46 @@
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
     }
-
-    .opacity-0 { opacity: 0 !important; }
-    .opacity-100 { opacity: 1 !important; }
-    
-    .check-mark {
-      transition: opacity 0.15s ease-in-out;
+    .i-lucide\:copy {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+    }
+    .i-lucide\:sun {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+    }
+    .i-lucide\:moon {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
     }
 
+    /* 6. 其他基础微调 */
     .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(4px);
     }
-
-    /* 4. GitHub 风格的 Markdown 解析辅助 CSS */
-    .prose-slate h1 { font-size: 1.5rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; }
-    .prose-slate h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; }
-    .prose-slate h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; color: #0f172a; }
-    .prose-slate p { margin-bottom: 0.75rem; line-height: 1.6; }
-    .prose-slate ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 0.75rem; }
-    .prose-slate li { margin-bottom: 0.25rem; display: list-item !important; }
-    .prose-slate code { background-color: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875rem; color: #0f172a; }
-    .prose-slate pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
-    .prose-slate pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
-    .prose-slate a { color: #0091ff; text-decoration: underline; }
-
-    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 (对应修改 2 & 修改 3) ==================== */
-    @media (max-width: 639px) {
-      #modal-card {
-        height: 100dvh !important; /* 动态视口高度，有效消除 Safari 地址栏变动产生的黑底空隙 */
-        padding-top: env(safe-area-inset-top, 0px); /* 自动沉入顶部刘海安全区域下方 */
-        padding-bottom: env(safe-area-inset-bottom, 0px); /* 自动沉入底部 Home 条安全区域上方 */
-        margin: 0 !important;
-        border-radius: 0 !important;
-      }
-      
-      body {
-        padding-top: env(safe-area-inset-top, 0px);
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-      }
-    }
-
-    /* 优化移动端滚动条可见性 (对应修改 3) */
-    #modal-scroll-body {
-      -webkit-overflow-scrolling: touch; /* 惯性回弹平滑硬件加速 */
-    }
-
-    /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
-    #modal-scroll-body::-webkit-scrollbar {
-      display: block !important;
-      width: 6px !important;
-      height: 6px !important;
-    }
-    #modal-scroll-body::-webkit-scrollbar-thumb {
-      background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
-      border-radius: 9999px !important;
-    }
-    #modal-scroll-body::-webkit-scrollbar-track {
-      background-color: transparent !important;
+    input {
+      outline: none;
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex justify-center">
+<!-- 优化 2: 移动端 px-2 紧密贴合外边缘，减少冗余空白 -->
+<body class="bg-white min-h-screen py-10 px-2 sm:px-6 lg:px-8 flex justify-center text-default transition-colors duration-200">
 
-  <!-- 网页的主卡片外框 (max-w-6xl 尺寸，与弹窗尺寸保持一致) -->
-  <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-2 sm:p-4">
+  <!-- 网页的主卡片外框 (优化 2: 移动端 p-1 缩减，最大化保留可视区域) -->
+  <div class="w-full max-w-6xl bg-default rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4 transition-colors duration-200">
     
-    <div class="space-y-5 p-4 sm:p-5">
+    <!-- 头部固定标题与日夜模式切换按钮 -->
+    <div class="border-b border-slate-100 pb-4 mb-4 flex justify-between items-center px-4 sm:px-5">
+      <h1 class="text-lg sm:text-xl font-bold text-slate-900">代理客户端下载</h1>
+      <button id="theme-toggle" class="text-slate-500 hover:text-slate-800 transition-colors p-2 rounded-lg hover:bg-slate-100 flex items-center justify-center gap-1.5 text-sm font-medium">
+        <span id="theme-toggle-icon" class="iconify i-lucide:moon size-5"></span>
+        <span id="theme-toggle-text" class="hidden sm:inline">夜间模式</span>
+      </button>
+    </div>
+
+    <!-- 优化 2: 移动端 p-2 (8px) 保持极佳布局密实感 -->
+    <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
         <div class="space-y-2">
@@ -298,7 +328,7 @@
 
       <!-- 结果数量显示 -->
       <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
-        <span>显示 <span id="visible-count" class="font-medium">14</span> / 14 个客户端</span>
+        <span>显示 <span id="visible-count" class="font-medium">10</span> / 10 个客户端</span>
         <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100">Android</span>
       </div>
 
@@ -319,130 +349,24 @@
               </thead>
               <tbody id="client-tbody" class="isolate divide-y divide-default">
                 
-                <!-- 1. Clash Verge Rev -->
+                <!-- 1. FlClash -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">Clash Verge Rev</p>
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">FlClash</p>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 2. ClashX.Meta -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">ClashX.Meta</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Meta 内核的 macOS Clash 图形客户端。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="MetaCubeX/ClashX.Meta" data-name="ClashX.Meta" data-desc="基于 Meta 内核的 macOS Clash 图形客户端。" data-website="https://github.com/MetaCubeX/ClashX.Meta">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/MetaCubeX/ClashX.Meta" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 3. v2rayN -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">v2rayN</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 4. v2rayNG -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">v2rayNG</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">Android 图形客户端，支持 Xray core 与 v2fly core。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="flex flex-wrap gap-1.5">
                       <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -453,17 +377,17 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/chen08209/FlClash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
                 </tr>
 
-                <!-- 5. Clash Meta for Android -->
+                <!-- 2. Clash Meta for Android -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -498,7 +422,7 @@
                   </td>
                 </tr>
 
-                <!-- 6. Clash Party -->
+                <!-- 3. Clash Party -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -535,16 +459,16 @@
                   </td>
                 </tr>
 
-                <!-- 7. GUI.for.SingBox -->
+                <!-- 4. Clash Verge Rev -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">GUI.for.SingBox</p>
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">Clash Verge Rev</p>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Wails 和 Vue 3 的轻量级 sing-box 桌面图形客户端。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -562,26 +486,26 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="GUI-for-Cores/GUI.for.SingBox" data-name="GUI.for.SingBox" data-desc="基于 Wails 和 Vue 3 的轻量级 sing-box 桌面图形客户端。" data-website="https://github.com/GUI-for-Cores/GUI.for.SingBox">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/GUI-for-Cores/GUI.for.SingBox" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
                 </tr>
 
-                <!-- 8. sing-box -->
+                <!-- 5. v2rayN -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">sing-box</p>
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">v2rayN</p>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理平台核心仓库，可作为多平台内核与生态入口。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -592,42 +516,38 @@
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">命令行</span>
+                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
                   </td>
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
                 </tr>
 
-                <!-- 9. karing -->
+                <!-- 6. v2rayNG -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">karing</p>
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">v2rayNG</p>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">支持 Clash / sing-box 路由规则的多平台代理工具。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">Android 图形客户端，支持 Xray core 与 v2fly core。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="flex flex-wrap gap-1.5">
                       <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">iOS</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -638,17 +558,17 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="KaringX/karing" data-name="karing" data-desc="支持 Clash / sing-box 路由规则的多平台代理工具。" data-website="https://github.com/KaringX/karing">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/KaringX/karing" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
                 </tr>
 
-                <!-- 10. Hiddify -->
+                <!-- 7. Hiddify -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -687,20 +607,25 @@
                   </td>
                 </tr>
 
-                <!-- 11. ClashX -->
+                <!-- 8. karing -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">ClashX</p>
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">karing</p>
+                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">面向 macOS 的 Clash 图形客户端。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">支持 Clash / sing-box 路由规则的多平台代理工具。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="flex flex-wrap gap-1.5">
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">iOS</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
                       <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -711,87 +636,17 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="ClashX-Pro/ClashX" data-name="ClashX" data-desc="面向 macOS 的 Clash 图形客户端。" data-website="https://github.com/ClashX-Pro/ClashX">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="KaringX/karing" data-name="karing" data-desc="支持 Clash / sing-box 路由规则的多平台代理工具。" data-website="https://github.com/KaringX/karing">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/ClashX-Pro/ClashX" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/KaringX/karing" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
                 </tr>
 
-                <!-- 12. mihomo -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">mihomo</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">MetaCubeX 的 mihomo 仓库，可作为多平台规则内核与生态入口。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">命令行</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="MetaCubeX/mihomo" data-name="mihomo" data-desc="MetaCubeX 的 mihomo 仓库，可作为多平台规则内核与生态入口。" data-website="https://github.com/MetaCubeX/mihomo">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/MetaCubeX/mihomo" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 13. ShellCrash -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">ShellCrash</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">在 Shell 环境中运行 sing-box / mihomo 的客户端与管理脚本。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">命令行</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="juewuy/ShellCrash" data-name="ShellCrash" data-desc="在 Shell 环境中运行 sing-box / mihomo 的客户端与管理脚本。" data-website="https://github.com/juewuy/ShellCrash">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/juewuy/ShellCrash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- 14. Surfboard -->
+                <!-- 9. Surfboard -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -825,6 +680,44 @@
                   </td>
                 </tr>
 
+                <!-- 10. sing-box (增加了 Android 平台支持标签) -->
+                <tr data-selected="false" class="client-row">
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <div class="min-w-0 space-y-1 py-2">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">sing-box</p>
+                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
+                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
+                      </div>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理平台核心仓库，可作为多平台内核与生态入口。</p>
+                    </div>
+                  </td>
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <div class="flex flex-wrap gap-1.5">
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
+                    </div>
+                  </td>
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">命令行</span>
+                  </td>
+                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
+                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
+                  </td>
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
+                    <div class="flex items-center justify-end gap-2">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
+                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                      </button>
+                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+
               </tbody>
             </table>
           </div>
@@ -835,11 +728,11 @@
   </div>
 
   <!-- ==================== 5. 全新 GitHub 实时 Release 弹窗 (Modal) ==================== -->
-  <!-- 遮罩层使用 bg-white/40 高毛玻璃，平滑淡入无闪烁，完美对应截图 1，摒弃截图 2 黑色背景 -->
-  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-4 md:p-6 lg:p-8 flex items-center justify-center transition-all duration-300">
+  <!-- 遮罩层使用 bg-white/40 高毛玻璃，外层不设大边距 (p-0 sm:p-2 md:p-3 lg:p-4) -->
+  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-2 md:p-3 lg:p-4 flex items-center justify-center transition-all duration-300">
     
-    <!-- 弹窗主体卡片 (对应修改 1：调整电脑端大小为 max-w-6xl，使其视觉比例像截图 2 首页卡片一样美观适中；内部弹性垂直排版) -->
-    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[90vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl">
+    <!-- 弹窗主体卡片 (最大高度悬浮为 sm:max-h-[95vh] 配合 my-2，电脑端最大宽度为 6xl) -->
+    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
       
       <!-- 弹窗顶部标头 (flex-shrink-0 固定不随内容滚动) -->
       <div class="border-b border-slate-100 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white z-10">
@@ -855,8 +748,9 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (对应修改 1 & 修改 2：移除原本底部的固定关闭按钮 Footer 栏。现在无边距贴合底部边缘，只有滚动到最底部才显示) -->
-      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-0 sm:pb-0 space-y-6 flex-1 overflow-y-auto">
+      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
+      <!-- 优化1: 进一步将 px 缩减、py-2 重设，使 GitHub Releases 上方的留白空间与下方完全一致，高保真对称 (对应修改 1) -->
+      <div id="modal-scroll-body" class="px-4 py-2 sm:px-6 sm:py-3 pb-4 sm:pb-6 flex-1 overflow-y-auto">
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -877,44 +771,33 @@
         </div>
 
         <!-- 成功加载的主渲染页面 -->
-        <div id="modal-loaded-state" class="hidden space-y-6">
+        <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
-          <!-- 第一层：官网/仓库跳转 -->
-          <div class="flex flex-wrap items-center gap-2.5">
-            <a id="modal-link-web" href="#" target="_blank" class="font-medium inline-flex items-center px-3 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-              <span class="iconify i-lucide:globe size-4"></span>官网
-            </a>
-            <a id="modal-link-repo" href="#" target="_blank" class="font-medium inline-flex items-center px-3 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-              <span class="iconify i-lucide:globe size-4"></span>仓库
-            </a>
-          </div>
-
-          <!-- 第二层：GitHub Releases 版本下拉菜单 -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
           <div class="space-y-2">
-            <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
+            <div class="flex flex-col space-y-0.5">
+              <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
+              <p id="modal-releases-subtitle" class="text-xs text-slate-400"></p>
+            </div>
             <div class="relative w-full md:w-80">
               <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary">
                 <span id="modal-release-text" class="truncate font-medium">请选择版本</span>
                 <span class="iconify i-lucide:chevron-down text-slate-400 size-5"></span>
               </button>
-              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-60 overflow-y-auto"></div>
+              
+              <!-- 带检索搜索框的高级 Release 选择选单 -->
+              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-80 overflow-y-auto">
+                <!-- 顶置检索输入框 (Search...) -->
+                <div class="p-2 sticky top-0 bg-white border-b border-slate-100 z-10">
+                  <input id="release-menu-search" type="text" placeholder="Search..." class="w-full rounded-md border border-slate-200 px-2.5 py-1.5 text-xs outline-none transition-shadow">
+                </div>
+                <!-- 动态渲染的版本项容器 -->
+                <div id="release-menu-items"></div>
+              </div>
             </div>
           </div>
 
-          <!-- 第三层：当前选中的 Release 版本子卡片 -->
-          <div class="bg-slate-50/50 border border-slate-100 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="space-y-1">
-              <h4 id="subcard-title" class="text-sm font-bold text-slate-800"></h4>
-              <p id="subcard-date" class="text-xs text-slate-400"></p>
-            </div>
-            <div class="flex items-center gap-2">
-              <span id="subcard-badge-type" class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-emerald-600 bg-emerald-50 border border-emerald-100">稳定版</span>
-              <span id="subcard-badge-files" class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-slate-600 bg-slate-100 border border-slate-200"></span>
-              <a id="subcard-view-btn" href="#" target="_blank" class="text-xs text-primary font-medium hover:underline">查看版本</a>
-            </div>
-          </div>
-
-          <!-- 第四层：版本说明 (优化：不设置滚动条，自适应高，展示全部内容) -->
+          <!-- 第二层：版本说明 (不设置滚动条，自适应高，展示全部内容) -->
           <div class="border border-slate-200 rounded-xl overflow-hidden mt-4">
             <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex justify-between items-center">
               <span class="font-semibold text-slate-800 text-sm">版本说明</span>
@@ -923,8 +806,8 @@
             <div id="release-notes-content" class="p-6 text-sm text-slate-700 prose prose-slate max-w-none leading-relaxed"></div>
           </div>
 
-          <!-- 第五层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件) -->
-          <div class="pt-4 border-t border-slate-100 space-y-4">
+          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件，修改 2: 移除了原本 assets 标题上方的分割线 border-t，过渡极为流畅) -->
+          <div class="space-y-4 pb-0">
             <h3 class="text-base font-bold text-slate-800">版本 assets</h3>
             
             <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -955,7 +838,7 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (平台、大小、下载量、更新日期全部统一使用 text-slate-600) -->
+            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto">
                 <table class="w-full text-left min-w-[700px]">
@@ -995,6 +878,12 @@
       const menuItems = document.querySelectorAll('.menu-item');
       const clientRows = document.querySelectorAll('.client-row');
 
+      // 主页主题切换元素 (修改 1)
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      const themeToggleIcon = document.getElementById('theme-toggle-icon');
+      const themeToggleText = document.getElementById('theme-toggle-text');
+      const htmlEl = document.documentElement;
+
       // 弹窗元素定义
       const downloadModal = document.getElementById('download-modal');
       const modalCard = document.getElementById('modal-card');
@@ -1009,18 +898,12 @@
       const modalFallbackBtn = document.getElementById('modal-fallback-btn');
       const modalLoadedState = document.getElementById('modal-loaded-state');
 
-      const modalLinkWeb = document.getElementById('modal-link-web');
-      const modalLinkRepo = document.getElementById('modal-link-repo');
-
+      const modalReleasesSubtitle = document.getElementById('modal-releases-subtitle');
       const modalReleaseBtn = document.getElementById('modal-release-btn');
       const modalReleaseMenu = document.getElementById('modal-release-menu');
       const modalReleaseText = document.getElementById('modal-release-text');
-
-      const subcardTitle = document.getElementById('subcard-title');
-      const subcardDate = document.getElementById('subcard-date');
-      const subcardBadgeType = document.getElementById('subcard-badge-type');
-      const subcardBadgeFiles = document.getElementById('subcard-badge-files');
-      const subcardViewBtn = document.getElementById('subcard-view-btn');
+      const releaseMenuSearch = document.getElementById('release-menu-search');
+      const releaseMenuItems = document.getElementById('release-menu-items');
 
       const releaseNotesTag = document.getElementById('release-notes-tag');
       const releaseNotesContent = document.getElementById('release-notes-content');
@@ -1031,6 +914,20 @@
       let selectedPlatform = 'all';
       let fetchedReleases = [];
       let activeReleaseIndex = 0;
+
+      // 1. 日夜间模式无缝平滑切换引擎 (修改 1)
+      themeToggleBtn.addEventListener('click', () => {
+        const isDark = htmlEl.classList.toggle('dark');
+        
+        // 瞬间流线更新按钮的 icon 遮罩类与文本
+        if (isDark) {
+          themeToggleIcon.className = "iconify i-lucide:sun size-5";
+          themeToggleText.textContent = "日间模式";
+        } else {
+          themeToggleIcon.className = "iconify i-lucide:moon size-5";
+          themeToggleText.textContent = "夜间模式";
+        }
+      });
 
       // 下拉菜单配置
       const initialActiveItem = document.querySelector('.menu-item[data-val="all"]');
@@ -1146,7 +1043,6 @@
           const repoPath = btn.getAttribute('data-repo');
           const clientName = btn.getAttribute('data-name');
           const clientDesc = btn.getAttribute('data-desc');
-          const websiteUrl = btn.getAttribute('data-website');
 
           const activeRow = btn.closest('tr');
           const rowBadgeContainers = activeRow.cells[0].querySelectorAll('span');
@@ -1158,8 +1054,7 @@
           modalClientName.textContent = clientName;
           modalClientDesc.textContent = clientDesc;
 
-          modalLinkWeb.href = websiteUrl;
-          modalLinkRepo.href = `https://github.com/${repoPath}`;
+          modalReleasesSubtitle.textContent = `${repoPath} · 获取中...`;
           modalFallbackBtn.href = `https://github.com/${repoPath}/releases`;
 
           try {
@@ -1171,6 +1066,8 @@
 
             modalLoadingState.classList.add('hidden');
             modalLoadedState.classList.remove('hidden');
+
+            modalReleasesSubtitle.textContent = `${repoPath} · ${fetchedReleases.length} 个版本`;
 
             activeReleaseIndex = 0;
             buildReleaseMenu();
@@ -1198,49 +1095,69 @@
         if (e.target === downloadModal) closeModal();
       });
 
+      // 版本 Releases 按钮点击触发
       modalReleaseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         modalReleaseMenu.classList.toggle('hidden');
+        if (!modalReleaseMenu.classList.contains('hidden')) {
+          releaseMenuSearch.value = ''; // 清空检索词
+          buildReleaseMenu(); // 还原列表
+          setTimeout(() => releaseMenuSearch.focus(), 50); // 自动聚焦检索输入框
+        }
       });
 
-      function buildReleaseMenu() {
-        modalReleaseMenu.innerHTML = '';
+      // 版本 Releases 选单内置检索输入监听
+      releaseMenuSearch.addEventListener('click', (e) => e.stopPropagation()); // 防止点击输入框关闭菜单
+      releaseMenuSearch.addEventListener('input', () => {
+        buildReleaseMenu(releaseMenuSearch.value.trim().toLowerCase());
+      });
+
+      // 构建带检索及双行排版的高级 Releases 选择选单 (完美对照截图 2)
+      function buildReleaseMenu(query = '') {
+        releaseMenuItems.innerHTML = '';
         fetchedReleases.forEach((rel, index) => {
+          const tagName = rel.tag_name;
+          const relName = rel.name || rel.tag_name;
+          const fullText = `${tagName} ${relName}`.toLowerCase();
+
+          // 检索过滤
+          if (query && !fullText.includes(query)) {
+            return;
+          }
+
           const btn = document.createElement('button');
-          btn.className = "w-full text-left px-4 py-2 hover:bg-slate-50 transition-colors truncate block text-sm text-slate-700";
-          btn.textContent = `${rel.tag_name} • ${rel.name || rel.tag_name}`;
-          btn.addEventListener('click', () => {
+          const isSelected = (index === activeReleaseIndex);
+          btn.className = `w-full text-left px-4 py-2.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 ${isSelected ? 'bg-slate-50/80 font-medium' : ''}`;
+          
+          const date = new Date(rel.published_at);
+          const formattedDate = date.toLocaleDateString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit'
+          }).replace(/\//g, '/'); // 保证 YYYY/MM/DD
+
+          btn.innerHTML = `
+            <div class="space-y-0.5 truncate flex-1 pointer-events-none">
+              <p class="font-semibold text-slate-800 text-sm truncate">${tagName} · ${relName}</p>
+              <p class="text-xs text-slate-400 font-normal">${formattedDate} · ${rel.assets.length} 个文件</p>
+            </div>
+            <span class="check-mark iconify i-lucide:check text-slate-900 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
+          `;
+
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             activeReleaseIndex = index;
             modalReleaseMenu.classList.add('hidden');
             renderSelectedRelease();
           });
-          modalReleaseMenu.appendChild(btn);
+          releaseMenuItems.appendChild(btn);
         });
       }
 
+      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
 
-        modalReleaseText.textContent = `${rel.tag_name} • ${rel.name || rel.tag_name}`;
-        subcardTitle.textContent = `${rel.name || rel.tag_name} 的下载文件`;
-        
-        const date = new Date(rel.published_at);
-        const formattedDate = date.toLocaleDateString('zh-CN', {
-          year: 'numeric', month: '2-digit', day: '2-digit'
-        });
-        subcardDate.textContent = `发布于 ${formattedDate}`;
-
-        if (rel.prerelease) {
-          subcardBadgeType.textContent = '预发布';
-          subcardBadgeType.className = "font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-amber-600 bg-amber-50 border border-amber-100";
-        } else {
-          subcardBadgeType.textContent = '稳定版';
-          subcardBadgeType.className = "font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-emerald-600 bg-emerald-50 border border-emerald-100";
-        }
-
-        subcardBadgeFiles.textContent = `${rel.assets.length} 个文件`;
-        subcardViewBtn.href = rel.html_url;
+        modalReleaseText.textContent = `${rel.tag_name} · ${rel.name || rel.tag_name}`;
 
         releaseNotesTag.textContent = rel.tag_name;
         if (rel.body) {
@@ -1277,7 +1194,7 @@
           if (platform === 'linux') searchBlob += " deb rpm appimage tar gz linux ubuntu arch deepin fedora redhat";
           if (platform === 'android') searchBlob += " apk android phone mobile";
 
-          // A. 文件搜索词判定 (文件名 + 平台深度匹配)
+          // A. 文件搜索词判定 (文件名 + platform 深度匹配)
           const matchesSearch = !searchQuery || searchBlob.includes(searchQuery);
 
           // B. 平台下拉单选判定
@@ -1321,9 +1238,16 @@
             <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${downloadsText}</td>
             <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${dateFormatted}</td>
             <td class="p-3 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
-              <a href="${asset.browser_download_url}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg whitespace-nowrap">
-                <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
-              </a>
+              <div class="flex items-center justify-end gap-2">
+                <!-- 拷贝链接按钮 (带自定义 Lucide 拷贝图标) -->
+                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-default bg-default hover:bg-elevated border border-slate-200 rounded-lg whitespace-nowrap" data-url="${asset.browser_download_url}">
+                  <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
+                </button>
+                <!-- 加速下载链接 -->
+                <a href="${proxyUrl}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg whitespace-nowrap">
+                  <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
+                </a>
+              </div>
             </td>
           `;
           tbody.appendChild(tr);
