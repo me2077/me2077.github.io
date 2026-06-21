@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 弹窗组件深度重置版</title>
+  <title>客户端列表 - Releases 选单完美重置版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -156,7 +157,7 @@
     }
     .i-lucide\:search {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
     }
     .i-lucide\:chevron-down {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
@@ -247,13 +248,13 @@
     }
   </style>
 </head>
-<!-- 页面底色白色，移动端外边距 px-2 (8px) -->
+<!-- 页面主体底色白色，移动端左右外补丁设为 px-2 (8px，对应修改) -->
 <body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (移动端内边距 p-1 (4px)) -->
+  <!-- 网页的主卡片外框 (移动端内补丁从 p-2 (8px) 缩减至 p-1 (4px)，对应修改) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
-    <!-- 客户端内容容器 (移动端内边距 p-2 (8px)) -->
+    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)，对应修改) -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -317,7 +318,7 @@
         <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100">Android</span>
       </div>
 
-      <!-- 表格区域 -->
+      <!-- 表格区域 (移除了 absolute separator 彻底解决右侧断裂) -->
       <div data-slot="root" class="bg-default ring ring-default overflow-hidden rounded-xl">
         <div data-slot="body" class="p-0 sm:p-0">
           <div data-slot="root" class="relative overflow-auto overflow-x-auto">
@@ -665,7 +666,7 @@
                   </td>
                 </tr>
 
-                <!-- 10. sing-box (增加了 Android 平台支持标签) -->
+                <!-- 10. sing-box -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -674,7 +675,7 @@
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理代理平台核心仓库，可作为多平台内核与生态入口。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理平台核心仓库，可作为多平台内核与生态入口。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -755,7 +756,7 @@
         </div>
 
         <!-- 成功加载的主渲染页面 -->
-        <div id="modal-loaded-state" class="hidden space-y-6 pb-0">
+        <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
           <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
           <div class="space-y-2">
@@ -822,7 +823,7 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距) -->
+            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距，修改 1 将 ID 精准绑定在内侧子 div) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto" id="assets-table-wrapper">
                 <table class="w-full text-left min-w-[700px]">
@@ -894,6 +895,9 @@
       let selectedPlatform = 'all';
       let fetchedReleases = [];
       let activeReleaseIndex = 0;
+      
+      // A. 新增状态管理标记：判断是否为跨客户端切换 (对应最新修改)
+      let needsReleaseScrollReset = false;
 
       // 下拉菜单配置
       const initialActiveItem = document.querySelector('.menu-item[data-val="all"]');
@@ -989,18 +993,21 @@
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
 
-          // A. 开启页面时锁定底部背景滚动并重置所有滚动器位置
+          // A. 开启页面时锁定底部背景滚动
           document.body.classList.add('overflow-hidden');
           
+          // B. 标记切换客户端：通知下拉菜单在下一次可见时执行重置 (对应最新修改)
+          needsReleaseScrollReset = true;
+
+          // 强制重置滚动条位置
           if (modalScrollBody) modalScrollBody.scrollTop = 0;
           if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
-          if (modalReleaseMenu) modalReleaseMenu.scrollTop = 0;
 
-          // B. 重置资产检索状态
+          // C. 重置资产检索状态
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // C. 双层过渡淡入
+          // D. 双层过渡淡入
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
           modalCard.classList.remove('scale-95', 'opacity-0');
@@ -1040,13 +1047,14 @@
             modalReleasesSubtitle.textContent = `${repoPath} · ${fetchedReleases.length} 个版本`;
 
             activeReleaseIndex = 0;
-            buildReleaseMenu();
+            
+            // 此处由于 modalReleaseMenu 是隐藏的，不再执行无效的 scrollTop = 0 赋值
+            buildReleaseMenu(); // 初始化构建菜单
             renderSelectedRelease();
 
-            // 双重重置：数据完全异步渲染就绪后，二次强制置顶/置左滚动条 (解决修改要求 1)
+            // E. 异步数据就绪并且 DOM 完全展现时，二次强制重置所有滑动条状态
             if (modalScrollBody) modalScrollBody.scrollTop = 0;
             if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
-            if (modalReleaseMenu) modalReleaseMenu.scrollTop = 0;
 
           } catch (err) {
             modalLoadingState.classList.add('hidden');
@@ -1070,14 +1078,23 @@
         if (e.target === downloadModal) closeModal();
       });
 
-      // 版本 Releases 按钮点击触发
+      // 版本 Releases 按钮点击触发 (优化单客户端不重置，跨客户端首次进入完美重置，对应最新修改)
       modalReleaseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         modalReleaseMenu.classList.toggle('hidden');
         if (!modalReleaseMenu.classList.contains('hidden')) {
-          releaseMenuSearch.value = ''; // 清空检索词
-          buildReleaseMenu(); // 还原列表
-          setTimeout(() => releaseMenuSearch.focus(), 50); // 自动聚焦检索输入框
+          
+          // 仅在发生了跨客户端切换时，在展现的这一秒执行首展重置与清空
+          if (needsReleaseScrollReset) {
+            modalReleaseMenu.scrollTop = 0; // 精准重置滚动轴
+            releaseMenuSearch.value = ''; // 清空检索词
+            buildReleaseMenu(); // 还原列表
+            needsReleaseScrollReset = false; // 关闭标记
+          }
+
+          setTimeout(() => {
+            releaseMenuSearch.focus(); // 自动聚焦检索输入框
+          }, 50);
         }
       });
 
@@ -1120,6 +1137,22 @@
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             activeReleaseIndex = index;
+
+            // 动态更新单选对勾及背景高亮状态，不重新加载整个 DOM 树以完美锁死上一次的滚动位置
+            const allButtons = releaseMenuItems.querySelectorAll('button');
+            allButtons.forEach((btnEl, btnIndex) => {
+              const check = btnEl.querySelector('.check-mark');
+              if (btnIndex === index) {
+                check.classList.remove('opacity-0');
+                check.classList.add('opacity-100');
+                btnEl.classList.add('bg-slate-50/80', 'font-medium');
+              } else {
+                check.classList.remove('opacity-100');
+                check.classList.add('opacity-0');
+                btnEl.classList.remove('bg-slate-50/80', 'font-medium');
+              }
+            });
+
             modalReleaseMenu.classList.add('hidden');
             renderSelectedRelease();
           });
