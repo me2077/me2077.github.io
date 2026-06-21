@@ -1,22 +1,3 @@
-This issue occurs because when a user scrolls down the GITHUB RELEASES dropdown
-menu to select an older version, the browser caches that dropdown panel's
-vertical scroll position (scrollTop). When the modal is closed and reopened (or
-when clicking the dropdown button on a new session), the dropdown list remained
-scrolled down.
-
-🛠️ Solution:
-
-To completely resolve this and ensure the version selector is always perfectly
-reset to its default top position:
-
-1.  重置下拉菜单滚动位置 (Reset Dropdown Scroll Position)： 在点击展开版本列表的 modalReleaseBtn
-    按钮事件中，以及点击外部“查看下载”开启弹窗时，强制将下拉选单容器（#modal-release-menu）的纵向滚动归零（scrollTop
-    = 0）。
-2.  清空并还原下拉搜索栏 (Reset Dropdown Search)： 在打开弹窗和打开下拉菜单时，一并重置并清空下拉选单内部的 Search...
-    输入框，重新构建完整列表，确保每次点击展开时，用户看到的第一项永远是列表最顶部的最新版本，没有任何遗留的滚动偏移和搜索过滤。
-
-Here is the fully optimized and refined HTML code:
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
