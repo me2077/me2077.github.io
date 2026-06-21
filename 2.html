@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 加速下载与拷贝版</title>
+  <title>客户端列表 - 卡片边距与分割线优化版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -109,6 +109,11 @@
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
+    /* 保证表头分割实线的精准与完全对称 */
+    thead th {
+      border-bottom: 1px solid var(--ui-border-accented) !important;
+    }
+
     /* 按钮与标签 */
     .bg-primary { background-color: var(--ui-primary) !important; }
     .bg-primary\/10 { background-color: rgba(0, 145, 255, 0.08) !important; }
@@ -121,9 +126,6 @@
     table {
       border-collapse: separate;
       border-spacing: 0;
-    }
-    thead th {
-      border-bottom: 1px solid var(--ui-border) !important;
     }
     tbody tr td {
       border-bottom: 1px solid var(--ui-border-muted) !important;
@@ -143,7 +145,7 @@
       }
     }
 
-    /* 3. 纯 CSS 遮罩 Lucide 图标 (添加 copy 拷贝图标) */
+    /* 3. 纯 CSS 遮罩 Lucide 图标 */
     .iconify {
       display: inline-block;
       width: 1.25em;
@@ -235,8 +237,8 @@
     /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
     #modal-scroll-body::-webkit-scrollbar {
       display: block !important;
-      width: 6px !important;
-      height: 6px !important;
+      width: 6px;
+      height: 6px;
     }
     #modal-scroll-body::-webkit-scrollbar-thumb {
       background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
@@ -247,10 +249,11 @@
     }
   </style>
 </head>
-<body class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex justify-center">
+<!-- 修改 2：缩减移动端外边边距（px-1.5），高保真贴紧移动视口，减少卡片两侧空隙 -->
+<body class="bg-white min-h-screen py-4 px-1.5 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (max-w-6xl 尺寸) -->
-  <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-2 sm:p-4">
+  <!-- 网页的主卡片外框 (修改 2：手机端边距降至 p-1 节省空间) -->
+  <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
     <div class="space-y-5 p-4 sm:p-5">
       <!-- 2 列过滤筛选 -->
@@ -328,7 +331,7 @@
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold min-w-20 whitespace-nowrap">来源</th>
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted font-semibold sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">操作</th>
                 </tr>
-                <tr data-slot="separator" class="absolute z-1 left-0 w-full h-px bg-(--ui-border-accented)"></tr>
+                <!-- 修改 1：移除了会导致分割线在移动端对不齐、残断、左右大小不一的 absolute separator tr 占位行 -->
               </thead>
               <tbody id="client-tbody" class="isolate divide-y divide-default">
                 
@@ -663,7 +666,7 @@
                   </td>
                 </tr>
 
-                <!-- 10. sing-box (增加了 Android 平台支持标签) -->
+                <!-- 10. sing-box -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -731,8 +734,8 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (对应修改 1：移除底部关闭面板及占位，assets 表格底边直接贴合弹窗最底侧边缘，底边距设为 0) -->
-      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 修改 1：收缩顶部内边距并移除 space-y-6 以减小 GitHub Releases 顶置间距 -->
+      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
+      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 修改 1：收缩顶部内边距并排版 -->
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -755,7 +758,7 @@
         <!-- 成功加载的主渲染页面 -->
         <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
-          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位) -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
@@ -1114,7 +1117,7 @@
         });
       }
 
-      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
+      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片（subcardTitle 等元素）的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1134,7 +1137,7 @@
       assetSearchInput.addEventListener('input', renderAssetsTable);
       assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 7. 弹窗资产筛选逻辑
+      // 7. 重构后的弹窗资产筛选逻辑
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
