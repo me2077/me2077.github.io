@@ -1,11 +1,12 @@
 
+
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - GitHub 修复运行版</title>
+  <title>客户端列表 - 精雕细琢终极版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -383,7 +384,7 @@
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
+                    <span class="font-medium inline-flex inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
                   </td>
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
@@ -658,7 +659,7 @@
                   </td>
                 </tr>
 
-                <!-- 10. sing-box -->
+                <!-- 10. sing-box (增加了 Android 平台支持标签) -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -726,8 +727,8 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
-      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-0 sm:pb-0 space-y-6 flex-1 overflow-y-auto">
+      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部) -->
+      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 修改 1：收缩顶部内边距并移除 space-y-6 以减小 GitHub Releases 顶置间距 -->
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -748,9 +749,9 @@
         </div>
 
         <!-- 成功加载的主渲染页面 -->
-        <div id="modal-loaded-state" class="hidden space-y-6 pb-0">
+        <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
-          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位) -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
@@ -783,8 +784,8 @@
             <div id="release-notes-content" class="p-6 text-sm text-slate-700 prose prose-slate max-w-none leading-relaxed"></div>
           </div>
 
-          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件) -->
-          <div class="pt-4 border-t border-slate-100 space-y-4 pb-4 sm:pb-6">
+          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件，修改 2: 移除了 border-t 顶部分割线) -->
+          <div class="space-y-4 pb-0">
             <h3 class="text-base font-bold text-slate-800">版本 assets</h3>
             
             <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -1129,7 +1130,7 @@
       assetSearchInput.addEventListener('input', renderAssetsTable);
       assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 7. 弹窗资产筛选逻辑
+      // 7. 重构后的弹窗资产筛选逻辑
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1151,7 +1152,7 @@
           if (platform === 'linux') searchBlob += " deb rpm appimage tar gz linux ubuntu arch deepin fedora redhat";
           if (platform === 'android') searchBlob += " apk android phone mobile";
 
-          // A. 文件搜索词判定 (文件名 + 平台深度匹配)
+          // A. 文件搜索词判定 (文件名 + platform 深度匹配)
           const matchesSearch = !searchQuery || searchBlob.includes(searchQuery);
 
           // B. 平台下拉单选判定
@@ -1180,6 +1181,7 @@
 
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
+          // 优化 2: 平台、大小、下载量、下载字样在移动端强制不换行 (加入 whitespace-nowrap 类，解决 squished 问题)
           tr.innerHTML = `
             <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate whitespace-nowrap">
               <div class="flex flex-col">
