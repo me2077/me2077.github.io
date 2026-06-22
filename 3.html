@@ -7,6 +7,12 @@
   <title>客户端列表 - 完全修复终极版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 配置 Tailwind 支持 class 级别的 dark mode -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
   <!-- 引入 Marked.js Markdown 解析器 -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -64,6 +70,39 @@
       --ui-border-muted: var(--ui-color-neutral-100);
       --ui-border-accented: var(--ui-color-neutral-300);
       --ui-border-inverted: var(--ui-color-neutral-900);
+    }
+
+    /* 2. 夜间模式变量（完美契合截图中的蓝黑 Navy 色调） */
+    .dark {
+      --ui-color-neutral-50: #0d1527;
+      --ui-color-neutral-100: #111a2e;
+      --ui-color-neutral-200: #1d2b45;
+      --ui-color-neutral-300: #233554;
+      --ui-color-neutral-400: #5d7290;
+      --ui-color-neutral-500: #8da2c4;  
+      --ui-color-neutral-600: #cbd5e1;
+      --ui-color-neutral-700: #cbd5e1;
+      --ui-color-neutral-800: #f8fafc;
+      --ui-color-neutral-900: #ffffff;
+
+      --ui-primary: #0091ff;
+      --ui-success: #10b981;
+
+      --ui-text-dimmed: var(--ui-color-neutral-400);
+      --ui-text-muted: var(--ui-color-neutral-500);  
+      --ui-text-toned: var(--ui-color-neutral-600);
+      --ui-text: var(--ui-text-focused, var(--ui-color-neutral-700));
+      --ui-text-highlighted: var(--ui-color-neutral-900);
+      --ui-text-inverted: #080d1a;
+      --ui-bg: #0d1527;              /* 卡片暗底色 */
+      --ui-bg-muted: #080d1a;        /* 页面暗底色 */
+      --ui-bg-elevated: #111a2e;     /* 输入框/标签暗底色 */
+      --ui-bg-accented: #1e293b;
+      --ui-bg-inverted: #fff;
+      --ui-border: #1d2b45;
+      --ui-border-muted: #111a2e;
+      --ui-border-accented: #233554;
+      --ui-border-inverted: #fff;
     }
 
     .bg-default { background-color: var(--ui-bg) !important; }
@@ -139,7 +178,7 @@
 
     /* 2 列过滤栅格 */
     @media (min-width: 64rem) {
-      .lg\:grid-cols-\[minmax\(0\,1\.4fr\)_minmax\(0\,0\.7fr\)\] {
+      .lg\:grid-cols-\[minmax\(0\,1\.4fr\)_minmax\(0\,0\,0\.7fr\)\] {
         grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.7fr);
       }
     }
@@ -195,8 +234,12 @@
       transition: opacity 0.15s ease-in-out;
     }
 
+    /* 修复表格右侧固定列的背景透明度 */
     .bg-default\/75 {
-      background-color: rgba(255, 255, 255, 0.65);
+      background-color: rgba(255, 255, 255, 0.75);
+    }
+    .dark .bg-default\/75 {
+      background-color: rgba(13, 21, 39, 0.85) !important;
     }
 
     /* 4. GitHub 风格的 Markdown 解析辅助 CSS */
@@ -211,6 +254,11 @@
     .prose-slate pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
     .prose-slate a { color: #0091ff; text-decoration: underline; }
 
+    /* Markdown 在夜间模式下的样式适配 */
+    .dark .prose-slate h1, .dark .prose-slate h2, .dark .prose-slate h3, .dark .prose-slate code { color: #f8fafc; }
+    .dark .prose-slate h2 { border-bottom: 1px solid #1d2b45; }
+    .dark .prose-slate code { background-color: #1b263b; }
+
     /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
     @media (max-width: 639px) {
       #modal-card {
@@ -222,7 +270,8 @@
       }
       
       body {
-        padding-top: env(safe-area-inset-top, 0px);
+        /* 在移动端留出标题栏高度加安全区域高度 */
+        padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
         padding-bottom: env(safe-area-inset-bottom, 0px);
       }
     }
@@ -247,13 +296,37 @@
     }
   </style>
 </head>
-<!-- 页面主体底色白色，移动端左右外补丁设为 px-2 (8px) -->
-<body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
+<!-- 页面主体增加了 pt-24 / sm:pt-32 确保加宽后的顶部标题栏不遮挡内容，支持过渡动画 -->
+<body class="bg-white dark:bg-[#080d1a] min-h-screen pt-24 pb-4 px-2 sm:pt-32 sm:pb-10 sm:px-6 lg:px-8 flex justify-center items-start transition-colors duration-200">
 
-  <!-- 网页的主卡片外框 (手机端内补丁从 p-2 (8px) 缩减至 p-1 (4px)，节省横向空间) -->
-  <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
+  <!-- ==================== 顶部固定标题栏 ==================== -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-white/80 dark:bg-[#080d1a]/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex justify-center w-full transition-colors duration-200">
+    <!-- 将高度调整为 h-16 sm:h-20 -->
+    <div class="w-full max-w-6xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <span class="iconify i-lucide:globe text-primary size-6 sm:size-8"></span>
+        <!-- 将字体大小调整为 text-xl sm:text-2xl -->
+        <span class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-white tracking-wide transition-colors duration-200">各平台代理客户端</span>
+      </div>
+      
+      <!-- 日间/夜间模式切换按钮 -->
+      <button id="theme-toggle" class="flex items-center justify-center p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:scale-105 active:scale-95 transition-all duration-200" title="切换主题">
+        <!-- 月亮图标 (日间模式可见) -->
+        <svg id="theme-toggle-dark-icon" class="hidden w-5.5 h-5.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+        </svg>
+        <!-- 太阳图标 (夜间模式可见) -->
+        <svg id="theme-toggle-light-icon" class="hidden w-5.5 h-5.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 网页的主卡片外框 -->
+  <div class="w-full max-w-6xl bg-white dark:bg-[#0d1527] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 dark:border-slate-800/60 p-1 sm:p-4 transition-colors duration-200">
     
-    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)) -->
+    <!-- 客户端内容容器 -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -267,11 +340,11 @@
           </div>
         </div>
 
-        <!-- 平台下拉筛选 (原生 select 体验，修正了 JS 初始化逻辑) -->
+        <!-- 平台下拉筛选 -->
         <div class="space-y-2 relative">
           <p class="text-xs font-semibold uppercase text-muted">平台</p>
           <div class="relative w-full">
-            <select id="platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-50 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9 md:text-sm">
+            <select id="platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-50 dark:hover:bg-slate-800/40 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9 md:text-sm">
               <option value="all">全部平台</option>
               <option value="Android">Android</option>
               <option value="Windows">Windows</option>
@@ -289,10 +362,10 @@
       <!-- 结果数量显示 -->
       <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
         <span>显示 <span id="visible-count" class="font-medium">10</span> / 10 个客户端</span>
-        <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100">Android</span>
+        <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100 dark:bg-slate-800">Android</span>
       </div>
 
-      <!-- 表格区域 (移除了 absolute separator 彻底解决右侧断裂) -->
+      <!-- 表格区域 -->
       <div data-slot="root" class="bg-default ring ring-default overflow-hidden rounded-xl">
         <div data-slot="body" class="p-0 sm:p-0">
           <div data-slot="root" class="relative overflow-auto overflow-x-auto">
@@ -310,7 +383,7 @@
               <tbody id="client-tbody" class="isolate divide-y divide-default">
                 
                 <!-- 1. FlClash -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -348,7 +421,7 @@
                 </tr>
 
                 <!-- 2. Clash Meta for Android -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -383,7 +456,7 @@
                 </tr>
 
                 <!-- 3. Clash Party -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -420,7 +493,7 @@
                 </tr>
 
                 <!-- 4. Clash Verge Rev -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -457,7 +530,7 @@
                 </tr>
 
                 <!-- 5. v2rayN -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -494,7 +567,7 @@
                 </tr>
 
                 <!-- 6. v2rayNG -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -529,7 +602,7 @@
                 </tr>
 
                 <!-- 7. Hiddify -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -568,7 +641,7 @@
                 </tr>
 
                 <!-- 8. karing -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -607,7 +680,7 @@
                 </tr>
 
                 <!-- 9. Surfboard -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -641,7 +714,7 @@
                 </tr>
 
                 <!-- 10. sing-box -->
-                <tr data-selected="false" class="client-row">
+                <tr data-selected="false" class="client-row hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-colors duration-150">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
                       <div class="flex flex-wrap items-center gap-2">
@@ -689,21 +762,21 @@
 
   <!-- ==================== 5. 全新 GitHub 实时 Release 弹窗 (Modal) ==================== -->
   <!-- 遮罩层使用 bg-white/40 高毛玻璃，外层不设大边距 (p-0 sm:p-2 md:p-3 lg:p-4) -->
-  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-2 md:p-3 lg:p-4 flex items-center justify-center transition-all duration-300">
+  <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 dark:bg-black/60 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-2 md:p-3 lg:p-4 flex items-center justify-center transition-all duration-300">
     
     <!-- 弹窗主体卡片 (最大高度悬浮为 sm:max-h-[95vh] 配合 my-2，电脑端最大宽度为 6xl) -->
-    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
+    <div id="modal-card" class="bg-white dark:bg-[#0d1527] w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-800 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
       
       <!-- 弹窗顶部标头 (flex-shrink-0 固定不随内容滚动) -->
-      <div class="border-b border-slate-100 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white z-10">
+      <div class="border-b border-slate-100 dark:border-slate-800 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white dark:bg-[#0d1527] z-10">
         <div class="space-y-1.5">
           <div class="flex flex-wrap items-center gap-2">
-            <h2 id="modal-client-name" class="text-xl font-bold text-slate-900">VPN 客户端下载</h2>
+            <h2 id="modal-client-name" class="text-xl font-bold text-slate-900 dark:text-white">VPN 客户端下载</h2>
             <div id="modal-client-badges" class="flex gap-1.5"></div>
           </div>
-          <p id="modal-client-desc" class="text-sm text-slate-500"></p>
+          <p id="modal-client-desc" class="text-sm text-slate-500 dark:text-slate-400"></p>
         </div>
-        <button id="modal-close-x" class="text-slate-400 hover:text-slate-600 transition-colors p-1.5 rounded-lg hover:bg-slate-50">
+        <button id="modal-close-x" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">
           <span class="iconify i-lucide:x size-5"></span>
         </button>
       </div>
@@ -711,11 +784,11 @@
       <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
       <div id="modal-scroll-body" class="p-4 sm:p-6 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 收缩顶部内边距并排版 -->
         
-        <!-- 加载中状态 (截图 1) -->
+        <!-- 加载中状态 -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
           <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
           <div class="text-center space-y-1">
-            <h3 class="text-base font-bold text-slate-800">正在从 GitHub 获取实时 Release 资产...</h3>
+            <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">正在从 GitHub 获取实时 Release 资产...</h3>
             <p class="text-sm text-slate-400">正在按版本和平台自动筛选 GitHub release 资产，请稍候。</p>
           </div>
         </div>
@@ -723,7 +796,7 @@
         <!-- 加载失败错误备份 -->
         <div id="modal-error-state" class="hidden flex flex-col items-center justify-center py-16 space-y-4 text-center">
           <span class="text-red-500 font-semibold text-base">GitHub API 获取失败</span>
-          <p id="modal-error-msg" class="text-sm text-slate-500 max-w-md">可能已经超过了 GitHub 匿名的 API 访问速率限制，您可以直接前往 GitHub 仓库获取资产下载。</p>
+          <p id="modal-error-msg" class="text-sm text-slate-500 dark:text-slate-400 max-w-md"></p>
           <a id="modal-fallback-btn" href="#" target="_blank" class="font-medium inline-flex items-center px-4 py-2 text-sm text-inverted bg-primary hover:bg-primary/90 rounded-lg gap-2">
             <span class="iconify i-lucide:globe size-4"></span>前往 GitHub 仓库
           </a>
@@ -732,24 +805,24 @@
         <!-- 成功加载的主渲染页面 -->
         <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
-          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
               <p id="modal-releases-subtitle" class="text-xs text-slate-400"></p>
             </div>
-            <!-- 下拉菜单触发按钮：注入悬停和弹性特效 (对应修改 2) -->
+            <!-- 下拉菜单触发按钮 -->
             <div class="relative w-full md:w-80">
-              <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200">
+              <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111a2e] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200">
                 <span id="modal-release-text" class="truncate font-medium">请选择版本</span>
                 <span class="iconify i-lucide:chevron-down text-slate-400 size-5"></span>
               </button>
               
-              <!-- 带检索搜索框的高级 Release 选择选单 (Releases 选择子列表：注入 hover 灰底及对勾反馈，对应修改 2) -->
-              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-80 overflow-y-auto">
-                <!-- 顶置检索输入框 (Search...) -->
-                <div class="p-2 sticky top-0 bg-white border-b border-slate-100 z-10">
-                  <input id="release-menu-search" type="text" placeholder="Search..." class="w-full rounded-md border border-slate-200 px-2.5 py-1.5 text-xs outline-none transition-shadow">
+              <!-- 带检索搜索框的高级 Release 选择选单 -->
+              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white dark:bg-[#111a2e] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl py-1 z-50 text-sm text-slate-700 dark:text-slate-300 max-h-80 overflow-y-auto">
+                <!-- 顶置检索输入框 -->
+                <div class="p-2 sticky top-0 bg-white dark:bg-[#111a2e] border-b border-slate-100 dark:border-slate-800 z-10">
+                  <input id="release-menu-search" type="text" placeholder="Search..." class="w-full rounded-md border border-slate-200 dark:border-slate-800 px-2.5 py-1.5 text-xs outline-none transition-shadow bg-default text-highlighted">
                 </div>
                 <!-- 动态渲染的版本项容器 -->
                 <div id="release-menu-items"></div>
@@ -757,18 +830,18 @@
             </div>
           </div>
 
-          <!-- 第二层：版本说明 (不设置滚动条，自适应高，展示全部内容) -->
-          <div class="border border-slate-200 rounded-xl overflow-hidden mt-4">
-            <div class="bg-slate-50 border-b border-slate-200 px-4 py-2.5 flex justify-between items-center">
-              <span class="font-semibold text-slate-800 text-sm">版本说明</span>
+          <!-- 第二层：版本说明 -->
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden mt-4">
+            <div class="bg-slate-50 dark:bg-slate-900/40 border-b border-slate-200 dark:border-slate-800 px-4 py-2.5 flex justify-between items-center">
+              <span class="font-semibold text-slate-800 dark:text-slate-200 text-sm">版本说明</span>
               <span id="release-notes-tag" class="text-xs text-slate-400 font-mono"></span>
             </div>
-            <div id="release-notes-content" class="p-6 text-sm text-slate-700 prose prose-slate max-w-none leading-relaxed"></div>
+            <div id="release-notes-content" class="p-6 text-sm text-slate-700 prose prose-slate dark:prose-invert max-w-none leading-relaxed"></div>
           </div>
 
-          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件) -->
+          <!-- 第三层：版本 Assets -->
           <div class="space-y-4 pb-0">
-            <h3 class="text-base font-bold text-slate-800">版本 assets</h3>
+            <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">版本 assets</h3>
             
             <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
               <div class="space-y-2">
@@ -783,9 +856,8 @@
 
               <div class="space-y-2">
                 <p class="text-xs font-semibold uppercase text-muted">文件平台</p>
-                <!-- 弹窗内的文件平台选择器：注入悬停和指针手势过渡 (对应修改 2) -->
                 <div class="relative w-full">
-                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-100 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9">
+                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-100 dark:hover:bg-slate-800/40 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9">
                     <option value="all">全部平台</option>
                     <option value="Windows">Windows</option>
                     <option value="macOS">macOS</option>
@@ -799,22 +871,21 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (修改：文件名列右侧内边距拉伸至 pr-16 且最小宽度加宽至 440px) -->
-            <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
+            <!-- 资产下载文件列表 -->
+            <div class="border border-slate-200/60 dark:border-slate-800/80 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto" id="assets-table-wrapper">
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
-                    <tr class="bg-slate-50/50">
-                      <!-- 文件名表头：加宽 pr-16 以及 min-w-[440px] (对应修改 1) -->
+                    <tr class="bg-slate-50/50 dark:bg-slate-900/30">
                       <th scope="col" class="pl-4 pr-16 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap min-w-[380px] sm:min-w-[440px]">文件名</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">平台</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
-                      <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-slate-50/50 whitespace-nowrap">操作</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-slate-50/50 dark:bg-[#0d1527]/90 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
-                  <tbody id="assets-tbody" class="divide-y divide-slate-100"></tbody>
+                  <tbody id="assets-tbody" class="divide-y divide-slate-100 dark:divide-slate-800/60"></tbody>
                 </table>
               </div>
             </div>
@@ -831,6 +902,45 @@
   <!-- JavaScript 控制逻辑 -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // ==================== 主题切换 (日间/夜间模式) 逻辑 ====================
+      const themeToggle = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+      // 初始化检查
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+        lightIcon.classList.remove('hidden');
+        darkIcon.classList.add('hidden');
+      } else {
+        document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+        darkIcon.classList.remove('hidden');
+        lightIcon.classList.add('hidden');
+      }
+
+      // 切换事件
+      themeToggle.addEventListener('click', () => {
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+          localStorage.setItem('theme', 'light');
+          lightIcon.classList.add('hidden');
+          darkIcon.classList.remove('hidden');
+        } else {
+          document.documentElement.classList.remove('light');
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+          darkIcon.classList.add('hidden');
+          lightIcon.classList.remove('hidden');
+        }
+      });
+
+      // ==================== 原生表格与弹窗控制逻辑 ====================
       const platformSelect = document.getElementById('platform-select');
       const searchInput = document.getElementById('search-input');
       const visibleCountSpan = document.getElementById('visible-count');
@@ -880,7 +990,7 @@
         }
       });
 
-      // 平台 Select 监听事件 (对应修改)
+      // 平台 Select 监听事件
       if (platformSelect) {
         platformSelect.addEventListener('change', () => {
           selectedPlatform = platformSelect.value;
@@ -1057,7 +1167,7 @@
         });
       }
 
-      // 构建带检索及双行排版的高级 Releases 选择选单 (版本单选项目 hover 高亮升华为 bg-slate-100，对应修改 2)
+      // 构建带检索及双行排版的高级 Releases 选择选单
       function buildReleaseMenu(query = '') {
         releaseMenuItems.innerHTML = '';
         fetchedReleases.forEach((rel, index) => {
@@ -1072,7 +1182,7 @@
 
           const btn = document.createElement('button');
           const isSelected = (index === activeReleaseIndex);
-          btn.className = `w-full text-left px-4 py-2.5 rounded-lg flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 hover:bg-slate-100 hover:text-slate-900 transition-all duration-150 ${isSelected ? 'bg-slate-100 font-medium' : ''}`;
+          btn.className = `w-full text-left px-4 py-2.5 rounded-lg flex items-center justify-between gap-4 border-b border-slate-50 dark:border-slate-800 last:border-0 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all duration-150 ${isSelected ? 'bg-slate-100 dark:bg-slate-800 font-medium' : ''}`;
           
           const date = new Date(rel.published_at);
           const formattedDate = date.toLocaleDateString('zh-CN', {
@@ -1081,10 +1191,10 @@
 
           btn.innerHTML = `
             <div class="space-y-0.5 truncate flex-1 pointer-events-none">
-              <p class="font-semibold text-slate-800 text-sm truncate">${tagName} · ${relName}</p>
+              <p class="font-semibold text-slate-800 dark:text-slate-200 text-sm truncate">${tagName} · ${relName}</p>
               <p class="text-xs text-slate-400 font-normal">${formattedDate} · ${rel.assets.length} 个文件</p>
             </div>
-            <span class="check-mark iconify i-lucide:check text-slate-900 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
+            <span class="check-mark iconify i-lucide:check text-slate-900 dark:text-white size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
           `;
 
           btn.addEventListener('click', (e) => {
@@ -1098,11 +1208,11 @@
               if (btnIndex === index) {
                 check.classList.remove('opacity-0');
                 check.classList.add('opacity-100');
-                btnEl.classList.add('bg-slate-100', 'font-medium');
+                btnEl.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
               } else {
                 check.classList.remove('opacity-100');
                 check.classList.add('opacity-0');
-                btnEl.classList.remove('bg-slate-100', 'font-medium');
+                btnEl.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-medium');
               }
             });
 
@@ -1133,7 +1243,7 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 7. 重构后的弹窗资产筛选逻辑 (修改：文件名列右侧增加 pr-16 间隙，对应修改 1)
+      // 重构后的弹窗资产筛选逻辑
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1187,9 +1297,8 @@
           const proxyUrl = `https://99z.top/${rawUrl}`;
 
           const tr = document.createElement('tr');
-          tr.className = "hover:bg-slate-50 transition-colors";
+          tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors";
           
-          // 优化 1 & 2: 在 td 文件名列加入了 pl-4 pr-16 并在 th 对应加上 min-w 加宽列距；所有按钮和链接注入平滑弹性 hover / active 特效
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
@@ -1203,13 +1312,13 @@
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${sizeFormatted}</td>
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${downloadsText}</td>
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${dateFormatted}</td>
-            <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
+            <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white/90 dark:bg-[#0d1527]/90 whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
-                <!-- 拷贝链接按钮 (拷贝链接按钮：注入悬停和一键变绿勾的复制反馈，对应修改 2) -->
-                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
+                <!-- 拷贝链接按钮 -->
+                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-600 hover:border-emerald-300 dark:hover:text-emerald-400 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
                   <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
                 </button>
-                <!-- 加速下载链接：注入悬停缩放与深度加深过渡，对应修改 2 -->
+                <!-- 加速下载链接 -->
                 <a href="${proxyUrl}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap">
                   <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
                 </a>
@@ -1220,7 +1329,7 @@
         });
       }
 
-      // 拷贝事件代理委托 (保证极速且零内存泄露)
+      // 拷贝事件代理委托
       document.getElementById('assets-tbody').addEventListener('click', (e) => {
         const copyBtn = e.target.closest('.copy-link-btn');
         if (copyBtn) {
@@ -1228,7 +1337,7 @@
           const proxyUrl = `https://99z.top/${rawUrl}`;
           
           navigator.clipboard.writeText(proxyUrl).then(() => {
-            // 点击成功时的按钮交互变绿并带对勾 (截图反馈)
+            // 点击成功时的按钮交互变绿并带对勾
             const originalHTML = copyBtn.innerHTML;
             copyBtn.innerHTML = `<span class="iconify i-lucide:check shrink-0 size-4 text-emerald-600"></span>已复制!`;
             copyBtn.classList.add('text-emerald-600', 'ring-emerald-200');
@@ -1259,16 +1368,16 @@
         const lower = filename.toLowerCase();
         
         if (lower.includes('arm64') || lower.includes('aarch64')) {
-          badges.push(`<span class="bg-slate-100 text-slate-500 text-[10px] px-1.5 py-0.5 rounded">arm64</span>`);
+          badges.push(`<span class="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] px-1.5 py-0.5 rounded">arm64</span>`);
         } else if (lower.includes('x64') || lower.includes('amd64') || lower.includes('x86_64')) {
-          badges.push(`<span class="bg-slate-100 text-slate-500 text-[10px] px-1.5 py-0.5 rounded">x64</span>`);
+          badges.push(`<span class="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] px-1.5 py-0.5 rounded">x64</span>`);
         } else if (lower.includes('x86') || lower.includes('i386')) {
-          badges.push(`<span class="bg-slate-100 text-slate-500 text-[10px] px-1.5 py-0.5 rounded">x86</span>`);
+          badges.push(`<span class="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] px-1.5 py-0.5 rounded">x86</span>`);
         }
         
         const ext = filename.split('.').pop();
         if (ext && ext.length < 5) {
-          badges.push(`<span class="bg-slate-100 text-slate-500 text-[10px] px-1.5 py-0.5 rounded">${ext}</span>`);
+          badges.push(`<span class="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 text-[10px] px-1.5 py-0.5 rounded">${ext}</span>`);
         }
         
         return badges.join('');
