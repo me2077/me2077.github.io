@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 滚动重置最终版</title>
+  <title>客户端列表 - 体验优化精修完结版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -50,7 +50,7 @@
       --ui-success: #10b981;   /* 绿色 */
 
       --ui-text-dimmed: var(--ui-color-neutral-400);
-      --ui-text-muted: var(--ui-color-neutral-500);
+      --ui-text-muted: var(--ui-color-neutral-500);  
       --ui-text-toned: var(--ui-color-neutral-600);
       --ui-text: var(--ui-text-focused, var(--ui-color-neutral-700));
       --ui-text-highlighted: var(--ui-color-neutral-900);
@@ -247,12 +247,13 @@
     }
   </style>
 </head>
+<!-- 页面主体底色白色，移动端左右外补丁设为 px-2 (8px) -->
 <body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (移动端内边距 p-1) -->
+  <!-- 网页的主卡片外框 (手机端内补丁从 p-2 (8px) 缩减至 p-1 (4px)，节省横向空间，对应修改) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
-    <!-- 客户端内容容器 (移动端内边距 p-2) -->
+    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)) -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -329,6 +330,7 @@
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold min-w-20 whitespace-nowrap">来源</th>
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted font-semibold sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">操作</th>
                 </tr>
+                <tr data-slot="separator" class="absolute z-1 left-0 w-full h-px bg-(--ui-border-accented)"></tr>
               </thead>
               <tbody id="client-tbody" class="isolate divide-y divide-default">
                 
@@ -731,7 +733,7 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (对应修改 1：移除底部关闭面板及占位，assets 表格底边直接贴合弹窗最底侧边缘，底边距设为 0) -->
+      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
       <div id="modal-scroll-body" class="p-4 sm:p-6 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 收缩顶部内边距并排版 -->
         
         <!-- 加载中状态 (截图 1) -->
@@ -755,7 +757,7 @@
         <!-- 成功加载的主渲染页面 -->
         <div id="modal-loaded-state" class="hidden space-y-6 pb-4">
           
-          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位，对应修改 2 移除占位) -->
+          <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 (官网仓库链接与旧子卡片已被完全删除并移除占位) -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
@@ -820,18 +822,20 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (修改：精确将 ID 绑定在实际具有横向滑动属性的内侧子 div 上，解决横向滑动无法重置的问题) -->
+            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距，修改 1 将 ID 精准绑定在内侧子 div) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto" id="assets-table-wrapper">
+                <!-- 资产表格字号大小与上下行内间距再次精密加宽调节，对应最细致的视觉更正 -->
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
                     <tr class="bg-slate-50/50">
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">文件名</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">平台</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">大小</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">下载量</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">更新</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right sticky right-0 bg-slate-50/50 whitespace-nowrap">操作</th>
+                      <!-- 已经完全更正 static thead 样式，高保真对齐首页主表的字体和炭黑色 (对应修改 2) -->
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">文件名</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">平台</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-slate-50/50 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
                   <tbody id="assets-tbody" class="divide-y divide-slate-100"></tbody>
@@ -892,6 +896,9 @@
       let selectedPlatform = 'all';
       let fetchedReleases = [];
       let activeReleaseIndex = 0;
+
+      // A. 新增状态管理标记：判断是否为跨客户端切换 (用于精准单客户端滚动条保存)
+      let needsReleaseScrollReset = false;
 
       // 下拉菜单配置
       const initialActiveItem = document.querySelector('.menu-item[data-val="all"]');
@@ -987,17 +994,21 @@
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
 
-          // A. 开启页面时锁定底部背景滚动并【强制双重滚动条重置】 (最新修改：保证换客户端时从头阅读)
+          // A. 开启页面时锁定底部背景滚动
           document.body.classList.add('overflow-hidden');
+          
+          // B. 标记切换客户端：通知下拉菜单在下一次可见时执行重置
+          needsReleaseScrollReset = true;
+
+          // 强制重置滚动条位置
           if (modalScrollBody) modalScrollBody.scrollTop = 0;
           if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
-          if (modalReleaseMenu) modalReleaseMenu.scrollTop = 0;
 
-          // B. 重置资产检索状态
+          // C. 重置资产检索状态
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // C. 双层过渡淡入
+          // D. 双层过渡淡入
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
           modalCard.classList.remove('scale-95', 'opacity-0');
@@ -1037,10 +1048,11 @@
             modalReleasesSubtitle.textContent = `${repoPath} · ${fetchedReleases.length} 个版本`;
 
             activeReleaseIndex = 0;
-            buildReleaseMenu();
+            
+            buildReleaseMenu(); // 初始化构建菜单
             renderSelectedRelease();
 
-            // D. 异步数据就绪并且 DOM 完全展现时，二次强制重置所有滑动条状态
+            // E. 异步数据就绪并且 DOM 完全展现时，二次强制重置所有滑动条状态
             if (modalScrollBody) modalScrollBody.scrollTop = 0;
             if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
 
@@ -1066,14 +1078,23 @@
         if (e.target === downloadModal) closeModal();
       });
 
-      // 版本 Releases 按钮点击触发
+      // 版本 Releases 按钮点击触发 (已经修改：只在检测到跨客户端标记时重置滚动位置，同客户端多次打开完美保留用户滑动的位置)
       modalReleaseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         modalReleaseMenu.classList.toggle('hidden');
         if (!modalReleaseMenu.classList.contains('hidden')) {
-          releaseMenuSearch.value = ''; // 清空检索词
-          buildReleaseMenu(); // 还原列表
-          setTimeout(() => releaseMenuSearch.focus(), 50); // 自动聚焦检索输入框
+          
+          // 仅在发生了跨客户端切换时，在展开的时刻执行一次性重置与清空，保留用户上次滚动到的绝对位置 (对应修改 1)
+          if (needsReleaseScrollReset) {
+            modalReleaseMenu.scrollTop = 0; // 精准重置滚动轴
+            releaseMenuSearch.value = ''; // 清空检索词
+            buildReleaseMenu(); // 还原列表
+            needsReleaseScrollReset = false; // 关闭标记
+          }
+
+          setTimeout(() => {
+            releaseMenuSearch.focus(); // 自动聚焦检索输入框
+          }, 50);
         }
       });
 
@@ -1116,6 +1137,22 @@
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             activeReleaseIndex = index;
+
+            // 动态更新单选对勾及背景高亮状态，不重新加载整个 DOM 树以完美锁死上一次的滚动位置
+            const allButtons = releaseMenuItems.querySelectorAll('button');
+            allButtons.forEach((btnEl, btnIndex) => {
+              const check = btnEl.querySelector('.check-mark');
+              if (btnIndex === index) {
+                check.classList.remove('opacity-0');
+                check.classList.add('opacity-100');
+                btnEl.classList.add('bg-slate-50/80', 'font-medium');
+              } else {
+                check.classList.remove('opacity-100');
+                check.classList.add('opacity-0');
+                btnEl.classList.remove('bg-slate-50/80', 'font-medium');
+              }
+            });
+
             modalReleaseMenu.classList.add('hidden');
             renderSelectedRelease();
           });
@@ -1198,9 +1235,10 @@
 
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
-          // 优化 2: 平台、大小、下载量、下载字样在移动端强制不换行 (加入 whitespace-nowrap 类，解决 squished 问题)
+          
+          // 修改 1 & 2: 重新注入 py-5 加宽上下纵向空隙；字体大小和颜色精准对齐首页的大文本、深黑（text-highlighted）与灰色（text-muted）
           tr.innerHTML = `
-            <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate whitespace-nowrap">
+            <td class="px-4 py-5 text-sm text-highlighted font-semibold max-w-[360px] truncate whitespace-nowrap">
               <div class="flex flex-col">
                 <span class="truncate" title="${asset.name}">${asset.name}</span>
                 <div class="flex flex-wrap gap-1 mt-1">
@@ -1208,11 +1246,11 @@
                 </div>
               </div>
             </td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${platform}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${sizeFormatted}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${downloadsText}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${dateFormatted}</td>
-            <td class="p-3 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${platform}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${sizeFormatted}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${downloadsText}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${dateFormatted}</td>
+            <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
                 <!-- 拷贝链接按钮 (带自定义 Lucide 拷贝图标) -->
                 <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg whitespace-nowrap" data-url="${rawUrl}">
