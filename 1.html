@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 原生下拉重构版</title>
+  <title>客户端列表 - 完全修复终极版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -50,7 +50,7 @@
       --ui-success: #10b981;   /* 绿色 */
 
       --ui-text-dimmed: var(--ui-color-neutral-400);
-      --ui-text-muted: var(--ui-color-neutral-500);
+      --ui-text-muted: var(--ui-color-neutral-500);  
       --ui-text-toned: var(--ui-color-neutral-600);
       --ui-text: var(--ui-text-focused, var(--ui-color-neutral-700));
       --ui-text-highlighted: var(--ui-color-neutral-900);
@@ -97,10 +97,11 @@
       overflow: hidden;
     }
 
-    /* 输入框点击高亮蓝 */
+    /* 输入框与下拉选择框点击高亮蓝 */
     #search-input:focus, #search-input:focus-visible,
     #asset-search-input:focus, #asset-search-input:focus-visible,
     #asset-platform-select:focus, #asset-platform-select:focus-visible,
+    #platform-select:focus, #platform-select:focus-visible,
     #release-menu-search:focus, #release-menu-search:focus-visible {
       outline: none !important;
       border-color: transparent !important;
@@ -195,8 +196,7 @@
     }
 
     .bg-default\/75 {
-      background-color: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(4px);
+      background-color: rgba(255, 255, 255, 0.65);
     }
 
     /* 4. GitHub 风格的 Markdown 解析辅助 CSS */
@@ -247,13 +247,13 @@
     }
   </style>
 </head>
-<!-- 主页面：左右外边距 px-2 (对应修改) -->
+<!-- 页面主体底色白色，移动端左右外补丁设为 px-2 (8px) -->
 <body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (手机端内边距 p-1 (4px)，节省横向空间，对应修改) -->
+  <!-- 网页的主卡片外框 (手机端内补丁从 p-2 (8px) 缩减至 p-1 (4px)，节省横向空间) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
-    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)，对应修改) -->
+    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)) -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -267,18 +267,17 @@
           </div>
         </div>
 
-        <!-- 平台选择（修改 1：移除自定义选单，改为和“文件平台”一致的高品质原生 Select，解决截图 1 中多勾与遮挡问题） -->
+        <!-- 平台下拉筛选 (原生 select 体验，修正了 JS 初始化逻辑) -->
         <div class="space-y-2 relative">
           <p class="text-xs font-semibold uppercase text-muted">平台</p>
           <div class="relative w-full">
-            <select id="platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-100 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200 cursor-pointer pe-9">
+            <select id="platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-50 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9 md:text-sm">
               <option value="all">全部平台</option>
               <option value="Android">Android</option>
               <option value="Windows">Windows</option>
               <option value="macOS">macOS</option>
               <option value="Linux">Linux</option>
               <option value="iOS">iOS</option>
-              <option value="Web">Web</option>
             </select>
             <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-events-none text-dimmed">
               <span class="iconify i-lucide:chevron-down size-5"></span>
@@ -293,7 +292,7 @@
         <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100">Android</span>
       </div>
 
-      <!-- 表格区域 -->
+      <!-- 表格区域 (移除了 absolute separator 彻底解决右侧断裂) -->
       <div data-slot="root" class="bg-default ring ring-default overflow-hidden rounded-xl">
         <div data-slot="body" class="p-0 sm:p-0">
           <div data-slot="root" class="relative overflow-auto overflow-x-auto">
@@ -341,7 +340,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/chen08209/FlClash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
+                      <a href="https://github.com/chen08209/FlClash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -376,7 +375,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则的图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
+                      <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -413,7 +412,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="mihomo-party-org/clash-party" data-name="Clash Party" data-desc="另一款 Mihomo 桌面图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/mihomo-party-org/clash-party">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/mihomo-party-org/clash-party" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
+                      <a href="https://github.com/mihomo-party-org/clash-party" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -450,7 +449,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
+                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -487,7 +486,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
+                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -522,7 +521,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
+                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -739,14 +738,14 @@
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
               <p id="modal-releases-subtitle" class="text-xs text-slate-400"></p>
             </div>
-            <!-- 下拉菜单触发按钮：注入悬停、高亮及弹性回弹特效 (对应修改 2) -->
+            <!-- 下拉菜单触发按钮：注入悬停和弹性特效 (对应修改 2) -->
             <div class="relative w-full md:w-80">
               <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200">
                 <span id="modal-release-text" class="truncate font-medium">请选择版本</span>
                 <span class="iconify i-lucide:chevron-down text-slate-400 size-5"></span>
               </button>
               
-              <!-- 带检索搜索框的高级 Release 选择选单 (Releases 选择选项：加入 hover 灰底及勾选反馈，对应修改 2) -->
+              <!-- 带检索搜索框的高级 Release 选择选单 (Releases 选择子列表：注入 hover 灰底及对勾反馈，对应修改 2) -->
               <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-80 overflow-y-auto">
                 <!-- 顶置检索输入框 (Search...) -->
                 <div class="p-2 sticky top-0 bg-white border-b border-slate-100 z-10">
@@ -782,11 +781,11 @@
                 </div>
               </div>
 
-              <!-- 文件平台菜单选择框 (触发状态适配：增加深边框及手型指针，对应修改 2) -->
               <div class="space-y-2">
                 <p class="text-xs font-semibold uppercase text-muted">文件平台</p>
+                <!-- 弹窗内的文件平台选择器：注入悬停和指针手势过渡 (对应修改 2) -->
                 <div class="relative w-full">
-                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-50 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9">
+                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-100 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9">
                     <option value="all">全部平台</option>
                     <option value="Windows">Windows</option>
                     <option value="macOS">macOS</option>
@@ -800,14 +799,14 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距，修改 1 将 ID 精准绑定在内侧子 div) -->
+            <!-- 资产下载文件列表 (修改：文件名列右侧内边距拉伸至 pr-16 且最小宽度加宽至 440px) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto" id="assets-table-wrapper">
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
                     <tr class="bg-slate-50/50">
-                      <!-- 已经完全更正 static thead 样式，高保真对齐首页主表的字体和炭黑色 (对应修改 2) -->
-                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">文件名</th>
+                      <!-- 文件名表头：加宽 pr-16 以及 min-w-[440px] (对应修改 1) -->
+                      <th scope="col" class="pl-4 pr-16 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap min-w-[380px] sm:min-w-[440px]">文件名</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">平台</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
@@ -871,14 +870,28 @@
       let fetchedReleases = [];
       let activeReleaseIndex = 0;
 
-      // A. 新增状态管理标记：判断是否为跨客户端切换 (用于精准单客户端滚动条保存)
+      // 状态管理标记：判断是否为跨客户端切换
       let needsReleaseScrollReset = false;
 
-      // 原生选择框触发大表联动
-      platformSelect.addEventListener('change', () => {
-        selectedPlatform = platformSelect.value;
-        filterData();
+      // 关闭下拉选单（全局委托监听）
+      document.addEventListener('click', () => {
+        if (modalReleaseMenu) {
+          modalReleaseMenu.classList.add('hidden');
+        }
       });
+
+      // 平台 Select 监听事件 (对应修改)
+      if (platformSelect) {
+        platformSelect.addEventListener('change', () => {
+          selectedPlatform = platformSelect.value;
+          filterData();
+        });
+      }
+
+      // 搜索监听
+      if (searchInput) {
+        searchInput.addEventListener('input', filterData);
+      }
 
       // 主页面大列表过滤逻辑
       function filterData() {
@@ -921,8 +934,6 @@
         }
       }
 
-      searchInput.addEventListener('input', filterData);
-
       // ==================== 弹窗展示与双层渐变关闭逻辑 ====================
       const viewDownloadButtons = document.querySelectorAll('.view-download-btn');
 
@@ -930,7 +941,7 @@
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
 
-          // A. 开启页面时锁定底部背景滚动
+          // A. 开启页面时锁定底部背景滚动并重置滚动条
           document.body.classList.add('overflow-hidden');
           
           // B. 标记切换客户端：通知下拉菜单在下一次可见时执行重置
@@ -1009,38 +1020,44 @@
         modalCard.classList.add('scale-95', 'opacity-0');
       }
 
-      modalCloseX.addEventListener('click', closeModal);
-      downloadModal.addEventListener('click', (e) => {
-        if (e.target === downloadModal) closeModal();
-      });
+      if (modalCloseX) modalCloseX.addEventListener('click', closeModal);
+      if (downloadModal) {
+        downloadModal.addEventListener('click', (e) => {
+          if (e.target === downloadModal) closeModal();
+        });
+      }
 
-      // 版本 Releases 按钮点击触发 (已经修改：只在检测到跨客户端标记时重置滚动位置，同客户端多次打开完美保留用户滑动的位置)
-      modalReleaseBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        modalReleaseMenu.classList.toggle('hidden');
-        if (!modalReleaseMenu.classList.contains('hidden')) {
-          
-          // 仅在发生了跨客户端切换时，在展开的时刻执行一次性重置与清空，保留用户上次滚动到的绝对位置
-          if (needsReleaseScrollReset) {
-            modalReleaseMenu.scrollTop = 0; // 精准重置滚动轴
-            releaseMenuSearch.value = ''; // 清空检索词
-            buildReleaseMenu(); // 还原列表
-            needsReleaseScrollReset = false; // 关闭标记
+      // 版本 Releases 按钮点击触发
+      if (modalReleaseBtn) {
+        modalReleaseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          modalReleaseMenu.classList.toggle('hidden');
+          if (!modalReleaseMenu.classList.contains('hidden')) {
+            
+            // 仅在发生了跨客户端切换时，在展开的时刻执行一次性重置与清空，保留用户上次滚动到的绝对位置
+            if (needsReleaseScrollReset) {
+              modalReleaseMenu.scrollTop = 0; // 精准重置滚动轴
+              releaseMenuSearch.value = ''; // 清空检索词
+              buildReleaseMenu(); // 还原列表
+              needsReleaseScrollReset = false; // 关闭标记
+            }
+
+            setTimeout(() => {
+              releaseMenuSearch.focus(); // 自动聚焦检索输入框
+            }, 50);
           }
-
-          setTimeout(() => {
-            releaseMenuSearch.focus(); // 自动聚焦检索输入框
-          }, 50);
-        }
-      });
+        });
+      }
 
       // 版本 Releases 选单内置检索输入监听
-      releaseMenuSearch.addEventListener('click', (e) => e.stopPropagation()); // 防止点击输入框关闭菜单
-      releaseMenuSearch.addEventListener('input', () => {
-        buildReleaseMenu(releaseMenuSearch.value.trim().toLowerCase());
-      });
+      if (releaseMenuSearch) {
+        releaseMenuSearch.addEventListener('click', (e) => e.stopPropagation()); // 防止点击输入框关闭菜单
+        releaseMenuSearch.addEventListener('input', () => {
+          buildReleaseMenu(releaseMenuSearch.value.trim().toLowerCase());
+        });
+      }
 
-      // 构建带检索及双行排版的高级 Releases 选择选单 (完美对照截图 2，对勾及 hover bg 深度优化，对应修改 2)
+      // 构建带检索及双行排版的高级 Releases 选择选单 (版本单选项目 hover 高亮升华为 bg-slate-100，对应修改 2)
       function buildReleaseMenu(query = '') {
         releaseMenuItems.innerHTML = '';
         fetchedReleases.forEach((rel, index) => {
@@ -1055,7 +1072,6 @@
 
           const btn = document.createElement('button');
           const isSelected = (index === activeReleaseIndex);
-          // 修改 2: 弹窗 GITHUB RELEASES 单个列表项增加 hover:bg-slate-100，对应悬停效果
           btn.className = `w-full text-left px-4 py-2.5 rounded-lg flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 hover:bg-slate-100 hover:text-slate-900 transition-all duration-150 ${isSelected ? 'bg-slate-100 font-medium' : ''}`;
           
           const date = new Date(rel.published_at);
@@ -1097,7 +1113,7 @@
         });
       }
 
-      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
+      // 彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1114,10 +1130,10 @@
         renderAssetsTable();
       }
 
-      assetSearchInput.addEventListener('input', renderAssetsTable);
-      assetPlatformSelect.addEventListener('change', renderAssetsTable);
+      if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
+      if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 7. 重构后的弹窗资产筛选逻辑
+      // 7. 重构后的弹窗资产筛选逻辑 (修改：文件名列右侧增加 pr-16 间隙，对应修改 1)
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1173,7 +1189,7 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
           
-          // 修改 1 & 2: 重新注入 py-5 加宽上下纵向间距；文件名单元格应用 pl-4 pr-16 以及 min-w 扩大文件名和平台之间的横向跨度
+          // 优化 1 & 2: 在 td 文件名列加入了 pl-4 pr-16 并在 th 对应加上 min-w 加宽列距；所有按钮和链接注入平滑弹性 hover / active 特效
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
@@ -1189,11 +1205,11 @@
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${dateFormatted}</td>
             <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
-                <!-- 拷贝链接按钮 (带自定义 Lucide 拷贝图标，注入极致悬停和微幅缩放回弹特效，对应修改 2) -->
+                <!-- 拷贝链接按钮 (拷贝链接按钮：注入悬停和一键变绿勾的复制反馈，对应修改 2) -->
                 <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
                   <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
                 </button>
-                <!-- 加速下载链接：注入悬停影跃、亮蓝加深及微幅缩放回弹特效 (对应修改 2) -->
+                <!-- 加速下载链接：注入悬停缩放与深度加深过渡，对应修改 2 -->
                 <a href="${proxyUrl}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap">
                   <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
                 </a>
@@ -1231,7 +1247,7 @@
       function detectPlatform(filename) {
         const lower = filename.toLowerCase();
         if (lower.endsWith('.apk') || lower.includes('android')) return 'Android';
-        if (lower.endsWith('.exe') || lower.endsWith('.msi') || lower.includes('win') || lower.includes('setup')) return 'Windows';
+        if (lower.endsWith('.exe') || lower.includes('win') || lower.includes('setup')) return 'Windows';
         if (lower.endsWith('.dmg') || lower.endsWith('.pkg') || lower.includes('mac') || lower.includes('darwin')) return 'macOS';
         if (lower.endsWith('.deb') || lower.endsWith('.rpm') || lower.endsWith('.appimage') || lower.includes('linux') || lower.includes('ubuntu')) return 'Linux';
         return '其它';
