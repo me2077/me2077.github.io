@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 极致悬停精装版</title>
+  <title>客户端列表 - 原生下拉重构版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -247,13 +247,13 @@
     }
   </style>
 </head>
-<!-- 主页面：左右外边距 px-2 (对应修改 1) -->
+<!-- 主页面：左右外边距 px-2 (对应修改) -->
 <body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (手机端内边距 p-1 (4px)，节省横向空间，对应修改 1) -->
+  <!-- 网页的主卡片外框 (手机端内边距 p-1 (4px)，节省横向空间，对应修改) -->
   <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
-    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)，对应修改 1) -->
+    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)，对应修改) -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -267,47 +267,22 @@
           </div>
         </div>
 
-        <!-- 平台下拉筛选 -->
+        <!-- 平台选择（修改 1：移除自定义选单，改为和“文件平台”一致的高品质原生 Select，解决截图 1 中多勾与遮挡问题） -->
         <div class="space-y-2 relative">
           <p class="text-xs font-semibold uppercase text-muted">平台</p>
-          <!-- 平台选择按钮：注入悬停和点击缩放过渡动画 (对应修改 2) -->
-          <button id="platform-btn" data-slot="base" class="relative group rounded-md inline-flex items-center focus:outline-none disabled:cursor-not-allowed disabled:opacity-75 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-50 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200 pe-9 md:text-sm w-full" type="button">
-            <span id="platform-text" class="truncate pointer-events-none">全部平台</span>
-            <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-events-none">
-              <span class="iconify i-lucide:chevron-down shrink-0 text-dimmed size-5"></span>
+          <div class="relative w-full">
+            <select id="platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-100 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200 cursor-pointer pe-9">
+              <option value="all">全部平台</option>
+              <option value="Android">Android</option>
+              <option value="Windows">Windows</option>
+              <option value="macOS">macOS</option>
+              <option value="Linux">Linux</option>
+              <option value="iOS">iOS</option>
+              <option value="Web">Web</option>
+            </select>
+            <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-events-none text-dimmed">
+              <span class="iconify i-lucide:chevron-down size-5"></span>
             </span>
-          </button>
-
-          <!-- 下拉菜单 (平台筛选单选项目：增加 hover:bg-slate-100 质感反馈，对应修改 2) -->
-          <div id="platform-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 min-w-[160px]">
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="all">
-              <span>全部平台</span>
-              <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
-            </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Android">
-              <span>Android</span>
-              <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
-            </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Windows">
-              <span>Windows</span>
-              <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
-            </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="macOS">
-              <span>macOS</span>
-              <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
-            </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Linux">
-              <span>Linux</span>
-              <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
-            </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="iOS">
-              <span>iOS</span>
-              <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
-            </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Web">
-              <span>Web</span>
-              <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
-            </button>
           </div>
         </div>
       </section>
@@ -363,11 +338,9 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <!-- 查看下载按钮：注入悬停影跃和点击缩放特效 (对应修改 2) -->
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <!-- 官网跳转按钮：注入悬停和点击弹性反馈 (对应修改 2) -->
                       <a href="https://github.com/chen08209/FlClash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
@@ -736,8 +709,8 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (对应修改：移除底部关闭面板及占位，assets 表格底边直接贴合弹窗最底侧边缘，底边距设为 0) -->
-      <div id="modal-scroll-body" class="px-4 py-2 sm:px-6 sm:py-3 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 收缩顶部内边距并排版 -->
+      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
+      <div id="modal-scroll-body" class="p-4 sm:p-6 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 收缩顶部内边距并排版 -->
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -766,14 +739,14 @@
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
               <p id="modal-releases-subtitle" class="text-xs text-slate-400"></p>
             </div>
-            <!-- 下拉菜单触发按钮：注入悬停和弹性特效 (对应修改 2) -->
+            <!-- 下拉菜单触发按钮：注入悬停、高亮及弹性回弹特效 (对应修改 2) -->
             <div class="relative w-full md:w-80">
               <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200">
                 <span id="modal-release-text" class="truncate font-medium">请选择版本</span>
                 <span class="iconify i-lucide:chevron-down text-slate-400 size-5"></span>
               </button>
               
-              <!-- 带检索搜索框的高级 Release 选择选单 (Releases 选择子列表：注入 hover 灰底及对勾反馈，对应修改 2) -->
+              <!-- 带检索搜索框的高级 Release 选择选单 (Releases 选择选项：加入 hover 灰底及勾选反馈，对应修改 2) -->
               <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-80 overflow-y-auto">
                 <!-- 顶置检索输入框 (Search...) -->
                 <div class="p-2 sticky top-0 bg-white border-b border-slate-100 z-10">
@@ -809,11 +782,11 @@
                 </div>
               </div>
 
+              <!-- 文件平台菜单选择框 (触发状态适配：增加深边框及手型指针，对应修改 2) -->
               <div class="space-y-2">
                 <p class="text-xs font-semibold uppercase text-muted">文件平台</p>
-                <!-- 弹窗内的文件平台选择器：注入悬停和指针手势过渡 (对应修改 2) -->
                 <div class="relative w-full">
-                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-100 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9">
+                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-50 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9">
                     <option value="all">全部平台</option>
                     <option value="Windows">Windows</option>
                     <option value="macOS">macOS</option>
@@ -827,14 +800,14 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (修改 1: 增加了第一列文件名与第二列平台之间的 pr-16 纵深宽度，增加了 min-w-[440px] 强制增宽中间间距) -->
+            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距，修改 1 将 ID 精准绑定在内侧子 div) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
               <div class="overflow-x-auto" id="assets-table-wrapper">
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
                     <tr class="bg-slate-50/50">
-                      <!-- 修改 1：表头第一列增加了 pl-4 pr-16 宽度以及 min-w-[440px] -->
-                      <th scope="col" class="pl-4 pr-16 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap min-w-[380px] sm:min-w-[440px]">文件名</th>
+                      <!-- 已经完全更正 static thead 样式，高保真对齐首页主表的字体和炭黑色 (对应修改 2) -->
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">文件名</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">平台</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
@@ -859,13 +832,10 @@
   <!-- JavaScript 控制逻辑 -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const platformBtn = document.getElementById('platform-btn');
-      const platformMenu = document.getElementById('platform-menu');
-      const platformText = document.getElementById('platform-text');
+      const platformSelect = document.getElementById('platform-select');
       const searchInput = document.getElementById('search-input');
       const visibleCountSpan = document.getElementById('visible-count');
       const activeBadge = document.getElementById('active-badge');
-      const menuItems = document.querySelectorAll('.menu-item');
       const clientRows = document.querySelectorAll('.client-row');
 
       // 弹窗元素定义
@@ -904,25 +874,10 @@
       // A. 新增状态管理标记：判断是否为跨客户端切换 (用于精准单客户端滚动条保存)
       let needsReleaseScrollReset = false;
 
-      // 下拉菜单配置
-      const initialActiveItem = document.querySelector('.menu-item[data-val="all"]');
-      if (initialActiveItem) {
-        initialActiveItem.classList.add('bg-slate-100', 'font-medium');
-        const initialCheck = initialActiveItem.querySelector('.check-mark');
-        if (initialCheck) {
-          initialCheck.classList.remove('opacity-0');
-          initialCheck.classList.add('opacity-100');
-        }
-      }
-
-      platformBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        platformMenu.classList.toggle('hidden');
-      });
-
-      document.addEventListener('click', () => {
-        platformMenu.classList.add('hidden');
-        modalReleaseMenu.classList.add('hidden');
+      // 原生选择框触发大表联动
+      platformSelect.addEventListener('change', () => {
+        selectedPlatform = platformSelect.value;
+        filterData();
       });
 
       // 主页面大列表过滤逻辑
@@ -960,34 +915,11 @@
 
         if (selectedPlatform === 'all') {
           activeBadge.classList.add('hidden');
-          platformText.textContent = '全部平台';
         } else {
           activeBadge.classList.remove('hidden');
           activeBadge.textContent = selectedPlatform;
-          platformText.textContent = selectedPlatform;
         }
       }
-
-      menuItems.forEach(item => {
-        item.addEventListener('click', () => {
-          selectedPlatform = item.getAttribute('data-val');
-
-          menuItems.forEach(mi => {
-            const check = mi.querySelector('.check-mark');
-            if (mi === item) {
-              check.classList.remove('opacity-0');
-              check.classList.add('opacity-100');
-              mi.classList.add('bg-slate-100', 'font-medium');
-            } else {
-              check.classList.remove('opacity-100');
-              check.classList.add('opacity-0');
-              mi.classList.remove('bg-slate-100', 'font-medium');
-            }
-          });
-
-          filterData();
-        });
-      });
 
       searchInput.addEventListener('input', filterData);
 
@@ -1122,7 +1054,9 @@
           }
 
           const btn = document.createElement('button');
-          btn.className = `w-full text-left px-4 py-2.5 rounded-lg flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 hover:bg-slate-100 hover:text-slate-900 transition-all duration-150 ${index === activeReleaseIndex ? 'bg-slate-100 font-medium' : ''}`;
+          const isSelected = (index === activeReleaseIndex);
+          // 修改 2: 弹窗 GITHUB RELEASES 单个列表项增加 hover:bg-slate-100，对应悬停效果
+          btn.className = `w-full text-left px-4 py-2.5 rounded-lg flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 hover:bg-slate-100 hover:text-slate-900 transition-all duration-150 ${isSelected ? 'bg-slate-100 font-medium' : ''}`;
           
           const date = new Date(rel.published_at);
           const formattedDate = date.toLocaleDateString('zh-CN', {
@@ -1131,10 +1065,10 @@
 
           btn.innerHTML = `
             <div class="space-y-0.5 truncate flex-1 pointer-events-none">
-              <p class="font-semibold text-slate-800 text-sm truncate">${rel.tag_name} · ${rel.name || rel.tag_name}</p>
+              <p class="font-semibold text-slate-800 text-sm truncate">${tagName} · ${relName}</p>
               <p class="text-xs text-slate-400 font-normal">${formattedDate} · ${rel.assets.length} 个文件</p>
             </div>
-            <span class="check-mark iconify i-lucide:check text-slate-900 size-4 shrink-0 ${index === activeReleaseIndex ? 'opacity-100' : 'opacity-0'}"></span>
+            <span class="check-mark iconify i-lucide:check text-slate-900 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
           `;
 
           btn.addEventListener('click', (e) => {
@@ -1163,7 +1097,7 @@
         });
       }
 
-      // 彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
+      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
