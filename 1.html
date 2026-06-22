@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 体验精修版</title>
+  <title>客户端列表 - 极致悬停精装版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -30,7 +30,7 @@
       --text-xl: 1.25rem;
       --text-xl--line-height: 1.4;
       
-      --default-transition-duration: .2s;
+      --default-transition-duration: .15s;
       --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     }
 
@@ -66,98 +66,35 @@
       --ui-border-inverted: var(--ui-color-neutral-900);
     }
 
-    .dark {
-      --ui-bg: #0f172a; /* 护眼暗色 */
-      --ui-bg-muted: #0b0f19; /* 暗黑色背景 */
-      --ui-bg-elevated: #1e293b;
-      --ui-bg-accented: #334155;
-      --ui-bg-inverted: #ffffff;
-      
-      --ui-text: #94a3b8;
-      --ui-text-dimmed: #475569;
-      --ui-text-muted: #64748b;
-      --ui-text-toned: #cbd5e1;
-      --ui-text-highlighted: #f8fafc;
-      --ui-text-inverted: #0f172a;
-      
-      --ui-border: #1e293b;
-      --ui-border-muted: #1e293b;
-      --ui-border-accented: #334155;
-      --ui-border-inverted: #ffffff;
+    .bg-default { background-color: var(--ui-bg) !important; }
+    .bg-elevated { background-color: var(--ui-bg-elevated) !important; }
+    .text-default { color: var(--ui-text) !important; }
+    .text-muted { color: var(--ui-text-muted) !important; }
+    .text-dimmed { color: var(--ui-text-dimmed) !important; }
+    .text-highlighted { color: var(--ui-text-highlighted) !important; }
+
+    /* Ring 边框类 */
+    .ring {
+      box-shadow: inset 0 0 0 1px var(--tw-ring-color, var(--ui-border)) !important;
+    }
+    .ring-inset {
+      --tw-ring-inset: inset;
+    }
+    .ring-accented {
+      --tw-ring-color: var(--ui-border-accented) !important;
+    }
+    .ring-default {
+      --tw-ring-color: var(--ui-border) !important;
+    }
+    .ring-inverted {
+      --tw-ring-color: var(--ui-border-inverted) !important;
     }
 
-    /* 全局背景色过渡 */
-    body {
-      background-color: var(--ui-bg-muted) !important;
-      color: var(--ui-text) !important;
-      transition: background-color 0.25s ease, color 0.25s ease !important;
-    }
-
-    /* 3. 颜色类与底层 CSS 变量联动 */
-    .bg-white, .bg-default, .bg-default\/75 { 
-      background-color: var(--ui-bg) !important; 
-    }
-    .bg-slate-50, .bg-slate-50\/50, .bg-slate-100 { 
-      background-color: var(--ui-bg-elevated) !important; 
-    }
-    .hover\:bg-slate-50:hover { 
-      background-color: var(--ui-bg-elevated) !important; 
-    }
-    .hover\:bg-slate-100:hover { 
-      background-color: var(--ui-bg-accented) !important; 
-    }
-    .bg-elevated { 
-      background-color: var(--ui-bg-elevated) !important; 
-    }
-
-    .text-slate-900, .text-slate-800 { 
-      color: var(--ui-text-highlighted) !important; 
-    }
-    .text-slate-700, .text-slate-600 { 
-      color: var(--ui-text) !important; 
-    }
-    .text-slate-500 { 
-      color: var(--ui-text-muted) !important; 
-    }
-    .text-slate-400 { 
-      color: var(--ui-text-dimmed) !important; 
-    }
-    .text-default { 
-      color: var(--ui-text) !important; 
-    }
-    .text-muted { 
-      color: var(--ui-text-muted) !important; 
-    }
-    .text-dimmed { 
-      color: var(--ui-text-dimmed) !important; 
-    }
-    .text-highlighted { 
-      color: var(--ui-text-highlighted) !important; 
-    }
-
-    /* 边框映射类 */
-    .border-slate-100, .border-slate-200, .border-slate-200\/60 {
-      border-color: var(--ui-border) !important;
-    }
-    .divide-slate-100 > * + * {
-      border-color: var(--ui-border) !important;
-    }
-
-    /* 修复外部主列表卡片右边框缺失：改用真实的 border，防止内阴影被 sticky 单元格背景覆盖 */
+    /* 修复外部卡片右边框缺失：改用真实的 border，防止内阴影被 sticky 单元格背景覆盖 */
     div[data-slot="root"].ring-default {
       border: 1px solid var(--ui-border) !important;
       box-shadow: none !important;
       overflow: hidden;
-    }
-
-    /* 优化 1: 彻底隐藏 buggy 的绝对定位表格分割线，让 native border 100% 贯穿渲染 */
-    tr[data-slot="separator"] {
-      display: none !important;
-    }
-
-    /* 表头下分割线优化：直接挂在 th 元素上，自适应任意横向滚动宽度 */
-    thead th {
-      border-bottom: 1px solid var(--ui-border-accented) !important;
     }
 
     /* 输入框点击高亮蓝 */
@@ -170,6 +107,11 @@
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
+    /* 保证表头分割实线的精准与完全对称 */
+    thead th {
+      border-bottom: 1px solid var(--ui-border-accented) !important;
+    }
+
     /* 按钮与标签 */
     .bg-primary { background-color: var(--ui-primary) !important; }
     .bg-primary\/10 { background-color: rgba(0, 145, 255, 0.08) !important; }
@@ -179,19 +121,29 @@
     .text-inverted { color: var(--ui-text-inverted) !important; }
 
     /* 表格分割线 */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
     tbody tr td {
       border-bottom: 1px solid var(--ui-border-muted) !important;
     }
-
-    /* 4. 磨砂玻璃自适应遮罩层 */
-    #download-modal {
-      background-color: rgba(255, 255, 255, 0.4);
-    }
-    .dark #download-modal {
-      background-color: rgba(15, 23, 42, 0.4) !important;
+    tbody tr:last-child td {
+      border-bottom: none !important;
     }
 
-    /* 5. 纯 CSS 遮罩 Lucide 图标 */
+    .bg-\(--ui-border-accented\) {
+      background-color: var(--ui-border-accented) !important;
+    }
+
+    /* 2 列过滤栅格 */
+    @media (min-width: 64rem) {
+      .lg\:grid-cols-\[minmax\(0\,1\.4fr\)_minmax\(0\,0\.7fr\)\] {
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.7fr);
+      }
+    }
+
+    /* 3. 纯 CSS 遮罩 Lucide 图标 */
     .iconify {
       display: inline-block;
       width: 1.25em;
@@ -234,41 +186,74 @@
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
     }
-    .i-lucide\:sun {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:moon {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+
+    .opacity-0 { opacity: 0 !important; }
+    .opacity-100 { opacity: 1 !important; }
+    
+    .check-mark {
+      transition: opacity 0.15s ease-in-out;
     }
 
-    /* 6. 其他基础微调 */
     .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(4px);
     }
-    input {
-      outline: none;
+
+    /* 4. GitHub 风格的 Markdown 解析辅助 CSS */
+    .prose-slate h1 { font-size: 1.5rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; }
+    .prose-slate h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; }
+    .prose-slate h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; color: #0f172a; }
+    .prose-slate p { margin-bottom: 0.75rem; line-height: 1.6; }
+    .prose-slate ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 0.75rem; }
+    .prose-slate li { margin-bottom: 0.25rem; display: list-item !important; }
+    .prose-slate code { background-color: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875rem; color: #0f172a; }
+    .prose-slate pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
+    .prose-slate pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
+    .prose-slate a { color: #0091ff; text-decoration: underline; }
+
+    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
+    @media (max-width: 639px) {
+      #modal-card {
+        height: 100dvh !important; /* 动态视口高度 */
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+      
+      body {
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+    }
+
+    /* 优化移动端滚动条可见性 */
+    #modal-scroll-body {
+      -webkit-overflow-scrolling: touch; /* 惯性回弹平滑硬件加速 */
+    }
+
+    /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
+    #modal-scroll-body::-webkit-scrollbar {
+      display: block !important;
+      width: 6px !important;
+      height: 6px !important;
+    }
+    #modal-scroll-body::-webkit-scrollbar-thumb {
+      background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
+      border-radius: 9999px !important;
+    }
+    #modal-scroll-body::-webkit-scrollbar-track {
+      background-color: transparent !important;
     }
   </style>
 </head>
-<!-- 优化 2: 移动端 px-2 紧密贴合外边缘，减少冗余空白 -->
-<body class="bg-white min-h-screen py-10 px-2 sm:px-6 lg:px-8 flex justify-center text-default transition-colors duration-200">
+<!-- 主页面：左右外边距 px-2 (对应修改 1) -->
+<body class="bg-white min-h-screen py-4 px-2 sm:py-10 sm:px-6 lg:px-8 flex justify-center">
 
-  <!-- 网页的主卡片外框 (优化 2: 移动端 p-1 缩减，最大化保留可视区域) -->
-  <div class="w-full max-w-6xl bg-default rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4 transition-colors duration-200">
+  <!-- 网页的主卡片外框 (手机端内边距 p-1 (4px)，节省横向空间，对应修改 1) -->
+  <div class="w-full max-w-6xl bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-slate-100 p-1 sm:p-4">
     
-    <!-- 头部固定标题与日夜模式切换按钮 -->
-    <div class="border-b border-slate-100 pb-4 mb-4 flex justify-between items-center px-4 sm:px-5">
-      <h1 class="text-lg sm:text-xl font-bold text-slate-900">代理客户端下载</h1>
-      <button id="theme-toggle" class="text-slate-500 hover:text-slate-800 transition-colors p-2 rounded-lg hover:bg-slate-100 flex items-center justify-center gap-1.5 text-sm font-medium">
-        <span id="theme-toggle-icon" class="iconify i-lucide:moon size-5"></span>
-        <span id="theme-toggle-text" class="hidden sm:inline">夜间模式</span>
-      </button>
-    </div>
-
-    <!-- 优化 2: 移动端 p-2 (8px) 保持极佳布局密实感 -->
+    <!-- 客户端内容容器 (大卡片内部的内容容器内边距在手机端缩减为 p-2 (8px)，对应修改 1) -->
     <div class="space-y-5 p-2 sm:p-5">
       <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
@@ -285,40 +270,41 @@
         <!-- 平台下拉筛选 -->
         <div class="space-y-2 relative">
           <p class="text-xs font-semibold uppercase text-muted">平台</p>
-          <button id="platform-btn" data-slot="base" class="relative group rounded-md inline-flex items-center focus:outline-none disabled:cursor-not-allowed disabled:opacity-75 transition-colors px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-elevated disabled:bg-default focus:ring-2 focus:ring-inset focus:ring-inverted pe-9 md:text-sm w-full" type="button">
+          <!-- 平台选择按钮：注入悬停和点击缩放过渡动画 (对应修改 2) -->
+          <button id="platform-btn" data-slot="base" class="relative group rounded-md inline-flex items-center focus:outline-none disabled:cursor-not-allowed disabled:opacity-75 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-50 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200 pe-9 md:text-sm w-full" type="button">
             <span id="platform-text" class="truncate pointer-events-none">全部平台</span>
             <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-events-none">
               <span class="iconify i-lucide:chevron-down shrink-0 text-dimmed size-5"></span>
             </span>
           </button>
 
-          <!-- 下拉菜单 -->
+          <!-- 下拉菜单 (平台筛选单选项目：增加 hover:bg-slate-100 质感反馈，对应修改 2) -->
           <div id="platform-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 min-w-[160px]">
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left transition-colors" data-val="all">
+            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="all">
               <span>全部平台</span>
               <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
             </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left transition-colors" data-val="Android">
+            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Android">
               <span>Android</span>
               <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
             </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left transition-colors" data-val="Windows">
+            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Windows">
               <span>Windows</span>
               <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
             </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left transition-colors" data-val="macOS">
+            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="macOS">
               <span>macOS</span>
               <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
             </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left transition-colors" data-val="Linux">
+            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Linux">
               <span>Linux</span>
               <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
             </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left transition-colors" data-val="iOS">
+            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="iOS">
               <span>iOS</span>
               <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
             </button>
-            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left transition-colors" data-val="Web">
+            <button class="menu-item w-[calc(100%-8px)] mx-1 px-3 py-1.5 rounded-lg flex items-center justify-between text-left hover:bg-slate-100 hover:text-slate-900 transition-colors duration-150" data-val="Web">
               <span>Web</span>
               <span class="check-mark iconify i-lucide:check text-slate-900 size-4 opacity-0"></span>
             </button>
@@ -377,10 +363,12 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
+                      <!-- 查看下载按钮：注入悬停影跃和点击缩放特效 (对应修改 2) -->
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/chen08209/FlClash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <!-- 官网跳转按钮：注入悬停和点击弹性反馈 (对应修改 2) -->
+                      <a href="https://github.com/chen08209/FlClash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -412,10 +400,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则的图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则的图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -449,10 +437,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="mihomo-party-org/clash-party" data-name="Clash Party" data-desc="另一款 Mihomo 桌面图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/mihomo-party-org/clash-party">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="mihomo-party-org/clash-party" data-name="Clash Party" data-desc="另一款 Mihomo 桌面图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/mihomo-party-org/clash-party">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/mihomo-party-org/clash-party" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/mihomo-party-org/clash-party" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -486,10 +474,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -523,10 +511,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -558,10 +546,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -597,10 +585,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="hiddify/hiddify-app" data-name="Hiddify" data-desc="支持 Sing-box、Xray、TUIC、Hysteria 等协议的多平台图形客户端。" data-website="https://github.com/hiddify/hiddify-app">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="hiddify/hiddify-app" data-name="Hiddify" data-desc="支持 Sing-box、Xray、TUIC、Hysteria 等协议的多平台图形客户端。" data-website="https://github.com/hiddify/hiddify-app">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/hiddify/hiddify-app" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/hiddify/hiddify-app" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -636,10 +624,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="KaringX/karing" data-name="karing" data-desc="支持 Clash / sing-box 路由规则的多平台代理工具。" data-website="https://github.com/KaringX/karing">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="KaringX/karing" data-name="karing" data-desc="支持 Clash / sing-box 路由规则的多平台代理工具。" data-website="https://github.com/KaringX/karing">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/KaringX/karing" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/KaringX/karing" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -670,17 +658,17 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="getsurfboard/surfboard" data-name="Surfboard" data-desc="面向 Android 的规则型 network 调试与代理客户端。" data-website="https://github.com/getsurfboard/surfboard">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="getsurfboard/surfboard" data-name="Surfboard" data-desc="面向 Android 的规则型 network 调试与代理客户端。" data-website="https://github.com/getsurfboard/surfboard">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/getsurfboard/surfboard" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/getsurfboard/surfboard" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
                 </tr>
 
-                <!-- 10. sing-box (增加了 Android 平台支持标签) -->
+                <!-- 10. sing-box -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -708,10 +696,10 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
+                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -748,9 +736,8 @@
         </button>
       </div>
 
-      <!-- 弹窗核心滚动区域 (去除 pb 内补丁，资产表格直接贴合底部，底边距设为 0) -->
-      <!-- 优化1: 进一步将 px 缩减、py-2 重设，使 GitHub Releases 上方的留白空间与下方完全一致，高保真对称 (对应修改 1) -->
-      <div id="modal-scroll-body" class="px-4 py-2 sm:px-6 sm:py-3 pb-4 sm:pb-6 flex-1 overflow-y-auto">
+      <!-- 弹窗核心滚动区域 (对应修改：移除底部关闭面板及占位，assets 表格底边直接贴合弹窗最底侧边缘，底边距设为 0) -->
+      <div id="modal-scroll-body" class="px-4 py-2 sm:px-6 sm:py-3 pb-4 sm:pb-6 flex-1 overflow-y-auto"> <!-- 收缩顶部内边距并排版 -->
         
         <!-- 加载中状态 (截图 1) -->
         <div id="modal-loading-state" class="flex flex-col items-center justify-center py-20 space-y-4">
@@ -779,13 +766,14 @@
               <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
               <p id="modal-releases-subtitle" class="text-xs text-slate-400"></p>
             </div>
+            <!-- 下拉菜单触发按钮：注入悬停和弹性特效 (对应修改 2) -->
             <div class="relative w-full md:w-80">
-              <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary">
+              <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-200">
                 <span id="modal-release-text" class="truncate font-medium">请选择版本</span>
                 <span class="iconify i-lucide:chevron-down text-slate-400 size-5"></span>
               </button>
               
-              <!-- 带检索搜索框的高级 Release 选择选单 -->
+              <!-- 带检索搜索框的高级 Release 选择选单 (Releases 选择子列表：注入 hover 灰底及对勾反馈，对应修改 2) -->
               <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white rounded-xl border border-slate-200 shadow-xl py-1 z-50 text-sm text-slate-700 max-h-80 overflow-y-auto">
                 <!-- 顶置检索输入框 (Search...) -->
                 <div class="p-2 sticky top-0 bg-white border-b border-slate-100 z-10">
@@ -806,7 +794,7 @@
             <div id="release-notes-content" class="p-6 text-sm text-slate-700 prose prose-slate max-w-none leading-relaxed"></div>
           </div>
 
-          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件，修改 2: 移除了原本 assets 标题上方的分割线 border-t，过渡极为流畅) -->
+          <!-- 第三层：版本 Assets (搜索框、筛选栏样式完美同步外部筛选条件) -->
           <div class="space-y-4 pb-0">
             <h3 class="text-base font-bold text-slate-800">版本 assets</h3>
             
@@ -823,8 +811,9 @@
 
               <div class="space-y-2">
                 <p class="text-xs font-semibold uppercase text-muted">文件平台</p>
+                <!-- 弹窗内的文件平台选择器：注入悬停和指针手势过渡 (对应修改 2) -->
                 <div class="relative w-full">
-                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-elevated focus:ring-2 focus:ring-primary pe-9">
+                  <select id="asset-platform-select" class="appearance-none w-full rounded-md border-0 px-2.5 py-1.5 text-sm gap-1.5 text-highlighted bg-default ring ring-inset ring-accented hover:bg-slate-100 hover:text-primary hover:border-slate-300 transition-all duration-200 cursor-pointer pe-9">
                     <option value="all">全部平台</option>
                     <option value="Windows">Windows</option>
                     <option value="macOS">macOS</option>
@@ -838,18 +827,19 @@
               </div>
             </section>
 
-            <!-- 资产下载文件列表 (平台、大小、下载量、下载字样在移动端强制不换行，且完美贴合边缘，无多余空底边距) -->
+            <!-- 资产下载文件列表 (修改 1: 增加了第一列文件名与第二列平台之间的 pr-16 纵深宽度，增加了 min-w-[440px] 强制增宽中间间距) -->
             <div class="border border-slate-200/60 rounded-xl overflow-hidden mt-4 mb-0">
-              <div class="overflow-x-auto">
+              <div class="overflow-x-auto" id="assets-table-wrapper">
                 <table class="w-full text-left min-w-[700px]">
                   <thead>
                     <tr class="bg-slate-50/50">
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">文件名</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">平台</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">大小</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">下载量</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">更新</th>
-                      <th class="p-3 text-xs font-bold text-slate-500 uppercase tracking-wider text-right sticky right-0 bg-slate-50/50 whitespace-nowrap">操作</th>
+                      <!-- 修改 1：表头第一列增加了 pl-4 pr-16 宽度以及 min-w-[440px] -->
+                      <th scope="col" class="pl-4 pr-16 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap min-w-[380px] sm:min-w-[440px]">文件名</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">平台</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-slate-50/50 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
                   <tbody id="assets-tbody" class="divide-y divide-slate-100"></tbody>
@@ -878,12 +868,6 @@
       const menuItems = document.querySelectorAll('.menu-item');
       const clientRows = document.querySelectorAll('.client-row');
 
-      // 主页主题切换元素 (修改 1)
-      const themeToggleBtn = document.getElementById('theme-toggle');
-      const themeToggleIcon = document.getElementById('theme-toggle-icon');
-      const themeToggleText = document.getElementById('theme-toggle-text');
-      const htmlEl = document.documentElement;
-
       // 弹窗元素定义
       const downloadModal = document.getElementById('download-modal');
       const modalCard = document.getElementById('modal-card');
@@ -910,24 +894,15 @@
 
       const assetSearchInput = document.getElementById('asset-search-input');
       const assetPlatformSelect = document.getElementById('asset-platform-select');
+      const assetsTableWrapper = document.getElementById('assets-table-wrapper');
+      const modalScrollBody = document.getElementById('modal-scroll-body');
 
       let selectedPlatform = 'all';
       let fetchedReleases = [];
       let activeReleaseIndex = 0;
 
-      // 1. 日夜间模式无缝平滑切换引擎 (修改 1)
-      themeToggleBtn.addEventListener('click', () => {
-        const isDark = htmlEl.classList.toggle('dark');
-        
-        // 瞬间流线更新按钮的 icon 遮罩类与文本
-        if (isDark) {
-          themeToggleIcon.className = "iconify i-lucide:sun size-5";
-          themeToggleText.textContent = "日间模式";
-        } else {
-          themeToggleIcon.className = "iconify i-lucide:moon size-5";
-          themeToggleText.textContent = "夜间模式";
-        }
-      });
+      // A. 新增状态管理标记：判断是否为跨客户端切换 (用于精准单客户端滚动条保存)
+      let needsReleaseScrollReset = false;
 
       // 下拉菜单配置
       const initialActiveItem = document.querySelector('.menu-item[data-val="all"]');
@@ -1025,12 +1000,19 @@
 
           // A. 开启页面时锁定底部背景滚动
           document.body.classList.add('overflow-hidden');
+          
+          // B. 标记切换客户端：通知下拉菜单在下一次可见时执行重置
+          needsReleaseScrollReset = true;
 
-          // B. 重置资产检索状态
+          // 强制重置滚动条位置
+          if (modalScrollBody) modalScrollBody.scrollTop = 0;
+          if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
+
+          // C. 重置资产检索状态
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // C. 双层过渡淡入
+          // D. 双层过渡淡入
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
           modalCard.classList.remove('scale-95', 'opacity-0');
@@ -1070,8 +1052,13 @@
             modalReleasesSubtitle.textContent = `${repoPath} · ${fetchedReleases.length} 个版本`;
 
             activeReleaseIndex = 0;
-            buildReleaseMenu();
+            
+            buildReleaseMenu(); // 初始化构建菜单
             renderSelectedRelease();
+
+            // E. 异步数据就绪并且 DOM 完全展现时，二次强制重置所有滑动条状态
+            if (modalScrollBody) modalScrollBody.scrollTop = 0;
+            if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
 
           } catch (err) {
             modalLoadingState.classList.add('hidden');
@@ -1095,14 +1082,23 @@
         if (e.target === downloadModal) closeModal();
       });
 
-      // 版本 Releases 按钮点击触发
+      // 版本 Releases 按钮点击触发 (已经修改：只在检测到跨客户端标记时重置滚动位置，同客户端多次打开完美保留用户滑动的位置)
       modalReleaseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         modalReleaseMenu.classList.toggle('hidden');
         if (!modalReleaseMenu.classList.contains('hidden')) {
-          releaseMenuSearch.value = ''; // 清空检索词
-          buildReleaseMenu(); // 还原列表
-          setTimeout(() => releaseMenuSearch.focus(), 50); // 自动聚焦检索输入框
+          
+          // 仅在发生了跨客户端切换时，在展开的时刻执行一次性重置与清空，保留用户上次滚动到的绝对位置
+          if (needsReleaseScrollReset) {
+            modalReleaseMenu.scrollTop = 0; // 精准重置滚动轴
+            releaseMenuSearch.value = ''; // 清空检索词
+            buildReleaseMenu(); // 还原列表
+            needsReleaseScrollReset = false; // 关闭标记
+          }
+
+          setTimeout(() => {
+            releaseMenuSearch.focus(); // 自动聚焦检索输入框
+          }, 50);
         }
       });
 
@@ -1112,7 +1108,7 @@
         buildReleaseMenu(releaseMenuSearch.value.trim().toLowerCase());
       });
 
-      // 构建带检索及双行排版的高级 Releases 选择选单 (完美对照截图 2)
+      // 构建带检索及双行排版的高级 Releases 选择选单 (完美对照截图 2，对勾及 hover bg 深度优化，对应修改 2)
       function buildReleaseMenu(query = '') {
         releaseMenuItems.innerHTML = '';
         fetchedReleases.forEach((rel, index) => {
@@ -1126,8 +1122,7 @@
           }
 
           const btn = document.createElement('button');
-          const isSelected = (index === activeReleaseIndex);
-          btn.className = `w-full text-left px-4 py-2.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 ${isSelected ? 'bg-slate-50/80 font-medium' : ''}`;
+          btn.className = `w-full text-left px-4 py-2.5 rounded-lg flex items-center justify-between gap-4 border-b border-slate-50 last:border-0 hover:bg-slate-100 hover:text-slate-900 transition-all duration-150 ${index === activeReleaseIndex ? 'bg-slate-100 font-medium' : ''}`;
           
           const date = new Date(rel.published_at);
           const formattedDate = date.toLocaleDateString('zh-CN', {
@@ -1136,15 +1131,31 @@
 
           btn.innerHTML = `
             <div class="space-y-0.5 truncate flex-1 pointer-events-none">
-              <p class="font-semibold text-slate-800 text-sm truncate">${tagName} · ${relName}</p>
+              <p class="font-semibold text-slate-800 text-sm truncate">${rel.tag_name} · ${rel.name || rel.tag_name}</p>
               <p class="text-xs text-slate-400 font-normal">${formattedDate} · ${rel.assets.length} 个文件</p>
             </div>
-            <span class="check-mark iconify i-lucide:check text-slate-900 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
+            <span class="check-mark iconify i-lucide:check text-slate-900 size-4 shrink-0 ${index === activeReleaseIndex ? 'opacity-100' : 'opacity-0'}"></span>
           `;
 
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             activeReleaseIndex = index;
+
+            // 动态更新单选对勾及背景高亮状态，不重新加载整个 DOM 树以完美锁死上一次的滚动位置
+            const allButtons = releaseMenuItems.querySelectorAll('button');
+            allButtons.forEach((btnEl, btnIndex) => {
+              const check = btnEl.querySelector('.check-mark');
+              if (btnIndex === index) {
+                check.classList.remove('opacity-0');
+                check.classList.add('opacity-100');
+                btnEl.classList.add('bg-slate-100', 'font-medium');
+              } else {
+                check.classList.remove('opacity-100');
+                check.classList.add('opacity-0');
+                btnEl.classList.remove('bg-slate-100', 'font-medium');
+              }
+            });
+
             modalReleaseMenu.classList.add('hidden');
             renderSelectedRelease();
           });
@@ -1152,7 +1163,7 @@
         });
       }
 
-      // 修复：彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
+      // 彻底清除 renderSelectedRelease 对已被删除子卡片的 JS 逻辑引用
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1221,11 +1232,16 @@
           // 自动拆分后缀/架构小胶囊标签
           const extBadges = getExtensionBadges(asset.name);
 
+          // 资产列表绑定代理前缀及拷贝逻辑
+          const rawUrl = asset.browser_download_url;
+          const proxyUrl = `https://99z.top/${rawUrl}`;
+
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 transition-colors";
-          // 优化 2: 平台、大小、下载量、下载字样在移动端强制不换行 (加入 whitespace-nowrap 类，解决 squished 问题)
+          
+          // 修改 1 & 2: 重新注入 py-5 加宽上下纵向间距；文件名单元格应用 pl-4 pr-16 以及 min-w 扩大文件名和平台之间的横向跨度
           tr.innerHTML = `
-            <td class="p-3 text-sm text-slate-800 font-semibold max-w-[360px] truncate whitespace-nowrap">
+            <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
                 <span class="truncate" title="${asset.name}">${asset.name}</span>
                 <div class="flex flex-wrap gap-1 mt-1">
@@ -1233,18 +1249,18 @@
                 </div>
               </div>
             </td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${platform}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${sizeFormatted}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${downloadsText}</td>
-            <td class="p-3 text-sm text-slate-600 font-normal whitespace-nowrap">${dateFormatted}</td>
-            <td class="p-3 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${platform}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${sizeFormatted}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${downloadsText}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${dateFormatted}</td>
+            <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white/90 whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
-                <!-- 拷贝链接按钮 (带自定义 Lucide 拷贝图标) -->
-                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-default bg-default hover:bg-elevated border border-slate-200 rounded-lg whitespace-nowrap" data-url="${asset.browser_download_url}">
+                <!-- 拷贝链接按钮 (带自定义 Lucide 拷贝图标，注入极致悬停和微幅缩放回弹特效，对应修改 2) -->
+                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
                   <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
                 </button>
-                <!-- 加速下载链接 -->
-                <a href="${proxyUrl}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-primary/90 rounded-lg whitespace-nowrap">
+                <!-- 加速下载链接：注入悬停影跃、亮蓝加深及微幅缩放回弹特效 (对应修改 2) -->
+                <a href="${proxyUrl}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap">
                   <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
                 </a>
               </div>
@@ -1253,6 +1269,29 @@
           tbody.appendChild(tr);
         });
       }
+
+      // 拷贝事件代理委托 (保证极速且零内存泄露)
+      document.getElementById('assets-tbody').addEventListener('click', (e) => {
+        const copyBtn = e.target.closest('.copy-link-btn');
+        if (copyBtn) {
+          const rawUrl = copyBtn.getAttribute('data-url');
+          const proxyUrl = `https://99z.top/${rawUrl}`;
+          
+          navigator.clipboard.writeText(proxyUrl).then(() => {
+            // 点击成功时的按钮交互变绿并带对勾 (截图反馈)
+            const originalHTML = copyBtn.innerHTML;
+            copyBtn.innerHTML = `<span class="iconify i-lucide:check shrink-0 size-4 text-emerald-600"></span>已复制!`;
+            copyBtn.classList.add('text-emerald-600', 'ring-emerald-200');
+            
+            setTimeout(() => {
+              copyBtn.innerHTML = originalHTML;
+              copyBtn.classList.remove('text-emerald-600', 'ring-emerald-200');
+            }, 1500);
+          }).catch(err => {
+            console.error('复制失败:', err);
+          });
+        }
+      });
 
       // 智能平台识别
       function detectPlatform(filename) {
