@@ -268,7 +268,7 @@
       background-color: rgba(13, 21, 39, 0.65);
     }
 
-    /* 4. GitHub 风格的 Markdown 解析辅助 CSS */
+    /* 4. GitHub 风格 of Markdown 解析辅助 CSS */
     .prose-slate h1 { font-size: 1.5rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; }
     .prose-slate h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; }
     .prose-slate h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; color: #0f172a; }
@@ -373,7 +373,8 @@
       
       <!-- 右侧日间/夜间模式切换按钮 -->
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
-        <span id="theme-icon" class="iconify i-lucide:moon size-5"></span>
+        <!-- 需求 1：修正了日间/夜间初始化和切换时的图标显示状态，由 JS 统一动态管理 -->
+        <span id="theme-icon" class="iconify i-lucide:sun size-5"></span>
       </button>
     </div>
   </header>
@@ -433,7 +434,7 @@
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold min-w-20 whitespace-nowrap">来源</th>
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted font-semibold sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">操作</th>
                 </tr>
-                <tr data-slot="separator" class="absolute z-1 left-0 w-full h-px bg-(--ui-border-accented)"></tr>
+                <!-- 需求 2：彻底删除了容易导致粘性列（“操作”列）在横向滚动时被遮罩，从而引起“左粗右细”冲突的绝对定位分割线 <tr> -->
               </thead>
               <tbody id="client-tbody" class="isolate divide-y divide-default">
                 
@@ -819,7 +820,7 @@
   <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 dark:bg-[#070d19]/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-2 md:p-3 lg:p-4 flex items-center justify-center transition-all duration-300">
     
     <!-- 弹窗主体卡片 -->
-    <div id="modal-card" class="bg-white dark:bg-[#0d1527] w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
+    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
       
       <!-- 弹窗顶部标头 -->
       <div class="border-b border-slate-100 dark:border-slate-800 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white dark:bg-[#0d1527] z-10">
@@ -1006,7 +1007,8 @@
       const updateThemeIcon = () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (themeIcon) {
-          themeIcon.className = isDark ? 'iconify i-lucide:sun size-5' : 'iconify i-lucide:moon size-5';
+          // 需求 1：修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮）
+          themeIcon.className = isDark ? 'iconify i-lucide:moon size-5' : 'iconify i-lucide:sun size-5';
         }
       };
       
@@ -1354,13 +1356,13 @@
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${sizeFormatted}</td>
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${downloadsText}</td>
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${dateFormatted}</td>
-            <!-- 需求 2：将的操作列 background-color 在 HTML 级设置为实色，保障 iOS 滚动文本穿透隐藏 -->
+            <!-- 将的操作列 background-color 在 HTML 级设置为实色，保障 iOS 滚动文本穿透隐藏 -->
             <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white dark:bg-[#0d1527] whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
-                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
+                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
                   <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
                 </button>
-                <a href="${proxyUrl}" target="_blank" class="modal-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap">
+                <a href="${proxyUrl}" target="_blank" class="modal-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 dark:hover:bg-sky-500 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap">
                   <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
                 </a>
               </div>
