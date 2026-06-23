@@ -260,12 +260,12 @@
       transition: opacity 0.15s ease-in-out;
     }
 
-    /* 将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 */
+    /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [1] [2] */
     .light .bg-default\/75 {
-      background-color: rgba(255, 255, 255, 0.65);
+      background-color: rgba(255, 255, 255, 0.65) !important;
     }
     .dark .bg-default\/75 {
-      background-color: rgba(13, 21, 39, 0.65);
+      background-color: rgba(13, 21, 39, 0.65) !important;
     }
 
     /* 4. GitHub 风格 of Markdown 解析辅助 CSS */
@@ -373,7 +373,7 @@
       
       <!-- 右侧日间/夜间模式切换按钮 -->
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
-        <!-- 需求 1：修正了日间/夜间初始化和切换时的图标显示状态，由 JS 统一动态管理 -->
+        <!-- 修正了日间/夜间初始化和切换时的图标显示状态，由 JS 统一动态管理 -->
         <span id="theme-icon" class="iconify i-lucide:sun size-5"></span>
       </button>
     </div>
@@ -432,9 +432,9 @@
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold whitespace-nowrap">平台</th>
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold whitespace-nowrap">界面</th>
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold min-w-20 whitespace-nowrap">来源</th>
-                  <th scope="col" class="px-4 py-3.5 text-sm text-highlighted font-semibold sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">操作</th>
+                  <th scope="col" class="px-4 py-3.5 text-sm text-highlighted font-semibold sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">操作</th>
                 </tr>
-                <!-- 需求 2：彻底删除了容易导致粘性列（“操作”列）在横向滚动时被遮罩，从而引起“左粗右细”冲突的绝对定位分割线 <tr> -->
+                <!-- 删除了容易导致“左粗右细”冲突的绝对定位分割线 -->
               </thead>
               <tbody id="client-tbody" class="isolate divide-y divide-default">
                 
@@ -464,7 +464,8 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <!-- 已恢复表格列表右侧粘性单元格的操作列半透明度（bg-default/75） -->
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -499,7 +500,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则的图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -536,7 +537,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="mihomo-party-org/clash-party" data-name="Clash Party" data-desc="另一款 Mihomo 桌面图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/mihomo-party-org/clash-party">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -573,7 +574,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -610,7 +611,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -645,7 +646,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -684,7 +685,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="hiddify/hiddify-app" data-name="Hiddify" data-desc="支持 Sing-box、Xray、TUIC、Hysteria 等协议的多平台图形客户端。" data-website="https://github.com/hiddify/hiddify-app">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -723,7 +724,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="KaringX/karing" data-name="karing" data-desc="支持 Clash / sing-box 路由规则的多平台代理工具。" data-website="https://github.com/KaringX/karing">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -757,7 +758,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="getsurfboard/surfboard" data-name="Surfboard" data-desc="面向 Android 的规则型 network 调试与代理客户端。" data-website="https://github.com/getsurfboard/surfboard">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -795,7 +796,7 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <td class="p-4 text-sm text-muted sticky bg-white dark:bg-[#0d1527] z-1 text-right whitespace-nowrap" style="right:0px;">
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
@@ -937,7 +938,8 @@
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
-                      <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-slate-50/50 dark:bg-[#0d1527] whitespace-nowrap">操作</th>
+                      <!-- 需求 1修正：已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
+                      <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-default/75 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
                   <tbody id="assets-tbody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
@@ -1007,7 +1009,7 @@
       const updateThemeIcon = () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (themeIcon) {
-          // 需求 1：修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮）
+          // 修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮）
           themeIcon.className = isDark ? 'iconify i-lucide:moon size-5' : 'iconify i-lucide:sun size-5';
         }
       };
@@ -1016,7 +1018,7 @@
 
       if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-          // 需求 1：在 html 标签临时挂载统一过渡类，确保动画严格同步
+          // 在 html 标签临时挂载统一过渡类，确保动画严格同步
           document.documentElement.classList.add('theme-transition');
           
           if (document.documentElement.classList.contains('dark')) {
@@ -1276,6 +1278,7 @@
         });
       }
 
+      // 渲染动态版本详情及 Assets 列表
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1295,6 +1298,7 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
+      // 渲染 Assets 动态列表函数
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1343,6 +1347,7 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
           
+          // 需求 1 修正：已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
@@ -1356,8 +1361,7 @@
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${sizeFormatted}</td>
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${downloadsText}</td>
             <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${dateFormatted}</td>
-            <!-- 将的操作列 background-color 在 HTML 级设置为实色，保障 iOS 滚动文本穿透隐藏 -->
-            <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white dark:bg-[#0d1527] whitespace-nowrap">
+            <td class="px-4 py-5 text-sm text-right sticky right-0 bg-default/75 whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
                 <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
                   <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
