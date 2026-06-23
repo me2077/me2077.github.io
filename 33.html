@@ -1,24 +1,3 @@
-已经定位到了该问题。在 Safari（尤其是 iOS Safari）中，这是一个非常经典的 WebKit 渲染引擎 Bug。
-
-🔍 慢速/不同步的原因分析：
-
-由于“查看下载”和“官网”图标使用的是现代的纯 CSS 遮罩技术（通过 background-color: currentColor 配合 mask-image
-实现），当切换主题时，外层按钮的文本 color 属性在进行渐变，而 Safari 对 currentColor
-作为背景色的动态渐变存在渲染缓存缺陷，无法在每一帧实时重绘图标的背景，从而导致图标颜色的渐变在 Safari 浏览器下显得明显滞后、甚至在动画结束时才发生突变。
-
-🛠️ 解决方案：
-
-在修改后的代码中，我们采用将图标的背景色直接绑定到具体的 CSS 自定义变量（而非依赖不稳定的 currentColor 关键字）来绕过 Safari
-的重绘缓存：
-
-  - 对于 查看下载 按钮的图标，将其 background-color 绑定至 --ui-text-inverted 变量。
-  - 对于 官网 按钮的图标，将其 background-color 绑定至 --ui-text 变量。
-  - 对弹窗内的 拷贝链接 和 下载 按钮，也同步应用了该变量绑定。
-
-这样可以促使 Safari 引擎在 theme 渐变时直接计算并应用实色变量，从而在 300ms 内实现与整体文字、背景完全同步、自然的丝滑过渡。
-
-📥 修改后的完整 HTML 代码
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
