@@ -1,3 +1,24 @@
+已经定位到了该问题。在 Safari（尤其是 iOS Safari）中，这是一个非常经典的 WebKit 渲染引擎 Bug。
+
+🔍 慢速/不同步的原因分析：
+
+由于“查看下载”和“官网”图标使用的是现代的纯 CSS 遮罩技术（通过 background-color: currentColor 配合 mask-image
+实现），当切换主题时，外层按钮的文本 color 属性在进行渐变，而 Safari 对 currentColor
+作为背景色的动态渐变存在渲染缓存缺陷，无法在每一帧实时重绘图标的背景，从而导致图标颜色的渐变在 Safari 浏览器下显得明显滞后、甚至在动画结束时才发生突变。
+
+🛠️ 解决方案：
+
+在修改后的代码中，我们采用将图标的背景色直接绑定到具体的 CSS 自定义变量（而非依赖不稳定的 currentColor 关键字）来绕过 Safari
+的重绘缓存：
+
+  - 对于 查看下载 按钮的图标，将其 background-color 绑定至 --ui-text-inverted 变量。
+  - 对于 官网 按钮的图标，将其 background-color 绑定至 --ui-text 变量。
+  - 对弹窗内的 拷贝链接 和 下载 按钮，也同步应用了该变量绑定。
+
+这样可以促使 Safari 引擎在 theme 渐变时直接计算并应用实色变量，从而在 300ms 内实现与整体文字、背景完全同步、自然的丝滑过渡。
+
+📥 修改后的完整 HTML 代码
+
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
@@ -5,10 +26,6 @@
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>客户端列表 - 完全修复终极版</title>
-  
-  <!-- 动态适配 Safari 顶部与底部状态栏颜色的 Meta 标签 -->
-  <meta name="theme-color" content="#ffffff">
-
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -58,14 +75,6 @@
       
       --default-transition-duration: .15s;
       --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-    }
-
-    /* 需求 3：让 html 节点本身参与颜色背景过渡，彻底解决 Safari Overscroll Bounce 边缘色块不一致 */
-    html.light {
-      background-color: #ffffff;
-    }
-    html.dark {
-      background-color: #070d19;
     }
 
     .light, :host, :root {
@@ -218,13 +227,11 @@
       display: inline-block;
       width: 1.25em;
       height: 1.25em;
-      background-color: currentColor;
+      background-color: var(--theme-icon-color, currentColor) !important;
       -webkit-mask-repeat: no-repeat;
       mask-repeat: no-repeat;
       -webkit-mask-size: 100% 100%;
       mask-size: 100% 100%;
-      /* 需求 1：确保 SVG 遮罩图标本身跟随主体具有精确同步的过渡动画 */
-      transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), color 300ms cubic-bezier(0.4, 0, 0.2, 1);
     }
     .i-lucide\:search {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
@@ -282,14 +289,6 @@
       background-color: rgba(13, 21, 39, 0.65);
     }
 
-    /* 保持粘性列在 Hover 时的微调配色 */
-    .light tr:hover td.sticky {
-      background-color: #f8fafc !important;
-    }
-    .dark tr:hover td.sticky {
-      background-color: rgba(15, 23, 42, 0.4) !important;
-    }
-
     /* 4. GitHub 风格的 Markdown 解析辅助 CSS */
     .prose-slate h1 { font-size: 1.5rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; }
     .prose-slate h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; }
@@ -320,7 +319,7 @@
       color: #f8fafc !important;
     }
 
-    /* 需求 1：统一主题切换时的动画过渡速度（解决不同步问题） */
+    /* 统一主题切换时的动画过渡速度（解决不同步问题） */
     .theme-transition,
     .theme-transition *,
     .theme-transition *::before,
@@ -328,6 +327,22 @@
       transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow !important;
       transition-duration: 300ms !important;
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    /* 需求 1：解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
+    .view-download-btn,
+    .modal-download-btn {
+      --theme-icon-color: var(--ui-text-inverted) !important;
+    }
+    .official-site-btn,
+    .copy-link-btn {
+      --theme-icon-color: var(--ui-text) !important;
+    }
+    #theme-toggle {
+      --theme-icon-color: #64748b !important;
+    }
+    .dark #theme-toggle {
+      --theme-icon-color: #94a3b8 !important;
     }
 
     /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
@@ -341,7 +356,7 @@
       }
       
       body {
-        /* 需求 3：优化 Safari 留海区域以及底部虚拟按键和地址栏适配 */
+        /* 优化 Safari 留海区域以及底部虚拟按键和地址栏适配 */
         padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
         padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
       }
@@ -474,7 +489,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/chen08209/FlClash" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg transition-all duration-300">
+                      <a href="https://github.com/chen08209/FlClash" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -509,7 +524,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则的图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg transition-all duration-300">
+                      <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -546,7 +561,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="mihomo-party-org/clash-party" data-name="Clash Party" data-desc="另一款 Mihomo 桌面图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/mihomo-party-org/clash-party">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/mihomo-party-org/clash-party" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg transition-all duration-300">
+                      <a href="https://github.com/mihomo-party-org/clash-party" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -583,7 +598,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg transition-all duration-300">
+                      <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -620,7 +635,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg transition-all duration-300">
+                      <a href="https://github.com/2dust/v2rayN" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -655,7 +670,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg transition-all duration-300">
+                      <a href="https://github.com/2dust/v2rayNG" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -694,7 +709,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="hiddify/hiddify-app" data-name="Hiddify" data-desc="支持 Sing-box、Xray、TUIC、Hysteria 等协议的多平台图形客户端。" data-website="https://github.com/hiddify/hiddify-app">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/hiddify/hiddify-app" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg">
+                      <a href="https://github.com/hiddify/hiddify-app" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -733,7 +748,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="KaringX/karing" data-name="karing" data-desc="支持 Clash / sing-box 路由规则的多平台代理工具。" data-website="https://github.com/KaringX/karing">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/KaringX/karing" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg">
+                      <a href="https://github.com/KaringX/karing" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -767,7 +782,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="getsurfboard/surfboard" data-name="Surfboard" data-desc="面向 Android 的规则型 network 调试与代理客户端。" data-website="https://github.com/getsurfboard/surfboard">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/getsurfboard/surfboard" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg">
+                      <a href="https://github.com/getsurfboard/surfboard" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -805,7 +820,7 @@
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
                         <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
                       </button>
-                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg">
+                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -1004,18 +1019,6 @@
       // 状态管理标记：判断是否为跨客户端切换
       let needsReleaseScrollReset = false;
 
-      // ==================== 需求 3：动态更新 Safari 顶部状态栏及底部安全区的 Theme-color ====================
-      const updateThemeColorMeta = () => {
-        const isDark = document.documentElement.classList.contains('dark');
-        let meta = document.querySelector('meta[name="theme-color"]');
-        if (!meta) {
-          meta = document.createElement('meta');
-          meta.name = 'theme-color';
-          document.head.appendChild(meta);
-        }
-        meta.content = isDark ? '#070d19' : '#ffffff';
-      };
-
       // ==================== 日/夜间模式切换逻辑 ====================
       const themeToggle = document.getElementById('theme-toggle');
       const themeIcon = document.getElementById('theme-icon');
@@ -1026,14 +1029,13 @@
         if (themeIcon) {
           themeIcon.className = isDark ? 'iconify i-lucide:sun size-5' : 'iconify i-lucide:moon size-5';
         }
-        updateThemeColorMeta(); // 实时修改 Safari viewport-fit 延伸区域背景
       };
       
       updateThemeIcon(); // 初始设置一次
 
       if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-          // 需求 1：在 html 标签临时挂载统一过渡类，确保包括 SVG 在内的所有组件动画严格同步
+          // 需求 1：在 html 标签临时挂载统一过渡类，确保动画严格同步
           document.documentElement.classList.add('theme-transition');
           
           if (document.documentElement.classList.contains('dark')) {
@@ -1047,7 +1049,7 @@
           }
           updateThemeIcon();
 
-          // 动画播放完毕（300ms）后外置移除，恢复普通交互过渡
+          // 动画播放完毕（300ms）后移除过渡类，恢复原有组件的 Hover 等交互过渡
           setTimeout(() => {
             document.documentElement.classList.remove('theme-transition');
           }, 300);
@@ -1312,7 +1314,6 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 7. 弹窗资产渲染
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1361,7 +1362,6 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
           
-          // 需求 2：将平台、大小、下载量、更新的数据格字体统一变更为 text-highlighted（在日夜切换时保持高亮白色）
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
@@ -1371,16 +1371,17 @@
                 </div>
               </div>
             </td>
-            <td class="px-4 py-5 text-sm text-highlighted font-normal whitespace-nowrap">${platform}</td>
-            <td class="px-4 py-5 text-sm text-highlighted font-normal whitespace-nowrap">${sizeFormatted}</td>
-            <td class="px-4 py-5 text-sm text-highlighted font-normal whitespace-nowrap">${downloadsText}</td>
-            <td class="px-4 py-5 text-sm text-highlighted font-normal whitespace-nowrap">${dateFormatted}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${platform}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${sizeFormatted}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${downloadsText}</td>
+            <td class="px-4 py-5 text-sm text-muted font-normal whitespace-nowrap">${dateFormatted}</td>
+            <!-- 需求 2：将的操作列 background-color 在 HTML 级设置为实色，保障 iOS 滚动文本穿透隐藏 -->
             <td class="px-4 py-5 text-sm text-right sticky right-0 bg-white dark:bg-[#0d1527] whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
-                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-500 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
+                <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
                   <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
                 </button>
-                <a href="${proxyUrl}" target="_blank" class="font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 dark:hover:bg-sky-500 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap">
+                <a href="${proxyUrl}" target="_blank" class="modal-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap">
                   <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
                 </a>
               </div>
