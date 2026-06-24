@@ -4,10 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <!-- 需求适配：动态控制 iOS Safari 状态栏/刘海屏和底部地址栏颜色的 Meta 标签 -->
-  <meta name="theme-color" id="theme-meta" content="#ffffff">
-  
-  <title>客户端列表 - 完全修复终极版</title>
+  <title>客户端列表</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -24,18 +21,12 @@
   <script>
     (function() {
       const savedTheme = localStorage.getItem('theme') || 'light';
-      const isDark = savedTheme === 'dark';
-      if (isDark) {
+      if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark');
         document.documentElement.classList.remove('light');
       } else {
         document.documentElement.classList.add('light');
         document.documentElement.classList.remove('dark');
-      }
-      // 立即调整 Safari 顶底栏颜色，防止加载瞬间出现白色闪烁，做到无缝色彩过渡
-      const themeMeta = document.getElementById('theme-meta');
-      if (themeMeta) {
-        themeMeta.setAttribute('content', isDark ? '#070d19' : '#ffffff');
       }
     })();
   </script>
@@ -130,14 +121,6 @@
       --ui-border-inverted: #fff;
     }
 
-    /* 需求适配：强控 html 和 body 的最底层背景色，确保 Safari 顶底栏在任何滑动溢出时都不露白 */
-    html.light, body.light {
-      background-color: #ffffff !important;
-    }
-    html.dark, body.dark {
-      background-color: #070d19 !important;
-    }
-
     .bg-default { background-color: var(--ui-bg) !important; }
     .bg-elevated { background-color: var(--ui-bg-elevated) !important; }
     .text-default { color: var(--ui-text) !important; }
@@ -180,7 +163,7 @@
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
-    /* 保证表头分割实线的精准与完全对称 */
+    /* 保证表头分割实线的精准与完全对称 [1] */
     thead th {
       border-bottom: 1px solid var(--ui-border-accented) !important;
     }
@@ -195,7 +178,7 @@
     .text-success { color: var(--ui-success) !important; }
     .text-inverted { color: var(--ui-text-inverted) !important; }
 
-    /* 表格分割线 */
+    /* 表格分割线 [1] */
     table {
       border-collapse: separate;
       border-spacing: 0;
@@ -277,7 +260,7 @@
       transition: opacity 0.15s ease-in-out;
     }
 
-    /* 将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [1] [2] */
+    /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [1] [2] */
     .light .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.65) !important;
     }
@@ -325,7 +308,7 @@
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
+    /* 需求 1：解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
     .view-download-btn,
     .modal-download-btn {
       --theme-icon-color: var(--ui-text-inverted) !important;
@@ -341,21 +324,10 @@
       --theme-icon-color: #94a3b8 !important;
     }
 
-    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
-    @media (max-width: 639px) {
-      #modal-card {
-        height: 100dvh !important; /* 动态视口高度 */
-        padding-top: env(safe-area-inset-top, 0px);
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-        margin: 0 !important;
-        border-radius: 0 !important;
-      }
-      
-      body {
-        /* 优化 Safari 留海区域以及底部虚拟按键和地址栏适配 */
-        padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
-        padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
-      }
+    /* 统一且适配 Safari 动态地址栏和 Safe Area 滚动的高度与内边距 */
+    body {
+      padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
+      padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
     }
 
     /* 优化移动端滚动条可见性 */
@@ -380,7 +352,7 @@
 </head>
 
 <!-- 主页面过渡底色支持暗色，通过 pt-20/pt-28 以及 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏 -->
-<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh pt-20 pb-4 px-2 sm:pt-28 sm:pb-10 sm:px-6 lg:px-8 flex justify-center transition-colors duration-300">
+<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh flex justify-center transition-colors duration-300">
 
   <!-- 首页顶部标题栏：日间/夜间自适应透明度和模糊，预留系统状态栏高度（适配 iOS 刘海和安全岛） -->
   <header class="fixed top-0 left-0 right-0 pt-[env(safe-area-inset-top,0px)] bg-white/75 dark:bg-[#070d19]/75 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between px-4 sm:px-8 z-40 transition-all duration-300">
@@ -453,7 +425,8 @@
                 </tr>
                 <!-- 删除了容易导致“左粗右细”冲突的绝对定位分割线 -->
               </thead>
-              <tbody id="client-tbody" class="isolate divide-y divide-default">
+              <!-- 需求 1 修正：移除了 class 中的 "divide-y divide-default" 以解决 Safari 在粘性列和滑动时产生的行分割线黑斑/剪裁渲染 Bug [1] -->
+              <tbody id="client-tbody" class="isolate">
                 
                 <!-- 1. FlClash -->
                 <tr data-selected="false" class="client-row">
@@ -838,7 +811,7 @@
   <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 dark:bg-[#070d19]/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-2 md:p-3 lg:p-4 flex items-center justify-center transition-all duration-300">
     
     <!-- 弹窗主体卡片 -->
-    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
+    <div id="modal-card" class="bg-white dark:bg-[#0d1527] w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
       
       <!-- 弹窗顶部标头 -->
       <div class="border-b border-slate-100 dark:border-slate-800 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white dark:bg-[#0d1527] z-10">
@@ -955,7 +928,7 @@
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
-                      <!-- 需求适配：将弹窗资源文件列表的表头操作列也恢复为 bg-default/75 透明效果 [2] -->
+                      <!-- 已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-default/75 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
@@ -1026,13 +999,8 @@
       const updateThemeIcon = () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (themeIcon) {
-          // 修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮）
+          // 修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮） [3]
           themeIcon.className = isDark ? 'iconify i-lucide:moon size-5' : 'iconify i-lucide:sun size-5';
-        }
-        // 动态同步修改 Safari 刘海屏/状态栏与底部地址栏的底色
-        const themeMeta = document.getElementById('theme-meta');
-        if (themeMeta) {
-          themeMeta.setAttribute('content', isDark ? '#070d19' : '#ffffff');
         }
       };
       
@@ -1300,6 +1268,7 @@
         });
       }
 
+      // 渲染动态版本详情及 Assets 列表
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1319,6 +1288,7 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
+      // 渲染 Assets 动态列表函数
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1367,7 +1337,7 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
           
-          // 需求适配：将弹窗资源文件列表的操作列也恢复为 bg-default/75 半透明效果 [2]
+          // 需求 1 修正：已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
