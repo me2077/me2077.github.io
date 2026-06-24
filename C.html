@@ -1,3 +1,22 @@
+根据您的最新需求，已对代码进行了针对性的优化和升级。
+
+🛠️ 修改内容说明：
+
+1.  日间/夜间模式滚动条自适应色调：
+      - 在 CSS 中重写并统一了滚动条样式（适用于页面整体、弹窗表格、横向滚动容器等）。
+      - 日间模式下，滚动条滑块呈现半透明黑色（rgba(0, 0, 0, 0.4)）。
+      - 夜间模式下，滚动条滑块呈现半透明白色（rgba(255, 255, 255, 0.4)）。
+      - 该设计同时兼容 WebKit 内核浏览器（Chrome, Safari, iOS Safari, Android System
+        WebView）以及现代标准浏览器（如 Firefox 的 scrollbar-color 属性）。
+2.  增大“代理客户端下载”标题字号：
+      - 将固定的头部标题字号提升至 text-xl sm:text-2xl（移动端略微变大，电脑端则以更大的字号呈现，更具层次感和易读性）。
+3.  统一电脑端和移动端的顶部外间距：
+      - 删除了原有 body 标签上的 Tailwind pt-20 sm:pt-28 覆盖类，转而在 CSS 中将页面主体的 padding-top
+        统一配置为： calc(5rem + env(safe-area-inset-top, 0px)) !important
+      - 这一配置在电脑端和移动端实现了完全对等、一致的顶部留白间距，同时智能兼容了移动端设备（如 iOS）的系统刘海屏/安全岛高度。
+
+📥 修改后的完整 HTML 代码
+
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
@@ -308,7 +327,7 @@
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 需求 1：解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
+    /* 解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
     .view-download-btn,
     .modal-download-btn {
       --theme-icon-color: var(--ui-text-inverted) !important;
@@ -324,6 +343,49 @@
       --theme-icon-color: #94a3b8 !important;
     }
 
+    /* 需求 1：日间模式下滚动条是黑色的，夜间模式下滚动条是白色的 */
+    /* 针对 WebKit 核浏览器（Chrome, Safari, iOS Safari, Android Chrome, Edge 等）*/
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    #modal-scroll-body::-webkit-scrollbar,
+    div::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    #modal-scroll-body::-webkit-scrollbar-thumb,
+    div::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.4) !important; /* 日间默认半透明黑 */
+      border-radius: 9999px !important;
+    }
+    .dark html::-webkit-scrollbar-thumb,
+    .dark body::-webkit-scrollbar-thumb,
+    .dark #modal-scroll-body::-webkit-scrollbar-thumb,
+    .dark div::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.4) !important; /* 夜间模式半透明白 */
+    }
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    #modal-scroll-body::-webkit-scrollbar-track,
+    div::-webkit-scrollbar-track {
+      background-color: transparent !important;
+    }
+
+    /* 针对 Firefox 的标准 scrollbar 颜色方案配置 */
+    html, body, #modal-scroll-body, div {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
+    }
+    .dark html, .dark body, .dark #modal-scroll-body, .dark div {
+      scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+    }
+
+    /* 需求 3：统一配置页面顶部外补丁，在电脑端和移动端保持完全一致且适应 iOS 状态栏高度 */
+    body {
+      padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
+    }
+
     /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
     @media (max-width: 639px) {
       #modal-card {
@@ -335,41 +397,21 @@
       }
       
       body {
-        /* 优化 Safari 留海区域以及底部虚拟按键和地址栏适配 */
-        padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
+        /* 移动端仅单独覆盖底部留白 */
         padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
       }
-    }
-
-    /* 优化移动端滚动条可见性 */
-    #modal-scroll-body {
-      -webkit-overflow-scrolling: touch; /* 惯性回弹平滑硬件加速 */
-    }
-
-    /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
-    #modal-scroll-body::-webkit-scrollbar {
-      display: block !important;
-      width: 6px !important;
-      height: 6px !important;
-    }
-    #modal-scroll-body::-webkit-scrollbar-thumb {
-      background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
-      border-radius: 9999px !important;
-    }
-    #modal-scroll-body::-webkit-scrollbar-track {
-      background-color: transparent !important;
     }
   </style>
 </head>
 
-<!-- 主页面过渡底色支持暗色，通过 pt-20/pt-28 以及 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏 -->
-<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh pt-20 pb-4 px-2 sm:pt-28 sm:pb-10 sm:px-6 lg:px-8 flex justify-center transition-colors duration-300">
+<!-- 主页面过渡底色支持暗色，通过 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏（去除了 pt-* 类，改由 CSS 强控） -->
+<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh pb-4 px-2 sm:pb-10 sm:px-6 lg:px-8 flex justify-center transition-colors duration-300">
 
   <!-- 首页顶部标题栏：日间/夜间自适应透明度和模糊，预留系统状态栏高度（适配 iOS 刘海和安全岛） -->
   <header class="fixed top-0 left-0 right-0 pt-[env(safe-area-inset-top,0px)] bg-white/75 dark:bg-[#070d19]/75 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between px-4 sm:px-8 z-40 transition-all duration-300">
     <div class="h-16 flex items-center justify-between w-full max-w-6xl mx-auto">
-      <!-- “代理客户端下载”标题靠左 -->
-      <h1 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
+      <!-- 需求 2：增大“代理客户端下载”标题字号（text-xl sm:text-2xl） -->
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
       
       <!-- 右侧日间/夜间模式切换按钮 -->
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
@@ -821,7 +863,7 @@
   <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 dark:bg-[#070d19]/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-2 md:p-3 lg:p-4 flex items-center justify-center transition-all duration-300">
     
     <!-- 弹窗主体卡片 -->
-    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
+    <div id="modal-card" class="bg-white dark:bg-[#0d1527] w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
       
       <!-- 弹窗顶部标头 -->
       <div class="border-b border-slate-100 dark:border-slate-800 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white dark:bg-[#0d1527] z-10">
@@ -938,7 +980,7 @@
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
-                      <!-- 需求 1修正：已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
+                      <!-- 已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-default/75 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
@@ -1009,7 +1051,7 @@
       const updateThemeIcon = () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (themeIcon) {
-          // 修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮）
+          // 需求 1：修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮） [3]
           themeIcon.className = isDark ? 'iconify i-lucide:moon size-5' : 'iconify i-lucide:sun size-5';
         }
       };
