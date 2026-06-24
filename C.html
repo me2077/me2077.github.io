@@ -260,7 +260,7 @@
       transition: opacity 0.15s ease-in-out;
     }
 
-    /* 需求 2：半透明背景色设置（无 !important） [1] [2] */
+    /* 将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [2] */
     .light .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.65);
     }
@@ -273,8 +273,8 @@
     .prose-slate h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; }
     .prose-slate h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; color: #0f172a; }
     .prose-slate p { margin-bottom: 0.75rem; line-height: 1.6; }
-    .prose-slate ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
-    .prose-slate li { margin-bottom: 0.25rem; display: list-item; }
+    .prose-slate ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 0.75rem; }
+    .prose-slate li { margin-bottom: 0.25rem; display: list-item !important; }
     .prose-slate code { background-color: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875rem; color: #0f172a; }
     .prose-slate pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
     .prose-slate pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
@@ -308,7 +308,7 @@
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* 需求 1：解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
+    /* 解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
     .view-download-btn,
     .modal-download-btn {
       --theme-icon-color: var(--ui-text-inverted);
@@ -335,7 +335,7 @@
       }
       
       body {
-        /* 优化 Safari 留海区域以及底部虚拟按键 and 地址栏适配 */
+        /* 优化 Safari 留海区域以及底部虚拟按键和地址栏适配 */
         padding-top: calc(5rem + env(safe-area-inset-top, 0px));
         padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
       }
@@ -372,7 +372,7 @@
       <h1 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
       
       <!-- 右侧日间/夜间模式切换按钮 -->
-      <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
+      <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-300 flex items-center justify-center" title="切换模式">
         <!-- 修正了日间/夜间初始化和切换时的图标显示状态，由 JS 统一动态管理 -->
         <span id="theme-icon" class="iconify i-lucide:sun size-5"></span>
       </button>
@@ -1278,6 +1278,7 @@
         });
       }
 
+      // 渲染动态版本详情及 Assets 列表
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1297,6 +1298,7 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
+      // 渲染 Assets 动态列表函数
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1345,7 +1347,7 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
           
-          // 已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
+          // 已经将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
