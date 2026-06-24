@@ -1,17 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 xx</title>
+  <title>客户端列表 - 完全修复终极版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   
-  <!-- 配置 Tailwind 启用 class 模式的 Dark Mode -->
+  <!-- 配置 Tailwind 启用 class 模式 of Dark Mode -->
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -164,9 +163,41 @@
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
-    /* 保证表头分割实线的精准与完全对称 [1] */
+    /* 修复 iOS Safari 在 border-collapse: separate + sticky 定位下的物理边框变黑/重合 Glitch */
+    /* 采用 box-shadow: inset 内阴影绘制底边，替代 tr/td 容易在渲染层重绘失败的 border */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
     thead th {
-      border-bottom: 1px solid var(--ui-border-accented) !important;
+      border-bottom: none !important;
+      box-shadow: inset 0 -1px 0 0 var(--ui-border-accented) !important;
+    }
+    tbody tr td {
+      border-bottom: none !important;
+      box-shadow: inset 0 -1px 0 0 var(--ui-border-muted) !important;
+    }
+    tbody tr:last-child td {
+      box-shadow: none !important;
+    }
+
+    /* 弹窗 Assets 表格 Safari 适配（消除物理重叠线） */
+    #assets-table-wrapper thead th {
+      border-bottom: none !important;
+      box-shadow: inset 0 -1px 0 0 rgba(226, 232, 240, 0.8) !important;
+    }
+    .dark #assets-table-wrapper thead th {
+      box-shadow: inset 0 -1px 0 0 rgba(30, 41, 59, 0.8) !important;
+    }
+    #assets-tbody tr td {
+      border-bottom: none !important;
+      box-shadow: inset 0 -1px 0 0 rgba(226, 232, 240, 0.6) !important;
+    }
+    .dark #assets-tbody tr td {
+      box-shadow: inset 0 -1px 0 0 rgba(30, 41, 59, 0.6) !important;
+    }
+    #assets-tbody tr:last-child td {
+      box-shadow: none !important;
     }
 
     /* 按钮与标签 */
@@ -178,88 +209,6 @@
     .dark .bg-success\/10 { background-color: rgba(52, 211, 153, 0.12) !important; }
     .text-success { color: var(--ui-success) !important; }
     .text-inverted { color: var(--ui-text-inverted) !important; }
-
-    /* 表格分割线 [1] */
-    table {
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-    tbody tr td {
-      border-bottom: 1px solid var(--ui-border-muted) !important;
-    }
-    tbody tr:last-child td {
-      border-bottom: none !important;
-    }
-
-    .bg-\(--ui-border-accented\) {
-      background-color: var(--ui-border-accented) !important;
-    }
-
-    /* 2 列过滤栅格 */
-    @media (min-width: 64rem) {
-      .lg\:grid-cols-\[minmax\(0\,1\.4fr\)_minmax\(0\,0\.7fr\)\] {
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.7fr);
-      }
-    }
-
-    /* 3. 纯 CSS 遮罩 Lucide 图标 */
-    .iconify {
-      display: inline-block;
-      width: 1.25em;
-      height: 1.25em;
-      background-color: var(--theme-icon-color, currentColor) !important;
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-size: 100% 100%;
-      mask-size: 100% 100%;
-    }
-    .i-lucide\:search {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:chevron-down {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:eye {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:globe {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:check {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:x {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:download {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:copy {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:sun {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:moon {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
-    }
-
-    .opacity-0 { opacity: 0 !important; }
-    .opacity-100 { opacity: 1 !important; }
-    
-    .check-mark {
-      transition: opacity 0.15s ease-in-out;
-    }
 
     /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [1] [2] */
     .light .bg-default\/75 {
@@ -309,7 +258,7 @@
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 需求 1：解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
+    /* 解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
     .view-download-btn,
     .modal-download-btn {
       --theme-icon-color: var(--ui-text-inverted) !important;
@@ -325,41 +274,75 @@
       --theme-icon-color: #94a3b8 !important;
     }
 
-    /* 统一且适配 Safari 动态地址栏和 Safe Area 滚动的高度与内边距 */
-    body {
-      padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
-      padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    /* 日间模式下滚动条是黑色的，夜间模式下滚动条是白色的 */
+    /* 针对 WebKit 核浏览器（Chrome, Safari, iOS Safari, Android Chrome, Edge 等）*/
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    #modal-scroll-body::-webkit-scrollbar,
+    div::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-
-    /* 优化移动端滚动条可见性 */
-    #modal-scroll-body {
-      -webkit-overflow-scrolling: touch; /* 惯性回弹平滑硬件加速 */
-    }
-
-    /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
-    #modal-scroll-body::-webkit-scrollbar {
-      display: block !important;
-      width: 6px !important;
-      height: 6px !important;
-    }
-    #modal-scroll-body::-webkit-scrollbar-thumb {
-      background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    #modal-scroll-body::-webkit-scrollbar-thumb,
+    div::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.4) !important; /* 日间默认半透明黑 */
       border-radius: 9999px !important;
     }
-    #modal-scroll-body::-webkit-scrollbar-track {
+    .dark html::-webkit-scrollbar-thumb,
+    .dark body::-webkit-scrollbar-thumb,
+    .dark #modal-scroll-body::-webkit-scrollbar-thumb,
+    .dark div::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.4) !important; /* 夜间模式半透明白 */
+    }
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    #modal-scroll-body::-webkit-scrollbar-track,
+    div::-webkit-scrollbar-track {
       background-color: transparent !important;
+    }
+
+    /* 针对 Firefox 的标准 scrollbar 颜色方案配置 */
+    html, body, #modal-scroll-body, div {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
+    }
+    .dark html, .dark body, .dark #modal-scroll-body, .dark div {
+      scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+    }
+
+    /* 统一配置页面顶部外补丁，在电脑端和移动端保持完全一致且适应 iOS 状态栏高度 */
+    body {
+      padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
+    }
+
+    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
+    @media (max-width: 639px) {
+      #modal-card {
+        height: 100dvh !important; /* 动态视口高度 */
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        margin: 0 !important;
+        border-radius: 0 !important;
+      }
+      
+      body {
+        /* 移动端仅单独覆盖底部留白 */
+        padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
+      }
     }
   </style>
 </head>
 
-<!-- 主页面过渡底色支持暗色，通过 pt-20/pt-28 以及 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏 -->
-<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh flex justify-center transition-colors duration-300">
+<!-- 主页面过渡底色支持暗色，通过 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏（去除了 pt-* 类，改由 CSS 强控） -->
+<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh pb-4 px-2 sm:pb-10 sm:px-6 lg:px-8 flex justify-center transition-colors duration-300">
 
   <!-- 首页顶部标题栏：日间/夜间自适应透明度和模糊，预留系统状态栏高度（适配 iOS 刘海和安全岛） -->
   <header class="fixed top-0 left-0 right-0 pt-[env(safe-area-inset-top,0px)] bg-white/75 dark:bg-[#070d19]/75 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between px-4 sm:px-8 z-40 transition-all duration-300">
     <div class="h-16 flex items-center justify-between w-full max-w-6xl mx-auto">
-      <!-- “代理客户端下载”标题靠左 -->
-      <h1 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
+      <!-- 增大“代理客户端下载”标题字号（text-xl sm:text-2xl） -->
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
       
       <!-- 右侧日间/夜间模式切换按钮 -->
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
@@ -426,7 +409,7 @@
                 </tr>
                 <!-- 删除了容易导致“左粗右细”冲突的绝对定位分割线 -->
               </thead>
-              <!-- 需求 1 修正：移除了 class 中的 "divide-y divide-default" 以解决 Safari 在粘性列和滑动时产生的行分割线黑斑/剪裁渲染 Bug [1] -->
+              <!-- 修正：已彻底移除 tbody 上的 divide-y 与 divide-default 机制，物理分割线改由 border-bottom 的内阴影绘制以解决穿透渲染 Bug -->
               <tbody id="client-tbody" class="isolate">
                 
                 <!-- 1. FlClash -->
@@ -540,7 +523,7 @@
                   </td>
                 </tr>
 
-                <!-- 4. Clash Verge Rev -->
+                <!-- 5. Clash Verge Rev -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -577,7 +560,7 @@
                   </td>
                 </tr>
 
-                <!-- 5. v2rayN -->
+                <!-- 6. v2rayN -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -614,7 +597,7 @@
                   </td>
                 </tr>
 
-                <!-- 6. v2rayNG -->
+                <!-- 7. v2rayNG -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -649,7 +632,7 @@
                   </td>
                 </tr>
 
-                <!-- 7. Hiddify -->
+                <!-- 8. Hiddify -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -688,7 +671,7 @@
                   </td>
                 </tr>
 
-                <!-- 8. karing -->
+                <!-- 9. karing -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -727,7 +710,7 @@
                   </td>
                 </tr>
 
-                <!-- 9. Surfboard -->
+                <!-- 10. Surfboard -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -761,7 +744,7 @@
                   </td>
                 </tr>
 
-                <!-- 10. sing-box -->
+                <!-- 11. sing-box -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -911,7 +894,7 @@
                     <option value="Linux">Linux</option>
                     <option value="Android">Android</option>
                   </select>
-                  <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-events-none text-dimmed">
+                  <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-none text-dimmed">
                     <span class="iconify i-lucide:chevron-down size-5"></span>
                   </span>
                 </div>
@@ -933,7 +916,8 @@
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-default/75 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
-                  <tbody id="assets-tbody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                  <!-- 修正：已彻底移除 tbody 上的 divide-y 机制，物理分割线改由 border-bottom 的内阴影绘制以解决穿透渲染 Bug -->
+                  <tbody id="assets-tbody"></tbody>
                 </table>
               </div>
             </div>
@@ -1269,7 +1253,6 @@
         });
       }
 
-      // 渲染动态版本详情及 Assets 列表
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1289,7 +1272,6 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 渲染 Assets 动态列表函数
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1338,7 +1320,7 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
           
-          // 需求 1 修正：已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
+          // 已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
