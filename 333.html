@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="light">
+<!-- 优化：将主题背景色直接挂载在 html 根节点上，保障 Safari Canvas 全局底色穿透 -->
+<html lang="zh-CN" class="light bg-white dark:bg-[#070d19] transition-colors duration-300">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>--客户端列表--</title>
+  <title>客户端列表 - 完全修复终极版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -163,18 +164,20 @@
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
-    /* 修复 iOS Safari 在 border-collapse: separate + sticky 定位下的物理边框变黑/重合 Glitch [1] */
+    /* 修复 iOS Safari 在 border-collapse: separate + sticky 定位下的物理边框变黑/重合 Glitch */
+    /* 需求 1：将 bottom 物理边框均改为极其稳定的 box-shadow 内阴影 [1] */
+    /* 需求 2：已将主表格的 horizontal 分割线从 1px 物理加粗为 1.5px/2px 的内阴影效果，使其醒目匀称 [1] */
     table {
       border-collapse: separate;
       border-spacing: 0;
     }
     thead th {
       border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 var(--ui-border-accented) !important;
+      box-shadow: inset 0 -2px 0 0 var(--ui-border-accented) !important; /* 表头线加粗至 2px */
     }
     tbody tr td {
       border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 var(--ui-border-muted) !important;
+      box-shadow: inset 0 -2px 0 0 var(--ui-border-muted) !important;  /* 列表行分割线加粗至 2px */
     }
     tbody tr:last-child td {
       box-shadow: none !important;
@@ -183,17 +186,17 @@
     /* 弹窗 Assets 表格 Safari 适配 */
     #assets-table-wrapper thead th {
       border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 rgba(226, 232, 240, 0.8) !important;
+      box-shadow: inset 0 -2px 0 0 rgba(226, 232, 240, 0.8) !important; /* 弹窗表头加粗 */
     }
     .dark #assets-table-wrapper thead th {
-      box-shadow: inset 0 -1px 0 0 rgba(30, 41, 59, 0.8) !important;
+      box-shadow: inset 0 -2px 0 0 rgba(30, 41, 59, 0.8) !important;
     }
     #assets-tbody tr td {
       border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 rgba(226, 232, 240, 0.6) !important;
+      box-shadow: inset 0 -1.5px 0 0 rgba(226, 232, 240, 0.6) !important; /* 弹窗内容行加粗 */
     }
     .dark #assets-tbody tr td {
-      box-shadow: inset 0 -1px 0 0 rgba(30, 41, 59, 0.6) !important;
+      box-shadow: inset 0 -1.5px 0 0 rgba(30, 41, 59, 0.6) !important;
     }
     #assets-tbody tr:last-child td {
       box-shadow: none !important;
@@ -209,7 +212,7 @@
     .text-success { color: var(--ui-success) !important; }
     .text-inverted { color: var(--ui-text-inverted) !important; }
 
-    /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [1] [2] */
+    /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [2] */
     .light .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.65) !important;
     }
@@ -275,7 +278,7 @@
       transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 具体图标 SVG 数据源配置（移除冒号，采用中划线连字符以实现全浏览器正常解析） */
+    /* 具体图标 SVG 数据源配置（采用中划线连字符以实现全浏览器正常解析） */
     .i-lucide-search {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
@@ -330,14 +333,14 @@
     body::-webkit-scrollbar-thumb,
     #modal-scroll-body::-webkit-scrollbar-thumb,
     div::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.4) !important; /* 日间默认半透明黑 */
+      background-color: rgba(0, 0, 0, 0.65) !important; /* 日间默认半透明黑 */
       border-radius: 9999px !important;
     }
     .dark html::-webkit-scrollbar-thumb,
     .dark body::-webkit-scrollbar-thumb,
     .dark #modal-scroll-body::-webkit-scrollbar-thumb,
     .dark div::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.4) !important; /* 夜间模式半透明白 */
+      background-color: rgba(255, 255, 255, 0.65) !important; /* 夜间模式半透明白 */
     }
     html::-webkit-scrollbar-track,
     body::-webkit-scrollbar-track,
@@ -349,10 +352,10 @@
     /* 针对 Firefox 的标准 scrollbar 颜色方案配置 */
     html, body, #modal-scroll-body, div {
       scrollbar-width: thin;
-      scrollbar-color: rgba(0, 0, 0, 0.4) transparent;
+      scrollbar-color: rgba(0, 0, 0, 0.65) transparent;
     }
     .dark html, .dark body, .dark #modal-scroll-body, .dark div {
-      scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+      scrollbar-color: rgba(255, 255, 255, 0.65) transparent;
     }
 
     /* 统一配置页面顶部外补丁，在电脑端和移动端保持完全一致且适应 iOS 状态栏高度 */
@@ -384,7 +387,7 @@
   <!-- 首页顶部标题栏：日间/夜间自适应透明度和模糊，预留系统状态栏高度（适配 iOS 刘海和安全岛） -->
   <header class="fixed top-0 left-0 right-0 pt-[env(safe-area-inset-top,0px)] bg-white/75 dark:bg-[#070d19]/75 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between px-4 sm:px-8 z-40 transition-all duration-300">
     <div class="h-16 flex items-center justify-between w-full max-w-6xl mx-auto">
-      <!-- 增大“代理客户端下载”标题字号（text-xl sm:text-2xl） -->
+      <!-- 需求 2：增大“代理客户端下载”标题字号（text-xl sm:text-2xl） -->
       <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
       
       <!-- 右侧日间/夜间模式切换按钮 -->
@@ -881,7 +884,8 @@
           <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
-              <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
+              <!-- 需求 1 修正：去除了 uppercase 类，完美显示原始大小写的 "GitHub Releases" -->
+              <p class="text-xs font-semibold text-muted">GitHub Releases</p>
               <p id="modal-releases-subtitle" class="text-xs text-slate-400 dark:text-slate-500"></p>
             </div>
             <!-- 下拉菜单触发按钮 -->
@@ -1202,6 +1206,12 @@
         downloadModal.classList.add('opacity-0', 'pointer-events-none');
         modalCard.classList.remove('scale-100', 'opacity-100');
         modalCard.classList.add('scale-95', 'opacity-0');
+
+        // 强行触发 Safari 滚动微调，迫使其重绘并填充满底部地址栏，解决 iOS 视口高度失效的 Bug
+        setTimeout(() => {
+          window.scrollTo(window.scrollX, window.scrollY + 1);
+          window.scrollTo(window.scrollX, window.scrollY - 1);
+        }, 50);
       }
 
       if (modalCloseX) modalCloseX.addEventListener('click', closeModal);
@@ -1363,7 +1373,8 @@
           const proxyUrl = `https://99z.top/${rawUrl}`;
 
           const tr = document.createElement('tr');
-          tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
+          // 已移除弹窗文件列表行上的 hover 背景和渐变过渡效果
+          tr.className = ""; 
           
           // 已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
