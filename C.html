@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表</title>
+  <title>客户端列表 - 完全修复终极版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -121,35 +121,34 @@
       --ui-border-inverted: #fff;
     }
 
-    /* 移除了所有规则的 !important */
-    .bg-default { background-color: var(--ui-bg); }
-    .bg-elevated { background-color: var(--ui-bg-elevated); }
-    .text-default { color: var(--ui-text); }
-    .text-muted { color: var(--ui-text-muted); }
-    .text-dimmed { color: var(--ui-text-dimmed); }
-    .text-highlighted { color: var(--ui-text-highlighted); }
+    .bg-default { background-color: var(--ui-bg) !important; }
+    .bg-elevated { background-color: var(--ui-bg-elevated) !important; }
+    .text-default { color: var(--ui-text) !important; }
+    .text-muted { color: var(--ui-text-muted) !important; }
+    .text-dimmed { color: var(--ui-text-dimmed) !important; }
+    .text-highlighted { color: var(--ui-text-highlighted) !important; }
 
     /* Ring 边框类 */
     .ring {
-      box-shadow: inset 0 0 0 1px var(--tw-ring-color, var(--ui-border));
+      box-shadow: inset 0 0 0 1px var(--tw-ring-color, var(--ui-border)) !important;
     }
     .ring-inset {
       --tw-ring-inset: inset;
     }
     .ring-accented {
-      --tw-ring-color: var(--ui-border-accented);
+      --tw-ring-color: var(--ui-border-accented) !important;
     }
     .ring-default {
-      --tw-ring-color: var(--ui-border);
+      --tw-ring-color: var(--ui-border) !important;
     }
     .ring-inverted {
-      --tw-ring-color: var(--ui-border-inverted);
+      --tw-ring-color: var(--ui-border-inverted) !important;
     }
 
     /* 修复外部卡片边框 */
     div[data-slot="root"].ring-default {
-      border: 1px solid var(--ui-border);
-      box-shadow: none;
+      border: 1px solid var(--ui-border) !important;
+      box-shadow: none !important;
       overflow: hidden;
     }
 
@@ -159,25 +158,25 @@
     #asset-platform-select:focus, #asset-platform-select:focus-visible,
     #platform-select:focus, #platform-select:focus-visible,
     #release-menu-search:focus, #release-menu-search:focus-visible {
-      outline: none;
-      border-color: transparent;
-      box-shadow: inset 0 0 0 2px var(--ui-primary);
+      outline: none !important;
+      border-color: transparent !important;
+      box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
     /* 保证表头分割实线的精准与完全对称 */
     thead th {
-      border-bottom: 1px solid var(--ui-border-accented);
+      border-bottom: 1px solid var(--ui-border-accented) !important;
     }
 
     /* 按钮与标签 */
-    .bg-primary { background-color: var(--ui-primary); }
-    .bg-primary\/10 { background-color: rgba(0, 145, 255, 0.08); }
-    .dark .bg-primary\/10 { background-color: rgba(56, 189, 248, 0.12); }
-    .text-primary { color: var(--ui-primary); }
-    .bg-success\/10 { background-color: rgba(16, 185, 129, 0.08); }
-    .dark .bg-success\/10 { background-color: rgba(52, 211, 153, 0.12); }
-    .text-success { color: var(--ui-success); }
-    .text-inverted { color: var(--ui-text-inverted); }
+    .bg-primary { background-color: var(--ui-primary) !important; }
+    .bg-primary\/10 { background-color: rgba(0, 145, 255, 0.08) !important; }
+    .dark .bg-primary\/10 { background-color: rgba(56, 189, 248, 0.12) !important; }
+    .text-primary { color: var(--ui-primary) !important; }
+    .bg-success\/10 { background-color: rgba(16, 185, 129, 0.08) !important; }
+    .dark .bg-success\/10 { background-color: rgba(52, 211, 153, 0.12) !important; }
+    .text-success { color: var(--ui-success) !important; }
+    .text-inverted { color: var(--ui-text-inverted) !important; }
 
     /* 表格分割线 */
     table {
@@ -185,14 +184,14 @@
       border-spacing: 0;
     }
     tbody tr td {
-      border-bottom: 1px solid var(--ui-border-muted);
+      border-bottom: 1px solid var(--ui-border-muted) !important;
     }
     tbody tr:last-child td {
-      border-bottom: none;
+      border-bottom: none !important;
     }
 
     .bg-\(--ui-border-accented\) {
-      background-color: var(--ui-border-accented);
+      background-color: var(--ui-border-accented) !important;
     }
 
     /* 2 列过滤栅格 */
@@ -207,7 +206,7 @@
       display: inline-block;
       width: 1.25em;
       height: 1.25em;
-      background-color: var(--theme-icon-color, currentColor);
+      background-color: var(--theme-icon-color, currentColor) !important;
       -webkit-mask-repeat: no-repeat;
       mask-repeat: no-repeat;
       -webkit-mask-size: 100% 100%;
@@ -254,8 +253,8 @@
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
     }
 
-    .opacity-0 { opacity: 0; }
-    .opacity-100 { opacity: 1; }
+    .opacity-0 { opacity: 0 !important; }
+    .opacity-100 { opacity: 1 !important; }
     
     .check-mark {
       transition: opacity 0.15s ease-in-out;
@@ -263,10 +262,10 @@
 
     /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [1] [2] */
     .light .bg-default\/75 {
-      background-color: rgba(255, 255, 255, 0.65);
+      background-color: rgba(255, 255, 255, 0.65) !important;
     }
     .dark .bg-default\/75 {
-      background-color: rgba(13, 21, 39, 0.65);
+      background-color: rgba(13, 21, 39, 0.65) !important;
     }
 
     /* 4. GitHub 风格 of Markdown 解析辅助 CSS */
@@ -274,29 +273,29 @@
     .prose-slate h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; }
     .prose-slate h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; color: #0f172a; }
     .prose-slate p { margin-bottom: 0.75rem; line-height: 1.6; }
-    .prose-slate ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
-    .prose-slate li { margin-bottom: 0.25rem; display: list-item; }
+    .prose-slate ul { list-style-type: disc !important; padding-left: 1.5rem !important; margin-bottom: 0.75rem; }
+    .prose-slate li { margin-bottom: 0.25rem; display: list-item !important; }
     .prose-slate code { background-color: #f1f5f9; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.875rem; color: #0f172a; }
     .prose-slate pre { background-color: #0f172a; color: #f8fafc; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
     .prose-slate pre code { background-color: transparent; padding: 0; color: inherit; font-size: inherit; }
     .prose-slate a { color: #0091ff; text-decoration: underline; }
 
     /* Markdown 夜间模式适配 */
-    .dark .prose-slate h1, .dark .prose-slate h2, .dark .prose-slate h3 { color: #f1f5f9; }
-    .dark .prose-slate h2 { border-bottom-color: #1e293b; }
-    .dark .prose-slate code { background-color: #1e293b; color: #f1f5f9; }
-    .dark .prose-slate pre { background-color: #0a0f1d; }
+    .dark .prose-slate h1, .dark .prose-slate h2, .dark .prose-slate h3 { color: #f1f5f9 !important; }
+    .dark .prose-slate h2 { border-bottom-color: #1e293b !important; }
+    .dark .prose-slate code { background-color: #1e293b !important; color: #f1f5f9 !important; }
+    .dark .prose-slate pre { background-color: #0a0f1d !important; }
     .dark .prose-slate a { color: #38bdf8; }
 
     /* 深色模式下的特殊表单元素优化 */
     .dark #search-input, .dark #platform-select, .dark #asset-search-input, .dark #asset-platform-select, .dark #release-menu-search {
-      background-color: #152035;
-      color: #f8fafc;
-      box-shadow: inset 0 0 0 1px #1e293b;
+      background-color: #152035 !important;
+      color: #f8fafc !important;
+      box-shadow: inset 0 0 0 1px #1e293b !important;
     }
     .dark option {
-      background-color: #0d1527;
-      color: #f8fafc;
+      background-color: #0d1527 !important;
+      color: #f8fafc !important;
     }
 
     /* 统一主题切换时的动画过渡速度（解决不同步问题） */
@@ -304,41 +303,41 @@
     .theme-transition *,
     .theme-transition *::before,
     .theme-transition *::after {
-      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow;
-      transition-duration: 300ms;
-      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, box-shadow !important;
+      transition-duration: 300ms !important;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     /* 需求 1：解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
     .view-download-btn,
     .modal-download-btn {
-      --theme-icon-color: var(--ui-text-inverted);
+      --theme-icon-color: var(--ui-text-inverted) !important;
     }
     .official-site-btn,
     .copy-link-btn {
-      --theme-icon-color: var(--ui-text);
+      --theme-icon-color: var(--ui-text) !important;
     }
     #theme-toggle {
-      --theme-icon-color: #64748b;
+      --theme-icon-color: #64748b !important;
     }
     .dark #theme-toggle {
-      --theme-icon-color: #94a3b8;
+      --theme-icon-color: #94a3b8 !important;
     }
 
     /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
     @media (max-width: 639px) {
       #modal-card {
-        height: 100dvh; /* 动态视口高度 */
+        height: 100dvh !important; /* 动态视口高度 */
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
-        margin: 0;
-        border-radius: 0;
+        margin: 0 !important;
+        border-radius: 0 !important;
       }
       
       body {
         /* 优化 Safari 留海区域以及底部虚拟按键和地址栏适配 */
-        padding-top: calc(5rem + env(safe-area-inset-top, 0px));
-        padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px));
+        padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
+        padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
       }
     }
 
@@ -349,16 +348,16 @@
 
     /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
     #modal-scroll-body::-webkit-scrollbar {
-      display: block;
-      width: 6px;
-      height: 6px;
+      display: block !important;
+      width: 6px !important;
+      height: 6px !important;
     }
     #modal-scroll-body::-webkit-scrollbar-thumb {
-      background-color: rgba(100, 116, 139, 0.4);
-      border-radius: 9999px;
+      background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
+      border-radius: 9999px !important;
     }
     #modal-scroll-body::-webkit-scrollbar-track {
-      background-color: transparent;
+      background-color: transparent !important;
     }
   </style>
 </head>
@@ -939,7 +938,7 @@
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
-                      <!-- 已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
+                      <!-- 需求 1修正：已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-default/75 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
@@ -1019,7 +1018,7 @@
 
       if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-          // 需求 1：在 html 标签临时挂载统一过渡类，确保动画严格同步
+          // 在 html 标签临时挂载统一过渡类，确保动画严格同步
           document.documentElement.classList.add('theme-transition');
           
           if (document.documentElement.classList.contains('dark')) {
@@ -1224,6 +1223,61 @@
         });
       }
 
+      // 构建带检索及双行排版的高级 Releases 选择选单
+      function buildReleaseMenu(query = '') {
+        releaseMenuItems.innerHTML = '';
+        fetchedReleases.forEach((rel, index) => {
+          const tagName = rel.tag_name;
+          const relName = rel.name || rel.tag_name;
+          const fullText = `${tagName} ${relName}`.toLowerCase();
+
+          // 检索过滤
+          if (query && !fullText.includes(query)) {
+            return;
+          }
+
+          const btn = document.createElement('button');
+          const isSelected = (index === activeReleaseIndex);
+          btn.className = `w-full text-left px-4 py-2.5 rounded-lg flex items-center justify-between gap-4 border-b border-slate-50 dark:border-slate-800/40 last:border-0 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 transition-all duration-150 ${isSelected ? 'bg-slate-100 dark:bg-slate-800 font-medium text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300'}`;
+          
+          const date = new Date(rel.published_at);
+          const formattedDate = date.toLocaleDateString('zh-CN', {
+            year: 'numeric', month: '2-digit', day: '2-digit'
+          }).replace(/\//g, '/'); // 保证 YYYY/MM/DD
+
+          btn.innerHTML = `
+            <div class="space-y-0.5 truncate flex-1 pointer-events-none">
+              <p class="font-semibold text-slate-800 dark:text-slate-200 text-sm truncate">${tagName} · ${relName}</p>
+              <p class="text-xs text-slate-400 dark:text-slate-500 font-normal">${formattedDate} · ${rel.assets.length} 个文件</p>
+            </div>
+            <span class="check-mark iconify i-lucide:check text-slate-900 dark:text-slate-100 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
+          `;
+
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            activeReleaseIndex = index;
+
+            const allButtons = releaseMenuItems.querySelectorAll('button');
+            allButtons.forEach((btnEl, btnIndex) => {
+              const check = btnEl.querySelector('.check-mark');
+              if (btnIndex === index) {
+                check.classList.remove('opacity-0');
+                check.classList.add('opacity-100');
+                btnEl.classList.add('bg-slate-100', 'dark:bg-slate-800', 'font-medium', 'text-slate-900', 'dark:text-slate-100');
+              } else {
+                check.classList.remove('opacity-100');
+                check.classList.add('opacity-0');
+                btnEl.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'font-medium', 'text-slate-900', 'dark:text-slate-100');
+              }
+            });
+
+            modalReleaseMenu.classList.add('hidden');
+            renderSelectedRelease();
+          });
+          releaseMenuItems.appendChild(btn);
+        });
+      }
+
       // 渲染动态版本详情及 Assets 列表
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
@@ -1293,7 +1347,7 @@
           const tr = document.createElement('tr');
           tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
           
-          // 已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
+          // 需求 1 修正：已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
