@@ -164,37 +164,37 @@
     }
 
     /* 修复 iOS Safari 在 border-collapse: separate + sticky 定位下的物理边框变黑/重合 Glitch */
-    /* 采用 box-shadow: inset 内阴影绘制底边，并将其厚度升级为更醒目的 -2px */
+    /* 采用 box-shadow: inset 内阴影绘制底边，将其调整回精致的 -1px */
     table {
       border-collapse: separate;
       border-spacing: 0;
     }
     thead th {
       border-bottom: none !important;
-      box-shadow: inset 0 -2px 0 0 var(--ui-border-accented) !important; /* 升级为 2px 分割线 */
+      box-shadow: inset 0 -1px 0 0 var(--ui-border-accented) !important; /* 精致的 1px 分割线 */
     }
     tbody tr td {
       border-bottom: none !important;
-      box-shadow: inset 0 -2px 0 0 var(--ui-border) !important; /* 升级为 2px，并使用更清晰的 --ui-border 变量 */
+      box-shadow: inset 0 -1px 0 0 var(--ui-border) !important; /* 精致的 1px，并使用更清晰的 --ui-border 变量 */
     }
     tbody tr:last-child td {
       box-shadow: none !important;
     }
 
-    /* 弹窗 Assets 表格 Safari 适配且分割线升级至 2px */
+    /* 弹窗 Assets 表格 Safari 适配且分割线调整回 1px */
     #assets-table-wrapper thead th {
       border-bottom: none !important;
-      box-shadow: inset 0 -2px 0 0 rgba(148, 163, 184, 0.8) !important; /* 升级为 2px 分割线 */
+      box-shadow: inset 0 -1px 0 0 rgba(148, 163, 184, 0.5) !important; /* 精致的 1px 分割线 */
     }
     .dark #assets-table-wrapper thead th {
-      box-shadow: inset 0 -2px 0 0 rgba(71, 85, 105, 0.8) !important; /* 升级为 2px 分割线 */
+      box-shadow: inset 0 -1px 0 0 rgba(71, 85, 105, 0.5) !important; /* 精致的 1px 分割线 */
     }
     #assets-tbody tr td {
       border-bottom: none !important;
-      box-shadow: inset 0 -2px 0 0 rgba(203, 213, 225, 0.8) !important; /* 升级为 2px 且颜色更醒目 */
+      box-shadow: inset 0 -1px 0 0 rgba(203, 213, 225, 0.5) !important; /* 精致的 1px 且对比度适中 */
     }
     .dark #assets-tbody tr td {
-      box-shadow: inset 0 -2px 0 0 rgba(51, 65, 85, 0.9) !important; /* 升级为 2px 且颜色更醒目 */
+      box-shadow: inset 0 -1px 0 0 rgba(51, 65, 85, 0.6) !important; /* 精致的 1px 且对比度适中 */
     }
     #assets-tbody tr:last-child td {
       box-shadow: none !important;
@@ -504,7 +504,7 @@
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">Android 上的基于规则的图形化隧道客户端。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">Android 上的基于规则 of 图形化隧道客户端。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -520,7 +520,7 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则的图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则 of 图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
                         <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
@@ -576,7 +576,7 @@
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Tauri of Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -594,7 +594,7 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri of Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
                         <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
@@ -613,7 +613,7 @@
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
                         <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
                       </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。</p>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">适用于 Windows、Linux 和 macOS of 桌面图形客户端，支持 Xray、sing-box 等内核。</p>
                     </div>
                   </td>
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
@@ -631,7 +631,7 @@
                   </td>
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS of 桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
                         <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/2dust/v2rayN" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
