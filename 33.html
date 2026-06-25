@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 统一规范版</title>
+  <title>客户端列表 - 修复版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -164,7 +164,6 @@
     }
 
     /* ==================== 统一表格分割线规范 ==================== */
-    /* 采用统一的 box-shadow 机制控制，确保首页与弹窗列表的线条粗细、颜色完全一致 */
     table {
       border-collapse: separate;
       border-spacing: 0;
@@ -184,7 +183,7 @@
       box-shadow: inset 0 -1px 0 0 var(--ui-border) !important;
     }
     
-    /* 3. 统一去除最后一行的底边，避免双重边框 */
+    /* 3. 统一去除最后一行的底边 */
     tbody tr:last-child td,
     #assets-tbody tr:last-child td {
       box-shadow: none !important;
@@ -249,7 +248,6 @@
     }
 
     /* 3. 纯 CSS 遮罩 Lucide 图标 */
-    /* 100% 恢复 standard background-color 规则，并确保全平台设备图标 100% 正常显现 */
     .iconify {
       display: inline-block;
       width: 1.25em;
@@ -261,12 +259,11 @@
       mask-size: 100% 100%;
     }
 
-    /* 安全地修复 Safari 渐变同步：在 transition 状态下强控 iconify 背景颜色过渡 */
     .theme-transition .iconify {
       transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 具体图标 SVG 数据源配置（移除冒号，采用中划线连字符以实现全浏览器正常解析） */
+    /* 具体图标 SVG 数据源配置 */
     .i-lucide-search {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
@@ -866,14 +863,14 @@
                 <span class="iconify i-lucide-chevron-down text-slate-400 size-5"></span>
               </button>
               
-              <!-- 带检索搜索框的高级 Release 选择选单 -->
-              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white dark:bg-[#0d1527] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl py-1 z-50 text-sm text-slate-700 dark:text-slate-300 max-h-80 overflow-y-auto">
-                <!-- 顶置检索输入框 -->
-                <div class="p-2 sticky top-0 bg-white dark:bg-[#0d1527] border-b border-slate-100 dark:border-slate-800 z-10">
+              <!-- 修复：通过外层 rounded-xl + overflow-hidden 做包裹裁剪，把检索搜索框固定，仅让内部列表滚动，从而根除上方半透明漏光的问题 -->
+              <div id="modal-release-menu" class="hidden absolute left-0 right-0 mt-1 bg-white dark:bg-[#0d1527] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl z-50 text-sm text-slate-700 dark:text-slate-300 max-h-80 flex flex-col overflow-hidden">
+                <!-- 顶置检索输入框 (静态固定在顶部) -->
+                <div class="p-2 bg-white dark:bg-[#0d1527] border-b border-slate-100 dark:border-slate-800 flex-shrink-0">
                   <input id="release-menu-search" type="text" placeholder="Search..." class="w-full rounded-md border border-slate-200 dark:border-slate-800 px-2.5 py-1.5 text-xs outline-none transition-shadow bg-white dark:bg-[#152035] text-slate-800 dark:text-slate-100">
                 </div>
-                <!-- 动态渲染的版本项容器 -->
-                <div id="release-menu-items"></div>
+                <!-- 动态渲染的版本项容器 (独立滚动区) -->
+                <div id="release-menu-items" class="overflow-y-auto flex-1 py-1"></div>
               </div>
             </div>
           </div>
@@ -996,7 +993,6 @@
       const themeToggle = document.getElementById('theme-toggle');
       const themeIcon = document.getElementById('theme-icon');
 
-      // 更新按钮的图标状态
       const updateThemeIcon = () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (themeIcon) {
@@ -1004,11 +1000,10 @@
         }
       };
       
-      updateThemeIcon(); // 初始设置一次
+      updateThemeIcon();
 
       if (themeToggle) {
         themeToggle.addEventListener('click', () => {
-          // 在 html 标签临时挂载统一过渡类，确保动画严格同步
           document.documentElement.classList.add('theme-transition');
           
           if (document.documentElement.classList.contains('dark')) {
@@ -1022,21 +1017,18 @@
           }
           updateThemeIcon();
 
-          // 动画播放完毕（300ms）后移除过渡类，恢复原有组件的 Hover 等交互过渡
           setTimeout(() => {
             document.documentElement.classList.remove('theme-transition');
           }, 300);
         });
       }
 
-      // 关闭下拉选单（全局委托监听）
       document.addEventListener('click', () => {
         if (modalReleaseMenu) {
           modalReleaseMenu.classList.add('hidden');
         }
       });
 
-      // 平台 Select 监听事件
       if (platformSelect) {
         platformSelect.addEventListener('change', () => {
           selectedPlatform = platformSelect.value;
@@ -1044,12 +1036,10 @@
         });
       }
 
-      // 搜索监听
       if (searchInput) {
         searchInput.addEventListener('input', filterData);
       }
 
-      // 主页面大列表过滤逻辑
       function filterData() {
         const query = searchInput.value.toLowerCase().trim();
         let visibleCount = 0;
@@ -1097,21 +1087,15 @@
         btn.addEventListener('click', async (e) => {
           e.stopPropagation();
 
-          // A. 开启页面时锁定底部背景滚动并重置滚动条
           document.body.classList.add('overflow-hidden');
-          
-          // B. 标记切换客户端：通知下拉菜单在下一次可见时执行重置
           needsReleaseScrollReset = true;
 
-          // 强制重置滚动条位置
           if (modalScrollBody) modalScrollBody.scrollTop = 0;
           if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
 
-          // C. 重置资产检索状态
           assetSearchInput.value = '';
           assetPlatformSelect.value = 'all';
 
-          // D. 双层过渡淡入
           downloadModal.classList.remove('opacity-0', 'pointer-events-none');
           downloadModal.classList.add('opacity-100', 'pointer-events-auto');
           modalCard.classList.remove('scale-95', 'opacity-0');
@@ -1152,10 +1136,9 @@
 
             activeReleaseIndex = 0;
             
-            buildReleaseMenu(); // 初始化构建菜单
+            buildReleaseMenu();
             renderSelectedRelease();
 
-            // E. 异步数据就绪并且 DOM 完全展现时，二次强制重置所有滑动条状态
             if (modalScrollBody) modalScrollBody.scrollTop = 0;
             if (assetsTableWrapper) assetsTableWrapper.scrollLeft = 0;
 
@@ -1183,37 +1166,33 @@
         });
       }
 
-      // 版本 Releases 按钮点击触发
       if (modalReleaseBtn) {
         modalReleaseBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           modalReleaseMenu.classList.toggle('hidden');
           if (!modalReleaseMenu.classList.contains('hidden')) {
-            
-            // 仅在发生了跨客户端切换时，在展开的时刻执行一次性重置与清空，保留用户上次滚动到的绝对位置
+            // 修复：当重置下拉菜单滚动位置时，现在将作用于实际可滚动的独立容器上
             if (needsReleaseScrollReset) {
-              modalReleaseMenu.scrollTop = 0; // 精准重置滚动轴
-              releaseMenuSearch.value = ''; // 清空检索词
-              buildReleaseMenu(); // 还原列表
-              needsReleaseScrollReset = false; // 关闭标记
+              releaseMenuItems.scrollTop = 0; 
+              releaseMenuSearch.value = ''; 
+              buildReleaseMenu(); 
+              needsReleaseScrollReset = false; 
             }
 
             setTimeout(() => {
-              releaseMenuSearch.focus(); // 自动聚焦检索输入框
+              releaseMenuSearch.focus();
             }, 50);
           }
         });
       }
 
-      // 版本 Releases 选单内置检索输入监听
       if (releaseMenuSearch) {
-        releaseMenuSearch.addEventListener('click', (e) => e.stopPropagation()); // 防止点击输入框关闭菜单
+        releaseMenuSearch.addEventListener('click', (e) => e.stopPropagation());
         releaseMenuSearch.addEventListener('input', () => {
           buildReleaseMenu(releaseMenuSearch.value.trim().toLowerCase());
         });
       }
 
-      // 构建带检索及双行排版的高级 Releases 选择选单
       function buildReleaseMenu(query = '') {
         releaseMenuItems.innerHTML = '';
         fetchedReleases.forEach((rel, index) => {
@@ -1221,7 +1200,6 @@
           const relName = rel.name || rel.tag_name;
           const fullText = `${tagName} ${relName}`.toLowerCase();
 
-          // 检索过滤
           if (query && !fullText.includes(query)) {
             return;
           }
@@ -1233,7 +1211,7 @@
           const date = new Date(rel.published_at);
           const formattedDate = date.toLocaleDateString('zh-CN', {
             year: 'numeric', month: '2-digit', day: '2-digit'
-          }).replace(/\//g, '/'); // 保证 YYYY/MM/DD
+          }).replace(/\//g, '/');
 
           btn.innerHTML = `
             <div class="space-y-0.5 truncate flex-1 pointer-events-none">
@@ -1299,7 +1277,7 @@
 
         const filteredAssets = rel.assets.filter(asset => {
           const name = asset.name.toLowerCase();
-          const platform = detectPlatform(asset.name).toLowerCase(); // "windows", "macos", "linux", "android"
+          const platform = detectPlatform(asset.name).toLowerCase();
           
           let searchBlob = name + " " + platform;
           if (platform === 'windows') searchBlob += " win setup exe msi pc intel x64 x86 amd64";
@@ -1363,7 +1341,6 @@
         });
       }
 
-      // 拷贝事件代理委托
       document.getElementById('assets-tbody').addEventListener('click', (e) => {
         const copyBtn = e.target.closest('.copy-link-btn');
         if (copyBtn) {
@@ -1385,7 +1362,6 @@
         }
       });
 
-      // 自动识别平台扩展
       function detectPlatform(filename) {
         const lower = filename.toLowerCase();
         if (lower.endsWith('.apk') || lower.includes('android')) return 'Android';
