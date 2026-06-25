@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 完全修复终极版</title>
+  <title>客户端列表 - 修复版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   
-  <!-- 配置 Tailwind 启用 class 模式的 Dark Mode -->
+  <!-- 配置 Tailwind 启用 class 模式 of Dark Mode -->
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -116,7 +116,7 @@
       --ui-bg-accented: #334155;
       --ui-bg-inverted: #fff;
       --ui-border: #1e293b;
-      --ui-border-muted: #0f172a;
+      --ui-border-muted: #1e293b; /* 统一设为较清晰的边框色 */
       --ui-border-accented: #334155;
       --ui-border-inverted: #fff;
     }
@@ -163,9 +163,41 @@
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
-    /* 保证表头分割实线的精准与完全对称 */
+    /* 修复 iOS Safari 在 border-collapse: separate + sticky 定位下的物理边框变黑/重合 Glitch */
+    /* 采用 box-shadow: inset 内阴影绘制底边，并将其厚度升级为更醒目的 -2px */
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+    }
     thead th {
-      border-bottom: 1px solid var(--ui-border-accented) !important;
+      border-bottom: none !important;
+      box-shadow: inset 0 -2px 0 0 var(--ui-border-accented) !important; /* 升级为 2px 分割线 */
+    }
+    tbody tr td {
+      border-bottom: none !important;
+      box-shadow: inset 0 -2px 0 0 var(--ui-border) !important; /* 升级为 2px，并使用更清晰的 --ui-border 变量 */
+    }
+    tbody tr:last-child td {
+      box-shadow: none !important;
+    }
+
+    /* 弹窗 Assets 表格 Safari 适配且分割线升级至 2px */
+    #assets-table-wrapper thead th {
+      border-bottom: none !important;
+      box-shadow: inset 0 -2px 0 0 rgba(148, 163, 184, 0.8) !important; /* 升级为 2px 分割线 */
+    }
+    .dark #assets-table-wrapper thead th {
+      box-shadow: inset 0 -2px 0 0 rgba(71, 85, 105, 0.8) !important; /* 升级为 2px 分割线 */
+    }
+    #assets-tbody tr td {
+      border-bottom: none !important;
+      box-shadow: inset 0 -2px 0 0 rgba(203, 213, 225, 0.8) !important; /* 升级为 2px 且颜色更醒目 */
+    }
+    .dark #assets-tbody tr td {
+      box-shadow: inset 0 -2px 0 0 rgba(51, 65, 85, 0.9) !important; /* 升级为 2px 且颜色更醒目 */
+    }
+    #assets-tbody tr:last-child td {
+      box-shadow: none !important;
     }
 
     /* 按钮与标签 */
@@ -178,89 +210,7 @@
     .text-success { color: var(--ui-success) !important; }
     .text-inverted { color: var(--ui-text-inverted) !important; }
 
-    /* 表格分割线 */
-    table {
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-    tbody tr td {
-      border-bottom: 1px solid var(--ui-border-muted) !important;
-    }
-    tbody tr:last-child td {
-      border-bottom: none !important;
-    }
-
-    .bg-\(--ui-border-accented\) {
-      background-color: var(--ui-border-accented) !important;
-    }
-
-    /* 2 列过滤栅格 */
-    @media (min-width: 64rem) {
-      .lg\:grid-cols-\[minmax\(0\,1\.4fr\)_minmax\(0\,0\.7fr\)\] {
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.7fr);
-      }
-    }
-
-    /* 3. 纯 CSS 遮罩 Lucide 图标 */
-    .iconify {
-      display: inline-block;
-      width: 1.25em;
-      height: 1.25em;
-      background-color: var(--theme-icon-color, currentColor) !important;
-      -webkit-mask-repeat: no-repeat;
-      mask-repeat: no-repeat;
-      -webkit-mask-size: 100% 100%;
-      mask-size: 100% 100%;
-    }
-    .i-lucide\:search {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:chevron-down {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:eye {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:globe {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:check {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:x {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:download {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:copy {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:sun {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
-    }
-    .i-lucide\:moon {
-      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
-      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
-    }
-
-    .opacity-0 { opacity: 0 !important; }
-    .opacity-100 { opacity: 1 !important; }
-    
-    .check-mark {
-      transition: opacity 0.15s ease-in-out;
-    }
-
-    /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [1] [2] */
+    /* 将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 */
     .light .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.65) !important;
     }
@@ -308,20 +258,107 @@
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 需求 1：解决 Safari 浏览器下 currentColor 背景渐变缓慢/延迟的 WebKit 重绘 Bug */
-    .view-download-btn,
-    .modal-download-btn {
-      --theme-icon-color: var(--ui-text-inverted) !important;
+    /* 3. 纯 CSS 遮罩 Lucide 图标 */
+    /* 100% 恢复 standard background-color 规则，并确保全平台设备图标 100% 正常显现 */
+    .iconify {
+      display: inline-block;
+      width: 1.25em;
+      height: 1.25em;
+      background-color: currentColor;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-size: 100% 100%;
+      mask-size: 100% 100%;
     }
-    .official-site-btn,
-    .copy-link-btn {
-      --theme-icon-color: var(--ui-text) !important;
+
+    /* 安全地修复 Safari 渐变同步：在 transition 状态下强控 iconify 背景颜色过渡 */
+    .theme-transition .iconify {
+      transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
-    #theme-toggle {
-      --theme-icon-color: #64748b !important;
+
+    /* 具体图标 SVG 数据源配置（移除冒号，采用中划线连字符以实现全浏览器正常解析） */
+    .i-lucide-search {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
     }
-    .dark #theme-toggle {
-      --theme-icon-color: #94a3b8 !important;
+    .i-lucide-chevron-down {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    }
+    .i-lucide-eye {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+    }
+    .i-lucide-globe {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20'/%3E%3Cpath d='M2 12h20'/%3E%3C/svg%3E");
+    }
+    .i-lucide-check {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+    }
+    .i-lucide-x {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E");
+    }
+    .i-lucide-download {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E");
+    }
+    .i-lucide-copy {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='14' height='14' x='8' y='8' rx='2' ry='2'/%3E%3Cpath d='M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'/%3E%3C/svg%3E");
+    }
+    .i-lucide-sun {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3C/svg%3E");
+    }
+    .i-lucide-moon {
+      -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
+    }
+
+    /* 日间模式下滚动条是黑色的，夜间模式下滚动条是白色的 */
+    /* 针对 WebKit 核浏览器（Chrome, Safari, iOS Safari, Android Chrome, Edge 等）*/
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    #modal-scroll-body::-webkit-scrollbar,
+    div::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    #modal-scroll-body::-webkit-scrollbar-thumb,
+    div::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.65) !important; /* 更加明显的半透明黑 */
+      border-radius: 9999px !important;
+    }
+    .dark html::-webkit-scrollbar-thumb,
+    .dark body::-webkit-scrollbar-thumb,
+    .dark #modal-scroll-body::-webkit-scrollbar-thumb,
+    .dark div::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.65) !important; /* 更加明显的半透明白 */
+    }
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    #modal-scroll-body::-webkit-scrollbar-track,
+    div::-webkit-scrollbar-track {
+      background-color: transparent !important;
+    }
+
+    /* 针对 Firefox 的标准 scrollbar 颜色方案配置 */
+    html, body, #modal-scroll-body, div {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0, 0, 0, 0.65) transparent;
+    }
+    .dark html, .dark body, .dark #modal-scroll-body, .dark div {
+      scrollbar-color: rgba(255, 255, 255, 0.65) transparent;
+    }
+
+    /* 统一配置页面顶部外补丁，在电脑端和移动端保持完全一致且适应 iOS 状态栏高度 */
+    body {
+      padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
     }
 
     /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
@@ -335,46 +372,29 @@
       }
       
       body {
-        /* 优化 Safari 留海区域以及底部虚拟按键和地址栏适配 */
-        padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
+        /* 移动端仅单独覆盖底部留白 */
         padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
       }
-    }
-
-    /* 优化移动端滚动条可见性 */
-    #modal-scroll-body {
-      -webkit-overflow-scrolling: touch; /* 惯性回弹平滑硬件加速 */
-    }
-
-    /* 强制在 WebKit (iOS Safari / Android Chrome) 移动端浏览器显示出滚动滑块 */
-    #modal-scroll-body::-webkit-scrollbar {
-      display: block !important;
-      width: 6px !important;
-      height: 6px !important;
-    }
-    #modal-scroll-body::-webkit-scrollbar-thumb {
-      background-color: rgba(100, 116, 139, 0.4) !important; /* 经典深灰色半透明滑块 */
-      border-radius: 9999px !important;
-    }
-    #modal-scroll-body::-webkit-scrollbar-track {
-      background-color: transparent !important;
     }
   </style>
 </head>
 
-<!-- 主页面过渡底色支持暗色，通过 pt-20/pt-28 以及 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏 -->
-<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh pt-20 pb-4 px-2 sm:pt-28 sm:pb-10 sm:px-6 lg:px-8 flex justify-center transition-colors duration-300">
+<!-- 主页面过渡底色支持暗色，通过 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏（去除了 pt-* 类，改由 CSS 强控） -->
+<body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh pb-4 px-2 sm:pb-10 sm:px-6 lg:px-8 flex justify-center transition-colors duration-300">
 
   <!-- 首页顶部标题栏：日间/夜间自适应透明度和模糊，预留系统状态栏高度（适配 iOS 刘海和安全岛） -->
   <header class="fixed top-0 left-0 right-0 pt-[env(safe-area-inset-top,0px)] bg-white/75 dark:bg-[#070d19]/75 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between px-4 sm:px-8 z-40 transition-all duration-300">
     <div class="h-16 flex items-center justify-between w-full max-w-6xl mx-auto">
-      <!-- “代理客户端下载”标题靠左 -->
-      <h1 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
+      <!-- 需求 2：在"代理客户端下载"左边添加一个带有圆角的图标图片，并使用 flex 布局使其居中对齐 -->
+      <div class="flex items-center gap-3">
+        <img src="data:image/png;base64,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" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain" alt="Logo">
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
+      </div>
       
       <!-- 右侧日间/夜间模式切换按钮 -->
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
         <!-- 修正了日间/夜间初始化和切换时的图标显示状态，由 JS 统一动态管理 -->
-        <span id="theme-icon" class="iconify i-lucide:sun size-5"></span>
+        <span id="theme-icon" class="iconify i-lucide-sun size-5"></span>
       </button>
     </div>
   </header>
@@ -391,7 +411,7 @@
           <div data-slot="root" class="relative inline-flex items-center w-full">
             <input id="search-input" type="text" value="" placeholder="搜索客户端、标签、平台或说明" data-slot="base" class="w-full rounded-md border-0 appearance-none placeholder:text-dimmed px-2.5 py-1.5 text-base/5 gap-1.5 text-highlighted bg-default ring ring-inset ring-accented transition-shadow duration-300 ps-9 md:text-sm dark:placeholder:text-slate-500" autocomplete="off">
             <span data-slot="leading" class="absolute inset-y-0 start-0 flex items-center ps-2.5">
-              <span class="iconify i-lucide:search shrink-0 text-dimmed size-5" aria-hidden="true"></span>
+              <span class="iconify i-lucide-search shrink-0 text-dimmed size-5" aria-hidden="true"></span>
             </span>
           </div>
         </div>
@@ -409,7 +429,7 @@
               <option value="iOS">iOS</option>
             </select>
             <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-events-none text-dimmed">
-              <span class="iconify i-lucide:chevron-down size-5"></span>
+              <span class="iconify i-lucide-chevron-down size-5"></span>
             </span>
           </div>
         </div>
@@ -434,9 +454,8 @@
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold min-w-20 whitespace-nowrap">来源</th>
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted font-semibold sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">操作</th>
                 </tr>
-                <!-- 删除了容易导致“左粗右细”冲突的绝对定位分割线 -->
               </thead>
-              <tbody id="client-tbody" class="isolate divide-y divide-default">
+              <tbody id="client-tbody" class="isolate">
                 
                 <!-- 1. FlClash -->
                 <tr data-selected="false" class="client-row">
@@ -464,14 +483,13 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <!-- 已恢复表格列表右侧粘性单元格的操作列半透明度（bg-default/75） -->
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/chen08209/FlClash" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -503,10 +521,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="MetaCubeX/ClashMetaForAndroid" data-name="Clash Meta for Android" data-desc="Android 上的基于规则的图形化隧道客户端。" data-website="https://github.com/MetaCubeX/ClashMetaForAndroid">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/MetaCubeX/ClashMetaForAndroid" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -540,10 +558,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="mihomo-party-org/clash-party" data-name="Clash Party" data-desc="另一款 Mihomo 桌面图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/mihomo-party-org/clash-party">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/mihomo-party-org/clash-party" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -577,10 +595,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="clash-verge-rev/clash-verge-rev" data-name="Clash Verge Rev" data-desc="基于 Tauri 的 Clash Meta 图形客户端，覆盖 Windows、macOS 与 Linux。" data-website="https://github.com/clash-verge-rev/clash-verge-rev">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/clash-verge-rev/clash-verge-rev" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -614,10 +632,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayN" data-name="v2rayN" data-desc="适用于 Windows、Linux 和 macOS 的桌面图形客户端，支持 Xray、sing-box 等内核。" data-website="https://github.com/2dust/v2rayN">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/2dust/v2rayN" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -649,10 +667,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="2dust/v2rayNG" data-name="v2rayNG" data-desc="Android 图形客户端，支持 Xray core 与 v2fly core。" data-website="https://github.com/2dust/v2rayNG">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/2dust/v2rayNG" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-elevated rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -688,10 +706,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="hiddify/hiddify-app" data-name="Hiddify" data-desc="支持 Sing-box、Xray、TUIC、Hysteria 等协议的多平台图形客户端。" data-website="https://github.com/hiddify/hiddify-app">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/hiddify/hiddify-app" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -727,10 +745,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="KaringX/karing" data-name="karing" data-desc="支持 Clash / sing-box 路由规则的多平台代理工具。" data-website="https://github.com/KaringX/karing">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/KaringX/karing" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -761,10 +779,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="getsurfboard/surfboard" data-name="Surfboard" data-desc="面向 Android 的规则型 network 调试与代理客户端。" data-website="https://github.com/getsurfboard/surfboard">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/getsurfboard/surfboard" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -799,10 +817,10 @@
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
-                        <span class="iconify i-lucide:eye shrink-0 size-4"></span>查看下载
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/SagerNet/sing-box" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-primary hover:border-slate-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 rounded-lg">
-                        <span class="iconify i-lucide:globe shrink-0 size-4"></span>官网
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
                   </td>
@@ -821,7 +839,7 @@
   <div id="download-modal" class="opacity-0 pointer-events-none fixed inset-0 bg-white/40 dark:bg-[#070d19]/40 backdrop-blur-xl z-50 overflow-hidden p-0 sm:p-2 md:p-3 lg:p-4 flex items-center justify-center transition-all duration-300">
     
     <!-- 弹窗主体卡片 -->
-    <div id="modal-card" class="bg-white w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
+    <div id="modal-card" class="bg-white dark:bg-[#0d1527] w-full h-full sm:h-auto sm:max-h-[95vh] rounded-none sm:rounded-2xl shadow-2xl border-none sm:border border-slate-200 dark:border-slate-850 relative transition-all duration-300 transform scale-95 opacity-0 flex flex-col overflow-hidden max-w-6xl my-0 sm:my-2">
       
       <!-- 弹窗顶部标头 -->
       <div class="border-b border-slate-100 dark:border-slate-800 p-4 sm:p-6 flex justify-between items-start gap-4 flex-shrink-0 bg-white dark:bg-[#0d1527] z-10">
@@ -833,7 +851,7 @@
           <p id="modal-client-desc" class="text-sm text-slate-500 dark:text-slate-400"></p>
         </div>
         <button id="modal-close-x" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">
-          <span class="iconify i-lucide:x size-5"></span>
+          <span class="iconify i-lucide-x size-5"></span>
         </button>
       </div>
 
@@ -854,7 +872,7 @@
           <span class="text-red-500 font-semibold text-base">GitHub API 获取失败</span>
           <p id="modal-error-msg" class="text-sm text-slate-500 dark:text-slate-400 max-w-md">可能已经超过了 GitHub 匿名的 API 访问速率限制，您可以直接前往 GitHub 仓库获取资产下载。</p>
           <a id="modal-fallback-btn" href="#" target="_blank" class="font-medium inline-flex items-center px-4 py-2 text-sm text-inverted bg-primary hover:bg-primary/90 rounded-lg gap-2">
-            <span class="iconify i-lucide:globe size-4"></span>前往 GitHub 仓库
+            <span class="iconify i-lucide-globe size-4"></span>前往 GitHub 仓库
           </a>
         </div>
 
@@ -864,14 +882,14 @@
           <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
-              <p class="text-xs font-semibold uppercase text-muted">GitHub Releases</p>
+              <p class="text-xs font-semibold text-muted">GitHub Releases</p>
               <p id="modal-releases-subtitle" class="text-xs text-slate-400 dark:text-slate-500"></p>
             </div>
             <!-- 下拉菜单触发按钮 -->
             <div class="relative w-full md:w-80">
               <button id="modal-release-btn" class="w-full flex items-center justify-between border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#152035] rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-primary hover:border-slate-300 active:scale-[0.98] transition-all duration-300">
                 <span id="modal-release-text" class="truncate font-medium">请选择版本</span>
-                <span class="iconify i-lucide:chevron-down text-slate-400 size-5"></span>
+                <span class="iconify i-lucide-chevron-down text-slate-400 size-5"></span>
               </button>
               
               <!-- 带检索搜索框的高级 Release 选择选单 -->
@@ -905,7 +923,7 @@
                 <div class="relative inline-flex items-center w-full">
                   <input id="asset-search-input" type="text" placeholder="搜索文件名、架构或扩展名" class="w-full rounded-md border-0 appearance-none placeholder:text-dimmed px-2.5 py-1.5 text-base/5 gap-1.5 text-highlighted bg-default ring ring-inset ring-accented ps-9 md:text-sm">
                   <span class="absolute inset-y-0 start-0 flex items-center ps-2.5">
-                    <span class="iconify i-lucide:search shrink-0 text-dimmed size-5"></span>
+                    <span class="iconify i-lucide-search shrink-0 text-dimmed size-5"></span>
                   </span>
                 </div>
               </div>
@@ -921,7 +939,7 @@
                     <option value="Android">Android</option>
                   </select>
                   <span class="absolute inset-y-0 end-0 flex items-center pe-2.5 pointer-events-none text-dimmed">
-                    <span class="iconify i-lucide:chevron-down size-5"></span>
+                    <span class="iconify i-lucide-chevron-down size-5"></span>
                   </span>
                 </div>
               </div>
@@ -938,11 +956,10 @@
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
-                      <!-- 需求 1修正：已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-default/75 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
-                  <tbody id="assets-tbody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                  <tbody id="assets-tbody"></tbody>
                 </table>
               </div>
             </div>
@@ -1009,8 +1026,7 @@
       const updateThemeIcon = () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (themeIcon) {
-          // 修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮）
-          themeIcon.className = isDark ? 'iconify i-lucide:moon size-5' : 'iconify i-lucide:sun size-5';
+          themeIcon.className = isDark ? 'iconify i-lucide-moon size-5' : 'iconify i-lucide-sun size-5';
         }
       };
       
@@ -1250,7 +1266,7 @@
               <p class="font-semibold text-slate-800 dark:text-slate-200 text-sm truncate">${tagName} · ${relName}</p>
               <p class="text-xs text-slate-400 dark:text-slate-500 font-normal">${formattedDate} · ${rel.assets.length} 个文件</p>
             </div>
-            <span class="check-mark iconify i-lucide:check text-slate-900 dark:text-slate-100 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
+            <span class="check-mark iconify i-lucide-check text-slate-900 dark:text-slate-100 size-4 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0'}"></span>
           `;
 
           btn.addEventListener('click', (e) => {
@@ -1278,7 +1294,6 @@
         });
       }
 
-      // 渲染动态版本详情及 Assets 列表
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1298,7 +1313,6 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 渲染 Assets 动态列表函数
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1345,9 +1359,8 @@
           const proxyUrl = `https://99z.top/${rawUrl}`;
 
           const tr = document.createElement('tr');
-          tr.className = "hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors";
+          tr.className = ""; 
           
-          // 需求 1 修正：已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
@@ -1364,10 +1377,10 @@
             <td class="px-4 py-5 text-sm text-right sticky right-0 bg-default/75 whitespace-nowrap">
               <div class="flex items-center justify-end gap-2">
                 <button type="button" class="copy-link-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 hover:text-emerald-600 hover:border-emerald-300 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap" data-url="${rawUrl}">
-                  <span class="iconify i-lucide:copy shrink-0 size-4"></span>拷贝链接
+                  <span class="iconify i-lucide-copy shrink-0 size-4"></span>拷贝链接
                 </button>
                 <a href="${proxyUrl}" target="_blank" class="modal-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 dark:hover:bg-sky-500 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg whitespace-nowrap">
-                  <span class="iconify i-lucide:download shrink-0 size-4"></span>下载
+                  <span class="iconify i-lucide-download shrink-0 size-4"></span>下载
                 </a>
               </div>
             </td>
@@ -1385,7 +1398,7 @@
           
           navigator.clipboard.writeText(proxyUrl).then(() => {
             const originalHTML = copyBtn.innerHTML;
-            copyBtn.innerHTML = `<span class="iconify i-lucide:check shrink-0 size-4 text-emerald-600 dark:text-emerald-400"></span>已复制!`;
+            copyBtn.innerHTML = `<span class="iconify i-lucide-check shrink-0 size-4 text-emerald-600 dark:text-emerald-400"></span>已复制!`;
             copyBtn.classList.add('text-emerald-600', 'dark:text-emerald-400', 'ring-emerald-200', 'dark:ring-emerald-800/50');
             
             setTimeout(() => {
@@ -1398,6 +1411,7 @@
         }
       });
 
+      // 自动识别平台扩展
       function detectPlatform(filename) {
         const lower = filename.toLowerCase();
         if (lower.endsWith('.apk') || lower.includes('android')) return 'Android';
