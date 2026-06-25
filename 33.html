@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 修复版</title>
+  <title>客户端列表 - 统一规范版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -116,7 +116,7 @@
       --ui-bg-accented: #334155;
       --ui-bg-inverted: #fff;
       --ui-border: #1e293b;
-      --ui-border-muted: #1e293b; /* 统一设为较清晰的边框色 */
+      --ui-border-muted: #1e293b; 
       --ui-border-accented: #334155;
       --ui-border-inverted: #fff;
     }
@@ -163,39 +163,29 @@
       box-shadow: inset 0 0 0 2px var(--ui-primary) !important;
     }
 
-    /* 修复 iOS Safari 在 border-collapse: separate + sticky 定位下的物理边框变黑/重合 Glitch */
-    /* 采用 box-shadow: inset 内阴影绘制底边，将其调整回精致的 -1px */
+    /* ==================== 统一表格分割线规范 ==================== */
+    /* 采用统一的 box-shadow 机制控制，确保首页与弹窗列表的线条粗细、颜色完全一致 */
     table {
       border-collapse: separate;
       border-spacing: 0;
     }
-    thead th {
-      border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 var(--ui-border-accented) !important; /* 精致的 1px 分割线 */
-    }
-    tbody tr td {
-      border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 var(--ui-border) !important; /* 精致的 1px，并使用更清晰的 --ui-border 变量 */
-    }
-    tbody tr:last-child td {
-      box-shadow: none !important;
-    }
-
-    /* 弹窗 Assets 表格 Safari 适配且分割线调整回 1px */
+    
+    /* 1. 统一表头分割线 (首页与弹窗) */
+    thead th,
     #assets-table-wrapper thead th {
       border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 rgba(148, 163, 184, 0.5) !important; /* 精致的 1px 分割线 */
+      box-shadow: inset 0 -1px 0 0 var(--ui-border-accented) !important;
     }
-    .dark #assets-table-wrapper thead th {
-      box-shadow: inset 0 -1px 0 0 rgba(71, 85, 105, 0.5) !important; /* 精致的 1px 分割线 */
-    }
+    
+    /* 2. 统一表格内容行分割线 (首页与弹窗) */
+    tbody tr td,
     #assets-tbody tr td {
       border-bottom: none !important;
-      box-shadow: inset 0 -1px 0 0 rgba(203, 213, 225, 0.5) !important; /* 精致的 1px 且对比度适中 */
+      box-shadow: inset 0 -1px 0 0 var(--ui-border) !important;
     }
-    .dark #assets-tbody tr td {
-      box-shadow: inset 0 -1px 0 0 rgba(51, 65, 85, 0.6) !important; /* 精致的 1px 且对比度适中 */
-    }
+    
+    /* 3. 统一去除最后一行的底边，避免双重边框 */
+    tbody tr:last-child td,
     #assets-tbody tr:last-child td {
       box-shadow: none !important;
     }
@@ -210,7 +200,7 @@
     .text-success { color: var(--ui-success) !important; }
     .text-inverted { color: var(--ui-text-inverted) !important; }
 
-    /* 将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 */
+    /* 半透明背景自适应 */
     .light .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.65) !important;
     }
@@ -318,8 +308,7 @@
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/%3E%3C/svg%3E");
     }
 
-    /* 日间模式下滚动条是黑色的，夜间模式下滚动条是白色的 */
-    /* 针对 WebKit 核浏览器（Chrome, Safari, iOS Safari, Android Chrome, Edge 等）*/
+    /* 滚动条自适应 */
     html::-webkit-scrollbar,
     body::-webkit-scrollbar,
     #modal-scroll-body::-webkit-scrollbar,
@@ -331,14 +320,14 @@
     body::-webkit-scrollbar-thumb,
     #modal-scroll-body::-webkit-scrollbar-thumb,
     div::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.65) !important; /* 更加明显的半透明黑 */
+      background-color: rgba(0, 0, 0, 0.65) !important;
       border-radius: 9999px !important;
     }
     .dark html::-webkit-scrollbar-thumb,
     .dark body::-webkit-scrollbar-thumb,
     .dark #modal-scroll-body::-webkit-scrollbar-thumb,
     .dark div::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.65) !important; /* 更加明显的半透明白 */
+      background-color: rgba(255, 255, 255, 0.65) !important;
     }
     html::-webkit-scrollbar-track,
     body::-webkit-scrollbar-track,
@@ -347,7 +336,6 @@
       background-color: transparent !important;
     }
 
-    /* 针对 Firefox 的标准 scrollbar 颜色方案配置 */
     html, body, #modal-scroll-body, div {
       scrollbar-width: thin;
       scrollbar-color: rgba(0, 0, 0, 0.65) transparent;
@@ -356,15 +344,13 @@
       scrollbar-color: rgba(255, 255, 255, 0.65) transparent;
     }
 
-    /* 统一配置页面顶部外补丁，在电脑端和移动端保持完全一致且适应 iOS 状态栏高度 */
     body {
       padding-top: calc(5rem + env(safe-area-inset-top, 0px)) !important;
     }
 
-    /* ==================== 5. 移动端安全区域适配与滚动条显式展现 ==================== */
     @media (max-width: 639px) {
       #modal-card {
-        height: 100dvh !important; /* 动态视口高度 */
+        height: 100dvh !important;
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
         margin: 0 !important;
@@ -372,39 +358,30 @@
       }
       
       body {
-        /* 移动端仅单独覆盖底部留白 */
         padding-bottom: calc(2.5rem + env(safe-area-inset-bottom, 0px)) !important;
       }
     }
   </style>
 </head>
 
-<!-- 主页面过渡底色支持暗色，通过 min-h-dvh 完美适配 Safari 动态地址栏和固定标题栏（去除了 pt-* 类，改由 CSS 强控） -->
 <body class="bg-white dark:bg-[#070d19] min-h-screen min-h-dvh pb-4 px-2 sm:pb-10 sm:px-6 lg:px-8 flex justify-center transition-colors duration-300">
 
-  <!-- 首页顶部标题栏：日间/夜间自适应透明度和模糊，预留系统状态栏高度（适配 iOS 刘海和安全岛） -->
   <header class="fixed top-0 left-0 right-0 pt-[env(safe-area-inset-top,0px)] bg-white/75 dark:bg-[#070d19]/75 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between px-4 sm:px-8 z-40 transition-all duration-300">
     <div class="h-16 flex items-center justify-between w-full max-w-6xl mx-auto">
-      <!-- 需求 2：在"代理客户端下载"左边添加一个带有圆角的图标图片，并使用 flex 布局使其居中对齐 -->
       <div class="flex items-center gap-3">
         <img src="data:image/png;base64,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" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain" alt="Logo">
         <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
       </div>
       
-      <!-- 右侧日间/夜间模式切换按钮 -->
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
-        <!-- 修正了日间/夜间初始化和切换时的图标显示状态，由 JS 统一动态管理 -->
         <span id="theme-icon" class="iconify i-lucide-sun size-5"></span>
       </button>
     </div>
   </header>
 
-  <!-- 网页的主卡片外框 -->
   <div class="w-full max-w-6xl bg-white dark:bg-[#0d1527] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] dark:shadow-[0_4px_25px_rgba(0,0,0,0.25)] border border-slate-100 dark:border-slate-800/80 p-1 sm:p-4 transition-colors duration-300">
     
-    <!-- 客户端内容容器 -->
     <div class="space-y-5 p-2 sm:p-5">
-      <!-- 2 列过滤筛选 -->
       <section class="grid gap-3 grid-cols-1 md:grid-cols-[2fr_1fr]">
         <div class="space-y-2">
           <p class="text-xs font-semibold uppercase text-muted">关键词</p>
@@ -416,7 +393,6 @@
           </div>
         </div>
 
-        <!-- 平台下拉筛选 -->
         <div class="space-y-2 relative">
           <p class="text-xs font-semibold uppercase text-muted">平台</p>
           <div class="relative w-full">
@@ -435,13 +411,11 @@
         </div>
       </section>
 
-      <!-- 结果数量显示 -->
       <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
         <span>显示 <span id="visible-count" class="font-medium">10</span> / 10 个客户端</span>
         <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100 dark:bg-slate-800">Android</span>
       </div>
 
-      <!-- 表格区域 -->
       <div data-slot="root" class="bg-default ring ring-default overflow-hidden rounded-xl">
         <div data-slot="body" class="p-0 sm:p-0">
           <div data-slot="root" class="relative overflow-auto overflow-x-auto">
