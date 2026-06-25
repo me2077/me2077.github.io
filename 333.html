@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<!-- 优化：将主题背景色直接挂载在 html 根节点上，保障 Safari Canvas 全局底色穿透 -->
-<html lang="zh-CN" class="light bg-white dark:bg-[#070d19] transition-colors duration-300">
+<html lang="zh-CN" class="light">
 <head>
   <meta charset="UTF-8">
   <!-- 引入 viewport-fit=cover 适配刘海屏 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>客户端列表 - 完全修复终极版</title>
+  <title>客户端列表 - 修复版</title>
   <!-- 引入 Tailwind CSS 辅助框架 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- 引入 Marked.js Markdown 解析器 -->
@@ -117,7 +116,7 @@
       --ui-bg-accented: #334155;
       --ui-bg-inverted: #fff;
       --ui-border: #1e293b;
-      --ui-border-muted: #0f172a;
+      --ui-border-muted: #1e293b; /* 修复：将原先的 #0f172a 修改为 #1e293b，使分割线在夜间模式下清晰可见 */
       --ui-border-accented: #334155;
       --ui-border-inverted: #fff;
     }
@@ -165,19 +164,18 @@
     }
 
     /* 修复 iOS Safari 在 border-collapse: separate + sticky 定位下的物理边框变黑/重合 Glitch */
-    /* 需求 1：将 bottom 物理边框均改为极其稳定的 box-shadow 内阴影 [1] */
-    /* 需求 2：已将主表格的 horizontal 分割线从 1px 物理加粗为 1.5px/2px 的内阴影效果，使其醒目匀称 [1] */
+    /* 采用 box-shadow: inset 内阴影绘制底边，替代 tr/td 容易在渲染层重绘失败的 border */
     table {
       border-collapse: separate;
       border-spacing: 0;
     }
     thead th {
       border-bottom: none !important;
-      box-shadow: inset 0 -2px 0 0 var(--ui-border-accented) !important; /* 表头线加粗至 2px */
+      box-shadow: inset 0 -1px 0 0 var(--ui-border-accented) !important;
     }
     tbody tr td {
       border-bottom: none !important;
-      box-shadow: inset 0 -2px 0 0 var(--ui-border-muted) !important;  /* 列表行分割线加粗至 2px */
+      box-shadow: inset 0 -1px 0 0 var(--ui-border-muted) !important;
     }
     tbody tr:last-child td {
       box-shadow: none !important;
@@ -186,17 +184,17 @@
     /* 弹窗 Assets 表格 Safari 适配 */
     #assets-table-wrapper thead th {
       border-bottom: none !important;
-      box-shadow: inset 0 -2px 0 0 rgba(226, 232, 240, 0.8) !important; /* 弹窗表头加粗 */
+      box-shadow: inset 0 -1px 0 0 rgba(226, 232, 240, 0.8) !important;
     }
     .dark #assets-table-wrapper thead th {
-      box-shadow: inset 0 -2px 0 0 rgba(30, 41, 59, 0.8) !important;
+      box-shadow: inset 0 -1px 0 0 rgba(30, 41, 59, 0.8) !important;
     }
     #assets-tbody tr td {
       border-bottom: none !important;
-      box-shadow: inset 0 -1.5px 0 0 rgba(226, 232, 240, 0.6) !important; /* 弹窗内容行加粗 */
+      box-shadow: inset 0 -1px 0 0 rgba(226, 232, 240, 0.6) !important;
     }
     .dark #assets-tbody tr td {
-      box-shadow: inset 0 -1.5px 0 0 rgba(30, 41, 59, 0.6) !important;
+      box-shadow: inset 0 -1px 0 0 rgba(30, 41, 59, 0.6) !important;
     }
     #assets-tbody tr:last-child td {
       box-shadow: none !important;
@@ -212,7 +210,7 @@
     .text-success { color: var(--ui-success) !important; }
     .text-inverted { color: var(--ui-text-inverted) !important; }
 
-    /* 需求 2：将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 [2] */
+    /* 将 0.85 修改为 0.65 并自适应日夜模式的半透明背景 */
     .light .bg-default\/75 {
       background-color: rgba(255, 255, 255, 0.65) !important;
     }
@@ -261,7 +259,7 @@
     }
 
     /* 3. 纯 CSS 遮罩 Lucide 图标 */
-    /* 修正：100% 恢复标准 background-color 规则，将带有冒号的选择器改为不带冒号的选择器（如 .i-lucide-search），避开 Tailwind 的 JIT 分词器强占 */
+    /* 100% 恢复 standard background-color 规则，并确保全平台设备图标 100% 正常显现 */
     .iconify {
       display: inline-block;
       width: 1.25em;
@@ -278,7 +276,7 @@
       transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
-    /* 具体图标 SVG 数据源配置（采用中划线连字符以实现全浏览器正常解析） */
+    /* 具体图标 SVG 数据源配置（移除冒号，采用中划线连字符以实现全浏览器正常解析） */
     .i-lucide-search {
       -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
       mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");
@@ -333,14 +331,14 @@
     body::-webkit-scrollbar-thumb,
     #modal-scroll-body::-webkit-scrollbar-thumb,
     div::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.65) !important; /* 日间默认半透明黑 */
+      background-color: rgba(0, 0, 0, 0.65) !important; /* 更加明显的半透明黑 */
       border-radius: 9999px !important;
     }
     .dark html::-webkit-scrollbar-thumb,
     .dark body::-webkit-scrollbar-thumb,
     .dark #modal-scroll-body::-webkit-scrollbar-thumb,
     .dark div::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.65) !important; /* 夜间模式半透明白 */
+      background-color: rgba(255, 255, 255, 0.65) !important; /* 更加明显的半透明白 */
     }
     html::-webkit-scrollbar-track,
     body::-webkit-scrollbar-track,
@@ -387,8 +385,11 @@
   <!-- 首页顶部标题栏：日间/夜间自适应透明度和模糊，预留系统状态栏高度（适配 iOS 刘海和安全岛） -->
   <header class="fixed top-0 left-0 right-0 pt-[env(safe-area-inset-top,0px)] bg-white/75 dark:bg-[#070d19]/75 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between px-4 sm:px-8 z-40 transition-all duration-300">
     <div class="h-16 flex items-center justify-between w-full max-w-6xl mx-auto">
-      <!-- 需求 2：增大“代理客户端下载”标题字号（text-xl sm:text-2xl） -->
-      <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
+      <!-- 需求 2：在"代理客户端下载"左边添加一个带有圆角的图标图片，并使用 flex 布局使其居中对齐 -->
+      <div class="flex items-center gap-3">
+        <img src="data:image/png;base64,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" class="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain" alt="Logo">
+        <h1 class="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100 tracking-wide transition-colors duration-200">代理客户端下载</h1>
+      </div>
       
       <!-- 右侧日间/夜间模式切换按钮 -->
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 transition-all duration-200 flex items-center justify-center" title="切换模式">
@@ -453,9 +454,7 @@
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted text-left font-semibold min-w-20 whitespace-nowrap">来源</th>
                   <th scope="col" class="px-4 py-3.5 text-sm text-highlighted font-semibold sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">操作</th>
                 </tr>
-                <!-- 删除了容易导致“左粗右细”冲突的绝对定位分割线 -->
               </thead>
-              <!-- 修正：已彻底移除 tbody 上的 divide-y 与 divide-default 机制，物理分割线改由 border-bottom 的内阴影（box-shadow）绘制以解决 Safari 滚动重影穿透渲染 Bug [1] -->
               <tbody id="client-tbody" class="isolate">
                 
                 <!-- 1. FlClash -->
@@ -484,7 +483,6 @@
                   <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
                     <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
                   </td>
-                  <!-- 已恢复表格列表右侧粘性单元格的操作列半透明度（bg-default/75） [2] -->
                   <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
                     <div class="flex items-center justify-end gap-2">
                       <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:bg-blue-600 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 rounded-lg" data-repo="chen08209/FlClash" data-name="FlClash" data-desc="基于 ClashMeta 的多平台代理客户端，简单易用，开源且无广告。" data-website="https://github.com/chen08209/FlClash">
@@ -884,7 +882,6 @@
           <!-- 第一层：GitHub Releases 版本下拉菜单与副标题 -->
           <div class="space-y-2">
             <div class="flex flex-col space-y-0.5">
-              <!-- 需求 1 修正：去除了 uppercase 类，完美显示原始大小写的 "GitHub Releases" -->
               <p class="text-xs font-semibold text-muted">GitHub Releases</p>
               <p id="modal-releases-subtitle" class="text-xs text-slate-400 dark:text-slate-500"></p>
             </div>
@@ -959,11 +956,9 @@
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">大小</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">下载量</th>
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted text-left font-semibold whitespace-nowrap">更新</th>
-                      <!-- 已恢复弹窗内文件列表头部右侧粘性单元格的半透明背景效果（bg-default/75） [2] -->
                       <th scope="col" class="px-4 py-4 text-sm text-highlighted font-semibold text-right sticky right-0 bg-default/75 whitespace-nowrap">操作</th>
                     </tr>
                   </thead>
-                  <!-- 修正：已彻底移除 tbody 上的 divide-y 机制，物理分割线改由 border-bottom 的内阴影（box-shadow）绘制以解决 Safari 滚动重影穿透渲染 Bug [1] -->
                   <tbody id="assets-tbody"></tbody>
                 </table>
               </div>
@@ -1031,7 +1026,6 @@
       const updateThemeIcon = () => {
         const isDark = document.documentElement.classList.contains('dark');
         if (themeIcon) {
-          // 修正了日间/夜间模式对应的图标显示（日间显示太阳，夜间显示月亮） [3]
           themeIcon.className = isDark ? 'iconify i-lucide-moon size-5' : 'iconify i-lucide-sun size-5';
         }
       };
@@ -1206,12 +1200,6 @@
         downloadModal.classList.add('opacity-0', 'pointer-events-none');
         modalCard.classList.remove('scale-100', 'opacity-100');
         modalCard.classList.add('scale-95', 'opacity-0');
-
-        // 强行触发 Safari 滚动微调，迫使其重绘并填充满底部地址栏，解决 iOS 视口高度失效的 Bug
-        setTimeout(() => {
-          window.scrollTo(window.scrollX, window.scrollY + 1);
-          window.scrollTo(window.scrollX, window.scrollY - 1);
-        }, 50);
       }
 
       if (modalCloseX) modalCloseX.addEventListener('click', closeModal);
@@ -1306,7 +1294,6 @@
         });
       }
 
-      // 渲染动态版本详情及 Assets 列表
       function renderSelectedRelease() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel) return;
@@ -1326,7 +1313,6 @@
       if (assetSearchInput) assetSearchInput.addEventListener('input', renderAssetsTable);
       if (assetPlatformSelect) assetPlatformSelect.addEventListener('change', renderAssetsTable);
 
-      // 渲染 Assets 动态列表函数
       function renderAssetsTable() {
         const rel = fetchedReleases[activeReleaseIndex];
         if (!rel || !rel.assets) return;
@@ -1373,10 +1359,8 @@
           const proxyUrl = `https://99z.top/${rawUrl}`;
 
           const tr = document.createElement('tr');
-          // 已移除弹窗文件列表行上的 hover 背景和渐变过渡效果
           tr.className = ""; 
           
-          // 已将动态行中操作列的背景样式从 bg-white dark:bg-[#0d1527] 还原为 bg-default/75 半透明效果 [2]
           tr.innerHTML = `
             <td class="pl-4 pr-16 py-5 text-sm text-highlighted font-semibold max-w-[360px] sm:max-w-[440px] truncate whitespace-nowrap">
               <div class="flex flex-col">
