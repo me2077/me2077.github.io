@@ -910,7 +910,6 @@
         document.documentElement.classList.remove('dark');
       }
     })();
-    
     tailwind.config = {
       darkMode: 'class',
     }
@@ -1262,7 +1261,7 @@
       function detectPlatform(filename) {
         const lower = filename.toLowerCase();
         if (lower.endsWith('.apk') || lower.includes('android')) return 'Android';
-        if (lower.endsWith('.exe') || lower.includes('win') || lower.includes('setup')) return 'Windows';
+        if (lower.endsWith('.exe') || (lower.includes('win') && !lower.includes('darwin')) || lower.includes('setup')) return 'Windows';
         if (lower.endsWith('.dmg') || lower.endsWith('.pkg') || lower.includes('mac') || lower.includes('darwin')) return 'macOS';
         if (lower.endsWith('.deb') || lower.endsWith('.rpm') || lower.endsWith('.appimage') || lower.includes('linux') || lower.includes('ubuntu')) return 'Linux';
         return '其它';
