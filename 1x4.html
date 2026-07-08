@@ -4,14 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>代理客户端🪜Proxy Clients</title>
-  <script type="module" src="js/1.js"></script>
-  <script type="module" src="js/2.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
   <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
   <link rel="shortcut icon" href="favicon/favicon.ico" />
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
   <meta name="apple-mobile-web-app-title" content="Proxy Clients" />
   <link rel="manifest" href="favicon/site.webmanifest" />
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      } else {
+        document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+    
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
+
   <style>
     :host, :root {
       --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -372,7 +389,7 @@
       </section>
 
       <div class="flex flex-wrap items-center gap-2 text-sm text-muted">
-        <span>显示 <span id="visible-count" class="font-medium">11</span> / 11 个客户端</span>
+        <span>显示 <span id="visible-count" class="font-medium">10</span> / 10 个客户端</span>
         <span id="active-badge" class="hidden font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-slate-100 dark:bg-slate-800">Android</span>
       </div>
 
@@ -390,7 +407,6 @@
                 </tr>
               </thead>
               <tbody id="client-tbody" class="isolate">
-                <!-- 1. FlClash -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -427,7 +443,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 2. Clash Meta for Android -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -461,7 +476,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 3. Clash Party -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -497,7 +511,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 4. Clash Verge Rev -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -533,43 +546,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 5. GUI.for.SingBox -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">GUI.for.SingBox</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">基于 Wails 和 Vue 3 的轻量级 sing-box 桌面图形客户端。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:opacity-80 active:scale-[0.98] transition-opacity duration-200 rounded-lg" data-repo="GUI-for-Cores/GUI.for.SingBox" data-name="GUI.for.SingBox" data-desc="基于 Wails 和 Vue 3 的轻量级 sing-box 桌面图形客户端。" data-website="https://github.com/GUI-for-Cores/GUI.for.SingBox">
-                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/GUI-for-Cores/GUI.for.SingBox" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg">
-                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <!-- 6. v2rayN -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -605,7 +581,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 7. v2rayNG -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -639,77 +614,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 8. Surfboard -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">Surfboard</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">面向 Android 的规则型 network 调试与代理客户端。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:opacity-80 active:scale-[0.98] transition-opacity duration-200 rounded-lg" data-repo="getsurfboard/surfboard" data-name="Surfboard" data-desc="面向 Android 的规则型 network 调试与代理客户端。" data-website="https://github.com/getsurfboard/surfboard">
-                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/getsurfboard/surfboard" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg">
-                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <!-- 9. sing-box -->
-                <tr data-selected="false" class="client-row">
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="min-w-0 space-y-1 py-2">
-                      <div class="flex flex-wrap items-center gap-2">
-                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">sing-box</p>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
-                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
-                      </div>
-                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理平台核心仓库，可作为多平台内核与生态入口。</p>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <div class="flex flex-wrap gap-1.5">
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
-                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
-                    </div>
-                  </td>
-                  <td class="p-4 text-sm text-muted whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">命令行</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
-                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
-                  </td>
-                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
-                    <div class="flex items-center justify-end gap-2">
-                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:opacity-80 active:scale-[0.98] transition-opacity duration-200 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
-                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
-                      </button>
-                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg">
-                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
-                      </a>
-                    </div>
-                  </td>
-                </tr>
-                <!-- 10. Hiddify -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -747,7 +651,6 @@
                     </div>
                   </td>
                 </tr>
-                <!-- 11. karing -->
                 <tr data-selected="false" class="client-row">
                   <td class="p-4 text-sm text-muted whitespace-nowrap">
                     <div class="min-w-0 space-y-1 py-2">
@@ -780,6 +683,74 @@
                         <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
                       </button>
                       <a href="https://github.com/KaringX/karing" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg">
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-selected="false" class="client-row">
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <div class="min-w-0 space-y-1 py-2">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">Surfboard</p>
+                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
+                      </div>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">面向 Android 的规则型 network 调试与代理客户端。</p>
+                    </div>
+                  </td>
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <div class="flex flex-wrap gap-1.5">
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
+                    </div>
+                  </td>
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-success/10 text-success">图形界面</span>
+                  </td>
+                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
+                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
+                  </td>
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
+                    <div class="flex items-center justify-end gap-2">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:opacity-80 active:scale-[0.98] transition-opacity duration-200 rounded-lg" data-repo="getsurfboard/surfboard" data-name="Surfboard" data-desc="面向 Android 的规则型 network 调试与代理客户端。" data-website="https://github.com/getsurfboard/surfboard">
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
+                      </button>
+                      <a href="https://github.com/getsurfboard/surfboard" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg">
+                        <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                <tr data-selected="false" class="client-row">
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <div class="min-w-0 space-y-1 py-2">
+                      <div class="flex flex-wrap items-center gap-2">
+                        <p class="max-w-[18rem] truncate whitespace-nowrap font-semibold text-highlighted">sing-box</p>
+                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">推荐</span>
+                        <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">开源</span>
+                      </div>
+                      <p class="max-w-[28rem] truncate text-sm text-muted">通用代理平台核心仓库，可作为多平台内核与生态入口。</p>
+                    </div>
+                  </td>
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <div class="flex flex-wrap gap-1.5">
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Android</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Windows</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">macOS</span>
+                      <span class="platform-tag font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">Linux</span>
+                    </div>
+                  </td>
+                  <td class="p-4 text-sm text-muted whitespace-nowrap">
+                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md text-default bg-elevated">命令行</span>
+                  </td>
+                  <td class="p-4 text-sm text-muted min-w-20 whitespace-nowrap">
+                    <span class="font-medium inline-flex items-center text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary">GitHub</span>
+                  </td>
+                  <td class="p-4 text-sm text-muted sticky bg-default/75 z-1 text-right whitespace-nowrap" style="right:0px;">
+                    <div class="flex items-center justify-end gap-2">
+                      <button type="button" class="view-download-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 text-inverted bg-primary hover:opacity-80 active:scale-[0.98] transition-opacity duration-200 rounded-lg" data-repo="SagerNet/sing-box" data-name="sing-box" data-desc="通用代理平台核心仓库，可作为多平台内核与生态入口。" data-website="https://github.com/SagerNet/sing-box">
+                        <span class="iconify i-lucide-eye shrink-0 size-4"></span>查看下载
+                      </button>
+                      <a href="https://github.com/SagerNet/sing-box" target="_blank" class="official-site-btn font-medium inline-flex items-center px-2.5 py-1.5 text-xs gap-1.5 ring ring-inset ring-accented text-default bg-default hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg">
                         <span class="iconify i-lucide-globe shrink-0 size-4"></span>官网
                       </a>
                     </div>
@@ -905,19 +876,6 @@
   </div>
 
   <script>
-    (function() {
-      const savedTheme = localStorage.getItem('theme') || 'light';
-      if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
-      } else {
-        document.documentElement.classList.add('light');
-        document.documentElement.classList.remove('dark');
-      }
-    })();
-    tailwind.config = {
-      darkMode: 'class',
-    }
     document.addEventListener('DOMContentLoaded', () => {
       const platformSelect = document.getElementById('platform-select');
       const searchInput = document.getElementById('search-input');
@@ -1251,7 +1209,7 @@
           const proxyUrl = `https://99z.top/${rawUrl}`;
           navigator.clipboard.writeText(proxyUrl).then(() => {
             const originalHTML = copyBtn.innerHTML;
-            copyBtn.innerHTML = `<span class="iconify i-lucide-check shrink-0 size-4 text-emerald-600 dark:text-emerald-400"></span>已复制!`;
+            copyBtn.innerHTML = `<span class="iconify i-lucide-check shrink-0 size-4 text-emerald-600 dark:text-emerald-400"></span>已复制`;
             copyBtn.classList.add('text-emerald-600', 'dark:text-emerald-400', 'ring-emerald-200', 'dark:ring-emerald-800/50');
             setTimeout(() => {
               copyBtn.innerHTML = originalHTML;
@@ -1266,7 +1224,7 @@
       function detectPlatform(filename) {
         const lower = filename.toLowerCase();
         if (lower.endsWith('.apk') || lower.includes('android')) return 'Android';
-        if (lower.endsWith('.exe') || (lower.includes('win') && !lower.includes('darwin')) || lower.includes('setup')) return 'Windows';
+        if (lower.endsWith('.exe') || lower.includes('win') || lower.includes('setup')) return 'Windows';
         if (lower.endsWith('.dmg') || lower.endsWith('.pkg') || lower.includes('mac') || lower.includes('darwin')) return 'macOS';
         if (lower.endsWith('.deb') || lower.endsWith('.rpm') || lower.endsWith('.appimage') || lower.includes('linux') || lower.includes('ubuntu')) return 'Linux';
         return '其它';
