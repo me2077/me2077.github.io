@@ -12,6 +12,22 @@
   <meta name="apple-mobile-web-app-title" content="Proxy Clients" />
   <link rel="manifest" href="favicon/site.webmanifest" />
   <link rel="stylesheet" href="css/style.css">
+    <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      } else {
+        document.documentElement.classList.add('light');
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+    
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
   <script type="module" src="js/Clients2.js"></script>
 </head>
 
