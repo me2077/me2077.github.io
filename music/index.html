@@ -3,16 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1020">
 <title>GitHub 文件加速</title>
 <style>
 *{box-sizing:border-box}
-
-/* 新增：给 html 打一个纯色底，解决 Safari 上下拉动时的白底回弹问题 */
-html {
-    background-color: #0b1020; 
-}
-
 body{
     margin:0;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -20,43 +13,134 @@ body{
     min-height:100dvh; 
     display:grid;
     place-items:center;
-    /* 保留原有的渐变背景 */
-    background:radial-gradient(circle at 20% 20%,#5b6cff55,transparent 35%),radial-gradient(circle at 80% 30%,#9b5cff55,transparent 35%),linear-gradient(135deg,#0b1020,#111827 60%,#0f172a);
-    /* 新增：锁定背景图片位置，避免地址栏收缩导致渐变重新渲染 */
-    background-attachment: fixed;
+    background:#3e3e3e;
     color:#fff;
+    overflow:hidden;
 }
-
 .card{width:min(92vw,720px);padding:40px;border-radius:28px;background:rgba(255,255,255,.08);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,.12);box-shadow:0 20px 60px rgba(0,0,0,.4)}
 h1{margin:0 0 10px;font-size:40px}.sub{color:#b8c2d8;margin:0 0 28px}
 .wrap{display:flex;gap:14px;flex-wrap:wrap}
-input{flex:1;min-width:260px;padding:18px 20px;border-radius:16px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:16px}
+
+/* 新增：输入框容器，用于绝对定位右侧图标 */
+.input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 260px;
+    display: flex;
+    align-items: center;
+}
+
+/* 修改：输入框占满 wrapper 宽度，并在右侧留出空间给图标 */
+input{
+    width: 100%;
+    padding: 18px 90px 18px 20px; /* 右侧增加 padding 防止文字和图标重叠 */
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.06);
+    color:#fff;
+    font-size:16px
+}
 input:focus{outline:none;border-color:#7c8cff;box-shadow:0 0 0 4px #7c8cff33}
-button{padding:18px 28px;border:0;border-radius:16px;background:linear-gradient(135deg,#6d7cff,#8f5cff);color:#fff;font-weight:700;cursor:pointer;transition:.25s}
-button:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(109,124,255,.4)}
+
+/* 新增：图标按钮的容器和样式 */
+.input-actions {
+    position: absolute;
+    right: 12px;
+    display: flex;
+    gap: 4px;
+}
+.icon-btn {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 10px;
+    color: #9fb0cf;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: 0.2s;
+}
+.icon-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+.icon-btn svg {
+    width: 20px;
+    height: 20px;
+}
+/* 修改：将原来的全局 button 样式指定给下载按钮，避免污染图标按钮 */
+.submit-btn{padding:18px 28px;border:0;border-radius:16px;background:linear-gradient(135deg,#6d7cff,#8f5cff);color:#fff;font-weight:700;cursor:pointer;transition:.25s}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(109,124,255,.4)}
+
 .note{margin-top:18px;color:#9fb0cf;font-size:14px}
 
 @media (max-width: 600px) {
-  button {
+  .submit-btn {
     width: 100%;
   }
 }
 </style>
 <script>
-function toSubmit(e){e.preventDefault();const q=document.getElementsByName('q')[0].value.trim();window.open(location.href.substr(0,location.href.lastIndexOf('/')+1)+q);}
+// 提交表单逻辑
+function toSubmit(e){
+    e.preventDefault();
+    const q=document.getElementById('githubUrl').value.trim();
+    if(!q) return;
+    window.open(location.href.substr(0,location.href.lastIndexOf('/')+1)+q);
+}
+
+// 粘贴逻辑 (需要 HTTPS 或 Localhost 环境支持)
+async function pasteUrl() {
+    try {
+        const text = await navigator.clipboard.readText();
+        const input = document.getElementById('githubUrl');
+        input.value = text;
+        input.focus();
+    } catch (err) {
+        console.error('无法读取剪贴板: ', err);
+        alert('无法读取剪贴板，请检查浏览器权限或尝试手动粘贴。');
+    }
+}
+
+// 清空逻辑
+function clearUrl() {
+    const input = document.getElementById('githubUrl');
+    input.value = '';
+    input.focus();
+}
 </script>
 </head>
 <body>
 <div class="card">
     <h1>GitHub Proxy</h1>
     <p class="sub">快速生成 GitHub 文件加速下载链接</p>
+    
     <form onsubmit="toSubmit(event)">
         <div class="wrap">
-            <input name="q" placeholder="粘贴 GitHub 文件链接..."
-            pattern="^((https|http):\/\/)?(github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$" required>
-            <button>Download</button>
+            <div class="input-wrapper">
+                <input id="githubUrl" name="q" placeholder="粘贴 GitHub 文件链接..."
+                pattern="^((https|http):\/\/)?(github\.com\/.+?\/.+?\/(?:releases|archive|blob|raw|suites)|((?:raw|gist)\.(?:githubusercontent|github)\.com))\/.+$" required>
+                
+                <div class="input-actions">
+                    <button type="button" class="icon-btn" onclick="pasteUrl()" title="粘贴">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                    </button>
+                    <button type="button" class="icon-btn" onclick="clearUrl()" title="清空">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Download</button>
         </div>
     </form>
+    
     <div class="note">支持 Releases、Archive、Blob、Raw 等 GitHub 文件链接。</div>
 </div>
 </body>
