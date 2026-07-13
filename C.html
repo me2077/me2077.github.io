@@ -22,6 +22,8 @@
             min-height: 100vh;
             padding: 20px;
             color: #333333;
+            /* 1. 网页固定，不让滚动 */
+            overflow: hidden; 
         }
 
         /* 内容容器 */
@@ -39,12 +41,42 @@
             display: inline-block;
         }
 
-        /* 中文文本样式 */
+        /* 打字机外部容器：确保打字时整体始终保持居中 */
+        .typewriter-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        /* 中文文本样式 - 2. 打字机效果 */
         .title-cn {
             font-size: 1.75rem;
             font-weight: 600;
-            margin-bottom: 8px;
             color: #2c3e50;
+            
+            /* 打字机核心样式 */
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #2c3e50; /* 模拟光标 */
+            width: 5em; /* 刚好5个中文字符的宽度 */
+            
+            /* typing控制字数宽度，blink控制光标闪烁，infinite循环 */
+            animation: 
+                typing 4s steps(5, end) infinite,
+                blink .75s step-end infinite;
+        }
+
+        /* 打字机动画关键帧 */
+        @keyframes typing {
+            0%, 15% { width: 0; }           /* 初始隐藏并停顿 */
+            40%, 75% { width: 5em; }        /* 打字完成，展示一段时间 */
+            90%, 100% { width: 0; }         /* 快速删回 0 */
+        }
+
+        /* 光标闪烁关键帧 */
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: #2c3e50; }
         }
 
         /* 英文文本样式 */
@@ -71,14 +103,17 @@
 <body>
 
     <div class="container">
-        <!-- GIF 图片 -->
         <img class="gif-image" src="images/neko-web.gif" alt="Website Under Construction">
         
-        <!-- 中英文文字 -->
-        <div class="title-cn">网站建设中</div>
+        <div class="typewriter-wrapper">
+            <div class="title-cn">网站建设中</div>
+        </div>
+        
         <div class="title-en">Website Under Construction</div>
     </div>
+
 <script>
+// 3. 添加光标跟随 Emoji 效果脚本
 (function emojiCursor() {
 
     var possibleEmoji = [
