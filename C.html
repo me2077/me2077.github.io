@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>网站建设中 / Under Construction</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto+Mono&family=Space+Grotesk:wght@300;700&family=Oswald:wght@400;700&family=Bebas+Neue&family=Inconsolata:wght@400;700&family=Major+Mono+Display&family=Quicksand:wght@400;700&family=Anton&family=Abril+Fatface&family=Permanent+Marker&family=Press+Start+2P&family=Monoton&display=swap" rel="stylesheet">
+
     <style>
         /* 基础样式重置 */
         * {
@@ -15,14 +20,15 @@
         /* 页面背景及居中布局 */
         body {
             background-color: #ececec;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            /* 使用链接中的 'Press Start 2P' 作为首选像素字体 */
+            font-family: 'Press Start 2P', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
             color: #333333;
-            /* 1. 网页固定，不让滚动 */
+            /* 网页固定，不让滚动 */
             overflow: hidden; 
         }
 
@@ -45,32 +51,33 @@
         .typewriter-wrapper {
             display: flex;
             justify-content: center;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
-        /* 中文文本样式 - 2. 打字机效果 */
+        /* 中文文本样式 - 2. 打字机效果 (包含...) */
         .title-cn {
-            font-size: 1.75rem;
-            font-weight: 600;
+            font-size: 1.5rem; /* 像素字体偏大，稍微调小一点保持协调 */
             color: #2c3e50;
             
             /* 打字机核心样式 */
             overflow: hidden;
             white-space: nowrap;
             border-right: 3px solid #2c3e50; /* 模拟光标 */
-            width: 5em; /* 刚好5个中文字符的宽度 */
             
-            /* typing控制字数宽度，blink控制光标闪烁，infinite循环 */
+            /* 设定终点宽度：5个汉字约5em，3个像素点约1.8em，总计约 6.8em */
+            width: 6.8em; 
+            
+            /* typing控制字数宽度，一共8个字符所以使用 steps(8) */
             animation: 
-                typing 4s steps(5, end) infinite,
+                typing 4.5s steps(8, end) infinite,
                 blink .75s step-end infinite;
         }
 
         /* 打字机动画关键帧 */
         @keyframes typing {
-            0%, 15% { width: 0; }           /* 初始隐藏并停顿 */
-            40%, 75% { width: 5em; }        /* 打字完成，展示一段时间 */
-            90%, 100% { width: 0; }         /* 快速删回 0 */
+            0%, 15% { width: 0; }                 /* 初始隐藏并停顿 */
+            45%, 75% { width: 12.5em; }
+            90%, 100% { width: 0; }               /* 快速删回 0 */
         }
 
         /* 光标闪烁关键帧 */
@@ -81,9 +88,10 @@
 
         /* 英文文本样式 */
         .title-en {
-            font-size: 1.1rem;
+            font-size: 0.8rem; /* 像素字体较宽，缩小字号 */
             color: #7f8c8d;
             letter-spacing: 1px;
+            line-height: 1.5;
         }
 
         /* 针对小屏幕设备的微调 */
@@ -92,10 +100,10 @@
                 max-width: 200px;
             }
             .title-cn {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
             }
             .title-en {
-                font-size: 0.95rem;
+                font-size: 0.6rem;
             }
         }
     </style>
@@ -103,17 +111,17 @@
 <body>
 
     <div class="container">
-        <img class="gif-image" src="images/neko-web.gif" alt="Website Under Construction">
+        <img class="gif-image" src="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/neko-web.gif" alt="Website Under Construction">
         
         <div class="typewriter-wrapper">
-            <div class="title-cn">网站建设中。</div>
+            <div class="title-cn">网站建设中,不知猴年马月。</div>
         </div>
         
-        <div class="title-en">Website Under Construction</div>
+        <div class="title-en">WEBSITE UNDER CONSTRUCTION</div>
     </div>
 
 <script>
-// 3. 添加光标跟随 Emoji 效果脚本
+// 3. 光标跟随 Emoji 效果脚本 (保持不变)
 (function emojiCursor() {
 
     var possibleEmoji = [
