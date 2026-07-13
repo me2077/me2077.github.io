@@ -78,6 +78,122 @@
         <div class="title-cn">网站建设中</div>
         <div class="title-en">Website Under Construction</div>
     </div>
+<script>
+(function emojiCursor() {
 
+    var possibleEmoji = [
+        "😊","🥺","💙","🥰","⭐","🌈","❤","🧡","💛","💚","💜",
+        "🏳️‍🌈","⚧","⌘","^^",":)","(^◡^)","≧◠‿◠≦"
+    ];
+
+    var particles = [];
+    var cursor = { x: 0, y: 0 };
+    var lastTime = 0;
+
+    function init() {
+        bindEvents();
+        loop();
+    }
+
+    function bindEvents() {
+        document.addEventListener('pointermove', onPointerMove, { passive: true });
+        window.addEventListener('resize', onResize);
+    }
+
+    function onResize() {}
+
+    function onPointerMove(e) {
+        const now = Date.now();
+
+        // 🔥 控制频率，避免手机卡顿
+        if (now - lastTime < 18) return;
+        lastTime = now;
+
+        cursor.x = e.clientX;
+        cursor.y = e.clientY;
+
+        addParticle(
+            cursor.x,
+            cursor.y + window.scrollY,
+            possibleEmoji[Math.floor(Math.random() * possibleEmoji.length)]
+        );
+    }
+
+    function addParticle(x, y, character) {
+        var particle = new Particle();
+        particle.init(x, y, character);
+        particles.push(particle);
+    }
+
+    function updateParticles() {
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            if (particles[i].lifeSpan < 0) {
+                particles[i].die();
+                particles.splice(i, 1);
+            }
+        }
+    }
+
+    function loop() {
+        requestAnimationFrame(loop);
+        updateParticles();
+    }
+
+    function Particle() {
+
+        this.lifeSpan = 100;
+
+        this.init = function(x, y, character) {
+
+            this.velocity = {
+                x: (Math.random() - 0.5) * 1.2,
+                y: 1
+            };
+
+            this.position = {
+                x: x,
+                y: y
+            };
+
+            this.element = document.createElement('span');
+            this.element.innerHTML = character;
+
+            this.element.style.position = "fixed";
+            this.element.style.left = "0";
+            this.element.style.top = "0";
+            this.element.style.pointerEvents = "none";
+            this.element.style.zIndex = "999999";
+            this.element.style.fontSize = "16px";
+            this.element.style.willChange = "transform";
+
+            document.body.appendChild(this.element);
+
+            this.update();
+        };
+
+        this.update = function() {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+            this.lifeSpan--;
+
+            const scale = this.lifeSpan / 100;
+
+            this.element.style.transform =
+                `translate3d(${this.position.x}px, ${this.position.y}px, 0) scale(${scale})`;
+        };
+
+        this.die = function() {
+            this.element.remove();
+        };
+    }
+
+    init();
+
+})();
+</script>
 </body>
 </html>
