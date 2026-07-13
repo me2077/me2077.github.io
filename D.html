@@ -1,180 +1,242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GSAP Flip Scroll Animation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网站建设中 / Under Construction</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto+Mono&family=Space+Grotesk:wght@300;700&family=Oswald:wght@400;700&family=Bebas+Neue&family=Inconsolata:wght@400;700&family=Major+Mono+Display&family=Quicksand:wght@400;700&family=Anton&family=Abril+Fatface&family=Permanent+Marker&family=Press+Start+2P&family=Monoton&display=swap" rel="stylesheet">
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+    <style>
+        /* 基础样式重置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#111;
-    color:#fff;
-}
+        /* 页面背景及居中布局 */
+        body {
+            background-color: #ececec;
+            /* 使用链接中的 'Press Start 2P' 作为首选像素字体 */
+            font-family: 'Press Start 2P', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333333;
+            /* 网页固定，不让滚动 */
+            overflow: hidden; 
+        }
 
-.hero{
-    overflow:hidden;
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
+        /* 内容容器 */
+        .container {
+            text-align: center;
+            max-width: 100%;
+        }
 
-.content{
-    position:relative;
-    z-index:1;
-}
+        /* GIF图片样式（响应式缩放） */
+        .gif-image {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
 
-.top-line{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-}
+        /* 打字机外部容器：确保打字时整体始终保持居中 */
+        .typewriter-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
 
-.top-line h1,
-.bottom-line h1{
-    font-size:clamp(48px,8vw,120px);
-    font-weight:700;
-    line-height:1;
-    white-space:nowrap;
-}
+        /* 中文文本样式 - 2. 打字机效果 (包含...) */
+        .title-cn {
+            font-size: 1.5rem; /* 像素字体偏大，稍微调小一点保持协调 */
+            color: #2c3e50;
+            
+            /* 打字机核心样式 */
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #2c3e50; /* 模拟光标 */
+            
+            /* 设定终点宽度：5个汉字约5em，3个像素点约1.8em，总计约 6.8em */
+            width: 6.8em; 
+            
+            /* typing控制字数宽度，一共8个字符所以使用 steps(8) */
+            animation: 
+                typing 4.5s steps(8, end) infinite,
+                blink .75s step-end infinite;
+        }
 
-.img-small{
-    width:150px;
-    height:90px;
-    padding:0 10px;
-}
+        /* 打字机动画关键帧 */
+        @keyframes typing {
+            0%, 15% { width: 0; }                 /* 初始隐藏并停顿 */
+            45%, 75% { width: 6.8em; }            /* 8个字符完全展示的宽度 */
+            90%, 100% { width: 0; }               /* 快速删回 0 */
+        }
 
-.img-small .inner{
-    width:100%;
-    height:100%;
-}
+        /* 光标闪烁关键帧 */
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: #2c3e50; }
+        }
 
-.img-small img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
+        /* 英文文本样式 */
+        .title-en {
+            font-size: 0.8rem; /* 像素字体较宽，缩小字号 */
+            color: #7f8c8d;
+            letter-spacing: 1px;
+            line-height: 1.5;
+        }
 
-.bottom-line{
-    margin-top:10px;
-    text-align:center;
-}
-
-.full-screen{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100vh;
-    z-index:2;
-    pointer-events:none;
-}
-
-.img-container{
-    overflow:hidden;
-    width:100%;
-    height:100%;
-}
-
-.img-container img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-</style>
+        /* 针对小屏幕设备的微调 */
+        @media (max-width: 480px) {
+            .gif-image {
+                max-width: 200px;
+            }
+            .title-cn {
+                font-size: 1.2rem;
+            }
+            .title-en {
+                font-size: 0.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<section class="hero">
-    <div class="content">
-        <div class="top-line">
-            <h1>Lorem</h1>
-
-            <div class="img-small">
-                <div class="inner"></div>
-            </div>
-
-            <h1>Ipsum</h1>
+    <div class="container">
+        <img class="gif-image" src="https://raw.githubusercontent.com/me2077/me2077.github.io/main/images/neko-web.gif" alt="Website Under Construction">
+        
+        <div class="typewriter-wrapper">
+            <div class="title-cn">网站建设中!</div>
         </div>
-
-        <div class="bottom-line">
-            <h1>Dolor sit amet</h1>
-        </div>
+        
+        <div class="title-en">WEBSITE UNDER CONSTRUCTION</div>
     </div>
-</section>
-
-<div class="full-screen">
-    <div class="img-container">
-        <img src="https://assets.codepen.io/16327/gsap-modern-bg.png" alt="">
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/Flip.min.js"></script>
 
 <script>
-gsap.registerPlugin(ScrollTrigger, Flip);
+// 3. 光标跟随 Emoji 效果脚本 (保持不变)
+(function emojiCursor() {
 
-const smallImgContainer = document.querySelector(".hero .img-small .inner");
-const targetImg = document.querySelector(".full-screen .img-container");
+    var possibleEmoji = [
+        "😊","🥺","💙","🥰","⭐","🌈","❤","🧡","💛","💚","💜",
+        "🏳️‍🌈","⚧","⌘","^^",":)","(^◡^)","≧◠‿◠≦"
+    ];
 
-const resizeTimer = gsap.delayedCall(0.2, init).pause();
+    var particles = [];
+    var cursor = { x: 0, y: 0 };
+    var lastTime = 0;
 
-let ctx;
-
-function init(){
-
-    if(ctx){
-        ctx.revert();
+    function init() {
+        bindEvents();
+        loop();
     }
 
-    ctx = gsap.context(()=>{
+    function bindEvents() {
+        document.addEventListener('pointermove', onPointerMove, { passive: true });
+        window.addEventListener('resize', onResize);
+    }
 
-        const flip = Flip.fit(targetImg, smallImgContainer,{
-            duration:1,
-            ease:"none"
-        }).pause();
+    function onResize() {}
 
-        const tl = gsap.timeline({
-            scrollTrigger:{
-                trigger:".hero",
-                start:"top top",
-                end:"+=100%",
-                pin:true,
-                scrub:true
+    function onPointerMove(e) {
+        const now = Date.now();
+
+        // 🔥 控制频率，避免手机卡顿
+        if (now - lastTime < 18) return;
+        lastTime = now;
+
+        cursor.x = e.clientX;
+        cursor.y = e.clientY;
+
+        addParticle(
+            cursor.x,
+            cursor.y + window.scrollY,
+            possibleEmoji[Math.floor(Math.random() * possibleEmoji.length)]
+        );
+    }
+
+    function addParticle(x, y, character) {
+        var particle = new Particle();
+        particle.init(x, y, character);
+        particles.push(particle);
+    }
+
+    function updateParticles() {
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            if (particles[i].lifeSpan < 0) {
+                particles[i].die();
+                particles.splice(i, 1);
             }
-        });
+        }
+    }
 
-        tl.add(flip.play())
+    function loop() {
+        requestAnimationFrame(loop);
+        updateParticles();
+    }
 
-        .from(".top-line h1",{
-            xPercent:(i)=> i ? 250 : -250,
-            ease:"power1.in"
-        },"0.5")
+    function Particle() {
 
-        .from(".bottom-line h1",{
-            y:200,
-            ease:"power1.in"
-        },"<");
+        this.lifeSpan = 100;
 
-    });
+        this.init = function(x, y, character) {
 
-}
+            this.velocity = {
+                x: (Math.random() - 0.5) * 1.2,
+                y: 1
+            };
 
-init();
+            this.position = {
+                x: x,
+                y: y
+            };
 
-window.addEventListener("resize",()=>{
-    resizeTimer.restart(true);
-});
+            this.element = document.createElement('span');
+            this.element.innerHTML = character;
+
+            this.element.style.position = "fixed";
+            this.element.style.left = "0";
+            this.element.style.top = "0";
+            this.element.style.pointerEvents = "none";
+            this.element.style.zIndex = "999999";
+            this.element.style.fontSize = "16px";
+            this.element.style.willChange = "transform";
+
+            document.body.appendChild(this.element);
+
+            this.update();
+        };
+
+        this.update = function() {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+            this.lifeSpan--;
+
+            const scale = this.lifeSpan / 100;
+
+            this.element.style.transform =
+                `translate3d(${this.position.x}px, ${this.position.y}px, 0) scale(${scale})`;
+        };
+
+        this.die = function() {
+            this.element.remove();
+        };
+    }
+
+    init();
+
+})();
 </script>
-
 </body>
 </html>
