@@ -439,6 +439,14 @@
         .loading-spinner { display: inline-block; width: 40px; height: 40px; border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top-color: var(--fg); animation: spin 1s ease-in-out infinite; transition: border-top-color 0.8s ease; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { margin-top: 10px; font-size: 16px; }
+.coffee-pixel-icon {
+    width: 1.5em;             /* 图片宽度跟随字号微调 */
+    height: 1.5em;            /* 图片高度跟随字号微调 */
+    vertical-align: -0.2em;   /* 垂直对齐调整，使其与文字居中平齐 */
+    display: inline-block;
+    image-rendering: pixelated; /* 如果是像素图，开启此选项可防止放大时模糊 */
+}
+
     </style>
 </head>
 
@@ -487,10 +495,18 @@
                                                 <img id="reward-qr" class="reward-qr" src="https://cdn.jsdelivr.net/gh/qxx2000/blog@main/img/QR.webp" alt="二维码" decoding="async">
                                             </div>
                                             <div class="reward-texts">
-                                                <p id="text-original" class="reward-text-old">猫爪一伸,请我喝杯咖啡吧☕️</p>
+                                                <p id="text-original" class="reward-text-old">
+    猫爪一伸,请我喝杯咖啡吧<img src="https://lostletters.neocities.org/graphics/teahouse/teacup/glamourbombing-dark.gif" alt="咖啡" class="coffee-pixel-icon">
+</p>
+
                                                 <div id="text-new" class="reward-text-new">
-                                                    <a id="reward-wx" href="weixin://scanqrcode" target="_blank">👉点击跳转微信扫一扫👈</a>
-                                                    <a id="reward-zfb" href="https://qr.alipay.com/fkx17581wtzihcanvisaz0e" target="_blank">👉点击跳转支付宝付款👈</a>
+<a id="reward-wx" href="weixin://scanqrcode" target="_blank">
+    <img src="https://lostletters.neocities.org/graphics/teahouse/teacup/gloomygoose13.png" alt="咖啡" class="coffee-pixel-icon">点击跳转微信扫一扫<img src="https://lostletters.neocities.org/graphics/teahouse/teacup/nico-tomatoes.png" alt="咖啡" class="coffee-pixel-icon">
+</a>
+<a id="reward-zfb" href="https://qr.alipay.com/fkx17581wtzihcanvisaz0e" target="_blank">
+    <img src="https://lostletters.neocities.org/graphics/teahouse/teacup/mutterbutter-teacup.gif" alt="咖啡" class="coffee-pixel-icon">点击跳转支付宝付款<img src="https://lostletters.neocities.org/graphics/teahouse/teacup/humanfinny-cherry-cream.png" alt="咖啡" class="coffee-pixel-icon">
+</a>
+
                                                 </div>
                                             </div>
                                         </div>
