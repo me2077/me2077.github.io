@@ -546,3 +546,107 @@ linkCards.forEach(card=>{
     }
     create();
 })();
+
+class CyberCat {
+  #id;
+  #height;
+  #leftSide;
+  #imgElement;
+  #width;
+  #sensitivity;
+  
+  meow() {
+    console.log("meow");
+  }
+  
+  disappear() {
+    const el = document.getElementById("cyberCat" + this.#id.toString());
+    if (el) el.remove();
+  }
+  
+  appear(height, leftSide) {
+    this.#height = height;
+    this.#leftSide = leftSide;
+    this.#imgElement = document.createElement("img");
+    this.#imgElement.id = "cyberCat" + this.#id.toString();
+    this.#imgElement.style.position = "absolute";
+    this.#imgElement.style.width = this.#width + "px";
+    this.#imgElement.style.height = this.#width + "px";
+    this.#imgElement.style.zIndex = "9999";        // 保证在最上层
+    this.#imgElement.style.pointerEvents = "none"; // 不挡住点击
+    this.#imgElement.alt = "cyber cat";
+    
+    if (leftSide) {
+      // 改成你自己的图片路径
+      this.#imgElement.src = "https://hello-room.neocities.org/images/cybercat_left.png";
+      this.#imgElement.style.left = "0px";
+    } else {
+      this.#imgElement.src = "https://hello-room.neocities.org/images/cybercat_right.png";
+      this.#imgElement.style.left = (document.documentElement.clientWidth - this.#width) + "px";
+    }
+    this.#imgElement.style.top = this.#height + "px";
+    
+    document.body.appendChild(this.#imgElement);
+  }
+  
+  movePosition(height, leftSide) {
+    this.disappear();
+    this.appear(height, leftSide);
+  }
+  
+  mouseCheck(x, y) {
+    if (y < (this.#height - this.#sensitivity - window.pageYOffset)) return;
+    if (y > (this.#height + this.#width + this.#sensitivity - window.pageYOffset)) return;
+    
+    if (this.#leftSide) {
+      if (x > (this.#sensitivity + this.#width)) return;
+    } else {
+      if (x < (document.documentElement.clientWidth - this.#width - this.#sensitivity)) return;
+    }
+    
+    console.log("eep! get away!!");
+    this.movePosition(
+      Math.floor(Math.random() * (window.innerHeight - this.#width)),
+      Math.random() > 0.5
+    );
+  }
+  
+  constructor(id, height, leftSide, sensitivity) {
+    this.#id = id;
+    this.#width = 50;
+    this.#sensitivity = sensitivity;
+    this.appear(height, leftSide);
+  }
+  
+  get width() {
+    return this.#width;
+  }
+}
+
+let cyberCat = null;
+
+function spawnCyberCat(height = 120, leftSide = true) {
+  cyberCat = new CyberCat(0, height, leftSide, 50);
+}
+
+function checkMouse(e) {
+  if (cyberCat) {
+    cyberCat.mouseCheck(e.clientX, e.clientY);
+  }
+}
+
+function windowChange() {
+  if (cyberCat) {
+    cyberCat.movePosition(
+      Math.floor(Math.random() * (window.innerHeight - cyberCat.width)),
+      Math.random() > 0.5
+    );
+  }
+}
+
+// 启动
+window.addEventListener("load", () => {
+  spawnCyberCat(120, true);           // 初始位置：高度120px，靠左
+  document.addEventListener("mousemove", checkMouse);
+  window.addEventListener("resize", windowChange);
+});
