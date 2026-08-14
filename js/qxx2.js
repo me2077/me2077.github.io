@@ -547,7 +547,6 @@ linkCards.forEach(card=>{
     create();
 })();
 
-
 class CyberCat {
   #id;
   #posX = 0;
@@ -557,7 +556,7 @@ class CyberCat {
   #sensitivity;
   #currentLocationIndex = -1; // 记录上一次位置，防止重复随机到同一处
 
-  // 猫咪图片资源（如需换成本地路径可直接修改）
+  // 猫咪图片资源
   static LEFT_IMG = "https://hello-room.neocities.org/images/cybercat_left.png";
   static RIGHT_IMG = "https://hello-room.neocities.org/images/cybercat_right.png";
 
@@ -573,11 +572,11 @@ class CyberCat {
   #initElement() {
     this.#imgElement = document.createElement("img");
     this.#imgElement.id = "cyberCat" + this.#id.toString();
-    this.#imgElement.style.position = "fixed";       // 使用 fixed 定位，适配页面滚动与卡片
+    this.#imgElement.style.position = "fixed";       // fixed 定位
     this.#imgElement.style.width = this.#width + "px";
     this.#imgElement.style.height = this.#width + "px";
-    this.#imgElement.style.zIndex = "9999";          // 置于最顶层
-    this.#imgElement.style.pointerEvents = "none";   // 不影响网页原有点击
+    this.#imgElement.style.zIndex = "9999";          // 最上层
+    this.#imgElement.style.pointerEvents = "none";   // 不挡住点击
     this.#imgElement.style.userSelect = "none";
     this.#imgElement.alt = "cyber cat";
     document.body.appendChild(this.#imgElement);
@@ -611,31 +610,25 @@ class CyberCat {
 
     // 如果找到了 glowing-card 卡片，添加卡片左右外侧边缘
     if (cardRect) {
-      // 猫咪出现在卡片高度范围内的随机 Y 轴高度
+      // 猫咪高度限制在卡片垂直高度范围内
       const cardMinY = Math.max(10, cardRect.top);
       const cardMaxY = Math.min(winH - this.#width - 10, cardRect.bottom - this.#width);
       const cardY = cardMaxY > cardMinY 
         ? Math.floor(cardMinY + Math.random() * (cardMaxY - cardMinY))
         : Math.floor(cardRect.top);
 
-      // 2: 卡片左外边框边缘（紧贴卡片左侧，图片对换为 RIGHT_IMG）
-      let cardLeftX = cardRect.left - this.#width;
-      if (cardLeftX < 0) cardLeftX = 0; // 屏幕太窄时贴左边
-
+      // 2: 卡片左外边框边缘（精确紧贴卡片左侧外沿，使用右图）
       positions.push({
-        x: cardLeftX,
+        x: cardRect.left - this.#width,
         y: cardY,
-        isLeft: false // 【已修改】卡片左侧改为使用右图
+        isLeft: false
       });
 
-      // 3: 卡片右外边框边缘（紧贴卡片右侧，图片对换为 LEFT_IMG）
-      let cardRightX = cardRect.right;
-      if (cardRightX + this.#width > winW) cardRightX = winW - this.#width; // 屏幕太窄时贴右边
-
+      // 3: 卡片右外边框边缘（精确紧贴卡片右侧外沿，使用左图）
       positions.push({
-        x: cardRightX,
+        x: cardRect.right,
         y: cardY,
-        isLeft: true // 【已修改】卡片右侧改为使用左图
+        isLeft: true
       });
     }
 
