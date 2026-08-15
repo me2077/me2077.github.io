@@ -91,7 +91,7 @@ window.initWebGLShaderBg=function(container){
    - 小图 gif/png 平铺：路径后加 '#repeat'，如 'images/pixel.png#repeat'
    ========================================================================== */
 const BG_TOP_LEFT = 'https://artwork.neocities.org/bgs/NSwitch_AnimalCrossingNewHorizons_bg_leaves_purple.jpg#repeat';
-const BG_TOP_RIGHT = 'https://floral-tears.neocities.org/IMAGES/Assets/DouglasSchatzongiphy.gif#repeat';
+const BG_TOP_RIGHT = 'https://artwork.neocities.org/bgs/stardown.gif';
 const BG_BOTTOM_LEFT = 'webgl-shader';
 const BG_BOTTOM_RIGHT_1 = 'https://artwork.neocities.org/bgs/celesestrellas.gif#repeat';
 const BG_BOTTOM_RIGHT_2 = 'https://solaria.neocities.org/pixelclubs/bunnygarden/darkgrass.png#repeat';
