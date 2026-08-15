@@ -18,7 +18,7 @@ precision highp float;uniform vec2 u_resolution;uniform float u_time;uniform vec
 vec2 getScreenSpace(){vec2 uv=(gl_FragCoord.xy-0.5*u_resolution.xy)/min(u_resolution.y,u_resolution.x);return uv;}
 float ndot(vec2 a,vec2 b){return a.x*b.x-a.y*b.y;}
 float sdRhombus(in vec2 p,in vec2 b){p=abs(p);float h=clamp(ndot(b-2.0*p,b)/dot(b,b),-1.0,1.0);float d=length(p-0.5*b*vec2(1.0-h,1.0+h));return d*sign(p.x*b.y+p.y*b.x-b.x*b.y);}
-void main(){vec2 uv=getScreenSpace();uv*=1.;float m=abs(fract(v_uv.y*100.*max(.2,smoothstep(.6,-.6,uv.y+uv.x))-u_time*5.)-.5)-.3;vec2 vv_uv=v_uv*(u_resolution.y>u_resolution.x?vec2((u_resolution.x/u_resolution.y),1.):vec2(1.,(u_resolution.y/u_resolution.x)));vv_uv=fract(vv_uv*20.)-.5;m=length(vv_uv)-.4;m=sdRhombus(vv_uv,vec2(.5));vec3 U=dFdx(v_pos);vec3 V=dFdy(v_pos);vec3 n=normalize(cross(U,V));float mask=smoothstep(fwidth(m),0.,m);vec3 lightDir=normalize(vec3(100.0,-10.0,10.0));float d=dot(n,lightDir)*0.1+0.2;float ls=smoothstep(0.01,0.35,d);vec3 finalColor=c*ls;float gray=dot(finalColor,vec3(0.2126,0.7152,0.0722));vec3 saturatedColor=mix(vec3(gray),finalColor,0.3);colour=vec4(saturatedColor,1.0);}`;
+void main(){vec2 uv=getScreenSpace();uv*=1.;float m=abs(fract(v_uv.y*100.*max(.2,smoothstep(.6,-.6,uv.y+uv.x))-u_time*5.)-.5)-.3;vec2 vv_uv=v_uv*(u_resolution.y>u_resolution.x?vec2((u_resolution.x/u_resolution.y),1.):vec2(1.,(u_resolution.y/u_resolution.x)));vv_uv=fract(vv_uv*20.)-.5;m=length(vv_uv)-.4;m=sdRhombus(vv_uv,vec2(.5));vec3 U=dFdx(v_pos);vec3 V=dFdy(v_pos);vec3 n=normalize(cross(U,V));float mask=smoothstep(fwidth(m),0.,m);vec3 lightDir=normalize(vec3(10.0,-10.0,10.0));float d=dot(n,lightDir)*0.1+0.2;float ls=smoothstep(0.01,0.35,d);vec3 finalColor=c*ls;float gray=dot(finalColor,vec3(0.2126,0.7152,0.0722));vec3 saturatedColor=mix(vec3(gray),finalColor,0.3);colour=vec4(saturatedColor,1.0);}`;
 
 class StripeHeader {
     uniforms;dimensions;autoResize=true;onBeforeRender;onAfterRender;u_time;u_resolution;u_seed;gl;renderer;program;mesh;lastTime=0;_playing=false;
@@ -86,15 +86,15 @@ window.initWebGLShaderBg=function(container){
 };
 
 /* ==========================================================================
-   壁纸变量配置说明：
-   1. 单张大图（不平铺）：直接写路径即可，如 'images/A1.webp' 或 'images/D2.jpg'
-   2. 小图 GIF / PNG 平铺：在路径末尾添加 '#repeat'，如 'images/pixel.png#repeat' 或 'images/stars.gif#repeat'
+   壁纸变量配置：
+   - 单张大图（不平铺）：直接写路径，如 'images/A1.webp'
+   - 小图 gif/png 平铺：路径后加 '#repeat'，如 'images/pixel.png#repeat'
    ========================================================================== */
-const BG_TOP_LEFT = 'images/A1.webp'; // 示例：小图平铺写为 'images/A1.png#repeat'
-const BG_TOP_RIGHT = '#0e0e0e';
+const BG_TOP_LEFT = 'https://artwork.neocities.org/bgs/NSwitch_AnimalCrossingNewHorizons_bg_leaves_purple.jpg#repeat';
+const BG_TOP_RIGHT = 'ttps://floral-tears.neocities.org/IMAGES/Assets/DouglasSchatzongiphy.gif#repeat';
 const BG_BOTTOM_LEFT = 'webgl-shader';
-const BG_BOTTOM_RIGHT_1 = 'linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), linear-gradient(15.3deg, rgba(111, 71, 133, 1) 5.6%, rgba(232, 129, 166, 1) 19.6%, rgba(237, 237, 183, 1) 42.1%, rgba(244, 166, 215, 1) 63.7%, rgba(154, 219, 232, 1) 78.7%, rgba(238, 226, 159, 1) 96.8%)';
-const BG_BOTTOM_RIGHT_2 = 'images/stardown.gif#repeat'; // 示例：小图平铺写为 'images/D2.gif#repeat'
+const BG_BOTTOM_RIGHT_1 = 'https://artwork.neocities.org/bgs/celesestrellas.gif#repeat';
+const BG_BOTTOM_RIGHT_2 = 'https://solaria.neocities.org/pixelclubs/bunnygarden/darkgrass.png#repeat';
 
 window.isParticlesEnabled = !document.body.classList.contains('light');
 window.userToggledParticles = false;
@@ -167,9 +167,7 @@ function crossfadeBackground(bgVal, isLight) {
     const match = bgVal.match(/url\(['"]?(.*?)['"]?\)/);
     if (match) cleanUrl = match[1];
 
-    // 检测是否为平铺模式（路径包含 #repeat 或 repeat 关键字）
     const isRepeat = /#repeat|repeat/i.test(bgVal);
-    // 去除标记，获取用于加载的有效图片路径
     cleanUrl = cleanUrl.replace(/#repeat/ig, '').trim();
 
     const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(cleanUrl), isWebGL = bgVal === 'webgl-shader';
@@ -190,11 +188,9 @@ function crossfadeBackground(bgVal, isLight) {
         } else {
             if (/^https?|images\/|\.\//.test(cleanUrl)) {
                 if (isRepeat) {
-                    // 小图 gif/png 平铺模式
                     layer.style.background = `url('${cleanUrl}') repeat top left`;
                     layer.style.backgroundSize = 'auto';
                 } else {
-                    // 单张大图不平铺模式
                     layer.style.background = `url('${cleanUrl}') center/cover no-repeat`;
                 }
             } else {
