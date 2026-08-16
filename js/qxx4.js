@@ -93,7 +93,7 @@ window.initWebGLShaderBg=function(container){
 const BG_TOP_LEFT = 'https://artwork.neocities.org/bgs/NSwitch_AnimalCrossingNewHorizons_bg_leaves_purple.jpg#repeat';
 const BG_TOP_RIGHT = 'https://artwork.neocities.org/bgs/stardown.gif#repeat';
 const BG_BOTTOM_LEFT = 'webgl-shader';
-const BG_BOTTOM_RIGHT_1 = 'https://artwork.neocities.org/bgs/celesestrellas.gif#repeat';
+const BG_BOTTOM_RIGHT_1 = 'https://artwork.neocities.org/bgs/art_bg.gif#repeat';
 const BG_BOTTOM_RIGHT_2 = 'https://solaria.neocities.org/pixelclubs/bunnygarden/darkgrass.png#repeat';
 
 window.isParticlesEnabled = !document.body.classList.contains('light');
