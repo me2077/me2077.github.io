@@ -1,6 +1,5 @@
 import { Renderer, Program, Mesh, Plane, Uniform } from 'https://esm.sh/wtc-gl@1.0.0-beta.43';
 import { Vec2, Vec3, Vec4, Mat2, Mat3, Mat4, Quat } from 'https://esm.sh/wtc-math';
-
 const vertShader = `#version 300 es
 in vec3 position;in vec2 uv;in vec3 normal;out vec2 v_uv;out vec3 v_n;out vec3 v_pos;out vec3 c;uniform float u_time;uniform vec2 u_resolution;uniform vec2 u_position;uniform float u_zoom;uniform float u_seed;
 vec3 pal(in float t,in vec3 a,in vec3 b,in vec3 c,in vec3 d){return a+b*cos(6.28318*(c*t+d));}
@@ -88,13 +87,14 @@ window.initWebGLShaderBg=function(container){
 /* ==========================================================================
    壁纸变量配置：
    - 单张大图（不平铺）：直接写路径，如 'images/A1.webp'
-   - 小图 gif/png 平铺：路径后加 '#repeat'，如 'images/pixel.png#repeat'
+   - 小图平铺（原尺寸）：末尾加 '#repeat'，如 '.../darkgrass.png#repeat'
+   - 小图平铺（指定放大尺寸）：末尾加 '#repeat:尺寸'，如 '.../darkgrass.png#repeat:120px' 或 '#repeat:80px auto'
    ========================================================================== */
-const BG_TOP_LEFT = 'https://artwork.neocities.org/bgs/NSwitch_AnimalCrossingNewHorizons_bg_leaves_purple.jpg#repeat';
+const BG_TOP_LEFT = 'https://versa.tile.graphics/assets/sample6/sample.jpg#repeat';
 const BG_TOP_RIGHT = 'https://artwork.neocities.org/bgs/stardown.gif#repeat';
 const BG_BOTTOM_LEFT = 'webgl-shader';
-const BG_BOTTOM_RIGHT_1 = 'https://artwork.neocities.org/bgs/art_bg.gif#repeat';
-const BG_BOTTOM_RIGHT_2 = 'https://solaria.neocities.org/pixelclubs/bunnygarden/darkgrass.png#repeat';
+const BG_BOTTOM_RIGHT_1 = 'https://textures.neocities.org/thumbnails/abstract-brown-and-grey/thumb_143.jpg#repeat:110px';
+const BG_BOTTOM_RIGHT_2 = 'https://file.garden/ZWlUCY4S7Xz2vypS/archived%20backgrounds/colours/blue/blue060.jpg#repeat';
 
 window.isParticlesEnabled = !document.body.classList.contains('light');
 window.userToggledParticles = false;
@@ -167,8 +167,13 @@ function crossfadeBackground(bgVal, isLight) {
     const match = bgVal.match(/url\(['"]?(.*?)['"]?\)/);
     if (match) cleanUrl = match[1];
 
-    const isRepeat = /#repeat|repeat/i.test(bgVal);
-    cleanUrl = cleanUrl.replace(/#repeat/ig, '').trim();
+    // 解析 #repeat 标记及指定尺寸（如 #repeat:120px）
+    const repeatMatch = bgVal.match(/#repeat(?::([^\s#'"]+))?/i);
+    const isRepeat = !!repeatMatch || /repeat/i.test(bgVal);
+    const repeatSize = repeatMatch && repeatMatch[1] ? repeatMatch[1] : 'auto';
+
+    // 去除 #repeat 相关参数，得到纯净图片链接
+    cleanUrl = cleanUrl.replace(/#repeat(?::[^\s#'"]+)?/ig, '').trim();
 
     const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(cleanUrl), isWebGL = bgVal === 'webgl-shader';
     
@@ -189,7 +194,7 @@ function crossfadeBackground(bgVal, isLight) {
             if (/^https?|images\/|\.\//.test(cleanUrl)) {
                 if (isRepeat) {
                     layer.style.background = `url('${cleanUrl}') repeat top left`;
-                    layer.style.backgroundSize = 'auto';
+                    layer.style.backgroundSize = repeatSize;
                 } else {
                     layer.style.background = `url('${cleanUrl}') center/cover no-repeat`;
                 }
@@ -756,7 +761,7 @@ linkCards.forEach(card => {
                 const dx = e.clientX - startX, dy = e.clientY - startY, adx = Math.abs(dx), ady = Math.abs(dy);
                 if (adx > 5 || ady > 5) isDragging = true;
                 if (adx > ady && adx > 10) setSprite(dx > 0 ? "scratchWallW" : "scratchWallE", frameCount);
-                else if (ady > adx && ady > 10) setSprite(dy > 0 ? "scratchWallN" : "scratchWallS", frameCount);
+                else if (ady > adx && dy > 10) setSprite(dy > 0 ? "scratchWallN" : "scratchWallS", frameCount);
                 if (grabStop || adx > 10 || ady > 10 || Math.sqrt(dx ** 2 + dy ** 2) > 10) {
                     grabStop = false;
                     clearTimeout(grabInterval);
