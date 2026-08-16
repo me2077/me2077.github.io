@@ -1,7 +1,7 @@
 #bg-container .init-bg{background:url('../images/A1.webp') center/cover no-repeat;opacity:1;z-index:0}
-:root{--glow-sens:30;--dark:hsl(260,25%,10%);--fg:black;--h:260;--card-bg:linear-gradient(8deg,var(--dark) 75%,color-mix(in hsl,var(--dark),white 2.5%) 75.5%);--blend:soft-light;--glow-blend:plus-lighter;--glow-color:40deg 80% 80%;--duration:1s;--ease-slider:cubic-bezier(0.4,0,0.2,1);--ease-timeline:cubic-bezier(0.71,0.21,0.3,0.95);--page-height:498px;--accent:hsl(260,100%,80%);--glowing-card-bg:rgb(255 255 255 / 23%);--glowing-card-border:rgb(255 255 255 / 70%);--glowing-card-backdrop:blur(7px);--link-card-bg:rgb(255 255 255 / 9%);--link-card-hover-bg:rgb(255 255 255 / 25%);--link-card-border:rgb(255 255 255 / 40%);--link-card-box-shadow:0px 4px 3px #0001,0 0 35px #fffa inset;--spotify-card-bg:rgb(255 255 255 / 15%);--spotify-card-border:rgb(255 255 255 / 45%);--spotify-card-box-shadow:0px 4px 3px #0001,0 0 38px #fffa inset;--music-player-bg:rgb(255 255 255 / 15%);--music-player-shadow:none}
-.light{--card-bg:linear-gradient(8deg,color-mix(in hsl,hsl(260,25%,95%),var(--dark) 2.5%) 75%,hsl(260,25%,95%) 75.5%);--blend:darken;--glow-blend:luminosity;--glow-color:280deg 90% 95%;--glowing-card-bg:rgb(255 255 255 / 13%);--glowing-card-border:rgb(255 255 255 / 80%);--glowing-card-backdrop:blur(7px);--link-card-bg:rgb(255 255 255 / 7%);--link-card-hover-bg:rgb(255 255 255 / 25%);--link-card-border:rgb(255 255 255 / 50%);--link-card-box-shadow:0px 4px 3px #0001,0 0 25px #fffa inset;--spotify-card-bg:rgb(255 255 255 / 7%);--spotify-card-border:rgb(255 255 255 / 60%);--spotify-card-box-shadow:0px 4px 3px #0001,0 0 38px #fffa inset;--music-player-bg:rgb(255 255 255 / 10%);--music-player-shadow:0 2px 6px 1px #0000001f}
-body{background-color:#000;background-image:none;margin:0;padding:0;min-height:100dvh;display:flex;justify-content:center;align-items:center;font-family:'Inter',sans-serif;color:var(--fg);overflow:hidden;touch-action:manipulation;transition:color 0.8s ease}
+:root{--cursor-img:url('../images/fish-1.webp')32 32;--glow-sens:30;--dark:hsl(260,25%,10%);--fg:black;--h:260;--card-bg:linear-gradient(8deg,var(--dark) 75%,color-mix(in hsl,var(--dark),white 2.5%) 75.5%);--blend:soft-light;--glow-blend:plus-lighter;--glow-color:40deg 80% 80%;--duration:1s;--ease-slider:cubic-bezier(0.4,0,0.2,1);--ease-timeline:cubic-bezier(0.71,0.21,0.3,0.95);--page-height:498px;--accent:hsl(260,100%,80%);--glowing-card-bg:rgb(255 255 255 / 15%);--glowing-card-border:rgb(255 255 255 / 70%);--glowing-card-backdrop:blur(7px);--link-card-bg:rgb(255 255 255 / 9%);--link-card-hover-bg:rgb(255 255 255 / 25%);--link-card-border:rgb(255 255 255 / 40%);--link-card-box-shadow:0px 4px 3px #0001,0 0 35px #fffa inset;--spotify-card-bg:rgb(255 255 255 / 15%);--spotify-card-border:rgb(255 255 255 / 45%);--spotify-card-box-shadow:0px 4px 3px #0001,0 0 38px #fffa inset;--music-player-bg:rgb(255 255 255 / 15%);--music-player-shadow:none}
+.light{--cursor-img:url('../images/fish-2.webp')32 32;--card-bg:linear-gradient(8deg,color-mix(in hsl,hsl(260,25%,95%),var(--dark) 2.5%) 75%,hsl(260,25%,95%) 75.5%);--blend:darken;--glow-blend:luminosity;--glow-color:280deg 90% 95%;--glowing-card-bg:rgb(255 255 255 / 13%);--glowing-card-border:rgb(255 255 255 / 80%);--glowing-card-backdrop:blur(7px);--link-card-bg:rgb(255 255 255 / 7%);--link-card-hover-bg:rgb(255 255 255 / 25%);--link-card-border:rgb(255 255 255 / 50%);--link-card-box-shadow:0px 4px 3px #0001,0 0 25px #fffa inset;--spotify-card-bg:rgb(255 255 255 / 7%);--spotify-card-border:rgb(255 255 255 / 60%);--spotify-card-box-shadow:0px 4px 3px #0001,0 0 38px #fffa inset;--music-player-bg:rgb(255 255 255 / 10%);--music-player-shadow:0 2px 6px 1px #0000001f}
+body{background-color:#000;background-image:none;margin:0;padding:0;min-height:100dvh;display:flex;justify-content:center;align-items:center;font-family:'Inter',sans-serif;color:var(--fg);overflow:hidden;touch-action:manipulation;transition:color 0.8s ease;cursor:var(--cursor-img),auto}
 body::before,body::after{content:"";position:fixed;left:0;right:0;background-color:#000;z-index:99999;pointer-events:none}
 body::before{top:0;height:env(safe-area-inset-top)}
 body::after{bottom:0;height:env(safe-area-inset-bottom)}
@@ -109,8 +109,7 @@ canvas{position:fixed;inset:0;width:100%;height:100dvh;z-index:-1}
 .slider__content .button{--size:2.5em;z-index:1;position:absolute;width:var(--size);height:var(--size)}
 .slider__content i{position:absolute;pointer-events:none;font-size:var(--size)}
 .music-player__playlist-button{top:5.5%;left:5.5%;transform:scale(0);transition:calc(var(--duration) / 2) transform}
-.slider.resize .music-player__playlist-button{transform:scale(1);transition:0.30s var(--duration) transform cubic-bezier(0,0.85,0.11,1.64)}
-.music-player__broadcast-guarantor{top:50%;left:50%;transform:translate(-50%,-50%)}
+.slider.resize .music-player__playlist-button{transform:scale(1);transition:0.30s var(--duration) transform cubic-bezier(0,0.85,0.11,1.64)}   
 .music-player__broadcast-guarantor .icon-pause,.music-player__broadcast-guarantor.click .icon-play{opacity:0}
 .music-player__broadcast-guarantor.click .icon-pause{opacity:1}
 .slider__imgs{width:100%;height:100%;filter:brightness(75%);transform:translate3d(calc(var(--index) * 100%),0,0);transition:var(--duration) transform var(--ease-slider)}
@@ -118,7 +117,6 @@ canvas{position:fixed;inset:0;width:100%;height:100dvh;z-index:-1}
 .slider__controls{--controls-y:210%;--controls-x:17.3%;--controls-width:68.4%;--controls-resize-width:88%;gap:0.375em 0;flex-wrap:wrap;position:absolute;align-items:center;padding-top:0.375em;width:var(--controls-width);transform:translate3d(var(--controls-x),0,0);animation:var(--controls-animate,"down paused") var(--duration) var(--ease-timeline) forwards}
 @keyframes down{100%{width:var(--controls-resize-width);transform:translate3d(0,var(--controls-y),0)}}
 @keyframes up{0%{width:var(--controls-resize-width);transform:translate3d(0,var(--controls-y),0)}100%{width:var(--controls-width);transform:translate3d(var(--controls-x),0,0)}}
-.slider__switch-button{font-size:2.5em;height:max-content}
 .music-player__info{width:56.3%;cursor:pointer;line-height:1.45;overflow:hidden;font-weight:bold;padding:0 0.0625em;white-space:nowrap}
 .music-player__info>*{margin:0 auto;pointer-events:none}
 .music-player__singer-name{font-size:1.1em;width:max-content}
@@ -145,6 +143,10 @@ canvas{position:fixed;inset:0;width:100%;height:100dvh;z-index:-1}
 .music-player__playlist-info b{display:block;margin-left:0;padding-left:0;text-align:left;width:calc(100% - 50px)}
 .music-player__playlist-info .music-player__subtitle{display:block;text-align:left;margin-left:0;padding-left:0;flex-grow:1}
 .music-player__song-duration{flex-shrink:0;margin-left:10px;font-weight:bold;font-size:0.8em;color:inherit;opacity:0.55}
+.music-player__playlist-button i,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__playlist-info b,.music-player__playlist-info .music-player__subtitle{transition:transform .2s ease}
+.music-player__broadcast-guarantor{top:50%;left:50%;transform:translate(-50%,-50%)}
+.slider__switch-button{font-size:2.5em;height:max-content}
+@media(hover:hover){.music-player__playlist-button:hover i,.slider__switch-button:hover{transform:scale(1.2)}.music-player__broadcast-guarantor:hover{transform:translate(-50%,-50%) scale(1.2)}.music-player__song:hover .music-player__playlist-info b,.music-player__song:hover .music-player__playlist-info .music-player__subtitle{transform:translateX(6px)}}
 .loading-spinner{display:inline-block;width:40px;height:40px;border:4px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:var(--fg);animation:spin 1s ease-in-out infinite;transition:border-top-color 0.8s ease}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{margin-top:10px;font-size:16px}
@@ -154,3 +156,5 @@ canvas{position:fixed;inset:0;width:100%;height:100dvh;z-index:-1}
 .glitch-text.active::after{animation:glitch-2 0.5s cubic-bezier(.25,.46,.45,.94) reverse both infinite;color:#f0f;transform:translateX(0.5px)}
 @keyframes glitch-1{0%{opacity:0.75;transform:translate(-1px,1px)}50%{opacity:0.5;transform:translate(0.5px,-0.5px)}100%{opacity:0.75;transform:translate(-1px,1px)}}
 @keyframes glitch-2{0%{opacity:0.75;transform:translate(1px,-1px)}50%{opacity:0.5;transform:translate(-0.5px,0.5px)}100%{opacity:0.75;transform:translate(1px,-1px)}}
+a,button,.theme-toggle,.day-toggle,.profile-pic,.link-card,.spotify-card,.play-btn,.bullet,.reward-wrapper,.progress,.music-player__song,.music-player__playlist-button,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__info{cursor:var(--cursor-img),pointer}
+.coffee-pixel-icon{width:1.5em;height:1.5em;vertical-align:-0.2em;display:inline-block;image-rendering:pixelated}
