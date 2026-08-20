@@ -97,7 +97,7 @@ const BG_TOP_LEFT = 'https://textures.neocities.org/textures/abstract-brown-and-
 const BG_TOP_RIGHT = 'https://dogpan.com/f/8qLVIY/cute-cat-silhouette-pattern-vector-41653844.webp#repeat:250px';
 const BG_BOTTOM_LEFT = 'webgl-shader';
 const BG_BOTTOM_RIGHT_1 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/948.GIF#repeat+mask:rgba(127,225,221,0.2)';
-const BG_BOTTOM_RIGHT_2 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/615.GIF#repeat+mask:rgba(127,225,221,0.2)';
+const BG_BOTTOM_RIGHT_2 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/111.GIF#repeat+mask:rgba(127,225,221,0.2)';
 
 window.isParticlesEnabled = !document.body.classList.contains('light');
 window.userToggledParticles = false;
