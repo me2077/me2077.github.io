@@ -1,84 +1,31 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat ASCII Art</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <title>Chattable</title>
+  <script src="https://iframe.chat/scripts/main.min.js"></script>
 
-        body {
-            background-image: url('https://artwork.neocities.org/bgs/nightani.gif');
-            background-repeat: repeat;
-            background-attachment: fixed;
-            background-size: auto;
-            
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        pre {
-            font-family: 'Courier New', Consolas, Monaco, monospace;
-            font-size: 16px;
-            line-height: 1.2;
-            color: #a1ffce;
-        }
-
-    </style>
+  <script>
+    chattable.initialize();
+  </script>
+  <style>
+    #chattable {
+      width: 600px;
+      height: 800px;
+      border: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <pre>
-        
-
-
-
-
-                       .-.
-                        \ \
-                        \ \
-                        \ \
-                        \ \
-                        \ \
-                         \ \
-                         \ \
-                         \ \
-                         \ \
-                         \ \
-                        \ \
-                        \ \
-                        \ \
-                        \ \
-                        \ \
-                        \ \
-                         \ \
-                         \ \
-                         \ \         
-                         \ \
-                         \ \
-                          \ \
-                           \ \
-                            | |
-                            | |
-          /\---/\   _,---._ | |
-         /^   ^  \,'       `. ;
-        ( O   O   )           ;
-         `.=o=__,'            \
-           /         _,--.__   \
-          /  _ )   ,'   `-. `-. \
-         / ,' /  ,'        \ \ \ \
-        / /  / ,'          (,_)(_,)
-       (,;  (,,)      
-                   Cat 27.8.12
-       
-
-
-        </pre>
-    </div>
+  <iframe src="https://iframe.chat/embed?chat=20266666" id="chattable"></iframe>
+  
+  <script>
+                        chattable.initialize({
+                            theme: "moderno" // set the value to the name of the theme
+                        });
+                    </script>
 </body>
 </html>
+
+
+
+
