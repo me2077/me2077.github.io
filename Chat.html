@@ -3,29 +3,32 @@
 <head>
   <title>Chattable</title>
   <script src="https://iframe.chat/scripts/main.min.js"></script>
-
-  <script>
-    chattable.initialize();
-  </script>
   <style>
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #c7b6ce;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     #chattable {
-      width: 600px;
-      height: 8800px;
+      width: 335px;
+      height: 445px;
       border: none;
     }
   </style>
 </head>
 <body>
-  <iframe src="https://iframe.chat/embed?chat=20266666" id="chattable"></iframe>
+  <iframe src="https://iframe.chat/embed?chat=20777777" id="chattable"></iframe>
   
-  <script>
-                        chattable.initialize({
-                            theme: "moderno" // set the value to the name of the theme
-                        });
-                    </script>
+   <script>
+      chattable.initialize({
+      stylesheet : "https://raw.githubusercontent.com/KiwiMeowo/kiwimeowo/refs/heads/main/public/chattable/sunset.css"
+      });
+   </script>
 </body>
 </html>
-
-
 
 
