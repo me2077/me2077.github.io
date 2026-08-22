@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chattable</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://iframe.chat/scripts/main.min.js"></script>
+
+  <style>
+        body {
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #c7b6ce;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+    #chattable {
+      /* 基础尺寸，作为桌面端参考 */
+      width: 335px;
+      height: 445px;
+      border: none;
+      /* 限制最大尺寸，防止在大屏上过度拉伸 */
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* --- 响应式适配：针对移动端和小屏幕 --- */
+    @media (max-width: 420px) {
+      #chattable {
+        /* 宽度填满屏幕，同时保持宽高比 (335/445 ≈ 0.75) */
+        width: 92vw;          /* 留出边缘呼吸空间 */
+        height: calc(92vw * 1.33); /* 根据宽度计算高度，保持比例 */
+        max-height: 92vh;     /* 防止高度超出屏幕 */
+      }
+    }
+
+    /* 针对高度较小的设备（如横屏手机）做进一步优化 */
+    @media (max-height: 500px) and (orientation: landscape) {
+      #chattable {
+        height: 85vh;          /* 高度占满屏幕 */
+        width: calc(85vh / 1.33); /* 根据高度计算宽度，保持比例 */
+        max-width: 92vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 嵌入组件 iframe -->
+  <iframe src="https://iframe.chat/embed?chat=20777777" id="chattable"></iframe>
+  
+   <script>
+      chattable.initialize({
+      stylesheet : "https://raw.githubusercontent.com/KiwiMeowo/kiwimeowo/refs/heads/main/public/chattable/sunset.css"
+      });
+   </script>
+</body>
+</html>
