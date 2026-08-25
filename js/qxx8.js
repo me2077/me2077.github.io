@@ -93,7 +93,6 @@ window.initWebGLShaderBg=function(container){
    - 右下角（日间模式 3 张）：BG_BOTTOM_RIGHT_1 / BG_BOTTOM_RIGHT_2 / BG_BOTTOM_RIGHT_3
    ========================================================================== */
 // 左上角（日间模式 3 张）
-
 const BG_TOP_LEFT_1 = 'https://file.garden/ZWlUCY4S7Xz2vypS/archived%20backgrounds/colours/green/dddf143.jpg#repeat+mask:rgba(127,225,221,0.2)';
 const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/397.GIF#repeat+mask:rgba(127,225,221,0.2)';
 
@@ -116,12 +115,14 @@ const BG_BOTTOM_RIGHT_1 = 'https://textures.neocities.org/textures/stone-and-bri
 const BG_BOTTOM_RIGHT_2 = 'https://textures.neocities.org/textures/wood/woodgrain2195.jpg#repeat+mask:rgba(127,225,221,0.2)';
 const BG_BOTTOM_RIGHT_3 = 'https://textures.neocities.org/textures/paper-and-sponge/paper.jpg#repeat+mask:rgba(127,225,221,0.2)';
 
-
-// 读取本地存储中用户的粒子特效偏好（默认夜间开启 true）
+// 读取本地存储中用户的粒子特效偏好（默认开启 true）
 let userParticlesPref = localStorage.getItem('particlesPref') !== null ? (localStorage.getItem('particlesPref') === 'true') : true;
-window.isParticlesEnabled = false; // 初始占位，由 updateParticlesDisplay 准确计算
+window.isParticlesEnabled = false;
 
 let bgChangeSequence = 0, currentPage = 2, pagesContainer, bullets, isPlaying = false, currentBgIndex = 0;
+
+// 当前壁纸是否允许启用粒子特效（仅 BG_TOP_RIGHT_1 和 BG_TOP_RIGHT_2 为 true）
+let isParticlesAllowedOnCurrentBg = false;
 
 // 各模式的当前轮巡索引（-1 确保首次点击必然触发第 1 张）
 let currentTopLeftStep = -1;
@@ -132,28 +133,28 @@ const glowingCard = document.querySelector('.glowing-card'), audio = document.ge
 
 // 统一预设集合
 const bgTopLeftList = [
-    { name: 'top-left-1', value: BG_TOP_LEFT_1, isLight: true },
-    { name: 'top-left-2', value: BG_TOP_LEFT_2, isLight: true },
-    { name: 'top-left-3', value: BG_TOP_LEFT_3, isLight: true }
+    { name: 'top-left-1', value: BG_TOP_LEFT_1, isLight: true, allowParticles: false },
+    { name: 'top-left-2', value: BG_TOP_LEFT_2, isLight: true, allowParticles: false },
+    { name: 'top-left-3', value: BG_TOP_LEFT_3, isLight: true, allowParticles: false }
 ];
 
 const bgTopRightList = [
-    { name: 'top-right-1', value: BG_TOP_RIGHT_1, isLight: false },
-    { name: 'top-right-2', value: BG_TOP_RIGHT_2, isLight: false },
-    { name: 'top-right-3', value: BG_TOP_RIGHT_3, isLight: false }
+    { name: 'top-right-1', value: BG_TOP_RIGHT_1, isLight: false, allowParticles: true },  // 允许粒子
+    { name: 'top-right-2', value: BG_TOP_RIGHT_2, isLight: false, allowParticles: true },  // 允许粒子
+    { name: 'top-right-3', value: BG_TOP_RIGHT_3, isLight: false, allowParticles: false } // 禁用粒子
 ];
 
 const bgBottomRightList = [
-    { name: 'bottom-right-1', value: BG_BOTTOM_RIGHT_1, isLight: true },
-    { name: 'bottom-right-2', value: BG_BOTTOM_RIGHT_2, isLight: true },
-    { name: 'bottom-right-3', value: BG_BOTTOM_RIGHT_3, isLight: true }
+    { name: 'bottom-right-1', value: BG_BOTTOM_RIGHT_1, isLight: true, allowParticles: false },
+    { name: 'bottom-right-2', value: BG_BOTTOM_RIGHT_2, isLight: true, allowParticles: false },
+    { name: 'bottom-right-3', value: BG_BOTTOM_RIGHT_3, isLight: true, allowParticles: false }
 ];
 
 const bgPresets = [
-    ...bgTopLeftList,                                             // 0, 1, 2
-    ...bgTopRightList,                                            // 3, 4, 5
-    { name: 'bottom-left', value: BG_BOTTOM_LEFT, isLight: true },// 6
-    ...bgBottomRightList                                          // 7, 8, 9
+    ...bgTopLeftList,                                                                      // 0, 1, 2
+    ...bgTopRightList,                                                                     // 3, 4, 5
+    { name: 'bottom-left', value: BG_BOTTOM_LEFT, isLight: true, allowParticles: false },  // 6
+    ...bgBottomRightList                                                                   // 7, 8, 9
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -165,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentTopLeftStep = (currentTopLeftStep + 1) % bgTopLeftList.length;
         currentBgIndex = currentTopLeftStep;
         const p = bgTopLeftList[currentTopLeftStep];
-        switchBackground(p.value, p.isLight);
+        switchBackground(p.value, p.isLight, p.allowParticles);
     });
 
     // 右上角（夜间模式）：按 1 ➔ 2 ➔ 3 ➔ 1 顺序循环切换
@@ -173,13 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
         currentTopRightStep = (currentTopRightStep + 1) % bgTopRightList.length;
         currentBgIndex = 3 + currentTopRightStep;
         const p = bgTopRightList[currentTopRightStep];
-        switchBackground(p.value, p.isLight);
+        switchBackground(p.value, p.isLight, p.allowParticles);
     });
 
     // 左下角（WebGL 着色器）
     document.getElementById('btn-bg-1').addEventListener('click', () => {
         currentBgIndex = 6;
-        switchBackground(BG_BOTTOM_LEFT, true);
+        switchBackground(BG_BOTTOM_LEFT, true, false);
     });
 
     // 右下角（日间模式）：按 1 ➔ 2 ➔ 3 ➔ 1 顺序循环切换
@@ -187,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentBottomRightStep = (currentBottomRightStep + 1) % bgBottomRightList.length;
         currentBgIndex = 7 + currentBottomRightStep;
         const p = bgBottomRightList[currentBottomRightStep];
-        switchBackground(p.value, p.isLight);
+        switchBackground(p.value, p.isLight, p.allowParticles);
     });
 
     document.querySelectorAll('.theme-toggle, .day-toggle').forEach(b => {
@@ -217,13 +218,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 根据当前主题（日间强制关，夜间按记忆偏好）更新粒子展示
+// 根据当前主题权限与记忆偏好更新粒子展示
 function updateParticlesDisplay() {
     const c = document.getElementById('shuicheCanvas');
     if (!c) return;
-    const isLight = document.body.classList.contains('light');
-    // 日间模式一律关闭，夜间模式按用户记忆偏好
-    const shouldShow = !isLight && userParticlesPref;
+    // 仅在当前壁纸允许（BG_TOP_RIGHT_1/2）且用户偏好开启时显示粒子
+    const shouldShow = isParticlesAllowedOnCurrentBg && userParticlesPref;
     window.isParticlesEnabled = shouldShow;
     if (shouldShow) {
         c.style.display = 'block';
@@ -235,9 +235,12 @@ function updateParticlesDisplay() {
 }
 
 let bgLayerIndex = 0;
-function crossfadeBackground(bgVal, isLight) {
+function crossfadeBackground(bgVal, isLight, allowParticles = false) {
     const curId = ++bgChangeSequence, container = document.getElementById('bg-container');
     if (!container) return;
+
+    // 记录当前主题的粒子权限
+    isParticlesAllowedOnCurrentBg = allowParticles;
 
     let rawVal = bgVal;
     const match = rawVal.match(/url\(['"]?(.*?)['"]?\)/);
@@ -329,7 +332,7 @@ function crossfadeBackground(bgVal, isLight) {
         document.body.classList.toggle('light', isLight);
         document.documentElement.style.setProperty('--fg', isLight ? 'black' : '#f0f0f0');
         
-        // 切换背景时根据新主题与记忆偏好刷新粒子状态
+        // 切换背景时刷新粒子显示
         updateParticlesDisplay();
 
         void layer.offsetWidth;
@@ -364,15 +367,15 @@ function crossfadeBackground(bgVal, isLight) {
     }
 }
 
-function switchBackground(v, isLight = true) {
+function switchBackground(v, isLight = true, allowParticles = false) {
     if (v === 'webgl-shader' || v.includes('gradient') || /^(#|rgb|hsl)/.test(v.trim())) {
-        crossfadeBackground(v, isLight);
+        crossfadeBackground(v, isLight, allowParticles);
     } else {
-        crossfadeBackground(v, isLight);
+        crossfadeBackground(v, isLight, allowParticles);
     }
 }
 
-// 双击屏幕手动切换粒子特效（仅夜间模式生效，日间模式严格禁用，且双击选择永久记忆）
+// 双击屏幕手动切换粒子特效（仅在 BG_TOP_RIGHT_1 / 2 下生效，BG_TOP_RIGHT_3 及日间主题严格禁用）
 (function initDoubleClickToggle() {
     let lastToggle = 0;
     const toggle = e => {
@@ -380,13 +383,13 @@ function switchBackground(v, isLight = true) {
         if (now - lastToggle < 500) return;
         lastToggle = now;
 
-        // 1. 如果当前是日间模式，严格禁用双击切换粒子特效
-        if (document.body.classList.contains('light')) return;
+        // 只有当前壁纸明确允许粒子特效（BG_TOP_RIGHT_1 / 2）时才响应双击
+        if (!isParticlesAllowedOnCurrentBg) return;
 
-        // 2. 忽略交互组件上的点击
+        // 忽略交互组件上的点击
         if (e.target?.closest?.('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) return;
 
-        // 3. 在夜间模式下切换并持久化保存用户偏好
+        // 切换并持久化保存用户偏好
         userParticlesPref = !userParticlesPref;
         localStorage.setItem('particlesPref', userParticlesPref);
         updateParticlesDisplay();
@@ -693,37 +696,37 @@ function initKeyboardControls() {
         if (key === 't') {
             currentBgIndex = (currentBgIndex + 1) % bgPresets.length;
             const p = bgPresets[currentBgIndex];
-            switchBackground(p.value, p.isLight);
+            switchBackground(p.value, p.isLight, p.allowParticles);
         }
         // 按 1 键：左上角（日间 3 张循环）
         if (key === '1') {
             currentTopLeftStep = (currentTopLeftStep + 1) % bgTopLeftList.length;
             currentBgIndex = currentTopLeftStep;
             const p = bgTopLeftList[currentTopLeftStep];
-            switchBackground(p.value, p.isLight);
+            switchBackground(p.value, p.isLight, p.allowParticles);
         }
         // 按 2 键：右上角（夜间 3 张循环）
         if (key === '2') {
             currentTopRightStep = (currentTopRightStep + 1) % bgTopRightList.length;
             currentBgIndex = 3 + currentTopRightStep;
             const p = bgTopRightList[currentTopRightStep];
-            switchBackground(p.value, p.isLight);
+            switchBackground(p.value, p.isLight, p.allowParticles);
         }
         // 按 3 键：左下角（WebGL）
         if (key === '3') {
             currentBgIndex = 6;
-            switchBackground(BG_BOTTOM_LEFT, true);
+            switchBackground(BG_BOTTOM_LEFT, true, false);
         }
         // 按 4 键：右下角（日间 3 张循环）
         if (key === '4') {
             currentBottomRightStep = (currentBottomRightStep + 1) % bgBottomRightList.length;
             currentBgIndex = 7 + currentBottomRightStep;
             const p = bgBottomRightList[currentBottomRightStep];
-            switchBackground(p.value, p.isLight);
+            switchBackground(p.value, p.isLight, p.allowParticles);
         }
-        // 按 P 键：仅在夜间模式下允许开关粒子并记录偏好
+        // 按 P 键：仅在允许粒子的主题下允许切换
         if (key === 'p') {
-            if (!document.body.classList.contains('light')) {
+            if (isParticlesAllowedOnCurrentBg) {
                 userParticlesPref = !userParticlesPref;
                 localStorage.setItem('particlesPref', userParticlesPref);
                 updateParticlesDisplay();
@@ -800,6 +803,8 @@ if (video) video.addEventListener('click', () => video.muted = false);
 window.onload = function () {
     loadMusicPlayer();
     initKeyboardControls();
+    // 首次进入页面（默认日间）确保粒子状态准确
+    isParticlesAllowedOnCurrentBg = false;
     updateParticlesDisplay();
     switchPageTo(2);
 };
