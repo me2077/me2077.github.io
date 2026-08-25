@@ -158,7 +158,7 @@ canvas{position:fixed;inset:0;width:100%;height:100dvh;z-index:-1}
 @keyframes glitch-2{0%{opacity:0.75;transform:translate(1px,-1px)}50%{opacity:0.5;transform:translate(-0.5px,0.5px)}100%{opacity:0.75;transform:translate(1px,-1px)}}
 a,button,.theme-toggle,.day-toggle,.profile-pic,.link-card,.spotify-card,.play-btn,.bullet,.reward-wrapper,.progress,.music-player__song,.music-player__playlist-button,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__info{cursor:var(--cursor-img),pointer}
 .coffee-pixel-icon{width:1.5em;height:1.5em;vertical-align:-0.2em;display:inline-block;image-rendering:pixelated}
-/* Chattable 聊天室样式：铺满且居中，无额外边距 */
+
 #page1-3 {
     width: 100%;
     height: 100%;
