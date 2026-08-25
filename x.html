@@ -11,8 +11,9 @@
     <meta name="theme-color" content="#000000">
     <title>✨🐈</title>
     <link rel="stylesheet" href="css/01.css">
-    <script type="module" src="js/qxx5.js"></script>
+    <script type="module" src="js/qxx8.js"></script>
     <script src="js/T.js" defer></script>
+    <script src="https://iframe.chat/scripts/main.min.js"></script>
     <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
     <link rel="shortcut icon" href="favicon/favicon.ico">
@@ -71,10 +72,15 @@
                                     <section class="subpage" id="page1-2">
                                         <div class="media-wrapper"><img src="images/me.webp" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img"></div>
                                     </section>
+                                  
                                     <section class="subpage" id="page1-3">
+                                        <iframe src="https://iframe.chat/embed/index.html?chat=00000000" id="chattable" loading="lazy"></iframe>
+                                    </section>
+                                  
+                                    <section class="subpage" id="page1-4">
                                         <div class="pixel-scale-box"><div class="pixel-art"></div></div>
                                     </section>
-                                    <section class="subpage" id="page1-4">
+                                    <section class="subpage" id="page1-5">
                                         <div class="media-wrapper"><video id="page1Video" class="glitch-img" loop playsinline webkit-playsinline preload="none"></video></div>
                                     </section>
                                 </div>
@@ -129,5 +135,8 @@
         </div>
     </div>
     <canvas id="shuicheCanvas"></canvas>
+<script>
+    chattable.initialize();
+</script>
 </body>
 </html>
