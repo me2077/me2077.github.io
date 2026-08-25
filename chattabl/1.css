@@ -15,7 +15,12 @@
   --dropshadowdown: drop-shadow(1px 1px 1px var(--shadow));
   --down: 1px 1px;
 }
-
+body, 
+#background, 
+.msgWrapper, 
+#messages {
+  background-color: #c7b6ce;
+}
 /* 顶部 Banner 标头 */
 #top_banner {
   background: var(--teal);
@@ -254,7 +259,7 @@ pre:has(>code) {
 }
 #top_banner, 
 #top_banner a {
-  pointer-events: none !important;
-  cursor: default !important;
-  text-decoration: none !important;
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
 }
