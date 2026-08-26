@@ -113,10 +113,10 @@
     </svg>
     <span class="link-title">Chat聊天室</span>
 </a>               
-                                  
+             
                                 </div>
                             </div>
-                          
+
                           
                             <div id="page3" class="page">
                                 <div class="profile-header"></div>
@@ -139,25 +139,14 @@
             </div>
         </div>
     </div>
-  <!-- 聊天室弹出层容器 -->
+<!-- 聊天室弹出层容器 -->
 <div id="chat-modal" class="chat-modal-overlay">
     <div class="chat-card glowing-card">
-        <!-- 位于左边框边缘中间的关闭 X 按钮 -->
-        <button id="btn-close-chat" class="chat-close-btn" aria-label="关闭聊天室">
-            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-        </button>
-        <!-- 聊天室内容 -->
         <div class="chat-card-inner">
             <iframe src="https://iframe.chat/embed/index.html?chat=00000000" id="chattable-iframe" loading="lazy"></iframe>
         </div>
     </div>
-</div>
+</div>     
     <canvas id="shuicheCanvas"></canvas>
-<script>
-    chattable.initialize();
-</script>
 </body>
 </html>
