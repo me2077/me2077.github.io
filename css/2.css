@@ -1,2103 +1,256 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#007AFF">
-    <title>🐈个人主页</title>
-    <style>
-:root {
-    /* 原有核心变量 */
-    --glow-sens: 30;
-    --dark: hsl(260, 25%, 10%);
-    --fg: black;
-    --h: 260;
-    --card-bg: linear-gradient(8deg, var(--dark) 75%, color-mix(in hsl, var(--dark), white 2.5%) 75.5%);
-    --blend: soft-light;
-    --glow-blend: plus-lighter;
-    --glow-color: 40deg 80% 80%;
-    --duration: 1s;
-    --ease-slider: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-timeline: cubic-bezier(0.71, 0.21, 0.3, 0.95);
-    --page-height: 498px;
-    --accent: hsl(260, 100%, 80%);
+#bg-container .init-bg{background:url('../images/A1.webp') center/cover no-repeat;opacity:1;z-index:0}
+:root{--cursor-img:url('../images/fish-3.webp')32 32;--glow-sens:30;--dark:hsl(260,25%,10%);--fg:black;--h:260;--card-bg:linear-gradient(8deg,var(--dark) 75%,color-mix(in hsl,var(--dark),white 2.5%) 75.5%);--blend:soft-light;--glow-blend:plus-lighter;--glow-color:40deg 80% 80%;--duration:1s;--ease-slider:cubic-bezier(0.4,0,0.2,1);--ease-timeline:cubic-bezier(0.71,0.21,0.3,0.95);--page-height:498px;--accent:hsl(260,100%,80%);--glowing-card-bg:rgb(255 255 255 / 23%);--glowing-card-border:rgb(255 255 255 / 70%);--glowing-card-backdrop:blur(7px);--link-card-bg:rgb(255 255 255 / 9%);--link-card-hover-bg:rgb(255 255 255 / 25%);--link-card-border:rgb(255 255 255 / 40%);--link-card-box-shadow:0px 4px 3px #0001,0 0 35px #fffa inset;--spotify-card-bg:rgb(255 255 255 / 15%);--spotify-card-border:rgb(255 255 255 / 45%);--spotify-card-box-shadow:0px 4px 3px #0001,0 0 38px #fffa inset;--music-player-bg:rgb(255 255 255 / 15%);--music-player-shadow:none}
+.light{--cursor-img:url('../images/fish-1.webp')32 32;--card-bg:linear-gradient(8deg,color-mix(in hsl,hsl(260,25%,95%),var(--dark) 2.5%) 75%,hsl(260,25%,95%) 75.5%);--blend:darken;--glow-blend:luminosity;--glow-color:280deg 90% 95%;--glowing-card-bg:rgb(255 255 255 / 13%);--glowing-card-border:rgb(255 255 255 / 80%);--glowing-card-backdrop:blur(7px);--link-card-bg:rgb(255 255 255 / 7%);--link-card-hover-bg:rgb(255 255 255 / 25%);--link-card-border:rgb(255 255 255 / 50%);--link-card-box-shadow:0px 4px 3px #0001,0 0 25px #fffa inset;--spotify-card-bg:rgb(255 255 255 / 7%);--spotify-card-border:rgb(255 255 255 / 60%);--spotify-card-box-shadow:0px 4px 3px #0001,0 0 38px #fffa inset;--music-player-bg:rgb(255 255 255 / 10%);--music-player-shadow:0 2px 6px 1px #0000001f}
+body{background-color:#000000;background-image:none;margin:0;padding:0;min-height:100dvh;display:flex;justify-content:center;align-items:center;font-family:'Inter',sans-serif;color:var(--fg);overflow:hidden;touch-action:manipulation;transition:color 0.8s ease;cursor:var(--cursor-img),auto}
+body::before,body::after{content:"";position:fixed;left:0;right:0;background-color:#000000;z-index:99999;pointer-events:none}
+body::before{top:0;height:env(safe-area-inset-top)}
+body::after{bottom:0;height:env(safe-area-inset-bottom)}
+#bg-container{position:fixed;inset:0;z-index:-3;pointer-events:none;contain:strict}
+.bg-layer{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 0.8s ease-in-out;transform:translateZ(0);will-change:opacity;contain:strict}
+.bg-layer video{position:absolute;top:50%;left:50%;min-width:100%;min-height:100%;width:auto;height:auto;transform:translate(-50% ,-50%);object-fit:cover}
+.bg-layer canvas{position:absolute;top:0;left:0;width:100%;height:100%;transform:none}
+canvas{position:fixed;inset:0;width:100%;height:100dvh;z-index:-1}
+.glowing-card{position:relative;width:100%;max-width:345px;height:510px;flex-shrink:0;border-radius:20px;isolation:isolate;transform:translateZ(0);background:var(--glowing-card-bg);box-shadow:0px 10px 15px transparent,0 0 55px #fff inset;overflow:hidden;text-align:center;box-sizing:border-box;border:1px solid var(--glowing-card-border);-webkit-backdrop-filter:var(--glowing-card-backdrop);backdrop-filter:var(--glowing-card-backdrop);transition:background 0.8s ease,border 0.8s ease,box-shadow 0.8s ease;will-change:background,box-shadow,border}
+.theme-toggle,.day-toggle{position:absolute;width:24px;height:24px;cursor:pointer;z-index:10;opacity:0.5;transition:opacity 0.3s,transform 0.1s ease;-webkit-tap-highlight-color:transparent}
+.theme-toggle{top:6px}
+.day-toggle{bottom:5px}
+.sun-toggle,.day-toggle-left{left:6px}
+.moon-toggle,.day-toggle-right{right:6px}
+@media (hover:hover){.theme-toggle:hover,.day-toggle:hover{opacity:0.7;transform:scale(1.2)}}
+.theme-toggle:active,.day-toggle:active{opacity:0.7}
+.icon-scale-active{transform:scale(1.2)!important;opacity:0.7!important}
+.icon-shrink-force{transform:scale(1)!important}
+.alist-widget-wrapper{position:relative;z-index:10;padding:20px;height:100%;box-sizing:border-box}
+.profile-header{padding:15px 2px 12px;position:relative}
+.profile-pic{width:200px;height:200px;margin:-60px auto;filter:brightness(0.88);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.link-section{width:100%;height:100%;overflow:hidden;padding:0}
+.pages{display:flex;transition:transform 0.5s ease-in-out;height:100%;transform:translateX(-100%)}
+.page{flex:0 0 100%;height:var(--page-height);box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;padding:0 25px 25px;overflow:hidden;contain:paint layout}
+#page3{justify-content:center;align-items:center;padding:0}
+.link-card,.spotify-card{width:100%;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.link-card{display:flex;align-items:center;max-width:275px;height:45px;background:var(--link-card-bg);padding:8px;margin-bottom:0px;border-radius:20px;text-decoration:none;color:inherit;font-size:16px;font-style:italic;border:1px solid var(--link-card-border);box-shadow:var(--link-card-box-shadow);transition:background 0.8s ease,border 0.8s ease,box-shadow 0.8s ease}
+.link-card:hover{background:var(--link-card-hover-bg);transition:background 0.3s ease,border 0.3s ease,box-shadow 0.3s ease}
+.link-icon{width:36px;height:36px;margin-left:16px}
+.link-title{text-align:center;width:100%;font-size:18px;transition:transform 0.3s ease,text-shadow 0.3s ease}
+@media (hover:hover){.link-card:hover .link-title{transform:scale(1.05);text-shadow:2px 2px 4px rgba(0,0,0,0.1)}}
+.link-card:active .link-title{transform:scale(1.05);text-shadow:2px 2px 4px rgba(0,0,0,0.1)}
+@property --gradient-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes rotate-stream{0%{--gradient-angle:0deg}100%{--gradient-angle:360deg}}
+#btn-vcard{position:relative;border:1px solid var(--link-card-border);background:var(--link-card-bg);z-index:1;transition:background 0.3s ease,box-shadow 0.3s ease}
+#btn-vcard:hover{background:var(--link-card-hover-bg)}
+#btn-vcard::before{content:"";position:absolute;inset:0;border-radius:20px;padding:1.5px;background:conic-gradient(from var(--gradient-angle),transparent 40%,#bf953f 60%,#fcf6ba 75%,#b38728 90%,transparent);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:rotate-stream 3s linear infinite;pointer-events:none}
+#btn-vcard::after{content:"";position:absolute;inset:-2px;border-radius:22px;padding:2px;background:conic-gradient(from var(--gradient-angle),transparent 70%,rgba(252,246,186,0.5) 85%,transparent);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:blur(4px);animation:rotate-stream 3s linear infinite;pointer-events:none;z-index:-1}
+.spotify-card{display:flex;justify-content:space-between;align-items:center;max-width:251px;height:160px;background:var(--spotify-card-bg);border-radius:25px;padding:10.8px 20px;position:relative;margin-bottom:4px;flex-wrap:nowrap;gap:16px;border:1.5px solid var(--spotify-card-border);box-shadow:var(--spotify-card-box-shadow);transition:background 0.8s ease,border 0.8s ease,box-shadow 0.8s ease,transform 0.2s ease}
+.spotify-left{display:flex;flex-direction:column;justify-content:flex-start;flex:1;min-width:0;padding-right:8px;gap:6px}
+.spotify-meta{display:flex;align-items:center;gap:6px}
+.spotify-icon{width:36px;height:36px;border-radius:12px;background-color:#1ed760;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.spotify-icon img{width:22px;height:22px}
+.track-text{display:flex;flex-direction:column;text-align:left;gap:1px}
+.track-title{font-size:16px;font-weight:bold;margin:0;font-style:italic}
+.track-artist{font-size:11.8px;font-style:italic}
+.play-btn{background-color:#3fd97a;color:white;border:none;border-radius:24px;padding:6px 36px;font-size:14px;font-weight:bold;display:flex;align-items:center;justify-content:flex-start;gap:6px;cursor:pointer;margin-top:1px;width:fit-content;font-style:italic;transition:transform 0.1s ease}
+.play-btn:hover,.play-btn:active{transform:scale(1.05)}
+.play-btn svg{width:14px;height:14px}
+.play-btn .icon-pause{display:none}
+.play-btn.playing .icon-play{display:none}
+.play-btn.playing .icon-pause{display:block}
+.spotify-cover{width:75px;height:75px;border-radius:12px;overflow:hidden;flex-shrink:0;margin-left:8px}
+.spotify-cover img{width:100%;height:100%;object-fit:cover}
+#shuicheCanvas{position:fixed;top:0;left:0;z-index:1;pointer-events:none;display:none}
+.pagination{display:flex;justify-content:center;gap:5px;margin-top:-8px;margin-bottom:10px}
+.bullet{width:85px;height:6px;background:var(--fg);opacity:0.2;border-radius:10%;cursor:pointer;transition:all 0.3s;position:relative}
+.bullet::before{content:"";position:absolute;inset:-20px 0}
+.bullet.active{opacity:1;background:#c299ff;box-shadow:0px 0px 20px rgba(194,153,255,5)}
+#page1{padding:0}
+#page1 .page-vertical{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;scroll-behavior:smooth;overscroll-behavior:contain;position:relative;-ms-overflow-style:none;scrollbar-width:none}
+#page1 .page-vertical::-webkit-scrollbar{display:none}
+#page1 .subpage{scroll-snap-align:start;scroll-snap-stop:always;height:100%;min-height:var(--page-height);display:flex;flex-direction:column;justify-content:center;align-items:center}
+#page1,#page1 .page-vertical,#page1 .subpage{overflow-x:hidden}
+.media-wrapper{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%}
+.glitch-img{width:100%;max-width:100%;max-height:100%;border-radius:15px;display:block;object-fit:cover}
+.pixel-scale-box{width:200px;height:180px;position:relative;transform:scale(0.5);contain:paint;will-change:transform}
+.reward-wrapper{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;font-style:italic;cursor:pointer;position:relative;width:100%;-webkit-tap-highlight-color:transparent}
+.reward-media{position:relative;width:100%;display:flex;justify-content:center;align-items:center;transform:translateY(-26px)}
+.reward-gif{width:100%;max-width:100%;max-height:100%;border-radius:18px;transition:opacity 0.5s ease;opacity:1;display:block;object-fit:cover}
+.reward-qr{position:absolute;width:340px;height:340px;border-radius:18px;transition:opacity 0.5s ease;opacity:0;pointer-events:none;top:0;left:0;right:0;margin:0 auto}
+.reward-texts{position:absolute;bottom:35px;display:flex;justify-content:center;align-items:center;width:100%;height:32px}
+.reward-text-old{position:absolute;color:inherit;font-size:24px;text-align:center;text-decoration:underline;text-underline-offset:2px;margin:0;transition:opacity 0.5s ease;opacity:1;white-space:nowrap;transform:translateY(0px)}
+.reward-text-new{position:absolute;opacity:0;transition:opacity 0.5s ease;pointer-events:none;text-align:center;transform:translateY(-18px)}
+.reward-text-new a{color:inherit;font-size:24px;text-decoration:underline;text-underline-offset:2px;display:block;line-height:1.5;margin-bottom:0px}
+.reward-text-new a:last-child{margin-bottom:0}
+.show-qr .reward-gif,.show-qr .reward-text-old{opacity:0;pointer-events:none}
+.show-qr .reward-qr,.show-qr .reward-text-new{opacity:1;pointer-events:auto}
+.pixel-art{width:10px;height:10px;position:absolute;top:0;left:0;box-shadow:110px 10px #000,120px 10px #000,110px 20px #000,110px 30px #000,110px 40px #000,120px 40px #000,130px 40px #000,140px 40px #000,150px 40px #000,160px 40px #000,30px 50px #000,70px 50px #000,160px 50px #000,30px 60px #000,40px 60px #000,60px 60px #000,70px 60px #000,100px 60px #000,110px 60px #000,120px 60px #000,130px 60px #000,160px 60px #000,30px 70px #000,40px 70px #000,50px 70px #000,60px 70px #000,70px 70px #000,90px 70px #000,100px 70px #000,110px 70px #000,120px 70px #000,130px 70px #000,140px 70px #000,150px 70px #000,160px 70px #000,30px 80px #000,40px 80px #f00,50px 80px #000,60px 80px #f00,70px 80px #000,80px 80px #000,90px 80px #000,100px 80px #000,110px 80px #000,120px 80px #000,130px 80px #000,140px 80px #000,150px 80px #000,160px 80px #000,30px 90px #000,40px 90px #000,50px 90px #000,60px 90px #000,70px 90px #000,80px 90px #000,90px 90px #000,100px 90px #000,110px 90px #000,120px 90px #000,130px 90px #000,140px 90px #000,150px 90px #000,160px 90px #000,40px 100px #000,50px 100px #000,60px 100px #000,70px 100px #000,80px 100px #000,90px 100px #000,100px 100px #000,110px 100px #000,120px 100px #000,130px 100px #000,140px 100px #000,150px 100px #000,160px 100px #000,60px 110px #000,70px 110px #000,80px 110px #000,90px 110px #000,100px 110px #000,110px 110px #000,130px 110px #000,140px 110px #000,150px 110px #000,60px 120px #000,70px 120px #000,80px 120px #000,100px 120px #000,110px 120px #000,130px 120px #000,140px 120px #000,60px 130px #000,80px 130px #000,110px 130px #000,140px 130px #000,60px 140px #000,80px 140px #000,110px 140px #000,140px 140px #000,60px 150px #000,80px 150px #000,110px 150px #000,140px 150px #000,50px 160px #000,60px 160px #000,70px 160px #000,80px 160px #000,100px 160px #000,110px 160px #000,130px 160px #000,140px 160px #000}
+@font-face{font-family:"icomoon";src:url("../fonts/icomoon.woff") format("woff");font-weight:normal;font-style:normal;font-display:swap}
+[class^="icon-"],[class*=" icon-"]{font-family:"icomoon"!important;font-style:normal;font-weight:normal;font-variant:normal;text-transform:none;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.icon-back:before{content:"\e900";color:#827d7b}
+.icon-next:before{content:"\e901";color:#827d7b}
+.icon-pause:before,.icon-play:before,.icon-playlist:before{color:#fff}
+.icon-pause:before{content:"\e902"}
+.icon-play:before{content:"\e903"}
+.icon-playlist:before{content:"\e904"}
+.lazy-placeholder{background-color:rgba(255,255,255,0.1)}
+.img{width:100%;flex-shrink:0;display:block;object-fit:cover}
+.list{margin:0;padding:0;list-style-type:none}
+.text_trsf-cap{text-transform:capitalize}
+.button{all:unset;cursor:pointer}
+.center{display:flex;align-items:center;justify-content:center}
+.flex-row{display:flex}
+.flex-column{display:flex;flex-direction:column}
+._align_center{align-items:center}
+._justify_space-btwn{justify-content:space-between;align-items:center;width:100%}
+.text_overflow{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:inline-block}
+.music-player{--color-gray:#e5e7ea;--color-blue:#78adfe;--color-blue-dark:#5781bd;--box-shadow:0 2px 6px 1px #0000001f;--cover-size:4.2em;--border-radius:1.2em;--music-player-height:calc(var(--page-height) - 0px);--offset-cover:1em;width:100%;max-width:335px;height:445px;-webkit-user-select:none;user-select:none;border-radius:var(--border-radius);background-color:var(--music-player-bg);margin:-15px auto 0;box-sizing:border-box;color:inherit;transition:background-color 0.8s ease}
+.slider{--shadow-opacity:1;z-index:0;flex-shrink:0;height:6.8em;position:relative;border-radius:inherit;transition:var(--duration) height var(--ease-timeline)}
+.slider.resize{--shadow-opacity:0;height:var(--music-player-height)}
+.slider::after{content:"";position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;border-radius:inherit;box-shadow:var(--box-shadow);opacity:var(--shadow-opacity);transition:opacity var(--duration) ease,box-shadow 0.8s ease}
+.slider__content{position:absolute;top:0;left:0;overflow:hidden;border-radius:inherit;width:var(--cover-size);height:var(--cover-size);transition:transform var(--duration) var(--ease-timeline),width var(--duration) var(--ease-timeline),height var(--duration) var(--ease-timeline);transform:translate3d(var(--offset-cover),var(--offset-cover),0)}
+.slider.resize .slider__content{width:100%;height:22em;transform:translate3d(0,0,0)}
+.slider__content .button{--size:2.5em;z-index:1;position:absolute;width:var(--size);height:var(--size)}
+.slider__content i{position:absolute;pointer-events:none;font-size:var(--size)}
+.music-player__playlist-button{top:5.5%;left:5.5%;transform:scale(0);transition:calc(var(--duration) / 2) transform}
+.slider.resize .music-player__playlist-button{transform:scale(1);transition:0.30s var(--duration) transform cubic-bezier(0,0.85,0.11,1.64)}   
+.music-player__broadcast-guarantor .icon-pause,.music-player__broadcast-guarantor.click .icon-play{opacity:0}
+.music-player__broadcast-guarantor.click .icon-pause{opacity:1}
+.slider__imgs{width:100%;height:100%;filter:brightness(75%);transform:translate3d(calc(var(--index) * 100%),0,0);transition:var(--duration) transform var(--ease-slider)}
+.slider__imgs>img{pointer-events:none}
+.slider__controls{--controls-y:210%;--controls-x:17.3%;--controls-width:68.4%;--controls-resize-width:88%;gap:0.375em 0;flex-wrap:wrap;position:absolute;align-items:center;padding-top:0.375em;width:var(--controls-width);transform:translate3d(var(--controls-x),0,0);animation:var(--controls-animate,"down paused") var(--duration) var(--ease-timeline) forwards}
+@keyframes down{100%{width:var(--controls-resize-width);transform:translate3d(0,var(--controls-y),0)}}
+@keyframes up{0%{width:var(--controls-resize-width);transform:translate3d(0,var(--controls-y),0)}100%{width:var(--controls-width);transform:translate3d(var(--controls-x),0,0)}}
+.music-player__info{width:56.3%;cursor:pointer;line-height:1.45;overflow:hidden;font-weight:bold;padding:0 0.0625em;white-space:nowrap}
+.music-player__info>*{margin:0 auto;pointer-events:none}
+.music-player__singer-name{font-size:1.1em;width:max-content}
+.music-player__subtitle{font-size:0.8em;font-weight:bold;color:inherit;opacity:0.55}
+.slider__controls .music-player__subtitle{width:max-content}
+.music-player__singer-name.animate,.music-player__subtitle.animate{--subtitle-gap:1.2em;display:flex;gap:0 var(--subtitle-gap);animation:subtitle 12s 1.2s linear infinite}
+@keyframes subtitle{80%,100%{transform:translate3d(calc((100% + var(--subtitle-gap)) / -2),0,0)}}
+.progress{width:90%;height:0.6em;cursor:pointer;transition:var(--duration) width var(--ease-timeline);position:relative;top:8px}
+.slider.resize .progress{width:100%}
+.progress__wrapper{width:100%;height:0.35em;position:relative;border-radius:1em;background-color:var(--color-gray)}
+.progress__bar{top:0;left:0;bottom:0;position:absolute;width:100%;border-radius:inherit;background-color:var(--color-blue);transform:scaleX(var(--scale,0));transform-origin:left;will-change:transform}
+.progress__dot{--size:0.375em;position:absolute;top:50%;left:var(--width,0%);width:var(--size);height:var(--size);background-color:var(--color-blue-dark);border-radius:100%;transform:translate(-50%,-50%);will-change:left}
+.link-scroll-container{position:relative;width:320px}
+.music-player__playlist{box-sizing:border-box;height:calc(100% - 6.8em);padding:10px 0.9em 0 var(--offset-cover)!important;overflow-y:auto}
+.link-scroll-container::-webkit-scrollbar,.music-player__playlist::-webkit-scrollbar{width:4px;background:transparent}
+.link-scroll-container::-webkit-scrollbar-track,.music-player__playlist::-webkit-scrollbar-track{background:transparent;border-right:0 solid transparent}
+.link-scroll-container::-webkit-scrollbar-thumb,.music-player__playlist::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--fg) 40%,transparent);border-radius:10px;border:1px solid transparent;opacity:0;transition:opacity 0.3s ease}
+.link-scroll-container,.music-player__playlist{overflow-y:auto;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--fg) 40%,transparent) transparent}
+.link-scroll-container.scrolling::-webkit-scrollbar-thumb,.link-scroll-container:hover::-webkit-scrollbar-thumb,.music-player__playlist.scrolling::-webkit-scrollbar-thumb,.music-player__playlist:hover::-webkit-scrollbar-thumb{opacity:1}
+.music-player__song{--gap:0.5em;cursor:pointer;margin-bottom:var(--gap);padding-bottom:var(--gap);border-bottom:0.8px solid #d8d8d859}
+.music-player__song audio{display:none}
+.music-player__song-img{width:var(--cover-size);height:var(--cover-size);border-radius:var(--border-radius)}
+.music-player__playlist-info{width:100%;overflow:hidden;line-height:1.2;font-size:1em;margin-left:1.2em}
+.music-player__playlist-info b{display:block;margin-left:0;padding-left:0;text-align:left;width:calc(100% - 50px)}
+.music-player__playlist-info .music-player__subtitle{display:block;text-align:left;margin-left:0;padding-left:0;flex-grow:1}
+.music-player__song-duration{flex-shrink:0;margin-left:10px;font-weight:bold;font-size:0.8em;color:inherit;opacity:0.55}
+.music-player__playlist-button i,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__playlist-info b,.music-player__playlist-info .music-player__subtitle{transition:transform .2s ease}
+.music-player__broadcast-guarantor{top:50%;left:50%;transform:translate(-50%,-50%)}
+.slider__switch-button{font-size:2.5em;height:max-content}
+@media(hover:hover){.music-player__playlist-button:hover i,.slider__switch-button:hover{transform:scale(1.2)}.music-player__broadcast-guarantor:hover{transform:translate(-50%,-50%) scale(1.2)}.music-player__song:hover .music-player__playlist-info b,.music-player__song:hover .music-player__playlist-info .music-player__subtitle{transform:translateX(6px)}}
+.loading-spinner{display:inline-block;width:40px;height:40px;border:4px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:var(--fg);animation:spin 1s ease-in-out infinite;transition:border-top-color 0.8s ease}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{margin-top:10px;font-size:16px}
+.glitch-text{position:relative;display:inline-block}
+.glitch-text::before,.glitch-text::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none}
+.glitch-text.active::before{animation:glitch-1 0.5s cubic-bezier(.25,.46,.45,.94) both infinite;color:#0ff;transform:translateX(-0.5px)}
+.glitch-text.active::after{animation:glitch-2 0.5s cubic-bezier(.25,.46,.45,.94) reverse both infinite;color:#f0f;transform:translateX(0.5px)}
+@keyframes glitch-1{0%{opacity:0.75;transform:translate(-1px,1px)}50%{opacity:0.5;transform:translate(0.5px,-0.5px)}100%{opacity:0.75;transform:translate(-1px,1px)}}
+@keyframes glitch-2{0%{opacity:0.75;transform:translate(1px,-1px)}50%{opacity:0.5;transform:translate(-0.5px,0.5px)}100%{opacity:0.75;transform:translate(1px,-1px)}}
+a,button,.theme-toggle,.day-toggle,.profile-pic,.link-card,.spotify-card,.play-btn,.bullet,.reward-wrapper,.progress,.music-player__song,.music-player__playlist-button,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__info{cursor:var(--cursor-img),pointer}
+.coffee-pixel-icon{width:1.5em;height:1.5em;vertical-align:-0.2em;display:inline-block;image-rendering:pixelated}
 
-    /* 新增：主题统一变量（暗色为默认） */
-    --glowing-card-bg: rgba(255,255,255,0.15);
-    --glowing-card-border: rgb(255 255 255 / 80%);
-    --glowing-card-backdrop: none;
-
-    --link-card-bg: rgba(255,255,255,0.07);
-    --link-card-hover-bg: rgba(255,255,255,0.2);
-
-    --spotify-card-bg: rgba(255,255,255,0.09);
-
-    --music-player-bg: rgba(255,255,255,0.15);
-    --music-player-shadow: none;
-}
-
-.light {
-    /* 原有亮色变量 */
-    --card-bg: linear-gradient(8deg, color-mix(in hsl, hsl(260, 25%, 95%), var(--dark) 2.5%) 75%, hsl(260, 25%, 95%) 75.5%);
-    --blend: darken;
-    --glow-blend: luminosity;
-    --glow-color: 280deg 90% 95%;
-    --fg: black;
-
-    /* 亮色主题变量覆盖 */
-    --glowing-card-bg: #fff2;
-    --glowing-card-border: transparent;
-    --glowing-card-backdrop: blur(5px);
-
-    --link-card-bg: #fff1;
-    --link-card-hover-bg: rgba(255,255,255,0.3);
-
-    --spotify-card-bg: #fff1;
-
-    --music-player-bg: rgba(255, 255, 255, 0.1);
-    --music-player-shadow: 0 2px 6px 1px #0000001f;
-
-    color: var(--fg);
-}
-
-/* ====================== 2. 基础布局 ====================== */
-body {
-    background-color: #debbff;
-    margin: 0;
-    padding: 0;
-    min-height: 100dvh;
-    background: url('https://splattacks.neocities.org/images/bg.png') center/cover;
-    background-attachment: scroll;
+/* ==========================================================================
+   Chattable 弹窗卡片与过渡动效
+   ========================================================================== */
+/* 1. 全屏半透明遮罩背景 */
+.chat-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Inter', sans-serif;
-    color: var(--fg);
-    overflow: hidden;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.45);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease;
 }
 
-body.light {
-    background: url('/images/AAA.png') center/cover fixed;
-    color: var(--fg);
+/* 激活状态：遮罩淡入 */
+.chat-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
-/* 合并重复的 canvas 规则 */
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100dvh;
-    z-index: -1;
-}
-
-.glowing-card {
-    --pads: 20px;
-    --color-sens: calc(var(--glow-sens) + 20);
-
+/* 2. 聊天卡片：与主卡片同尺寸 (345px * 510px) 并带缩放过渡 */
+.chat-card {
     position: relative;
     width: 100%;
     max-width: 345px;
     height: 510px;
-    flex-shrink: 0;
     border-radius: 20px;
-    isolation: isolate;
-    transform: translateZ(0);
-    background: var(--glowing-card-bg);
-    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset;
-    overflow: hidden;
-    text-align: center;
-    box-sizing: border-box;
-    border: 1px solid var(--glowing-card-border);
-    backdrop-filter: var(--glowing-card-backdrop);
+    overflow: visible !important; /* 允许左侧 X 按钮半悬挂在边框外 */
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.8s ease, border 0.8s ease;
 }
 
-/* ====================== 4. 主题切换按钮 ====================== */
-.theme-toggle {
-    position: absolute;
-    top: 6px;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    z-index: 10;
-    opacity: 0.5;
-    transition: opacity 0.3s;
-    -webkit-tap-highlight-color: transparent;
+/* 激活状态：卡片弹性放大浮现 */
+.chat-modal-overlay.active .chat-card {
+    transform: scale(1) translateY(0);
 }
 
-.theme-toggle:hover {
-    opacity: 0.7;
-}
-
-.sun-toggle {
-    left: 6px;
-    transition: transform 0.1s ease;
-}
-
-.sun-toggle:hover {
-    transform: scale(1.2);
-}
-
-.moon-toggle {
-    right: 6px;
-}
-
-.day-toggle {
-    position: absolute;
-    bottom: 5px;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    z-index: 10;
-    opacity: 0.5;
-    transition: opacity 0.3s;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.day-toggle:hover {
-    opacity: 0.7;
-}
-
-.day-toggle-left {
-    left: 6px;
-    transition: transform 0.1s ease;
-}
-
-.day-toggle-left:hover {
-    transform: scale(1.2);
-}
-
-.day-toggle-right {
-    right: 6px;
-}
-
-/* ====================== 5. 内容区域 ====================== */
-.alist-widget-wrapper {
-    padding: 20px;
-    z-index: 1;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.profile-header {
-    padding: 15px 2px 12px;
-    position: relative;
-}
-
-.profile-pic {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: -45px auto;
-    display: block;
-    filter: brightness(0.88);
-    object-position: center 10%;
-    image-rendering: crisp-edges;
-    transform: translateZ(0);
-}
-
-/* ====================== 6. 链接区域 ====================== */
-.link-section {
+/* 3. 聊天卡片内容区域 */
+.chat-card-inner {
     width: 100%;
     height: 100%;
+    border-radius: 20px;
     overflow: hidden;
-    padding: 0;
-}
-
-.pages {
     display: flex;
-    transition: transform 0.5s ease-in-out;
-    height: 100%;
-    transform: translateX(-100%);
-}
-
-.page {
-    flex: 0 0 100%;
-    height: var(--page-height);
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 0 27px 26px;
-    overflow: hidden;
-}
-
-#page3 {
     justify-content: center;
     align-items: center;
-    padding: 0;
 }
 
-.link-card {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+#chattable-iframe {
     width: 100%;
-    max-width: 275px;
-    height: 35px;
-    background: var(--link-card-bg);
-    padding: 8px;
-    margin-bottom: 6px;
-    border-radius: 15px;
-    text-decoration: none;
-    color: var(--fg);
-    transition: background 0.3s, color 0.2s;
-    font-size: 16px;
-    font-style: italic;
-    -webkit-tap-highlight-color: transparent;
-    box-shadow: 0px 4px 3px #0001, 0 0 26px #fffa inset;
-    cursor: pointer;
-    user-select: none;
-}
-
-
-
-.link-card:hover {
-    background: var(--link-card-hover-bg);
-    color: #333;
-}
-
-.link-icon {
-    width: 36px;
-    height: 36px;
-    margin-left: 16px;
-    margin-right: 0;
-}
-
-.link-title {
-    text-align: center;
-    width: 100%;
-    font-size: 18px;
-    color: var(--fg);
-}
-
-.link-scroll-container {
-    overflow-y: scroll;
-    position: relative;
-    width: calc(284px + 10px);
-    margin-right: -10px;
-}
-
-.link-scroll-container::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
-}
-
-.link-scroll-container::-webkit-scrollbar-track {
-    background: transparent;
-    border-right: 0 solid transparent;
-}
-
-.link-scroll-container::-webkit-scrollbar-thumb {
-    background: rgba(200, 200, 200, 0.3);
-    border-radius: 100px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.link-scroll-container.scrolling::-webkit-scrollbar-thumb {
-    opacity: 1;
-}
-
-.spotify-card {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 251px;
-    height: 100px;
-    align-items: center;
-    background: var(--spotify-card-bg);
-    border-radius: 20px;
-    padding: 10.8px 20px;
-    box-shadow: 0px 4px 3px #0001, 0 0 26px #fffa inset;
-    cursor: pointer;
-    position: relative;
-    margin-bottom: 10px;
-    flex-wrap: nowrap;
-    gap: 16px;
-    user-select: none;
-    transition: all 0.2s ease;
-}
-
-.spotify-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    height: auto;
-    flex: 1;
-    min-width: 0;
-    padding-right: 8px;
-    gap: 6px;
-}
-
-.spotify-meta {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.spotify-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
-    background-color: #1ed760;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.spotify-icon img {
-    width: 22px;
-    height: 22px;
-}
-
-.track-text {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    gap: 1px;
-}
-
-.track-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin: 0;
-    color: var(--fg);
-    font-style: italic;
-}
-
-.track-artist {
-    font-size: 11.8px;
-    color: var(--fg);
-    font-style: italic;
-}
-
-.play-btn {
-    background-color: #3fd97a;
-    color: white;
+    height: 100%;
     border: none;
-    border-radius: 24px;
-    padding: 6px 36px;
-    font-size: 14px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    margin-top: 1px;
-    width: fit-content;
-    font-style: italic;
-    transition: transform 0.1s ease;
-    justify-content: flex-start;
+    display: block;
 }
 
-.play-btn:hover {
-    transform: scale(1.05);
-}
-
-.play-btn svg {
-    width: 14px;
-    height: 14px;
-}
-
-.spotify-cover {
-    width: 75px;
-    height: 75px;
-    border-radius: 12px;
-    overflow: hidden;
-    flex-shrink: 0;
-    margin-left: 8px;
-}
-
-.spotify-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ====================== 8. 特效 & 分页 ====================== */
-#shuicheCanvas {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 2147483647;
-    pointer-events: none;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin-top: -8px;
-    margin-bottom: 10px;
-}
-
-.bullet {
-    width: 85px;
-    height: 6px;
-    background: var(--fg);
-    opacity: 0.2;
-    border-radius: 10%;
-    cursor: pointer;
-    transition: all 0.3s;
-    position: relative;
-}
-
-.bullet::before {
-    content: "";
+/* 4. 左边框边缘垂直居中的关闭 X 按钮 */
+.chat-close-btn {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: -20px;
-    bottom: -20px;
-    cursor: pointer;
-}
-
-.bullet.active {
-    border-radius: 10%;
-    opacity: 1;
-    background: #c299ff;
-    box-shadow: 0px 0px 20px rgba(194, 153, 255, 0);
-}
-
-/* CRT 暗色特效（保持原样，仅暗色生效） */
-body:not(.light) .crt::after {
-    content: " ";
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: rgba(18, 16, 16, 0);
-    opacity: 0%;
-    z-index: 2;
-    pointer-events: none;
-}
-
-body:not(.light) .crt::before {
-    content: " ";
-    display: block;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 100%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 2;
-    background-size: 100% 2px, 3px 100%;
-    pointer-events: none;
-}
-
-/* ====================== 9. Page1 滚动区域 ====================== */
-#page1 {
-    padding: 0;
-}
-
-#page1 .page-vertical {
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    overscroll-behavior: contain;
-    position: relative;
-}
-
-#page1 .page-vertical::-webkit-scrollbar {
-    display: none;
-}
-
-#page1 .page-vertical {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-#page1 .subpage {
-    scroll-snap-align: start;
-    height: 100%;
-    min-height: var(--page-height);
-    box-sizing: border-box;
+    left: -18px; /* 半悬挂在卡片左边框线上 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--glowing-card-bg, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--glowing-card-border, rgba(255, 255, 255, 0.6));
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--fg, #000);
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    scroll-snap-stop: always;
+    cursor: var(--cursor-img), pointer;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
 }
 
-#page1,
-#page1 .page-vertical,
-#page1 .subpage {
-    overflow-x: hidden !important;
+.chat-close-btn:hover {
+    transform: translateY(-50%) scale(1.15);
+    background: rgba(255, 255, 255, 0.35);
 }
 
-#page1 img {
-    display: block;
-    height: auto;
-    max-height: 100%;
+.chat-close-btn:active {
+    transform: translateY(-50%) scale(0.95);
 }
-
-#page1 .subpage > div {
-    overflow: hidden;
-}
-        @font-face {
-            font-family: "icomoon";
-            src: url("/fonts/icomoon.eot");
-            src: url("/fonts/icomoon.eot#iefix") format("embedded-opentype"),
-                url("/fonts/icomoon.ttf") format("truetype"),
-                url("/fonts/icomoon.woff") format("woff"),
-                url("/fonts/icomoon.svg#icomoon") format("svg");
-            font-weight: normal;
-            font-style: normal;
-            font-display: block;
-        }
-        [class^="icon-"],
-        [class*=" icon-"] {
-            font-family: "icomoon" !important;
-            speak: never;
-            font-style: normal;
-            font-weight: normal;
-            font-variant: normal;
-            text-transform: none;
-            line-height: 1;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        .icon-back:before { content: "\e900"; color: #827d7b; }
-        .icon-next:before { content: "\e901"; color: #827d7b; }
-        .icon-pause:before { content: "\e902"; color: #fff; }
-        .icon-play:before { content: "\e903"; color: #fff; }
-        .icon-playlist:before { content: "\e904"; color: #fff; }
-        .img { width: 100%; flex-shrink: 0; display: block; object-fit: cover; }
-        .list { margin: 0; padding: 0; list-style-type: none; }
-        .text_trsf-cap { text-transform: capitalize; }
-        .button { all: unset; cursor: pointer; }
-        .center { display: flex; align-items: center; justify-content: center; }
-        .flex-row { display: flex; }
-        .flex-column { display: flex; flex-direction: column; }
-        ._align_center { align-items: center; }
-        ._align_start { align-items: flex-start; }
-        ._align_end { align-items: flex-end; }
-        ._justify_center { justify-content: center; }
-        ._justify_start { justify-content: flex-start; }
-        ._justify_end { justify-content: flex-end; }
-        ._justify_space-btwn { justify-content: space-between; }
-        .text_overflow {
-            width: 66%;
-            overflow: hidden;
-            white-space: nowrap;
-            display: inline-block;
-            text-overflow: ellipsis;
-            margin-right: 60px;
-        }
-.music-player {
-            --color-white: #fff;
-            --color-gray: #e5e7ea;
-            --color-blue: #78adfe;
-            --color-blue-dark: #5781bd;
-            --box-shadow: 0 2px 6px 1px #0000001f;
-            --color-text-1: var(--fg);
-            --color-text-2: #ffffff6b;
-            --cover-size: 4.2em;
-            --border-radius: 1.2em;
-            --music-player-height: calc(var(--page-height) - 0px);
-            --offset-cover: 1em;
-            width: 100%;
-            max-width: 335px;
-            height: 445px;
-            user-select: none;
-            color: var(--color-text-1);
-            border-radius: var(--border-radius);
-            background-color: rgba(255, 255, 255, 0.1);
-            margin: -15px auto 0 auto;
-            box-sizing: border-box;
-        }
-        .light .music-player {
-            --color-text-2: #0000006b;
-        }
-        .slider {
-            --shadow-opacity: 1;
-            z-index: 0;
-            flex-shrink: 0;
-            height: 6.8em;
-            position: relative;
-            border-radius: inherit;
-            transition: var(--duration) height var(--ease-timeline);
-        }
-        .slider.resize { --shadow-opacity: 0; height: var(--music-player-height); }
-        .slider::after {
-            top: 0; left: 0; right: 0; content: ""; width: 100%; z-index: -1;
-            height: 100%; position: absolute; pointer-events: none; border-radius: inherit;
-            box-shadow: var(--box-shadow); opacity: var(--shadow-opacity);
-            transition: var(--duration) opacity;
-        }
-        .slider__content {
-            top: 0; left: 0; overflow: hidden; position: absolute; border-radius: inherit;
-            width: var(--cover-size); height: var(--cover-size);
-            transition: transform, width, height;
-            transition-duration: var(--duration);
-            transition-timing-function: var(--ease-timeline);
-            transform: translate3d(var(--offset-cover), var(--offset-cover), 0);
-        }
-        .slider.resize .slider__content {
-            width: 100%; height: 22em;
-            transform: translate3d(0, 0, 0);
-        }
-        .slider__content .button { --size: 2.5em; z-index: 1; position: absolute; width: var(--size); height: var(--size); }
-        .slider__content i { position: absolute; pointer-events: none; font-size: var(--size); }
-        .music-player__playlist-button {
-            top: 5.5%;
-            left: 5.5%;
-            transform: scale(0);
-            transition: calc(var(--duration) / 2) transform;
-        }
-        .slider.resize .music-player__playlist-button {
-            transform: scale(1);
-            transition: 0.30s var(--duration) transform cubic-bezier(0, 0.85, 0.11, 1.64);
-        }
-        .music-player__broadcast-guarantor {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .music-player__broadcast-guarantor .icon-pause,
-        .music-player__broadcast-guarantor.click .icon-play { opacity: 0; }
-        .music-player__broadcast-guarantor.click .icon-pause { opacity: 1; }
-        .slider__imgs {
-            width: 100%; height: 100%; filter: brightness(75%);
-            transform: translate3d(calc(var(--index) * 100%), 0, 0);
-            transition: var(--duration) transform var(--ease-slider);
-        }
-        .slider__imgs > img { pointer-events: none; }
-        .slider__controls {
-            --controls-y: 210%; --controls-x: 17.3%; --controls-width: 68.4%; --controls-resize-width: 88%;
-            gap: 0.375em 0; flex-wrap: wrap; position: absolute; align-items: center; padding-top: 0.375em;
-            width: var(--controls-width); transform: translate3d(var(--controls-x), 0, 0);
-            animation: var(--controls-animate, "down paused") var(--duration) var(--ease-timeline) forwards;
-        }
-        @keyframes down {
-            100% { width: var(--controls-resize-width); transform: translate3d(0, var(--controls-y), 0); }
-        }
-        @keyframes up {
-            0% { width: var(--controls-resize-width); transform: translate3d(0, var(--controls-y), 0); }
-            100% { width: var(--controls-width); transform: translate3d(var(--controls-x), 0, 0); }
-        }
-        .slider__switch-button { font-size: 2.5em; height: max-content; }
-        .music-player__info {
-            width: 56.3%; cursor: pointer; line-height: 1.45; overflow: hidden; font-weight: bold; padding: 0 0.0625em; white-space: nowrap;
-        }
-        .music-player__info > * { margin: 0 auto; pointer-events: none; }
-        .music-player__singer-name { font-size: 1.1em; width: max-content; }
-        .music-player__subtitle { font-size: 0.8em; font-weight: bold; color: var(--color-text-2); }
-        .slider__controls .music-player__subtitle { width: max-content; }
-        .music-player__singer-name.animate, .music-player__subtitle.animate {
-            --subtitle-gap: 1.2em;
-            display: flex; gap: 0 var(--subtitle-gap); animation: subtitle 12s 1.2s linear infinite;
-        }
-        @keyframes subtitle {
-            80%, 100% { transform: translate3d(calc((100% + var(--subtitle-gap)) / -2), 0, 0); }
-        }
-        .progress {
-            width: 90%; height: 0.6em; cursor: pointer; transition: var(--duration) width var(--ease-timeline); position: relative; top: 8px;
-        }
-        .slider.resize .progress { width: 100%; }
-        .progress__wrapper {
-            width: 100%; height: 0.35em; position: relative; border-radius: 1em; background-color: var(--color-gray);
-        }
-        .progress__bar {
-            top: 0; left: 0; bottom: 0; position: absolute; width: var(--width); border-radius: inherit; background-color: var(--color-blue);
-        }
-        .progress__bar::after {
-            --size: 0.375em; left: 98%; content: ""; position: absolute; width: var(--size); height: var(--size);
-            border-radius: 100%; background-color: var(--color-blue-dark);
-        }
-        .music-player__playlist {
-            height: 100%;
-            overflow-y: auto;
-            padding: 1em 0.9em 0 var(--offset-cover);
-            box-sizing: border-box;
-        }
-        .music-player__playlist::-webkit-scrollbar {
-            width: 4px;
-            background: transparent;
-        }
-        .music-player__playlist::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .music-player__playlist::-webkit-scrollbar-thumb {
-            background: rgba(200, 200, 200, 0.3);
-            border-radius: 2px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .music-player__playlist.scrolling::-webkit-scrollbar-thumb {
-            opacity: 1;
-        }
-        .music-player__song {
-            --gap: 0.5em; cursor: pointer; margin-bottom: var(--gap); padding-bottom: var(--gap); border-bottom: 0.8px solid #d8d8d859;
-        }
-        .music-player__song audio { display: none; }
-        .music-player__song-img {
-            width: var(--cover-size); height: var(--cover-size); border-radius: var(--border-radius);
-        }
-        .music-player__playlist-info {
-            width: 100%;
-            overflow: hidden;
-            line-height: 1.2;
-            font-size: 1em;
-            margin-left: 1.2em;
-        }
-        .music-player__playlist-info b {
-            display: block;
-            margin-left: 0;
-            padding-left: 0;
-            text-align: left;
-            width: calc(100% - 50px);
-        }
-        .flex-row._justify_space-btwn {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-        .music-player__playlist-info .music-player__subtitle {
-            display: block;
-            text-align: left;
-            margin-left: 0;
-            padding-left: 0;
-            flex-grow: 1;
-        }
-        .music-player__song-duration {
-            flex-shrink: 0;
-            margin-left: 10px;
-        }
-        .music-player__song-duration {
-            font-weight: bold; font-size: 0.8em; color: var(--color-text-2);
-        }
-        .loading-spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--fg);
-            animation: spin 1s ease-in-out infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .loading-text {
-            margin-top: 10px;
-            font-size: 16px;
-            color: var(--fg);
-        }
-    </style>
-</head>
-<body class="light">
-    <canvas id="shuicheCanvas"></canvas>
-
-    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script>
-        const count = 5000;
-        let scene, camera, renderer;
-        let mouseX = 0, mouseY = 0;
-        let windowHalfX = window.innerWidth / 2;
-        let windowHalfY = window.innerHeight / 2;
-        let geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6 * count), 3));
-        geometry.setAttribute('velocity', new THREE.BufferAttribute(new Float32Array(2 * count), 1));
-        let position = geometry.getAttribute('position');
-        let positionArray = position.array;
-        let velocity = geometry.getAttribute('velocity');
-        let velocityArray = velocity.array;
-        function init() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 500);
-            camera.position.z = 200;
-            const canvas = document.getElementById('shuicheCanvas');
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight, false);
-            renderer.setClearColor(0x000000, 0);
-            for (let index = 0, len = count; index < len; index++) {
-                const x = Math.random() * 800 - 400;
-                const y = Math.random() * 800 - 400;
-                const z = Math.random() * 400 - 200;
-                const x2 = x;
-                const y2 = y;
-                const z2 = z;
-                positionArray[6 * index] = x;
-                positionArray[6 * index + 1] = y;
-                positionArray[6 * index + 2] = z;
-                positionArray[6 * index + 3] = x2;
-                positionArray[6 * index + 4] = y2;
-                positionArray[6 * index + 5] = z2;
-                velocityArray[2 * index] = 0;
-                velocityArray[2 * index + 1] = 0;
-            }
-            let material = new THREE.LineBasicMaterial({ color: 0xffffff });
-            let lines = new THREE.LineSegments(geometry, material);
-            scene.add(lines);
-            window.addEventListener('resize', resize, false);
-            document.body.addEventListener('pointermove', onPointerMove);
-            anime();
-        }
-        function resize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            windowHalfX = window.innerWidth / 2;
-            windowHalfY = window.innerHeight / 2;
-        }
-        function anime() {
-            for (let index = 0, len = count; index < len; index++) {
-                velocityArray[2 * index] += 0.015;
-                velocityArray[2 * index + 1] += 0.015;
-                positionArray[6 * index + 2] += velocityArray[2 * index] + 0.03;
-                positionArray[6 * index + 5] += velocityArray[2 * index + 1];
-                if(positionArray[6 * index + 2] > 200) {
-                    let z = Math.random() * 200 - 200;
-                    positionArray[6 * index + 2] = z;
-                    positionArray[6 * index + 5] = z;
-                    velocityArray[2 * index] = 0;
-                    velocityArray[2 * index + 1] = 0;
-                }
-            }
-            position.needsUpdate = true;
-            renderer.render(scene, camera);
-            requestAnimationFrame(anime);
-            render();
-        }
-        function onPointerMove(event) {
-            mouseX = event.clientX - windowHalfX;
-            mouseY = event.clientY - windowHalfY;
-        }
-        function render() {
-            camera.position.x += (-mouseX * 0.1 - camera.position.x) * 0.02;
-            camera.position.y += (-mouseY * 0.1 - camera.position.y) * 0.02;
-            camera.lookAt(scene.position);
-            renderer.render(scene, camera);
-        }
-    </script>
-    <div class="crt">
-        <div class="alist-widget-wrapper">
-            <div class="glowing-card">
-                <div class="inner">
-                    <svg class="theme-toggle sun-toggle" viewBox="0 0 24 24" onclick="toggleTheme('light')">
-                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                            <circle cx="12" cy="12" r="4"/>
-                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                        </g>
-                    </svg>
-                    <svg class="theme-toggle moon-toggle" viewBox="0 0 24 24" onclick="toggleTheme('dark')">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>
-                    </svg>
-                    <svg class="day-toggle day-toggle-left" viewBox="0 0 24 24" onclick="switchBackground('https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/222.JPG')">
-                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                            <circle cx="12" cy="12" r="4"/>
-                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                        </g>
-                    </svg>
-                    <svg class="day-toggle day-toggle-right" viewBox="0 0 24 24" onclick="switchBackground('https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/111.JPG')">
-                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                            <circle cx="12" cy="12" r="4"/>
-                            <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                        </g>
-                    </svg>
-                    <div class="link-section">
-                        <div class="pages">
-                            <div id="page1" class="page">
-                                <div class="page-vertical">
-                                    <section class="subpage" id="page1-1">
-                                        <div id="rewardContainer" onclick="toggleReward()" style="height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; padding-top:0px; font-style:italic; cursor: pointer; position: relative;">
-                                            <div style="position: relative; width: 100%; display: flex; justify-content: center; align-items: center;">
-                                                <img id="neko-gif" src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Neko.GIF" alt="GIF动图" style="max-width:99.5%; max-height:100%; border-radius:18px; transition: opacity 0.5s ease; opacity: 1;">
-                                                <img id="reward-qr" src="https://dogpan.com/f/R6jjc5/IMG_5312.jpeg" alt="二维码" style="position: absolute; width: 340px; height: 340px; border-radius: 18px; transition: opacity 0.5s ease; opacity: 0; pointer-events: none; top:0px;">
-                                            </div>
-                                            <div style="position: relative; margin-top: 21px; display: flex; justify-content: center; align-items: center; width: 100%; height: 32px;">
-                                                <p id="text-original" style="position: absolute; color: var(--fg); font-size:24px; text-align:center; text-decoration: underline; margin: 0; transition: opacity 0.5s ease; opacity: 1; white-space: nowrap;">
-                                                    猫爪一伸,请我喝杯咖啡吧☕️
-                                                </p>
-                                                <div id="text-new" style="position: absolute; opacity: 0; transition: opacity 0.5s ease; pointer-events: none; text-align: center; margin-top: -40px;">
-                                                    <a href="weixin://scanqrcode" target="_blank" style="color: var(--fg); font-size:24px; text-decoration: underline;" onclick="event.stopPropagation()">
-                                                        👉点击跳转微信扫一扫👈
-                                                    </a>
-                                                    <br>
-                                                    <a href="https://qr.alipay.com/fkx17581wtzihcanvisaz0e" target="_blank" style="color: var(--fg); font-size:24px; text-decoration: underline;" onclick="event.stopPropagation()">
-                                                        👉点击跳转支付宝付款👈
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <script>
-                                            function toggleReward() {
-                                                const gif = document.getElementById('neko-gif');
-                                                const qr = document.getElementById('reward-qr');
-                                                const textOld = document.getElementById('text-original');
-                                                const textNew = document.getElementById('text-new');
-                                                if (gif.style.opacity !== '0') {
-                                                    gif.style.opacity = '0';
-                                                    textOld.style.opacity = '0';
-                                                    qr.style.opacity = '1';
-                                                    qr.style.pointerEvents = 'auto';
-                                                    textNew.style.opacity = '1';
-                                                    textNew.style.pointerEvents = 'auto';
-                                                } else {
-                                                    qr.style.opacity = '0';
-                                                    qr.style.pointerEvents = 'none';
-                                                    textNew.style.opacity = '0';
-                                                    textNew.style.pointerEvents = 'none';
-                                                    gif.style.opacity = '1';
-                                                    textOld.style.opacity = '1';
-                                                }
-                                            }
-                                        </script>
-                                    </section>
-                                    <section class="subpage" id="page1-2">
-                                        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                            <img src="https://dogpan.com/f/2kq5C8/xxx.mp" style="max-width: 99.5%; max-height: 100%; border-radius: 15px; margin-top: 8px;">
-                                        </div>
-                                    </section>
-                                    <section class="subpage" id="page1-3">
-                                        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                            <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Neko.GIF" style="max-width: 99.5%; max-height: 100%; border-radius: 15px;">
-                                        </div>
-                                    </section>
-                                    <section class="subpage" id="page1-4">
-                                        <div>第4屏内容示例</div>
-                                    </section>
-                                </div>
-                            </div>
-                            <div id="page2" class="page">
-                                <div class="profile-header">
-                                    <img src="https://media4.giphy.com/media/AlH6Won01J8wtufqpb/giphy.gif?cid=9b38fe91460a7462f4c8fc34b0384f3c796565aa75887dd9&ep=v1_user_favorites&rid=giphy.gif&ct=s" alt="头像" class="profile-pic" onclick="confetti({particleCount:150,spread:100}); avatarSound.play();" />
-                                </div>
-                                <div class="spotify-card" onclick="window.open('https://open.spotify.com/track/3UkRfA9F62DYYDzqOskoov?si=MXIJN0wrQx24IS-qmyCUjg', '_blank')">
-                                    <div class="spotify-left">
-                                        <div class="spotify-meta">
-                                            <div class="spotify-icon">
-                                                <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Spotify.svg" alt="Spotify" />
-                                            </div>
-                                            <div class="track-text">
-                                                <div class="track-title">Signals</div>
-                                                <div class="track-artist">Lazer Boomerang</div>
-                                            </div>
-                                        </div>
-                                        <button class="play-btn" onclick="event.stopPropagation(); togglePlay(this)">
-                                            <svg viewBox="0 0 16 16" fill="white">
-                                                <path d="M3 13.1231V2.87688C3 1.42024 4.55203 0.520516 5.77196 1.26995L14.1114 6.39307C15.2962 7.12093 15.2962 8.87907 14.1114 9.60693L5.77196 14.73C4.55203 15.4795 3 14.5798 3 13.1231Z"/>
-                                            </svg> Play
-                                        </button>
-                                    </div>
-                                    <div class="spotify-cover">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Signals.jpg" alt="封面" />
-                                    </div>
-                                    <audio id="audioPlayer" src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Signals.mp3"></audio>
-                                </div>
-                                <div class="link-scroll-container">
-                                    <a href="javascript:void(0);" class="link-card" onclick="downloadVCard()">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Instagram.svg" alt="vCard" class="link-icon" />
-                                        <span class="link-title">vCard</span>
-                                    </a>
-                                    <a href="https://t.me/OOl23456" class="link-card" target="_blank">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Telegram.svg" alt="Telegram" class="link-icon" />
-                                        <span class="link-title">Telegram</span>
-                                    </a>
-                                    <a href="https://www.tiktok.com/@ooooocco" class="link-card" target="_blank">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/TikTok.PNG" alt="TikTok" class="link-icon" />
-                                        <span class="link-title">TikTok</span>
-                                    </a>
-                                    <a href="https://🦋.blogspot.com" class="link-card" target="_blank">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Emoji.PNG" alt="Blog" class="link-icon" />
-                                        <span class="link-title">Blog 🐈</span>
-                                    </a>
-                                    <a href="https://wa.me/message/SYDPTLQEHYE3P1?src=qr" class="link-card" target="_blank">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/WhatsApp.png" alt="WhatsApp" class="link-icon" />
-                                        <span class="link-title">WhatsApp</span>
-                                    </a>
-                                    <a href="https://x.com/vwwvvvvvvv" class="link-card" target="_blank">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/X.PNG" alt="X" class="link-icon" />
-                                        <span class="link-title">X</span>
-                                    </a>
-                                    <a href="https://pin.it/5TgH8TZkp" class="link-card" target="_blank">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/Pinterest.png" alt="Pinterest" class="link-icon" />
-                                        <span class="link-title">Pinterest</span>
-                                    </a>
-                                    <a href="javascript:void(0);" class="link-card" id="wechatBtn">
-                                        <img src="https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/WeChat.png" alt="WeChat" class="link-icon" />
-                                        <span class="link-title">WeChat</span>
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="page3" class="page">
-                                <div class="profile-header"></div>
-                                <audio id="mainAudio" preload="none"></audio>
-                                <div id="root">
-                                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                                        <div class="loading-spinner"></div>
-                                        <div class="loading-text">加载音乐播放器...</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pagination">
-                            <div class="bullet" data-page="1" onclick="switchPageTo(1)"></div>
-                            <div class="bullet active" data-page="2" onclick="switchPageTo(2)"></div>
-                            <div class="bullet" data-page="3" onclick="switchPageTo(3)"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        let currentPage = 2;
-        let musicPlayerLoaded = false;
-        const glowingCard = document.querySelector('.glowing-card');
-        const originalBoxShadow = '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset';
-        function updateGlowingShadow() {
-            if (currentPage !== 3) {
-                glowingCard.style.boxShadow = originalBoxShadow;
-                return;
-            }
-            const isLight = document.body.classList.contains('light');
-            const reducedBoxShadow = isLight ? '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset' : '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset';
-            glowingCard.style.boxShadow = reducedBoxShadow;
-        }
-        window.onload = function() {
-            init();
-            preloadImages([
-                'https://splattacks.neocities.org/images/bg.png',
-                'https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/222.JPG',
-                'https://pub-2892a14f8bbf4cd488041657b793ac15.r2.dev/111.JPG'
-            ]);
-            loadMusicPlayer();
-            switchPageTo(2);
-        };
-        function preloadImages(urls) {
-            urls.forEach(url => {
-                const img = new Image();
-                img.src = url;
-            });
-        }
-        function switchPageTo(page) {
-            if (page < 1 || page > 3) return;
-            currentPage = page;
-            const pages = document.querySelector('.pages');
-            pages.style.transform = `translateX(-${(page - 1) * 100}%)`;
-            document.querySelectorAll('.bullet').forEach(b => b.classList.toggle('active', parseInt(b.dataset.page) === page));
-            updateGlowingShadow();
-        }
-        let isPlaying = false;
-        const audio = document.getElementById('audioPlayer');
-        function togglePlay(button) {
-            if (isPlaying) {
-                audio.pause();
-                button.classList.remove('playing');
-                button.innerHTML = `<svg viewBox="0 0 16 16" fill="white"><path d="M3 13.1231V2.87688C3 1.42024 4.55203 0.520516 5.77196 1.26995L14.1114 6.39307C15.2962 7.12093 15.2962 8.87907 14.1114 9.60693L5.77196 14.73C4.55203 15.4795 3 14.5798 3 13.1231Z"/></svg> Play`;
-            } else {
-                audio.play();
-                button.classList.add('playing');
-                button.innerHTML = `<svg viewBox="0 0 16 16" fill="white"><path d="M4 2H6V14H4V2ZM10 2H12V14H10V2Z"/></svg> Pause`;
-            }
-            isPlaying = !isPlaying;
-        }
-        audio.addEventListener('ended', () => {
-            isPlaying = false;
-            const btn = document.querySelector('.play-btn');
-            if (btn) {
-                btn.classList.remove('playing');
-                btn.innerHTML = `<svg viewBox="0 0 16 16" fill="white"><path d="M3 13.1231V2.87688C3 1.42024 4.55203 0.520516 5.77196 1.26995L14.1114 6.39307C15.2962 7.12093 15.2962 8.87907 14.1114 9.60693L5.77196 14.73C4.55203 15.4795 3 14.5798 3 13.1231Z"/></svg> Play`;
-            }
-        });
-        function toggleTheme(theme) {
-            const canvas = document.getElementById('shuicheCanvas');
-            if (theme === 'light') {
-                document.body.classList.add('light');
-                renderer.setClearColor(0x000000, 0);
-                document.body.style.background = '';
-                document.documentElement.style.setProperty('--fg', 'black');
-                canvas.style.display = 'block';
-            } else {
-                document.body.classList.remove('light');
-                renderer.setClearColor(0x000000, 0);
-                document.body.style.background = 'black';
-                document.documentElement.style.setProperty('--fg', '#f0f0f0');
-                canvas.style.display = 'block';
-            }
-            if (currentPage === 3) {
-                updateGlowingShadow();
-            }
-        }
-        function switchBackground(url) {
-            document.body.style.background = `url('${url}') center/cover fixed`;
-            document.body.classList.add('light');
-            renderer.setClearColor(0x000000, 0);
-            document.documentElement.style.setProperty('--fg', 'black');
-            document.getElementById('shuicheCanvas').style.display = 'block';
-            if (currentPage === 3) {
-                updateGlowingShadow();
-            }
-        }
-function loadMusicPlayer() {
-    let indexSong = 0;
-    let isLocked = false;
-    let songsLength = null;
-    let selectedSong = null;
-    let songIsPlayed = false;
-    let progress_elmnt = null;
-    let songName_elmnt = null;
-    let sliderImgs_elmnt = null;
-    let singerName_elmnt = null;
-    let progressBar_elmnt = null;
-    let musicPlayerInfo_elmnt = null;
-    let progressBarIsUpdating = false;
-    let broadcastGuarantor_elmnt = null;
-
-    const root = document.querySelector("#root");
-    const mainAudio = document.getElementById('mainAudio');
-
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') {
-            savePlaybackState();
-        }
-    });
-
-    function savePlaybackState() {
-        if (!selectedSong) return;
-        const playbackState = {
-            currentSongIndex: indexSong,
-            isPlaying: !selectedSong.paused,
-            volume: selectedSong.volume,
-            currentTime: selectedSong.currentTime
-        };
-        localStorage.setItem('musicPlayerState', JSON.stringify(playbackState));
-    }
-
-    function restorePlaybackState() {
-        try {
-            const savedState = localStorage.getItem('musicPlayerState');
-            if (!savedState) return;
-            const playbackState = JSON.parse(savedState);
-            if (playbackState.currentSongIndex !== undefined &&
-                playbackState.currentSongIndex >= 0 &&
-                playbackState.currentSongIndex <= songsLength) {
-                indexSong = playbackState.currentSongIndex;
-                mainAudio.src = songs[indexSong].files.song;
-                mainAudio.load();
-                mainAudio.addEventListener('loadedmetadata', () => {
-                    if (playbackState.currentTime !== undefined) {
-                        mainAudio.currentTime = playbackState.currentTime;
-                    }
-                    if (playbackState.volume !== undefined) {
-                        mainAudio.volume = playbackState.volume;
-                    }
-                    mainAudio.pause();
-                    broadcastGuarantor_elmnt.classList.remove("click");
-                    songIsPlayed = false;
-                    updateInfo(songName_elmnt, songs[indexSong].songName);
-                    updateInfo(singerName_elmnt, songs[indexSong].artist);
-                    setProperty(sliderImgs_elmnt, "--index", -indexSong);
-                    if ('mediaSession' in navigator) {
-                        navigator.mediaSession.metadata = new MediaMetadata({
-                            title: songs[indexSong].songName,
-                            artist: songs[indexSong].artist,
-                            artwork: [{ src: songs[indexSong].files.cover, sizes: '512x512', type: 'image/jpeg' }]
-                        });
-                        navigator.mediaSession.setPositionState({
-                            duration: mainAudio.duration,
-                            playbackRate: mainAudio.playbackRate,
-                            position: mainAudio.currentTime
-                        });
-                    }
-                }, { once: true });
-            }
-        } catch (e) {
-            console.error("Error restoring playback state:", e);
-        }
-    }
-
-    window.addEventListener('beforeunload', savePlaybackState);
-    setInterval(savePlaybackState, 5000);
-
-    function handleChangeMusic({ isPrev = false, playListIndex = null }) {
-        if (isLocked) return;
-        let newIndex;
-        if (playListIndex || playListIndex === 0) {
-            newIndex = playListIndex;
-        } else {
-            newIndex = isPrev ? (indexSong - 1) : (indexSong + 1);
-        }
-        if (newIndex < 0) { newIndex = songsLength; }
-        else if (newIndex > songsLength) { newIndex = 0; }
-        if (newIndex === indexSong) return;
-
-        mainAudio.pause();
-        indexSong = newIndex;
-        mainAudio.src = songs[indexSong].files.song;
-        mainAudio.load();
-        mainAudio.addEventListener('loadedmetadata', () => {
-            if (songIsPlayed) {
-                mainAudio.play().catch(e => console.log("Play failed:", e));
-            }
-            savePlaybackState();
-        }, { once: true });
-
-        setProperty(sliderImgs_elmnt, "--index", -indexSong);
-        updateInfo(songName_elmnt, songs[indexSong].songName);
-        updateInfo(singerName_elmnt, songs[indexSong].artist);
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: songs[indexSong].songName,
-                artist: songs[indexSong].artist,
-                artwork: [{ src: songs[indexSong].files.cover, sizes: '512x512', type: 'image/jpeg' }]
-            });
-        }
-    }
-
-    function handleResizeSlider({ target }) {
-        if (isLocked) return;
-        else if (target.classList.contains("music-player__info")) {
-            this.classList.add("resize");
-            setProperty(this, "--controls-animate", "down running");
-            return;
-        } else if (target.classList.contains("music-player__playlist-button")) {
-            this.classList.remove("resize");
-            setProperty(this, "--controls-animate", "up running");
-            return;
-        }
-    }
-
-    function handlePlayMusic() {
-        if (mainAudio.currentTime === mainAudio.duration) {
-            handleChangeMusic({});
-        }
-        this.classList.toggle("click");
-        songIsPlayed = !songIsPlayed;
-        mainAudio.paused ? mainAudio.play() : mainAudio.pause();
-        savePlaybackState();
-    }
-
-    function updateTheProgressBar() {
-        const duration = this.duration;
-        const currentTime = this.currentTime;
-        const progressBarWidth = (currentTime / duration) * 100;
-        setProperty(progressBar_elmnt, "--width", `${progressBarWidth}%`);
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.setPositionState({
-                duration: this.duration,
-                playbackRate: this.playbackRate,
-                position: this.currentTime
-            });
-        }
-    }
-
-    function handleSongEnded() {
-        if (songIsPlayed) {
-            handleChangeMusic({});
-        }
-    }
-
-    function handleScrub(e) {
-        e.preventDefault();
-        let clientX = e.clientX;
-        if (e.touches && e.touches.length > 0) {
-            clientX = e.touches[0].clientX;
-        }
-        const progressOffsetLeft = progress_elmnt.getBoundingClientRect().left;
-        const progressWidth = progress_elmnt.offsetWidth;
-        const duration = selectedSong.duration;
-        const currentTime = (clientX - progressOffsetLeft) / progressWidth;
-        selectedSong.currentTime = currentTime * duration;
-    }
-
-    const songs = [
-        {
-            "bg": "#c9bea28f",
-            "artist": "sickick",
-            "songName": "talking to the moon (bruno mars remix)",
-            "files": {
-                "song": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/1/song.mp3",
-                "cover": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/1/img.jpg"
-            },
-            "duration": "3:45"
-        },
-        {
-            "bg": "#0896eba1",
-            "artist": "bless you",
-            "songName": "driving",
-            "files": {
-                "song": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/2/song.mp3",
-                "cover": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/2/img.jpg"
-            },
-            "duration": "3:28"
-        },
-        {
-            "bg": "#ebbe03",
-            "artist": "lil uzi vert",
-            "songName": "demon high",
-            "files": {
-                "song": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/3/song.mp3",
-                "cover": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/3/img.jpg"
-            },
-            "duration": "2:58"
-        },
-        {
-            "bg": "#ffc382",
-            "artist": "travis scott",
-            "songName": "a man",
-            "files": {
-                "song": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/4/song.mp3",
-                "cover": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/4/img.jpg"
-            },
-            "duration": "3:45"
-        },
-        {
-            "bg": "#ffcbdc",
-            "songName": "Memory Reboot",
-            "artist": "VØJ/Narvent",
-            "files": {
-                "song": "https://pub-7d6ff78812184894b60e0bc5a7673696.r2.dev/Memory%20Reboot.mp3",
-                "cover": "https://pub-7d6ff78812184894b60e0bc5a7673696.r2.dev/Memory%20Reboot.jpg"
-            },
-            "duration": "3:12"
-        },
-        {
-            "bg": "#44c16fb5",
-            "artist": "tritonal",
-            "songName": "diamonds (feat. rose darling)",
-            "files": {
-                "song": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/6/song.mp3",
-                "cover": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/6/img.jpg"
-            },
-            "duration": "4:05"
-        },
-        {
-            "bg": "#ff4545",
-            "artist": "the weeknd",
-            "songName": "blinding lights",
-            "files": {
-                "song": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/7/song.mp3",
-                "cover": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/7/img.jpg"
-            },
-            "duration": "3:20"
-        },
-        {
-            "bg": "#e5e7e9",
-            "artist": "arizona zervas",
-            "songName": "no i in team",
-            "files": {
-                "song": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/8/song.mp3",
-                "cover": "https://raw.githubusercontent.com/abxlfazl/music-player-widget/main/src/assets/media/songs/8/img.jpg"
-            },
-            "duration": "2:48"
-        }
-    ];
-
-    const musicPlayer = document.createElement("div");
-    musicPlayer.className = "music-player flex-column";
-
-    const slider = document.createElement("div");
-    slider.className = "slider center";
-    slider.onclick = handleResizeSlider;
-
-    const sliderContent = document.createElement("div");
-    sliderContent.className = "slider__content center";
-
-    const playlistButton = document.createElement("button");
-    playlistButton.className = "music-player__playlist-button center button";
-    const playlistIcon = document.createElement("i");
-    playlistIcon.className = "icon-playlist";
-    playlistButton.appendChild(playlistIcon);
-
-    const broadcastGuarantor = document.createElement("button");
-    broadcastGuarantor.className = "music-player__broadcast-guarantor center button";
-    broadcastGuarantor.onclick = handlePlayMusic;
-    const playIcon = document.createElement("i");
-    playIcon.className = "icon-play";
-    const pauseIcon = document.createElement("i");
-    pauseIcon.className = "icon-pause";
-    broadcastGuarantor.appendChild(playIcon);
-    broadcastGuarantor.appendChild(pauseIcon);
-
-    const sliderImgs = document.createElement("div");
-    sliderImgs.className = "slider__imgs flex-row";
-    songs.forEach(({ files: { cover }, songName }) => {
-        const img = document.createElement("img");
-        img.src = cover;
-        img.className = "img";
-        img.alt = songName;
-        sliderImgs.appendChild(img);
-    });
-
-    sliderContent.appendChild(playlistButton);
-    sliderContent.appendChild(broadcastGuarantor);
-    sliderContent.appendChild(sliderImgs);
-
-    const sliderControls = document.createElement("div");
-    sliderControls.className = "slider__controls center";
-
-    const prevButton = document.createElement("button");
-    prevButton.className = "slider__switch-button flex-row button";
-    prevButton.onclick = () => handleChangeMusic({ isPrev: true });
-    const prevIcon = document.createElement("i");
-    prevIcon.className = "icon-back";
-    prevButton.appendChild(prevIcon);
-
-    const musicInfo = document.createElement("div");
-    musicInfo.className = "music-player__info text_trsf-cap";
-    const songNameDiv = document.createElement("div");
-    const singerNameDiv = document.createElement("div");
-    singerNameDiv.className = "music-player__singer-name";
-    singerNameDiv.innerHTML = `<div>${songs[0].songName}</div>`;
-    const subtitleDiv = document.createElement("div");
-    const subtitle = document.createElement("div");
-    subtitle.className = "music-player__subtitle";
-    subtitle.innerHTML = `<div>${songs[0].artist}</div>`;
-    subtitleDiv.appendChild(subtitle);
-    songNameDiv.appendChild(singerNameDiv);
-    musicInfo.appendChild(songNameDiv);
-    musicInfo.appendChild(subtitleDiv);
-
-    const nextButton = document.createElement("button");
-    nextButton.className = "slider__switch-button flex-row button";
-    nextButton.onclick = () => handleChangeMusic({ isPrev: false });
-    const nextIcon = document.createElement("i");
-    nextIcon.className = "icon-next";
-    nextButton.appendChild(nextIcon);
-
-    const progress = document.createElement("div");
-    progress.className = "progress center";
-    progress.onpointerdown = (e) => {
-        e.preventDefault();
-        handleScrub(e);
-        progressBarIsUpdating = true;
-    };
-    const progressWrapper = document.createElement("div");
-    progressWrapper.className = "progress__wrapper";
-    const progressBar = document.createElement("div");
-    progressBar.className = "progress__bar center";
-    progressWrapper.appendChild(progressBar);
-    progress.appendChild(progressWrapper);
-
-    sliderControls.appendChild(prevButton);
-    sliderControls.appendChild(musicInfo);
-    sliderControls.appendChild(nextButton);
-    sliderControls.appendChild(progress);
-
-    slider.appendChild(sliderContent);
-    slider.appendChild(sliderControls);
-
-    const playlist = document.createElement("ul");
-    playlist.className = "music-player__playlist list";
-
-    // 使用自定义时长（不再预加载）
-    songs.forEach((song, index) => {
-        const { songName, artist, files: { cover }, duration = "0:00" } = song;
-
-        const listItem = document.createElement("li");
-        listItem.className = "music-player__song";
-        listItem.onclick = () => handleChangeMusic({ playListIndex: index });
-
-        const flexRow = document.createElement("div");
-        flexRow.className = "flex-row _align_center";
-
-        const songImg = document.createElement("img");
-        songImg.src = cover;
-        songImg.className = "img music-player__song-img";
-
-        const playlistInfo = document.createElement("div");
-        playlistInfo.className = "music-player__playlist-info text_trsf-cap";
-
-        const songTitle = document.createElement("b");
-        songTitle.className = "text_overflow";
-        songTitle.textContent = songName;
-
-        const flexRowInfo = document.createElement("div");
-        flexRowInfo.className = "flex-row _justify_space-btwn";
-
-        const artistName = document.createElement("span");
-        artistName.className = "music-player__subtitle";
-        artistName.textContent = artist;
-
-        const songDuration = document.createElement("span");
-        songDuration.className = "music-player__song-duration";
-        songDuration.textContent = duration;   // ← 自定义时长
-
-        flexRowInfo.appendChild(artistName);
-        flexRowInfo.appendChild(songDuration);
-
-        playlistInfo.appendChild(songTitle);
-        playlistInfo.appendChild(flexRowInfo);
-
-        flexRow.appendChild(songImg);
-        flexRow.appendChild(playlistInfo);
-        listItem.appendChild(flexRow);
-        playlist.appendChild(listItem);
-    });
-
-    musicPlayer.appendChild(slider);
-    musicPlayer.appendChild(playlist);
-
-    root.innerHTML = '';
-    root.appendChild(musicPlayer);
-
-    songsLength = songs.length - 1;
-
-    progress_elmnt = document.querySelector(".progress");
-    sliderImgs_elmnt = document.querySelector(".slider__imgs");
-    songName_elmnt = document.querySelector(".music-player__singer-name");
-    musicPlayerInfo_elmnt = document.querySelector(".music-player__info");
-    singerName_elmnt = document.querySelector(".music-player__subtitle");
-    progressBar_elmnt = document.querySelector(".progress__bar");
-    broadcastGuarantor_elmnt = document.querySelector(".music-player__broadcast-guarantor");
-    selectedSong = mainAudio;
-
-    // 已删除所有预加载时长的 tempAudio 代码
-
-    mainAudio.addEventListener('timeupdate', updateTheProgressBar);
-    mainAudio.addEventListener('ended', handleSongEnded);
-
-    controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt);
-    controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt);
-
-    mainAudio.src = songs[0].files.song;
-    mainAudio.load();
-
-    setTimeout(restorePlaybackState, 100);
-
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: songs[0].songName,
-            artist: songs[0].artist,
-            artwork: [{ src: songs[0].files.cover, sizes: '512x512', type: 'image/jpeg' }]
-        });
-        navigator.mediaSession.setActionHandler('previoustrack', () => handleChangeMusic({ isPrev: true }));
-        navigator.mediaSession.setActionHandler('nexttrack', () => handleChangeMusic({ isPrev: false }));
-        navigator.mediaSession.setActionHandler('play', () => {
-            if (mainAudio.paused) {
-                mainAudio.play();
-                broadcastGuarantor_elmnt.classList.add("click");
-                songIsPlayed = true;
-            }
-        });
-        navigator.mediaSession.setActionHandler('pause', () => {
-            if (!mainAudio.paused) {
-                mainAudio.pause();
-                broadcastGuarantor_elmnt.classList.remove("click");
-                songIsPlayed = false;
-            }
-        });
-        navigator.mediaSession.setActionHandler('seekto', (details) => {
-            if (details.seekTime != null) {
-                if (details.fastSeek && 'fastSeek' in mainAudio) {
-                    mainAudio.fastSeek(details.seekTime);
-                } else {
-                    mainAudio.currentTime = details.seekTime;
-                }
-            }
-        });
-    }
-
-    function controlSubtitleAnimation(parent, child) {
-        if (child.classList.contains("animate")) return;
-        const element = child.firstChild;
-        if (child.clientWidth > parent.clientWidth) {
-            child.appendChild(element.cloneNode(true));
-            child.classList.add("animate");
-        }
-        setProperty(child.parentElement, "width", `${element.clientWidth}px`);
-    }
-
-    function setProperty(target, prop, value = "") {
-        target.style.setProperty(prop, value);
-    }
-
-    function updateInfo(target, value) {
-        while (target.firstChild) { target.removeChild(target.firstChild); }
-        const targetChild_elmnt = document.createElement("div");
-        targetChild_elmnt.appendChild(document.createTextNode(value));
-        target.appendChild(targetChild_elmnt);
-        target.classList.remove("animate");
-        controlSubtitleAnimation(musicPlayerInfo_elmnt, target);
-    }
-
-    function handleResize() {
-        const vH = window.innerHeight * 0.01;
-        setProperty(document.documentElement, "--vH", `${vH}px`);
-    }
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    window.addEventListener("orientationchange", handleResize);
-    window.addEventListener("transitionstart", ({ target }) => {
-        if (target === sliderImgs_elmnt) {
-            isLocked = true;
-            setProperty(sliderImgs_elmnt, "will-change", "transform");
-        }
-    });
-    window.addEventListener("transitionend", ({ target, propertyName }) => {
-        if (target === sliderImgs_elmnt) {
-            isLocked = false;
-            setProperty(sliderImgs_elmnt, "will-change", "auto");
-        }
-        if (target.classList.contains("slider") && propertyName === "height") {
-            controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt);
-            controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt);
-        }
-    });
-    window.addEventListener("pointerup", (e) => {
-        e.preventDefault();
-        if (progressBarIsUpdating) {
-            selectedSong.muted = false;
-            progressBarIsUpdating = false;
-        }
-    });
-    window.addEventListener("pointermove", (e) => {
-        if (progressBarIsUpdating) {
-            e.preventDefault();
-            handleScrub(e);
-            selectedSong.muted = true;
-        }
-    });
-    window.addEventListener("touchend", (e) => {
-        if (progressBarIsUpdating) {
-            selectedSong.muted = false;
-            progressBarIsUpdating = false;
-        }
-    });
-    window.addEventListener("touchmove", (e) => {
-        if (progressBarIsUpdating) {
-            e.preventDefault();
-            handleScrub(e);
-            selectedSong.muted = true;
-        }
-    });
-}
-        const scrollContainer = document.querySelector('.link-scroll-container');
-        let scrollTimeout;
-        if (scrollContainer) {
-            scrollContainer.addEventListener('scroll', () => {
-                scrollContainer.classList.add('scrolling');
-                clearTimeout(scrollTimeout);
-                scrollTimeout = setTimeout(() => {
-                    scrollContainer.classList.remove('scrolling');
-                }, 1500);
-            });
-        }
-        document.querySelectorAll('.theme-toggle').forEach(button => {
-            button.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.2)';
-            });
-            button.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
-            button.addEventListener('click', function() {
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 350);
-            });
-        });
-        document.querySelectorAll('.day-toggle').forEach(button => {
-            button.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.2)';
-            });
-            button.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
-            button.addEventListener('click', function() {
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 350);
-            });
-        });
-        (async function oneko() {
-            const nekoEl = document.createElement("div");
-            let nekoPosX = 32, nekoPosY = 32, mousePosX = 0, mousePosY = 0, frameCount = 0, idleTime = 0, idleAnimation = null, idleAnimationFrame = 0, forceSleep = false, grabbing = false, grabStop = true, nudge = false, kuroNeko = false, variant = "classic";
-            function parseLocalStorage(key, fallback) {
-                try {
-                    const value = JSON.parse(localStorage.getItem(`oneko:${key}`));
-                    return typeof value === typeof fallback ? value : fallback;
-                } catch (e) {
-                    console.error(e);
-                    return fallback;
-                }
-            }
-            const nekoSpeed = 10, variants = [["classic", "Classic"],["dog", "Dog"],["tora", "Tora"],["maia", "Maia (maia.crimew.gay)"],["vaporwave", "Vaporwave (nya.rest)"]], spriteSets = { idle: [[-3, -3]], alert: [[-7, -3]], scratchSelf: [[-5, 0],[-6, 0],[-7, 0]], scratchWallN: [[0, 0],[0, -1]], scratchWallS: [[-7, -1],[-6, -2]], scratchWallE: [[-2, -2],[-2, -3]], scratchWallW: [[-4, 0],[-4, -1]], tired: [[-3, -2]], sleeping: [[-2, 0],[-2, -1]], N: [[-1, -2],[-1, -3]], NE: [[0, -2],[0, -3]], E: [[-3, 0],[-3, -1]], SE: [[-5, -1],[-5, -2]], S: [[-6, -3],[-7, -2]], SW: [[-5, -3],[-6, -1]], W: [[-4, -2],[-4, -3]], NW: [[-1, 0],[-1, -1]] }, keys = Object.keys(spriteSets).filter((key) => spriteSets[key].length > 1), usedKeys = new Set();
-            function sleep() {
-                forceSleep = !forceSleep;
-                nudge = false;
-                localStorage.setItem("oneko:forceSleep", forceSleep);
-                if (!forceSleep) {
-                    resetIdleAnimation();
-                    return;
-                }
-                const fullAppDisplay = document.getElementById("fad-progress");
-                if (fullAppDisplay) {
-                    mousePosX = fullAppDisplay.getBoundingClientRect().right - 16;
-                    mousePosY = fullAppDisplay.getBoundingClientRect().top - 12;
-                    return;
-                }
-                const progressBar = document.querySelector(".main-nowPlayingBar-center .playback-progressbar");
-                const progressBarRight = progressBar.getBoundingClientRect().right;
-                const progressBarTop = progressBar.getBoundingClientRect().top;
-                const progressBarBottom = progressBar.getBoundingClientRect().bottom;
-                mousePosX = progressBarRight - 16;
-                mousePosY = progressBarTop - 8;
-                const remainingTime = document.querySelector(".main-playbackBarRemainingTime-container");
-                const remainingTimeLeft = remainingTime.getBoundingClientRect().left;
-                const remainingTimeBottom = remainingTime.getBoundingClientRect().bottom;
-                const remainingTimeTop = remainingTime.getBoundingClientRect().top;
-                const elapsedTime = document.querySelector(".playback-bar__progress-time-elapsed");
-                const elapsedTimeRight = elapsedTime.getBoundingClientRect().right;
-                const elapsedTimeLeft = elapsedTime.getBoundingClientRect().left;
-                if (remainingTimeLeft < progressBarRight && remainingTimeTop < progressBarBottom && progressBarTop - remainingTimeBottom < 32) {
-                    mousePosX = remainingTimeLeft - 16;
-                    if (Spicetify.Config.current_theme === "Comfy") {
-                        mousePosY = progressBarTop - 14;
-                    }
-                    if (remainingTimeLeft - elapsedTimeRight < 32) {
-                        mousePosX = elapsedTimeLeft - 16;
-                    }
-                }
-            }
-            function create() {
-                variant = parseLocalStorage("variant", "classic");
-                kuroNeko = parseLocalStorage("kuroneko", false);
-                if (!variants.some((v) => v[0] === variant)) {
-                    variant = "classic";
-                }
-                nekoEl.id = "oneko";
-                nekoEl.style.width = "32px";
-                nekoEl.style.height = "32px";
-                nekoEl.style.position = "fixed";
-                nekoEl.style.backgroundImage = `url('https://raw.githubusercontent.com/kyrie25/spicetify-oneko/main/assets/oneko/oneko-${variant}.gif')`;
-                nekoEl.style.imageRendering = "pixelated";
-                nekoEl.style.left = `${nekoPosX - 16}px`;
-                nekoEl.style.top = `${nekoPosY - 16}px`;
-                nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
-                nekoEl.style.zIndex = "99";
-                document.body.appendChild(nekoEl);
-                window.addEventListener("mousemove", (e) => {
-                    if (forceSleep) return;
-                    mousePosX = e.clientX;
-                    mousePosY = e.clientY;
-                });
-                window.addEventListener("resize", () => {
-                    if (forceSleep) {
-                        forceSleep = false;
-                        sleep();
-                    }
-                });
-                nekoEl.addEventListener("mousedown", (e) => {
-                    if (e.button !== 0) return;
-                    grabbing = true;
-                    let startX = e.clientX;
-                    let startY = e.clientY;
-                    let startNekoX = nekoPosX;
-                    let startNekoY = nekoPosY;
-                    let grabInterval;
-                    const mousemove = (e) => {
-                        const deltaX = e.clientX - startX;
-                        const deltaY = e.clientY - startY;
-                        const absDeltaX = Math.abs(deltaX);
-                        const absDeltaY = Math.abs(deltaY);
-                        if (absDeltaX > absDeltaY && absDeltaX > 10) {
-                            setSprite(deltaX > 0 ? "scratchWallW" : "scratchWallE", frameCount);
-                        } else if (absDeltaY > absDeltaX && absDeltaY > 10) {
-                            setSprite(deltaY > 0 ? "scratchWallN" : "scratchWallS", frameCount);
-                        }
-                        if (grabStop || absDeltaX > 10 || absDeltaY > 10 || Math.sqrt(deltaX ** 2 + deltaY ** 2) > 10) {
-                            grabStop = false;
-                            clearTimeout(grabInterval);
-                            grabInterval = setTimeout(() => {
-                                grabStop = true;
-                                nudge = false;
-                                startX = e.clientX;
-                                startY = e.clientY;
-                                startNekoX = nekoPosX;
-                                startNekoY = nekoPosY;
-                            }, 150);
-                        }
-                        nekoPosX = startNekoX + e.clientX - startX;
-                        nekoPosY = startNekoY + e.clientY - startY;
-                        nekoEl.style.left = `${nekoPosX - 16}px`;
-                        nekoEl.style.top = `${nekoPosY - 16}px`;
-                    };
-                    const mouseup = () => {
-                        grabbing = false;
-                        nudge = true;
-                        resetIdleAnimation();
-                        window.removeEventListener("mousemove", mousemove);
-                        window.removeEventListener("mouseup", mouseup);
-                    };
-                    window.addEventListener("mousemove", mousemove);
-                    window.addEventListener("mouseup", mouseup);
-                });
-                nekoEl.addEventListener("contextmenu", (e) => {
-                    e.preventDefault();
-                    kuroNeko = !kuroNeko;
-                    localStorage.setItem("oneko:kuroneko", kuroNeko);
-                    nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
-                });
-                nekoEl.addEventListener("dblclick", sleep);
-                window.onekoInterval = setInterval(frame, 100);
-            }
-            function getSprite(name, frame) {
-                return spriteSets[name][frame % spriteSets[name].length];
-            }
-            function setSprite(name, frame) {
-                const sprite = getSprite(name, frame);
-                nekoEl.style.backgroundPosition = `${sprite[0] * 32}px ${sprite[1] * 32}px`;
-            }
-            function resetIdleAnimation() {
-                idleAnimation = null;
-                idleAnimationFrame = 0;
-            }
-            function idle() {
-                idleTime += 1;
-                if (idleTime > 10 && Math.floor(Math.random() * 200) == 0 && idleAnimation == null) {
-                    let avalibleIdleAnimations = ["sleeping", "scratchSelf"];
-                    if (nekoPosX < 32) {
-                        avalibleIdleAnimations.push("scratchWallW");
-                    }
-                    if (nekoPosY < 32) {
-                        avalibleIdleAnimations.push("scratchWallN");
-                    }
-                    if (nekoPosX > window.innerWidth - 32) {
-                        avalibleIdleAnimations.push("scratchWallE");
-                    }
-                    if (nekoPosY > window.innerHeight - 32) {
-                        avalibleIdleAnimations.push("scratchWallS");
-                    }
-                    idleAnimation = avalibleIdleAnimations[Math.floor(Math.random() * avalibleIdleAnimations.length)];
-                }
-                if (forceSleep) {
-                    avalibleIdleAnimations = ["sleeping"];
-                    idleAnimation = "sleeping";
-                }
-                switch (idleAnimation) {
-                    case "sleeping":
-                        if (idleAnimationFrame < 8 && nudge && forceSleep) {
-                            setSprite("idle", 0);
-                            break;
-                        } else if (nudge) {
-                            nudge = false;
-                            resetIdleAnimation();
-                        }
-                        if (idleAnimationFrame < 8) {
-                            setSprite("tired", 0);
-                            break;
-                        }
-                        setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
-                        if (idleAnimationFrame > 192 && !forceSleep) {
-                            resetIdleAnimation();
-                        }
-                        break;
-                    case "scratchWallN":
-                    case "scratchWallS":
-                    case "scratchWallE":
-                    case "scratchWallW":
-                    case "scratchSelf":
-                        setSprite(idleAnimation, idleAnimationFrame);
-                        if (idleAnimationFrame > 9) {
-                            resetIdleAnimation();
-                        }
-                        break;
-                    default:
-                        setSprite("idle", 0);
-                        return;
-                }
-                idleAnimationFrame += 1;
-            }
-            function frame() {
-                frameCount += 1;
-                if (grabbing) {
-                    grabStop && setSprite("alert", 0);
-                    return;
-                }
-                const diffX = nekoPosX - mousePosX;
-                const diffY = nekoPosY - mousePosY;
-                const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
-                if (forceSleep && Math.abs(diffY) < nekoSpeed && Math.abs(diffX) < nekoSpeed) {
-                    nekoPosX = mousePosX;
-                    nekoPosY = mousePosY;
-                    nekoEl.style.left = `${nekoPosX - 16}px`;
-                    nekoEl.style.top = `${nekoPosY - 16}px`;
-                    idle();
-                    return;
-                }
-                if ((distance < nekoSpeed || distance < 48) && !forceSleep) {
-                    idle();
-                    return;
-                }
-                idleAnimation = null;
-                idleAnimationFrame = 0;
-                if (idleTime > 1) {
-                    setSprite("alert", 0);
-                    idleTime = Math.min(idleTime, 7);
-                    idleTime -= 1;
-                    return;
-                }
-                direction = diffY / distance > 0.5 ? "N" : "";
-                direction += diffY / distance < -0.5 ? "S" : "";
-                direction += diffX / distance > 0.5 ? "W" : "";
-                direction += diffX / distance < -0.5 ? "E" : "";
-                setSprite(direction, frameCount);
-                nekoPosX -= (diffX / distance) * nekoSpeed;
-                nekoPosY -= (diffY / distance) * nekoSpeed;
-                nekoPosX = Math.min(Math.max(16, nekoPosX), window.innerWidth - 16);
-                nekoPosY = Math.min(Math.max(16, nekoPosY), window.innerHeight - 16);
-                nekoEl.style.left = `${nekoPosX - 16}px`;
-                nekoEl.style.top = `${nekoPosY - 16}px`;
-            }
-            create();
-            function getRandomSprite() {
-                let unusedKeys = keys.filter((key) => !usedKeys.has(key));
-                if (unusedKeys.length === 0) {
-                    usedKeys.clear();
-                    unusedKeys = keys;
-                }
-                const index = Math.floor(Math.random() * unusedKeys.length);
-                const key = unusedKeys[index];
-                usedKeys.add(key);
-                return [getSprite(key, 0), getSprite(key, 1)];
-            }
-            function setVariant(arr) {
-                variant = arr[0];
-                localStorage.setItem("oneko:variant", `"${variant}"`);
-                nekoEl.style.backgroundImage = `url('https://maia.crimew.gay/img/maia_oneko.gif')`;
-            }
-            function pickerModal() {
-                const container = document.createElement("div");
-                container.className = "oneko-variant-container";
-                const style = document.createElement("style");
-                style.innerHTML = `
-                    .oneko-variant-container {
-                        display: flex;
-                        flex-wrap: wrap;
-                        justify-content: center;
-                        align-items: center;
-                    }
-                    .oneko-variant-button {
-                        width: 64px;
-                        height: 64px;
-                        margin: 8px;
-                        cursor: pointer;
-                        background-size: 800%;
-                        border-radius: 25%;
-                        transition: background-color 0.2s ease-in-out;
-                        background-position: var(--idle-x) var(--idle-y);
-                        image-rendering: pixelated;
-                    }
-                    .oneko-variant-button:hover, .oneko-variant-button-selected {
-                        background-color: var(--spice-main-elevated);
-                    }
-                    .oneko-variant-button:hover {
-                        background-position: var(--active-x) var(--active-y);
-                    }
-                `;
-                container.appendChild(style);
-                const [idle, active] = getRandomSprite();
-                function variantButton(variantEnum) {
-                    const div = document.createElement("div");
-                    div.className = "oneko-variant-button";
-                    div.id = variantEnum[0];
-                    div.style.backgroundImage = `url('https://raw.githubusercontent.com/kyrie25/spicetify-oneko/main/assets/oneko/oneko-${variantEnum[0]}.gif')`;
-                    div.style.setProperty("--idle-x", `${idle[0] * 64}px`);
-                    div.style.setProperty("--idle-y", `${idle[1] * 64}px`);
-                    div.style.setProperty("--active-x", `${active[0] * 64}px`);
-                    div.style.setProperty("--active-y", `${active[1] * 64}px`);
-                    div.onclick = () => {
-                        setVariant(variantEnum);
-                        document.querySelector(".oneko-variant-button-selected")?.classList.remove("oneko-variant-button-selected");
-                        div.classList.add("oneko-variant-button-selected");
-                    };
-                    if (variantEnum[0] === variant) {
-                        div.classList.add("oneko-variant-button-selected");
-                    }
-                    return div;
-                }
-                for (const variant of variants) {
-                    container.appendChild(variantButton(variant));
-                }
-                return container;
-            }
-            (async () => {
-                while (!Spicetify.Mousetrap) {
-                    await new Promise((r) => setTimeout(r, 100));
-                }
-                Spicetify.Mousetrap.bind("o n e k o", () => {
-                    Spicetify.PopupModal.display({
-                        title: "Choose your neko",
-                        content: pickerModal(),
-                    });
-                });
-            })();
-            if (parseLocalStorage("forceSleep", false)) {
-                while (!document.querySelector(".main-nowPlayingBar-center .playback-progressbar")) {
-                    await new Promise((r) => setTimeout(r, 100));
-                }
-                sleep();
-            }
-        })();
-        const avatarSound = new Audio("https://files.catbox.moe/6he0qc.wav");
-        avatarSound.volume = 0.35;
-        function downloadVCard() {
-            const base64Photo = '';
-            const vcard = `
-BEGIN:VCARD
-VERSION:3.0
-N:Elisa;;;
-FN:@Elisa
-ORG:@Elisa
-TITLE:
-TEL;TYPE=cell:+15513223223
-EMAIL;TYPE=INTERNET:vwwwww@yahoo.com
-URL;TYPE=个人主页:https://mnnnnn.com
-URL;TYPE=Instagram:https://www.instagram.com/ol234566
-URL;TYPE=点击跳转至支付宝给我的猫买一杯咖啡☕️:https://qr.alipay.com/fkx17581wtzihcanvisaz0e
-X-SOCIALPROFILE;TYPE=Telegram:https://t.me/OOl23456
-X-SOCIALPROFILE;Click to redirect to Alipay to buy a cup of coffee for my cat:https://qr.alipay.com
-PHOTO;ENCODING=b;TYPE=JPEG:${base64Photo}
-END:VCARD
-`;
-            const blob = new Blob([vcard], { type: 'text/vcard' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'qxx.vcf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
-    <script>
-        const wechatID = "lllIIllIIlIII";
-        var clipboard = new ClipboardJS('#wechatBtn', {
-            text: function() {
-                return wechatID;
-            }
-        });
-        clipboard.on('success', function(e) {
-            alert('👉微信号复制成功,即将前往微信！');
-            window.location.href = 'wechat://';
-        });
-        clipboard.on('error', function(e) {
-            alert('复制失败,请手动输入 ' + wechatID);
-            window.location.href = 'wechat://dl/scan';
-        });
-        
-
-
-    </script>
-</body>
-</html>
