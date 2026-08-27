@@ -188,7 +188,7 @@ a,button,.theme-toggle,.day-toggle,.profile-pic,.link-card,.spotify-card,.play-b
     visibility: visible;
     pointer-events: auto;
     /* 打开时遮罩淡入 */
-    transition: opacity 1s ease, visibility 1s ease;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
 }
 
 /* 2. 聊天卡片 */
