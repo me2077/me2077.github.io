@@ -10,8 +10,8 @@
     <meta name="color-scheme" content="dark">
     <meta name="theme-color" content="#000000">
     <title>✨🐈</title>
-    <link rel="stylesheet" href="css/03.css">
-    <script type="module" src="js/qxx1.js"></script>
+    <link rel="stylesheet" href="css/2.css">
+    <script type="module" src="js/qxx0.js"></script>
     <script src="js/T.js" defer></script>
     <script src="https://iframe.chat/scripts/main.min.js"></script>
     <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
@@ -71,16 +71,11 @@
                                     </section>
                                     <section class="subpage" id="page1-2">
                                         <div class="media-wrapper"><img src="images/me.webp" loading="lazy" decoding="async" class="glitch-img" alt="glitch-img"></div>
-                                    </section>
-                                  
+                                    </section>                                  
                                     <section class="subpage" id="page1-3">
-                                        <iframe src="https://iframe.chat/embed/index.html?chat=00000000" id="chattable" loading="lazy"></iframe>
-                                    </section>
-                                  
-                                    <section class="subpage" id="page1-4">
                                         <div class="pixel-scale-box"><div class="pixel-art"></div></div>
                                     </section>
-                                    <section class="subpage" id="page1-5">
+                                    <section class="subpage" id="page1-4">
                                         <div class="media-wrapper"><video id="page1Video" class="glitch-img" loop playsinline webkit-playsinline preload="none"></video></div>
                                     </section>
                                 </div>
@@ -106,13 +101,26 @@
                                     <a id="btn-vcard" href="javascript:void(0);" class="link-card"><img src="images/vCard.webp" decoding="async" class="link-icon"><span class="link-title">vCard</span></a>
                                     <a href="https://🎞.nekoweb.org" class="link-card" target="_blank"><img src="images/Camera.webp" decoding="async" class="link-icon"><span class="link-title">Gallery 🎞</span></a>
                                     <a href="https://🦋.blogspot.com" class="link-card" target="_blank"><img src="images/Blog.webp" decoding="async" class="link-icon"><span class="link-title">Blog博客</span></a>
-                                    <a href="javascript:void(0);" class="link-card" id="wechatBtn"><img src="images/WeChat.webp" decoding="async" class="link-icon"><span class="link-title">WeChat</span></a>
-                                    <a href="https://t.me/qxx_me" class="link-card" target="_blank"><img src="images/Telegram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Telegram</span></a>
-                                    <a href="https://www.instagram.com/qxx.cam" class="link-card" target="_blank"><img src="images/Instagram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Instagram</span></a>
+
+<!-- 修改后：使用本地路径或网络 URL 图片 -->
+<a href="javascript:void(0);" class="link-card" id="btn-open-chat">
+    <img src="images/Chat.webp" decoding="async" class="link-icon" alt="Chat">
+    <span class="link-title">Chat聊天室</span>
+</a>      
+                                  
                                     <a href="mailto:me@qxx.me" class="link-card"><img src="images/Mail.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Email</span></a>
+                                  
+                                    <a href="javascript:void(0);" class="link-card" id="wechatBtn"><img src="images/WeChat.webp" decoding="async" class="link-icon"><span class="link-title">WeChat</span></a>
+
+                                    <a href="https://www.instagram.com/qxx.cam" class="link-card" target="_blank"><img src="images/Instagram.svg" loading="lazy" decoding="async" class="link-icon"><span class="link-title">Instagram</span></a>
+                                  
                                     <a href="https://wa.me/message/SYDPTLQEHYE3P1?src=qr" class="link-card" target="_blank"><img src="images/WhatsApp.webp" loading="lazy" decoding="async" class="link-icon"><span class="link-title">WhatsApp</span></a>
+                                       
+             
                                 </div>
                             </div>
+
+                          
                             <div id="page3" class="page">
                                 <div class="profile-header"></div>
                                 <audio id="mainAudio" preload="none"></audio>
@@ -134,9 +142,14 @@
             </div>
         </div>
     </div>
+<!-- 聊天室弹出层容器 -->
+<div id="chat-modal" class="chat-modal-overlay">
+    <div class="chat-card glowing-card">
+        <div class="chat-card-inner">
+            <iframe src="https://iframe.chat/embed/index.html?chat=00000000" id="chattable-iframe" loading="lazy"></iframe>
+        </div>
+    </div>
+</div>     
     <canvas id="shuicheCanvas"></canvas>
-<script>
-    chattable.initialize();
-</script>
 </body>
 </html>
