@@ -62,7 +62,7 @@ window.initWebGLShaderBg=function(container){
     let zoom=uniforms.u_zoom.value,tzoom=1.,velocity=new Vec2(0,0),lastmouse=new Vec2(0,0),startmouse=new Vec2(0,0),startrotation=angle,rotation=angle,pointerdown=false,keys={rotation:false},rotating=false,zooming=false,interactionFrameId;
     const handleKeyDown=e=>{if(e.key==='Control')keys.rotation=true;},handleKeyUp=e=>{if(e.key==='Control')keys.rotation=false;};
     const handlePointerDown=e=>{
-        if(e.target.closest('a, button, .glowing-card, #oneko, #oneko-skin-menu, .bullet'))return;
+        if(e.target.closest('a, button, .glowing-card, #oneko, #oneko-skin-menu, .bullet, #chat-modal'))return;
         if(!keys.rotation){pointerdown=true;lastmouse=new Vec2(e.clientX,e.clientY);}else{rotating=true;startrotation=rotation+new Vec2(window.innerWidth*.5,window.innerHeight*.5).subtract(new Vec2(e.clientX,e.clientY)).angle;}
         startmouse=lastmouse.clone();
     };
@@ -92,6 +92,7 @@ window.initWebGLShaderBg=function(container){
    - 左下角：BG_BOTTOM_LEFT
    - 右下角（日间模式 3 张）：BG_BOTTOM_RIGHT_1 / BG_BOTTOM_RIGHT_2 / BG_BOTTOM_RIGHT_3
    ========================================================================== */
+// 左上角（日间模式 3 张）
 const BG_TOP_LEFT_1 = 'https://file.garden/ZWlUCY4S7Xz2vypS/archived%20backgrounds/colours/green/dddf143.jpg#repeat+mask:rgba(127,225,221,0.2)';
 const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/397.GIF#repeat+mask:rgba(127,225,221,0.2)';
 
@@ -156,10 +157,25 @@ const bgPresets = [
     ...bgBottomRightList                                                                   // 7, 8, 9
 ];
 
-// 全局切换聊天室打开/关闭的辅助函数
+// 全局切换聊天室打开/关闭（真·按需懒加载）
 function toggleChatModal() {
     const chatModal = document.getElementById('chat-modal');
+    const iframe = document.getElementById('chattable-iframe');
+    
     if (chatModal) {
+        const isOpening = !chatModal.classList.contains('active');
+        
+        // 第一次打开时才动态注入 src 开始加载，并初始化组件
+        if (isOpening && iframe && !iframe.src) {
+            const dataSrc = iframe.getAttribute('data-src') || iframe.src;
+            if (dataSrc) {
+                iframe.src = dataSrc;
+            }
+            if (typeof window.chattable !== 'undefined' && window.chattable.initialize) {
+                window.chattable.initialize();
+            }
+        }
+        
         chatModal.classList.toggle('active');
     }
 }
@@ -230,10 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatModal = document.getElementById('chat-modal');
     const openChatBtn = document.getElementById('btn-open-chat');
 
-    if (openChatBtn && chatModal) {
+    if (openChatBtn) {
         openChatBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            chatModal.classList.add('active');
+            toggleChatModal();
         });
     }
 
@@ -635,7 +651,6 @@ function loadMusicPlayer() {
         { "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "music/Jupiter.mp3", "cover": "music/Jupiter.webp" }, "duration": "4:31" },
         { "bg": "#ffc382", "artist": "La Femme", "songName": "Le jardin", "files": { "song": "music/Le jardin.mp3", "cover": "music/Le jardin.webp" }, "duration": "4:00" },
         { "bg": "#ffcbdc", "artist": "Still Corners", "songName": "Crying", "files": { "song": "music/Crying.mp3", "cover": "music/Crying.webp" }, "duration": "3:28" },
-        { "bg": "#44c16fb5", "artist": "Marvel83'", "songName": "Alone With You", "files": { "song": "music/Alone With You.mp3", "cover": "music/Alone With You.webp" }, "duration": "4:53" },
         { "bg": "#ff4545", "artist": "Timecop1983", "songName": "Nightfall", "files": { "song": "music/Nightfall.mp3", "cover": "music/Nightfall.webp" }, "duration": "4:40" },
         { "bg": "#e5e7e9", "artist": "Lazer Boomerang", "songName": "R3cover", "files": { "song": "music/R3cover.mp3", "cover": "music/R3cover.webp" }, "duration": "3:34" }
     ];
@@ -710,23 +725,18 @@ function initKeyboardControls() {
     document.addEventListener('keydown', e => {
         const key = e.key.toLowerCase();
         
-        // 快捷键修改：
-        // 1. 按 Z 键：猫咪睡觉/唤醒
+        // 快捷键定义
         if (key === 'z') typeof window.onekoSleep === 'function' && window.onekoSleep();
-        
-        // 2. 按 S 键：循环切换猫咪皮肤
         if (key === 's') typeof window.onekoCycleSkin === 'function' && window.onekoCycleSkin();
-        
-        // 3. 按 K 键：打开/关闭猫咪皮肤选择菜单
         if (key === 'k') typeof window.onekoToggleSkinMenu === 'function' && window.onekoToggleSkinMenu();
         
-        // 4. 按 C 键：打开/关闭 Chattable 聊天室
+        // 按 C 键：打开 / 关闭 Chattable 聊天室（按需懒加载）
         if (key === 'c') {
             e.preventDefault();
             toggleChatModal();
         }
         
-        // 5. 按 ESC 键：若聊天室打开则关闭
+        // 按 ESC 键：若聊天室打开则关闭
         if (e.key === 'Escape') {
             const chatModal = document.getElementById('chat-modal');
             if (chatModal && chatModal.classList.contains('active')) {
@@ -840,7 +850,7 @@ if ('IntersectionObserver' in window && video) {
             }
         });
     }, { threshold: 0.5 });
-    videoObserver.observe(document.getElementById('page1-4'));
+    videoObserver.observe(document.getElementById('page1-5'));
 }
 if (video) video.addEventListener('click', () => video.muted = false);
 
@@ -1155,4 +1165,3 @@ window.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("mousemove", checkMouse);
     window.addEventListener("resize", windowChange);
 });
-    chattable.initialize();
