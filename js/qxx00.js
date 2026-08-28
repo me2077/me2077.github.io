@@ -19,7 +19,6 @@ vec2 getScreenSpace(){vec2 uv=(gl_FragCoord.xy-0.5*u_resolution.xy)/min(u_resolu
 float ndot(vec2 a,vec2 b){return a.x*b.x-a.y*b.y;}
 float sdRhombus(in vec2 p,in vec2 b){p=abs(p);float h=clamp(ndot(b-2.0*p,b)/dot(b,b),-1.0,1.0);float d=length(p-0.5*b*vec2(1.0-h,1.0+h));return d*sign(p.x*b.y+p.y*b.x-b.x*b.y);}
 void main(){vec2 uv=getScreenSpace();uv*=1.;float m=abs(fract(v_uv.y*100.*max(.2,smoothstep(.6,-.6,uv.y+uv.x))-u_time*5.)-.5)-.3;vec2 vv_uv=v_uv*(u_resolution.y>u_resolution.x?vec2((u_resolution.x/u_resolution.y),1.):vec2(1.,(u_resolution.y/u_resolution.x)));vv_uv=fract(vv_uv*20.)-.5;m=length(vv_uv)-.4;m=sdRhombus(vv_uv,vec2(.5));vec3 U=dFdx(v_pos);vec3 V=dFdy(v_pos);vec3 n=normalize(cross(U,V));float mask=smoothstep(fwidth(m),0.,m);vec3 lightDir=normalize(vec3(10.0,-10.0,10.0));float d=dot(n,lightDir)*0.1+0.2;float ls=smoothstep(0.01,0.35,d);vec3 finalColor=c*ls;float gray=dot(finalColor,vec3(0.2126,0.7152,0.0722));vec3 saturatedColor=mix(vec3(gray),finalColor,0.3);colour=vec4(saturatedColor,1.0);}`;
-
 class StripeHeader {
     uniforms;dimensions;autoResize=true;onBeforeRender;onAfterRender;u_time;u_resolution;u_seed;gl;renderer;program;mesh;lastTime=0;_playing=false;
     constructor({vertex,fragment,dimensions=new Vec2(window.innerWidth,window.innerHeight),container,autoResize=true,uniforms={}}={}){
