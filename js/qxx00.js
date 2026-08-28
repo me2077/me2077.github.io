@@ -62,7 +62,7 @@ window.initWebGLShaderBg=function(container){
     let zoom=uniforms.u_zoom.value,tzoom=1.,velocity=new Vec2(0,0),lastmouse=new Vec2(0,0),startmouse=new Vec2(0,0),startrotation=angle,rotation=angle,pointerdown=false,keys={rotation:false},rotating=false,zooming=false,interactionFrameId;
     const handleKeyDown=e=>{if(e.key==='Control')keys.rotation=true;},handleKeyUp=e=>{if(e.key==='Control')keys.rotation=false;};
     const handlePointerDown=e=>{
-        if(e.target.closest('a, button, .glowing-card, #oneko, #oneko-skin-menu, .bullet'))return;
+        if(e.target.closest('a, button, .glowing-card, #oneko, #oneko-skin-menu, .bullet, #chat-modal'))return;
         if(!keys.rotation){pointerdown=true;lastmouse=new Vec2(e.clientX,e.clientY);}else{rotating=true;startrotation=rotation+new Vec2(window.innerWidth*.5,window.innerHeight*.5).subtract(new Vec2(e.clientX,e.clientY)).angle;}
         startmouse=lastmouse.clone();
     };
@@ -157,6 +157,29 @@ const bgPresets = [
     ...bgBottomRightList                                                                   // 7, 8, 9
 ];
 
+// 全局切换聊天室打开/关闭（真·按需懒加载）
+function toggleChatModal() {
+    const chatModal = document.getElementById('chat-modal');
+    const iframe = document.getElementById('chattable-iframe');
+    
+    if (chatModal) {
+        const isOpening = !chatModal.classList.contains('active');
+        
+        // 第一次打开时才动态注入 src 开始加载，并初始化组件
+        if (isOpening && iframe && !iframe.src) {
+            const dataSrc = iframe.getAttribute('data-src') || iframe.src;
+            if (dataSrc) {
+                iframe.src = dataSrc;
+            }
+            if (typeof window.chattable !== 'undefined' && window.chattable.initialize) {
+                window.chattable.initialize();
+            }
+        }
+        
+        chatModal.classList.toggle('active');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     pagesContainer = document.querySelector('.pages');
     bullets = document.querySelectorAll('.bullet');
@@ -216,32 +239,21 @@ document.addEventListener('DOMContentLoaded', () => {
         let clipboard = new ClipboardJS('#wechatBtn', { text: () => "lllIIllIIlIII" });
         clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; });
     }
-});
 
-// ==========================================
-    // Chattable 聊天室弹窗打开 / 关闭逻辑
+    // ==========================================
+    // Chattable 聊天室弹窗交互
     // ==========================================
     const chatModal = document.getElementById('chat-modal');
     const openChatBtn = document.getElementById('btn-open-chat');
-    const closeChatBtn = document.getElementById('btn-close-chat');
 
-    // 打开聊天室
-    if (openChatBtn && chatModal) {
+    if (openChatBtn) {
         openChatBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            chatModal.classList.add('active');
+            toggleChatModal();
         });
     }
 
-    // 点击左侧 X 按钮关闭聊天室
-    if (closeChatBtn && chatModal) {
-        closeChatBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            chatModal.classList.remove('active');
-        });
-    }
-
-    // 点击卡片外遮罩空白处也可以关闭聊天室
+    // 点击卡片外遮罩空白处关闭聊天室
     if (chatModal) {
         chatModal.addEventListener('click', (e) => {
             if (e.target === chatModal) {
@@ -249,21 +261,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // 按键盘 ESC 键关闭聊天室
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && chatModal && chatModal.classList.contains('active')) {
-            chatModal.classList.remove('active');
-        }
-    });
-
-
+});
 
 // 根据当前主题权限与记忆偏好更新粒子展示
 function updateParticlesDisplay() {
     const c = document.getElementById('shuicheCanvas');
     if (!c) return;
-    // 仅在当前壁纸允许（BG_TOP_RIGHT_1/2）且用户偏好开启时显示粒子
     const shouldShow = isParticlesAllowedOnCurrentBg && userParticlesPref;
     window.isParticlesEnabled = shouldShow;
     if (shouldShow) {
@@ -280,7 +283,6 @@ function crossfadeBackground(bgVal, isLight, allowParticles = false) {
     const curId = ++bgChangeSequence, container = document.getElementById('bg-container');
     if (!container) return;
 
-    // 记录当前主题的粒子权限
     isParticlesAllowedOnCurrentBg = allowParticles;
 
     let rawVal = bgVal;
@@ -373,7 +375,6 @@ function crossfadeBackground(bgVal, isLight, allowParticles = false) {
         document.body.classList.toggle('light', isLight);
         document.documentElement.style.setProperty('--fg', isLight ? 'black' : '#f0f0f0');
         
-        // 切换背景时刷新粒子显示
         updateParticlesDisplay();
 
         void layer.offsetWidth;
@@ -416,7 +417,7 @@ function switchBackground(v, isLight = true, allowParticles = false) {
     }
 }
 
-// 双击屏幕手动切换粒子特效（仅在 BG_TOP_RIGHT_1 / 2 下生效，BG_TOP_RIGHT_3 及日间主题严格禁用）
+// 双击屏幕手动切换粒子特效（仅在 BG_TOP_RIGHT_1 / 2 下生效）
 (function initDoubleClickToggle() {
     let lastToggle = 0;
     const toggle = e => {
@@ -424,13 +425,9 @@ function switchBackground(v, isLight = true, allowParticles = false) {
         if (now - lastToggle < 500) return;
         lastToggle = now;
 
-        // 只有当前壁纸明确允许粒子特效（BG_TOP_RIGHT_1 / 2）时才响应双击
         if (!isParticlesAllowedOnCurrentBg) return;
+        if (e.target?.closest?.('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle, #chat-modal')) return;
 
-        // 忽略交互组件上的点击
-        if (e.target?.closest?.('#oneko, #oneko-skin-menu, a, button, svg, img, video, .bullet, .link-card, .spotify-card, .play-btn, .theme-toggle, .day-toggle')) return;
-
-        // 切换并持久化保存用户偏好
         userParticlesPref = !userParticlesPref;
         localStorage.setItem('particlesPref', userParticlesPref);
         updateParticlesDisplay();
@@ -654,7 +651,6 @@ function loadMusicPlayer() {
         { "bg": "#ebbe03", "artist": "Flower Face", "songName": "Jupiter", "files": { "song": "music/Jupiter.mp3", "cover": "music/Jupiter.webp" }, "duration": "4:31" },
         { "bg": "#ffc382", "artist": "La Femme", "songName": "Le jardin", "files": { "song": "music/Le jardin.mp3", "cover": "music/Le jardin.webp" }, "duration": "4:00" },
         { "bg": "#ffcbdc", "artist": "Still Corners", "songName": "Crying", "files": { "song": "music/Crying.mp3", "cover": "music/Crying.webp" }, "duration": "3:28" },
-        { "bg": "#44c16fb5", "artist": "Marvel83'", "songName": "Alone With You", "files": { "song": "music/Alone With You.mp3", "cover": "music/Alone With You.webp" }, "duration": "4:53" },
         { "bg": "#ff4545", "artist": "Timecop1983", "songName": "Nightfall", "files": { "song": "music/Nightfall.mp3", "cover": "music/Nightfall.webp" }, "duration": "4:40" },
         { "bg": "#e5e7e9", "artist": "Lazer Boomerang", "songName": "R3cover", "files": { "song": "music/R3cover.mp3", "cover": "music/R3cover.webp" }, "duration": "3:34" }
     ];
@@ -728,12 +724,29 @@ function loadMusicPlayer() {
 function initKeyboardControls() {
     document.addEventListener('keydown', e => {
         const key = e.key.toLowerCase();
+        
+        // 快捷键定义
         if (key === 'z') typeof window.onekoSleep === 'function' && window.onekoSleep();
-        if (key === 's') typeof window.onekoToggleSkinMenu === 'function' && window.onekoToggleSkinMenu();
-        if (key === 'c') typeof window.onekoCycleSkin === 'function' && window.onekoCycleSkin();
+        if (key === 's') typeof window.onekoCycleSkin === 'function' && window.onekoCycleSkin();
+        if (key === 'k') typeof window.onekoToggleSkinMenu === 'function' && window.onekoToggleSkinMenu();
+        
+        // 按 C 键：打开 / 关闭 Chattable 聊天室（按需懒加载）
+        if (key === 'c') {
+            e.preventDefault();
+            toggleChatModal();
+        }
+        
+        // 按 ESC 键：若聊天室打开则关闭
+        if (e.key === 'Escape') {
+            const chatModal = document.getElementById('chat-modal');
+            if (chatModal && chatModal.classList.contains('active')) {
+                chatModal.classList.remove('active');
+            }
+        }
+
         if (key === 'n' || key === 'm') triggerConfetti();
         
-        // 按 T 键：遍历所有 10 个壁纸
+        // 按 T 键：遍历所有壁纸
         if (key === 't') {
             currentBgIndex = (currentBgIndex + 1) % bgPresets.length;
             const p = bgPresets[currentBgIndex];
@@ -837,14 +850,13 @@ if ('IntersectionObserver' in window && video) {
             }
         });
     }, { threshold: 0.5 });
-    videoObserver.observe(document.getElementById('page1-4'));
+    videoObserver.observe(document.getElementById('page1-5'));
 }
 if (video) video.addEventListener('click', () => video.muted = false);
 
 window.onload = function () {
     loadMusicPlayer();
     initKeyboardControls();
-    // 首次进入页面（默认日间）确保粒子状态准确
     isParticlesAllowedOnCurrentBg = false;
     updateParticlesDisplay();
     switchPageTo(2);
