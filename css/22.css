@@ -173,8 +173,8 @@ a,button,.theme-toggle,.day-toggle,.profile-pic,.link-card,.spotify-card,.play-b
     padding: 20px;
     box-sizing: border-box;
     background: rgba(0, 0, 0, 0.45);
-    -webkit-backdrop-filter: blur(1px);
-    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
