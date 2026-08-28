@@ -4,51 +4,54 @@
     z-index: 0
 }
 
+
 :root {
-    --cursor-img: url('../images/fish-3.webp') 32 32;
+    --scrollbar-thumb: rgba(0, 0, 0, 0.4);
+    --cursor-img: url('../images/fish-3.webp')32 32;
     --glow-sens: 30;
-    --dark: hsl(260, 25%, 10%);
+    --dark: hsl(260,25%,10%);
     --fg: black;
     --h: 260;
-    --card-bg: linear-gradient(8deg, var(--dark) 75%, color-mix(in hsl, var(--dark), white 2.5%) 75.5%);
+    --card-bg: linear-gradient(8deg,var(--dark) 75%,color-mix(in hsl,var(--dark),white 2.5%) 75.5%);
     --blend: soft-light;
     --glow-blend: plus-lighter;
     --glow-color: 40deg 80% 80%;
     --duration: 1s;
-    --ease-slider: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-timeline: cubic-bezier(0.71, 0.21, 0.3, 0.95);
+    --ease-slider: cubic-bezier(0.4,0,0.2,1);
+    --ease-timeline: cubic-bezier(0.71,0.21,0.3,0.95);
     --page-height: 498px;
-    --accent: hsl(260, 100%, 80%);
+    --accent: hsl(260,100%,80%);
     --glowing-card-bg: rgb(255 255 255 / 23%);
     --glowing-card-border: rgb(255 255 255 / 70%);
     --glowing-card-backdrop: blur(7px);
     --link-card-bg: rgb(255 255 255 / 9%);
     --link-card-hover-bg: rgb(255 255 255 / 25%);
     --link-card-border: rgb(255 255 255 / 40%);
-    --link-card-box-shadow: 0px 4px 3px #0001, 0 0 35px #fffa inset;
+    --link-card-box-shadow: 0px 4px 3px #0001,0 0 35px #fffa inset;
     --spotify-card-bg: rgb(255 255 255 / 15%);
     --spotify-card-border: rgb(255 255 255 / 45%);
-    --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
+    --spotify-card-box-shadow: 0px 4px 3px #0001,0 0 38px #fffa inset;
     --music-player-bg: rgb(255 255 255 / 15%);
     --music-player-shadow: none
 }
 
+
 .light {
-    --cursor-img: url('../images/fish-1.webp') 32 32;
-    --card-bg: linear-gradient(8deg, color-mix(in hsl, hsl(260, 25%, 95%), var(--dark) 2.5%) 75%, hsl(260, 25%, 95%) 75.5%);
+    --cursor-img: url('../images/fish-1.webp')32 32;
+    --card-bg: linear-gradient(8deg,color-mix(in hsl,hsl(260,25%,95%),var(--dark) 2.5%) 75%,hsl(260,25%,95%) 75.5%);
     --blend: darken;
     --glow-blend: luminosity;
     --glow-color: 280deg 90% 95%;
     --glowing-card-bg: rgb(255 255 255 / 13%);
     --glowing-card-border: rgb(255 255 255 / 80%);
-    --glowing-card-backdrop: blur(7px);
+    --glowing-card-backdrop: blur(10px);
     --link-card-bg: rgb(255 255 255 / 7%);
     --link-card-hover-bg: rgb(255 255 255 / 25%);
     --link-card-border: rgb(255 255 255 / 50%);
-    --link-card-box-shadow: 0px 4px 3px #0001, 0 0 25px #fffa inset;
+    --link-card-box-shadow: 0px 4px 3px #0001,0 0 25px #fffa inset;
     --spotify-card-bg: rgb(255 255 255 / 7%);
     --spotify-card-border: rgb(255 255 255 / 60%);
-    --spotify-card-box-shadow: 0px 4px 3px #0001, 0 0 38px #fffa inset;
+    --spotify-card-box-shadow: 0px 4px 3px #0001,0 0 38px #fffa inset;
     --music-player-bg: rgb(255 255 255 / 10%);
     --music-player-shadow: 0 2px 6px 1px #0000001f
 }
@@ -62,15 +65,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter',sans-serif;
     color: var(--fg);
     overflow: hidden;
     touch-action: manipulation;
     transition: color 0.8s ease;
-    cursor: var(--cursor-img), auto
+    cursor: var(--cursor-img),auto
 }
 
-body::before, body::after {
+body::before,body::after {
     content: "";
     position: fixed;
     left: 0;
@@ -118,7 +121,7 @@ body::after {
     min-height: 100%;
     width: auto;
     height: auto;
-    transform: translate(-50%, -50%);
+    transform: translate(-50% ,-50%);
     object-fit: cover
 }
 
@@ -149,25 +152,25 @@ canvas {
     isolation: isolate;
     transform: translateZ(0);
     background: var(--glowing-card-bg);
-    box-shadow: 0px 10px 15px transparent, 0 0 55px #fff inset;
+    box-shadow: 0px 10px 15px transparent,0 0 55px #fff inset;
     overflow: hidden;
     text-align: center;
     box-sizing: border-box;
     border: 1px solid var(--glowing-card-border);
     -webkit-backdrop-filter: var(--glowing-card-backdrop);
     backdrop-filter: var(--glowing-card-backdrop);
-    transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
-    will-change: background, box-shadow, border
+    transition: background 0.8s ease,border 0.8s ease,box-shadow 0.8s ease;
+    will-change: background,box-shadow,border
 }
 
-.theme-toggle, .day-toggle {
+.theme-toggle,.day-toggle {
     position: absolute;
     width: 24px;
     height: 24px;
     cursor: pointer;
     z-index: 10;
     opacity: 0.5;
-    transition: opacity 0.3s, transform 0.1s ease;
+    transition: opacity 0.3s,transform 0.1s ease;
     -webkit-tap-highlight-color: transparent
 }
 
@@ -179,32 +182,32 @@ canvas {
     bottom: 5px
 }
 
-.sun-toggle, .day-toggle-left {
+.sun-toggle,.day-toggle-left {
     left: 6px
 }
 
-.moon-toggle, .day-toggle-right {
+.moon-toggle,.day-toggle-right {
     right: 6px
 }
 
 @media (hover: hover) {
-    .theme-toggle:hover, .day-toggle:hover {
-        opacity: 0.7;
+    .theme-toggle:hover,.day-toggle:hover {
+        opacity:0.7;
         transform: scale(1.2)
     }
 }
 
-.theme-toggle:active, .day-toggle:active {
+.theme-toggle:active,.day-toggle:active {
     opacity: 0.7
 }
 
 .icon-scale-active {
-    transform: scale(1.2) !important;
-    opacity: 0.7 !important
+    transform: scale(1.2)!important;
+    opacity: 0.7!important
 }
 
 .icon-shrink-force {
-    transform: scale(1) !important
+    transform: scale(1)!important
 }
 
 .alist-widget-wrapper {
@@ -261,7 +264,7 @@ canvas {
     padding: 0
 }
 
-.link-card, .spotify-card {
+.link-card,.spotify-card {
     width: 100%;
     cursor: pointer;
     -webkit-user-select: none;
@@ -284,12 +287,12 @@ canvas {
     font-style: italic;
     border: 1px solid var(--link-card-border);
     box-shadow: var(--link-card-box-shadow);
-    transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease
+    transition: background 0.8s ease,border 0.8s ease,box-shadow 0.8s ease
 }
 
 .link-card:hover {
     background: var(--link-card-hover-bg);
-    transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease
+    transition: background 0.3s ease,border 0.3s ease,box-shadow 0.3s ease
 }
 
 .link-icon {
@@ -302,19 +305,19 @@ canvas {
     text-align: center;
     width: 100%;
     font-size: 18px;
-    transition: transform 0.3s ease, text-shadow 0.3s ease
+    transition: transform 0.3s ease,text-shadow 0.3s ease
 }
 
 @media (hover: hover) {
     .link-card:hover .link-title {
-        transform: scale(1.05);
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1)
+        transform:scale(1.05);
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1)
     }
 }
 
 .link-card:active .link-title {
     transform: scale(1.05);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1)
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1)
 }
 
 @property --gradient-angle {
@@ -325,7 +328,7 @@ canvas {
 
 @keyframes rotate-stream {
     0% {
-        --gradient-angle:0deg
+        --gradient-angle: 0deg
     }
 
     100% {
@@ -338,7 +341,7 @@ canvas {
     border: 1px solid var(--link-card-border);
     background: var(--link-card-bg);
     z-index: 1;
-    transition: background 0.3s ease, box-shadow 0.3s ease
+    transition: background 0.3s ease,box-shadow 0.3s ease
 }
 
 #btn-vcard:hover {
@@ -351,9 +354,9 @@ canvas {
     inset: 0;
     border-radius: 20px;
     padding: 1.5px;
-    background: conic-gradient(from var(--gradient-angle), transparent 40%, #bf953f 60%, #fcf6ba 75%, #b38728 90%, transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    background: conic-gradient(from var(--gradient-angle),transparent 40%,#bf953f 60%,#fcf6ba 75%,#b38728 90%,transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     animation: rotate-stream 3s linear infinite;
@@ -366,9 +369,9 @@ canvas {
     inset: -2px;
     border-radius: 22px;
     padding: 2px;
-    background: conic-gradient(from var(--gradient-angle), transparent 70%, rgba(252, 246, 186, 0.5) 85%, transparent);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    background: conic-gradient(from var(--gradient-angle),transparent 70%,rgba(252,246,186,0.5) 85%,transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     filter: blur(4px);
@@ -392,7 +395,7 @@ canvas {
     gap: 16px;
     border: 1.5px solid var(--spotify-card-border);
     box-shadow: var(--spotify-card-box-shadow);
-    transition: background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease, transform 0.2s ease
+    transition: background 0.8s ease,border 0.8s ease,box-shadow 0.8s ease,transform 0.2s ease
 }
 
 .spotify-left {
@@ -465,7 +468,7 @@ canvas {
     transition: transform 0.1s ease
 }
 
-.play-btn:hover, .play-btn:active {
+.play-btn:hover,.play-btn:active {
     transform: scale(1.05)
 }
 
@@ -538,7 +541,7 @@ canvas {
 .bullet.active {
     opacity: 1;
     background: #c299ff;
-    box-shadow: 0px 0px 20px rgba(194, 153, 255, 5)
+    box-shadow: 0px 0px 20px rgba(194,153,255,5)
 }
 
 #page1 {
@@ -563,8 +566,7 @@ canvas {
 
 #page1 .subpage {
     scroll-snap-align: start;
-    scroll-snap-stop: always;
-    height: 100%;
+    scroll-snap-stop:always;height: 100%;
     min-height: var(--page-height);
     display: flex;
     flex-direction: column;
@@ -572,7 +574,7 @@ canvas {
     align-items: center
 }
 
-#page1, #page1 .page-vertical, #page1 .subpage {
+#page1,#page1 .page-vertical,#page1 .subpage {
     overflow-x: hidden
 }
 
@@ -697,12 +699,12 @@ canvas {
     margin-bottom: 0
 }
 
-.show-qr .reward-gif, .show-qr .reward-text-old {
+.show-qr .reward-gif,.show-qr .reward-text-old {
     opacity: 0;
     pointer-events: none
 }
 
-.show-qr .reward-qr, .show-qr .reward-text-new {
+.show-qr .reward-qr,.show-qr .reward-text-new {
     opacity: 1;
     pointer-events: auto
 }
@@ -713,7 +715,7 @@ canvas {
     position: absolute;
     top: 0;
     left: 0;
-    box-shadow: 110px 10px #000, 120px 10px #000, 110px 20px #000, 110px 30px #000, 110px 40px #000, 120px 40px #000, 130px 40px #000, 140px 40px #000, 150px 40px #000, 160px 40px #000, 30px 50px #000, 70px 50px #000, 160px 50px #000, 30px 60px #000, 40px 60px #000, 60px 60px #000, 70px 60px #000, 100px 60px #000, 110px 60px #000, 120px 60px #000, 130px 60px #000, 160px 60px #000, 30px 70px #000, 40px 70px #000, 50px 70px #000, 60px 70px #000, 70px 70px #000, 90px 70px #000, 100px 70px #000, 110px 70px #000, 120px 70px #000, 130px 70px #000, 140px 70px #000, 150px 70px #000, 160px 70px #000, 30px 80px #000, 40px 80px #f00, 50px 80px #000, 60px 80px #f00, 70px 80px #000, 80px 80px #000, 90px 80px #000, 100px 80px #000, 110px 80px #000, 120px 80px #000, 130px 80px #000, 140px 80px #000, 150px 80px #000, 160px 80px #000, 30px 90px #000, 40px 90px #000, 50px 90px #000, 60px 90px #000, 70px 90px #000, 80px 90px #000, 90px 90px #000, 100px 90px #000, 110px 90px #000, 120px 90px #000, 130px 90px #000, 140px 90px #000, 150px 90px #000, 160px 90px #000, 40px 100px #000, 50px 100px #000, 60px 100px #000, 70px 100px #000, 80px 100px #000, 90px 100px #000, 100px 100px #000, 110px 100px #000, 120px 100px #000, 130px 100px #000, 140px 100px #000, 150px 100px #000, 160px 100px #000, 60px 110px #000, 70px 110px #000, 80px 110px #000, 90px 110px #000, 100px 110px #000, 110px 110px #000, 130px 110px #000, 140px 110px #000, 150px 110px #000, 60px 120px #000, 70px 120px #000, 80px 120px #000, 100px 120px #000, 110px 120px #000, 130px 120px #000, 140px 120px #000, 60px 130px #000, 80px 130px #000, 110px 130px #000, 140px 130px #000, 60px 140px #000, 80px 140px #000, 110px 140px #000, 140px 140px #000, 60px 150px #000, 80px 150px #000, 110px 150px #000, 140px 150px #000, 50px 160px #000, 60px 160px #000, 70px 160px #000, 80px 160px #000, 100px 160px #000, 110px 160px #000, 130px 160px #000, 140px 160px #000
+    box-shadow: 110px 10px #000,120px 10px #000,110px 20px #000,110px 30px #000,110px 40px #000,120px 40px #000,130px 40px #000,140px 40px #000,150px 40px #000,160px 40px #000,30px 50px #000,70px 50px #000,160px 50px #000,30px 60px #000,40px 60px #000,60px 60px #000,70px 60px #000,100px 60px #000,110px 60px #000,120px 60px #000,130px 60px #000,160px 60px #000,30px 70px #000,40px 70px #000,50px 70px #000,60px 70px #000,70px 70px #000,90px 70px #000,100px 70px #000,110px 70px #000,120px 70px #000,130px 70px #000,140px 70px #000,150px 70px #000,160px 70px #000,30px 80px #000,40px 80px #f00,50px 80px #000,60px 80px #f00,70px 80px #000,80px 80px #000,90px 80px #000,100px 80px #000,110px 80px #000,120px 80px #000,130px 80px #000,140px 80px #000,150px 80px #000,160px 80px #000,30px 90px #000,40px 90px #000,50px 90px #000,60px 90px #000,70px 90px #000,80px 90px #000,90px 90px #000,100px 90px #000,110px 90px #000,120px 90px #000,130px 90px #000,140px 90px #000,150px 90px #000,160px 90px #000,40px 100px #000,50px 100px #000,60px 100px #000,70px 100px #000,80px 100px #000,90px 100px #000,100px 100px #000,110px 100px #000,120px 100px #000,130px 100px #000,140px 100px #000,150px 100px #000,160px 100px #000,60px 110px #000,70px 110px #000,80px 110px #000,90px 110px #000,100px 110px #000,110px 110px #000,130px 110px #000,140px 110px #000,150px 110px #000,60px 120px #000,70px 120px #000,80px 120px #000,100px 120px #000,110px 120px #000,130px 120px #000,140px 120px #000,60px 130px #000,80px 130px #000,110px 130px #000,140px 130px #000,60px 140px #000,80px 140px #000,110px 140px #000,140px 140px #000,60px 150px #000,80px 150px #000,110px 150px #000,140px 150px #000,50px 160px #000,60px 160px #000,70px 160px #000,80px 160px #000,100px 160px #000,110px 160px #000,130px 160px #000,140px 160px #000
 }
 
 @font-face {
@@ -724,8 +726,8 @@ canvas {
     font-display: swap
 }
 
-[class^="icon-"], [class * =" icon-"] {
-    font-family: "icomoon" !important;
+[class^="icon-"],[class*=" icon-"] {
+    font-family: "icomoon"!important;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
@@ -745,7 +747,7 @@ canvas {
     color: #827d7b
 }
 
-.icon-pause:before, .icon-play:before, .icon-playlist:before {
+.icon-pause:before,.icon-play:before,.icon-playlist:before {
     color: #fff
 }
 
@@ -762,7 +764,7 @@ canvas {
 }
 
 .lazy-placeholder {
-    background-color: rgba(255, 255, 255, 0.1)
+    background-color: rgba(255,255,255,0.1)
 }
 
 .img {
@@ -869,7 +871,7 @@ canvas {
     border-radius: inherit;
     box-shadow: var(--box-shadow);
     opacity: var(--shadow-opacity);
-    transition: opacity var(--duration) ease, box-shadow 0.8s ease
+    transition: opacity var(--duration) ease,box-shadow 0.8s ease
 }
 
 .slider__content {
@@ -880,14 +882,14 @@ canvas {
     border-radius: inherit;
     width: var(--cover-size);
     height: var(--cover-size);
-    transition: transform var(--duration) var(--ease-timeline), width var(--duration) var(--ease-timeline), height var(--duration) var(--ease-timeline);
-    transform: translate3d(var(--offset-cover), var(--offset-cover), 0)
+    transition: transform var(--duration) var(--ease-timeline),width var(--duration) var(--ease-timeline),height var(--duration) var(--ease-timeline);
+    transform: translate3d(var(--offset-cover),var(--offset-cover),0)
 }
 
 .slider.resize .slider__content {
     width: 100%;
     height: 22em;
-    transform: translate3d(0, 0, 0)
+    transform: translate3d(0,0,0)
 }
 
 .slider__content .button {
@@ -913,10 +915,10 @@ canvas {
 
 .slider.resize .music-player__playlist-button {
     transform: scale(1);
-    transition: 0.30s var(--duration) transform cubic-bezier(0, 0.85, 0.11, 1.64)
+    transition: 0.30s var(--duration) transform cubic-bezier(0,0.85,0.11,1.64)
 }
 
-.music-player__broadcast-guarantor .icon-pause, .music-player__broadcast-guarantor.click .icon-play {
+.music-player__broadcast-guarantor .icon-pause,.music-player__broadcast-guarantor.click .icon-play {
     opacity: 0
 }
 
@@ -928,11 +930,11 @@ canvas {
     width: 100%;
     height: 100%;
     filter: brightness(75%);
-    transform: translate3d(calc(var(--index) * 100%), 0, 0);
+    transform: translate3d(calc(var(--index) * 100%),0,0);
     transition: var(--duration) transform var(--ease-slider)
 }
 
-.slider__imgs > img {
+.slider__imgs>img {
     pointer-events: none
 }
 
@@ -947,26 +949,26 @@ canvas {
     align-items: center;
     padding-top: 0.375em;
     width: var(--controls-width);
-    transform: translate3d(var(--controls-x), 0, 0);
-    animation: var(--controls-animate, "down paused") var(--duration) var(--ease-timeline) forwards
+    transform: translate3d(var(--controls-x),0,0);
+    animation: var(--controls-animate,"down paused") var(--duration) var(--ease-timeline) forwards
 }
 
 @keyframes down {
     100% {
         width: var(--controls-resize-width);
-        transform: translate3d(0, var(--controls-y), 0)
+        transform: translate3d(0,var(--controls-y),0)
     }
 }
 
 @keyframes up {
     0% {
         width: var(--controls-resize-width);
-        transform:translate3d(0, var(--controls-y), 0)
+        transform: translate3d(0,var(--controls-y),0)
     }
 
     100% {
         width: var(--controls-width);
-        transform: translate3d(var(--controls-x), 0, 0)
+        transform: translate3d(var(--controls-x),0,0)
     }
 }
 
@@ -980,7 +982,7 @@ canvas {
     white-space: nowrap
 }
 
-.music-player__info > * {
+.music-player__info>* {
     margin: 0 auto;
     pointer-events: none
 }
@@ -1001,7 +1003,7 @@ canvas {
     width: max-content
 }
 
-.music-player__singer-name.animate, .music-player__subtitle.animate {
+.music-player__singer-name.animate,.music-player__subtitle.animate {
     --subtitle-gap: 1.2em;
     display: flex;
     gap: 0 var(--subtitle-gap);
@@ -1009,8 +1011,8 @@ canvas {
 }
 
 @keyframes subtitle {
-    80%, 100% {
-        transform: translate3d(calc((100% + var(--subtitle-gap)) / -2), 0, 0)
+    80%,100% {
+        transform: translate3d(calc((100% + var(--subtitle-gap)) / -2),0,0)
     }
 }
 
@@ -1043,7 +1045,7 @@ canvas {
     width: 100%;
     border-radius: inherit;
     background-color: var(--color-blue);
-    transform: scaleX(var(--scale, 0));
+    transform: scaleX(var(--scale,0));
     transform-origin: left;
     will-change: transform
 }
@@ -1052,12 +1054,12 @@ canvas {
     --size: 0.375em;
     position: absolute;
     top: 50%;
-    left: var(--width, 0%);
+    left: var(--width,0%);
     width: var(--size);
     height: var(--size);
     background-color: var(--color-blue-dark);
     border-radius: 100%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%,-50%);
     will-change: left
 }
 
@@ -1069,36 +1071,50 @@ canvas {
 .music-player__playlist {
     box-sizing: border-box;
     height: calc(100% - 6.8em);
-    padding: 10px 0.9em 0 var(--offset-cover) !important;
+    padding: 10px 0.9em 0 var(--offset-cover)!important;
     overflow-y: auto
 }
 
-.link-scroll-container::-webkit-scrollbar, .music-player__playlist::-webkit-scrollbar {
+/* ==========================================================================
+   滚动条最佳实践：精准容器绑定 + 独立变量解耦
+   ========================================================================== */
+
+/* 1. Webkit 浏览器 (Chrome, Edge, Safari, 移动端) */
+.link-scroll-container::-webkit-scrollbar,
+.music-player__playlist::-webkit-scrollbar {
     width: 4px;
-    background: transparent
-}
-
-.link-scroll-container::-webkit-scrollbar-track, .music-player__playlist::-webkit-scrollbar-track {
     background: transparent;
-    border-right: 0 solid transparent
 }
 
-.link-scroll-container::-webkit-scrollbar-thumb, .music-player__playlist::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--fg) 40%, transparent);
+.link-scroll-container::-webkit-scrollbar-track,
+.music-player__playlist::-webkit-scrollbar-track {
+    background: transparent;
+    border-right: 0 solid transparent;
+}
+
+.link-scroll-container::-webkit-scrollbar-thumb,
+.music-player__playlist::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
     border-radius: 10px;
     border: 1px solid transparent;
     opacity: 0;
-    transition: opacity 0.3s ease
+    transition: opacity 0.3s ease;
 }
 
-.link-scroll-container, .music-player__playlist {
+/* 2. Firefox 浏览器 (标准属性) */
+.link-scroll-container,
+.music-player__playlist {
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--fg) 40%, transparent) transparent
+    scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
-.link-scroll-container.scrolling::-webkit-scrollbar-thumb, .link-scroll-container:hover::-webkit-scrollbar-thumb, .music-player__playlist.scrolling::-webkit-scrollbar-thumb, .music-player__playlist:hover::-webkit-scrollbar-thumb {
-    opacity: 1
+/* 3. 悬停或滚动时淡入滑块 */
+.link-scroll-container.scrolling::-webkit-scrollbar-thumb,
+.link-scroll-container:hover::-webkit-scrollbar-thumb,
+.music-player__playlist.scrolling::-webkit-scrollbar-thumb,
+.music-player__playlist:hover::-webkit-scrollbar-thumb {
+    opacity: 1;
 }
 
 .music-player__song {
@@ -1152,14 +1168,14 @@ canvas {
     opacity: 0.55
 }
 
-.music-player__playlist-button i, .music-player__broadcast-guarantor, .slider__switch-button, .music-player__playlist-info b, .music-player__playlist-info .music-player__subtitle {
+.music-player__playlist-button i,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__playlist-info b,.music-player__playlist-info .music-player__subtitle {
     transition: transform .2s ease
 }
 
 .music-player__broadcast-guarantor {
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%)
+    transform: translate(-50%,-50%)
 }
 
 .slider__switch-button {
@@ -1167,16 +1183,16 @@ canvas {
     height: max-content
 }
 
-@media (hover: hover) {
-    .music-player__playlist-button:hover i, .slider__switch-button:hover {
+@media(hover: hover) {
+    .music-player__playlist-button:hover i,.slider__switch-button:hover {
         transform:scale(1.2)
     }
 
     .music-player__broadcast-guarantor:hover {
-        transform:translate(-50%, -50%) scale(1.2)
+        transform: translate(-50%,-50%) scale(1.2)
     }
 
-    .music-player__song:hover .music-player__playlist-info b, .music-player__song:hover .music-player__playlist-info .music-player__subtitle {
+    .music-player__song:hover .music-player__playlist-info b,.music-player__song:hover .music-player__playlist-info .music-player__subtitle {
         transform: translateX(6px)
     }
 }
@@ -1185,7 +1201,7 @@ canvas {
     display: inline-block;
     width: 40px;
     height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
+    border: 4px solid rgba(255,255,255,0.3);
     border-radius: 50%;
     border-top-color: var(--fg);
     animation: spin 1s ease-in-out infinite;
@@ -1208,7 +1224,7 @@ canvas {
     display: inline-block
 }
 
-.glitch-text::before, .glitch-text::after {
+.glitch-text::before,.glitch-text::after {
     content: attr(data-text);
     position: absolute;
     top: 0;
@@ -1220,13 +1236,13 @@ canvas {
 }
 
 .glitch-text.active::before {
-    animation: glitch-1 0.5s cubic-bezier(.25, .46, .45, .94) both infinite;
+    animation: glitch-1 0.5s cubic-bezier(.25,.46,.45,.94) both infinite;
     color: #0ff;
     transform: translateX(-0.5px)
 }
 
 .glitch-text.active::after {
-    animation: glitch-2 0.5s cubic-bezier(.25, .46, .45, .94) reverse both infinite;
+    animation: glitch-2 0.5s cubic-bezier(.25,.46,.45,.94) reverse both infinite;
     color: #f0f;
     transform: translateX(0.5px)
 }
@@ -1234,39 +1250,39 @@ canvas {
 @keyframes glitch-1 {
     0% {
         opacity: 0.75;
-        transform:translate(-1px, 1px)
+        transform: translate(-1px,1px)
     }
 
     50% {
         opacity: 0.5;
-        transform:translate(0.5px, -0.5px)
+        transform: translate(0.5px,-0.5px)
     }
 
     100% {
         opacity: 0.75;
-        transform: translate(-1px, 1px)
+        transform: translate(-1px,1px)
     }
 }
 
 @keyframes glitch-2 {
     0% {
         opacity: 0.75;
-        transform:translate(1px, -1px)
+        transform: translate(1px,-1px)
     }
 
     50% {
         opacity: 0.5;
-        transform:translate(-0.5px, 0.5px)
+        transform: translate(-0.5px,0.5px)
     }
 
     100% {
         opacity: 0.75;
-        transform: translate(1px, -1px)
+        transform: translate(1px,-1px)
     }
 }
 
-a, button, .theme-toggle, .day-toggle, .profile-pic, .link-card, .spotify-card, .play-btn, .bullet, .reward-wrapper, .progress, .music-player__song, .music-player__playlist-button, .music-player__broadcast-guarantor, .slider__switch-button, .music-player__info {
-    cursor: var(--cursor-img), pointer
+a,button,.theme-toggle,.day-toggle,.profile-pic,.link-card,.spotify-card,.play-btn,.bullet,.reward-wrapper,.progress,.music-player__song,.music-player__playlist-button,.music-player__broadcast-guarantor,.slider__switch-button,.music-player__info {
+    cursor: var(--cursor-img),pointer
 }
 
 .coffee-pixel-icon {
@@ -1278,8 +1294,10 @@ a, button, .theme-toggle, .day-toggle, .profile-pic, .link-card, .spotify-card, 
 }
 
 /* ==========================================================================
-   Chattable 弹窗卡片与过渡动效
+   Chattable 弹窗卡片：完美解决关闭闪烁问题
+   打开：Q弹果冻抖动；关闭：纯平滑淡出（不缩放，杜绝阴影闪烁）
    ========================================================================== */
+/* 1. 遮罩层背景 */
 .chat-modal-overlay {
     position: fixed;
     inset: 0;
@@ -1295,15 +1313,20 @@ a, button, .theme-toggle, .day-toggle, .profile-pic, .link-card, .spotify-card, 
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease;
+    /* 关闭时平滑淡出 */
+    transition: opacity 1.8s ease, visibility 1.8s ease;
+    transform: translateZ(0);
 }
 
 .chat-modal-overlay.active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    /* 打开时遮罩淡入 */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+/* 2. 聊天卡片 */
 .chat-card {
     position: relative;
     width: 100%;
@@ -1311,14 +1334,35 @@ a, button, .theme-toggle, .day-toggle, .profile-pic, .link-card, .spotify-card, 
     height: 510px;
     border-radius: 20px;
     overflow: hidden;
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.8s ease, border 0.8s ease;
+    /* 默认/关闭状态：纯淡出，保持 scale(1) 原尺寸，不进行缩放计算！ */
+    opacity: 0;
+    transform: scale(1) translateZ(0);
+    /* 👈 关键点：关闭时只对 opacity 做过渡，不过渡 transform/scale，彻底消除闪烁！ */
+    transition: opacity 8s cubic-bezier(0.4, 0, 1, 1), background 0.8s ease, border 0.8s ease, box-shadow 0.8s ease;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
+/* 激活状态：打开时触发 Q 弹果冻抖动（通过动画 keyframes 驱动打开，完全不影响退出） */
 .chat-modal-overlay.active .chat-card {
-    transform: scale(1) translateY(0);
+    opacity: 1;
+    animation: chatCardPopIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* 专用于打开时的 Q 弹果冻抖动帧动画 */
+@keyframes chatCardPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.88) translateY(20px) translateZ(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) translateZ(0);
+    }
+}
+
+/* 3. 聊天卡片内部 iframe */
 .chat-card-inner {
     width: 100%;
     height: 100%;
@@ -1327,6 +1371,7 @@ a, button, .theme-toggle, .day-toggle, .profile-pic, .link-card, .spotify-card, 
     display: flex;
     justify-content: center;
     align-items: center;
+    transform: translateZ(0);
 }
 
 #chattable-iframe {
@@ -1334,4 +1379,5 @@ a, button, .theme-toggle, .day-toggle, .profile-pic, .link-card, .spotify-card, 
     height: 100%;
     border: none;
     display: block;
+    border-radius: 20px;
 }
