@@ -21,6 +21,14 @@ body,
 #messages {
   background-color: #c7b6ce;
 }
+/* 2. 覆盖加载中/重新连接提示区域的背景 */
+.connecting, 
+#connecting, 
+.loading, 
+#loading {
+  background-color: #c7b6ce;
+  color: #453b75; /* 调整加载提示文字的颜色以确保清晰可见 */
+}
 /* 顶部 Banner 标头 */
 #top_banner {
   background: var(--teal);
