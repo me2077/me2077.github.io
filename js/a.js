@@ -62,7 +62,7 @@ window.initWebGLShaderBg=function(container){
     let zoom=uniforms.u_zoom.value,tzoom=1.,velocity=new Vec2(0,0),lastmouse=new Vec2(0,0),startmouse=new Vec2(0,0),startrotation=angle,rotation=angle,pointerdown=false,keys={rotation:false},rotating=false,zooming=false,interactionFrameId;
     const handleKeyDown=e=>{if(e.key==='Control')keys.rotation=true;},handleKeyUp=e=>{if(e.key==='Control')keys.rotation=false;};
     const handlePointerDown=e=>{
-        if(e.target.closest('a, button, .glowing-card, #oneko, #oneko-skin-menu, .bullet'))return;
+        if(e.target.closest('a, button, .glowing-card, #oneko, #oneko-skin-menu, .bullet, #chat-modal'))return;
         if(!keys.rotation){pointerdown=true;lastmouse=new Vec2(e.clientX,e.clientY);}else{rotating=true;startrotation=rotation+new Vec2(window.innerWidth*.5,window.innerHeight*.5).subtract(new Vec2(e.clientX,e.clientY)).angle;}
         startmouse=lastmouse.clone();
     };
@@ -87,12 +87,11 @@ window.initWebGLShaderBg=function(container){
 
 /* ==========================================================================
    壁纸变量配置：
-   - 左上角（日间模式 3 张）：BG_TOP_LEFT_1 / BG_TOP_LEFT_2 / BG_TOP_LEFT_3
-   - 右上角（夜间模式 3 张）：BG_TOP_RIGHT_1 / BG_TOP_RIGHT_2 / BG_TOP_RIGHT_3
+   - 左上角（日间 3 张）：BG_TOP_LEFT_1 / BG_TOP_LEFT_2 / BG_TOP_LEFT_3
+   - 右上角（夜间 3 张）：BG_TOP_RIGHT_1 / BG_TOP_RIGHT_2 / BG_TOP_RIGHT_3
    - 左下角：BG_BOTTOM_LEFT
-   - 右下角（日间模式 3 张）：BG_BOTTOM_RIGHT_1 / BG_BOTTOM_RIGHT_2 / BG_BOTTOM_RIGHT_3
+   - 右下角（日间 3 张）：BG_BOTTOM_RIGHT_1 / BG_BOTTOM_RIGHT_2 / BG_BOTTOM_RIGHT_3
    ========================================================================== */
-// 左上角（日间模式 3 张）
 const BG_TOP_LEFT_1 = 'https://file.garden/ZWlUCY4S7Xz2vypS/archived%20backgrounds/colours/green/dddf143.jpg#repeat+mask:rgba(127,225,221,0.2)';
 const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/397.GIF#repeat+mask:rgba(127,225,221,0.2)';
 
@@ -120,18 +119,15 @@ let userParticlesPref = localStorage.getItem('particlesPref') !== null ? (localS
 window.isParticlesEnabled = false;
 
 let bgChangeSequence = 0, currentPage = 2, pagesContainer, bullets, isPlaying = false, currentBgIndex = 0;
-
-// 当前壁纸是否允许启用粒子特效（仅 BG_TOP_RIGHT_1 和 BG_TOP_RIGHT_2 为 true）
 let isParticlesAllowedOnCurrentBg = false;
 
-// 各模式的当前轮巡索引（-1 确保首次点击必然触发第 1 张）
+// 各模式轮巡索引
 let currentTopLeftStep = -1;
 let currentTopRightStep = -1;
 let currentBottomRightStep = -1;
 
 const glowingCard = document.querySelector('.glowing-card'), audio = document.getElementById('audioPlayer');
 
-// 统一预设集合
 const bgTopLeftList = [
     { name: 'top-left-1', value: BG_TOP_LEFT_1, isLight: true, allowParticles: false },
     { name: 'top-left-2', value: BG_TOP_LEFT_2, isLight: true, allowParticles: false },
@@ -139,9 +135,9 @@ const bgTopLeftList = [
 ];
 
 const bgTopRightList = [
-    { name: 'top-right-1', value: BG_TOP_RIGHT_1, isLight: false, allowParticles: true },  // 允许粒子
-    { name: 'top-right-2', value: BG_TOP_RIGHT_2, isLight: false, allowParticles: true },  // 允许粒子
-    { name: 'top-right-3', value: BG_TOP_RIGHT_3, isLight: false, allowParticles: false } // 禁用粒子
+    { name: 'top-right-1', value: BG_TOP_RIGHT_1, isLight: false, allowParticles: true },
+    { name: 'top-right-2', value: BG_TOP_RIGHT_2, isLight: false, allowParticles: true },
+    { name: 'top-right-3', value: BG_TOP_RIGHT_3, isLight: false, allowParticles: false }
 ];
 
 const bgBottomRightList = [
@@ -151,53 +147,94 @@ const bgBottomRightList = [
 ];
 
 const bgPresets = [
-    ...bgTopLeftList,                                                                      // 0, 1, 2
-    ...bgTopRightList,                                                                     // 3, 4, 5
-    { name: 'bottom-left', value: BG_BOTTOM_LEFT, isLight: true, allowParticles: false },  // 6
-    ...bgBottomRightList                                                                   // 7, 8, 9
+    ...bgTopLeftList,
+    ...bgTopRightList,
+    { name: 'bottom-left', value: BG_BOTTOM_LEFT, isLight: true, allowParticles: false },
+    ...bgBottomRightList
 ];
 
-// 全局切换聊天室打开/关闭的辅助函数
+
+// 标记是否已经动态加载过 Chattable 脚本
+let isChattableScriptLoaded = false;
+
+// 全局切换聊天室打开/关闭（真正点击时才加载脚本与 iframe）
 function toggleChatModal() {
     const chatModal = document.getElementById('chat-modal');
-    if (chatModal) {
-        chatModal.classList.toggle('active');
+    const iframe = document.getElementById('chattable-iframe');
+    
+    if (!chatModal) return;
+
+    const isOpening = !chatModal.classList.contains('active');
+
+    if (isOpening) {
+        // 首次打开时，动态载入 main.min.js
+        if (!isChattableScriptLoaded) {
+            const script = document.createElement('script');
+            script.src = 'https://iframe.chat/scripts/main.min.js';
+            script.async = true;
+            script.onload = () => {
+                isChattableScriptLoaded = true;
+                if (typeof window.chattable !== 'undefined' && window.chattable.initialize) {
+                    try { window.chattable.initialize(); } catch (e) {}
+                }
+            };
+            document.body.appendChild(script);
+        }
+
+        // 首次打开时，给 iframe 赋值 src 开始加载聊天页面
+        if (iframe && !iframe.src) {
+            const dataSrc = iframe.getAttribute('data-src');
+            if (dataSrc) {
+                iframe.src = dataSrc;
+            }
+        }
     }
+
+    // 切换弹窗显示/隐藏
+    chatModal.classList.toggle('active');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     pagesContainer = document.querySelector('.pages');
     bullets = document.querySelectorAll('.bullet');
 
-    // 左上角（日间模式）：按 1 ➔ 2 ➔ 3 ➔ 1 顺序循环切换
-    document.getElementById('btn-theme-light').addEventListener('click', () => {
-        currentTopLeftStep = (currentTopLeftStep + 1) % bgTopLeftList.length;
-        currentBgIndex = currentTopLeftStep;
-        const p = bgTopLeftList[currentTopLeftStep];
-        switchBackground(p.value, p.isLight, p.allowParticles);
-    });
+    const btnThemeLight = document.getElementById('btn-theme-light');
+    if (btnThemeLight) {
+        btnThemeLight.addEventListener('click', () => {
+            currentTopLeftStep = (currentTopLeftStep + 1) % bgTopLeftList.length;
+            currentBgIndex = currentTopLeftStep;
+            const p = bgTopLeftList[currentTopLeftStep];
+            switchBackground(p.value, p.isLight, p.allowParticles);
+        });
+    }
 
-    // 右上角（夜间模式）：按 1 ➔ 2 ➔ 3 ➔ 1 顺序循环切换
-    document.getElementById('btn-theme-dark').addEventListener('click', () => {
-        currentTopRightStep = (currentTopRightStep + 1) % bgTopRightList.length;
-        currentBgIndex = 3 + currentTopRightStep;
-        const p = bgTopRightList[currentTopRightStep];
-        switchBackground(p.value, p.isLight, p.allowParticles);
-    });
+    const btnThemeDark = document.getElementById('btn-theme-dark');
+    if (btnThemeDark) {
+        btnThemeDark.addEventListener('click', () => {
+            currentTopRightStep = (currentTopRightStep + 1) % bgTopRightList.length;
+            currentBgIndex = 3 + currentTopRightStep;
+            const p = bgTopRightList[currentTopRightStep];
+            switchBackground(p.value, p.isLight, p.allowParticles);
+        });
+    }
 
-    // 左下角（WebGL 着色器）
-    document.getElementById('btn-bg-1').addEventListener('click', () => {
-        currentBgIndex = 6;
-        switchBackground(BG_BOTTOM_LEFT, true, false);
-    });
+    const btnBg1 = document.getElementById('btn-bg-1');
+    if (btnBg1) {
+        btnBg1.addEventListener('click', () => {
+            currentBgIndex = 6;
+            switchBackground(BG_BOTTOM_LEFT, true, false);
+        });
+    }
 
-    // 右下角（日间模式）：按 1 ➔ 2 ➔ 3 ➔ 1 顺序循环切换
-    document.getElementById('btn-bg-2').addEventListener('click', () => {
-        currentBottomRightStep = (currentBottomRightStep + 1) % bgBottomRightList.length;
-        currentBgIndex = 7 + currentBottomRightStep;
-        const p = bgBottomRightList[currentBottomRightStep];
-        switchBackground(p.value, p.isLight, p.allowParticles);
-    });
+    const btnBg2 = document.getElementById('btn-bg-2');
+    if (btnBg2) {
+        btnBg2.addEventListener('click', () => {
+            currentBottomRightStep = (currentBottomRightStep + 1) % bgBottomRightList.length;
+            currentBgIndex = 7 + currentBottomRightStep;
+            const p = bgBottomRightList[currentBottomRightStep];
+            switchBackground(p.value, p.isLight, p.allowParticles);
+        });
+    }
 
     document.querySelectorAll('.theme-toggle, .day-toggle').forEach(b => {
         const r = () => b.classList.remove('icon-shrink-force', 'icon-scale-active');
@@ -212,33 +249,46 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 350);
         });
     });
-    document.getElementById('rewardContainer').addEventListener('click', () => document.getElementById('rewardContainer').classList.toggle('show-qr'));
-    document.getElementById('reward-wx').addEventListener('click', e => e.stopPropagation());
-    document.getElementById('reward-zfb').addEventListener('click', e => e.stopPropagation());
-    document.getElementById('profile-pic').addEventListener('click', triggerConfetti);
-    document.getElementById('spotify-card-wrap').addEventListener('click', () => window.open('https://open.spotify.com/track/3UkRfA9F62DYYDzqOskoov', '_blank'));
-    document.getElementById('btn-spotify-play').addEventListener('click', e => { e.stopPropagation(); togglePlay(e.currentTarget); });
-    document.getElementById('btn-vcard').addEventListener('click', () => typeof downloadVCard === 'function' && downloadVCard());
+
+    const rewardContainer = document.getElementById('rewardContainer');
+    if (rewardContainer) rewardContainer.addEventListener('click', () => rewardContainer.classList.toggle('show-qr'));
+    
+    const rewardWx = document.getElementById('reward-wx');
+    if (rewardWx) rewardWx.addEventListener('click', e => e.stopPropagation());
+    
+    const rewardZfb = document.getElementById('reward-zfb');
+    if (rewardZfb) rewardZfb.addEventListener('click', e => e.stopPropagation());
+
+    const profilePic = document.getElementById('profile-pic');
+    if (profilePic) profilePic.addEventListener('click', triggerConfetti);
+
+    const spotifyWrap = document.getElementById('spotify-card-wrap');
+    if (spotifyWrap) spotifyWrap.addEventListener('click', () => window.open('https://open.spotify.com/track/3UkRfA9F62DYYDzqOskoov', '_blank'));
+
+    const btnSpotifyPlay = document.getElementById('btn-spotify-play');
+    if (btnSpotifyPlay) btnSpotifyPlay.addEventListener('click', e => { e.stopPropagation(); togglePlay(e.currentTarget); });
+
+    const btnVcard = document.getElementById('btn-vcard');
+    if (btnVcard) btnVcard.addEventListener('click', () => typeof downloadVCard === 'function' && downloadVCard());
+
     if (bullets) bullets.forEach(b => b.addEventListener('click', function () { switchPageTo(parseInt(this.dataset.page)); }));
+
     if (typeof ClipboardJS !== 'undefined') {
         let clipboard = new ClipboardJS('#wechatBtn', { text: () => "lllIIllIIlIII" });
         clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; });
     }
 
-    // ==========================================
-    // Chattable 聊天室弹窗交互
-    // ==========================================
+    // Chattable 弹窗绑定
     const chatModal = document.getElementById('chat-modal');
     const openChatBtn = document.getElementById('btn-open-chat');
 
-    if (openChatBtn && chatModal) {
+    if (openChatBtn) {
         openChatBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            chatModal.classList.add('active');
+            toggleChatModal();
         });
     }
 
-    // 点击卡片外遮罩空白处关闭聊天室
     if (chatModal) {
         chatModal.addEventListener('click', (e) => {
             if (e.target === chatModal) {
@@ -246,9 +296,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // 初始化核心模块（不再死等 window.onload）
+    loadMusicPlayer();
+    initKeyboardControls();
+    isParticlesAllowedOnCurrentBg = false;
+    updateParticlesDisplay();
+    switchPageTo(2);
 });
 
-// 根据当前主题权限与记忆偏好更新粒子展示
 function updateParticlesDisplay() {
     const c = document.getElementById('shuicheCanvas');
     if (!c) return;
@@ -274,22 +330,18 @@ function crossfadeBackground(bgVal, isLight, allowParticles = false) {
     const match = rawVal.match(/url\(['"]?(.*?)['"]?\)/);
     if (match) rawVal = match[1];
 
-    // 1. 提取底色
     let underColor = null;
     const colorMatch = rawVal.match(/\+color:([#0-9a-zA-Z(),.]+)/i);
     if (colorMatch) underColor = colorMatch[1];
 
-    // 2. 提取遮罩
     let maskColor = null;
     const maskMatch = rawVal.match(/\+mask:([#0-9a-zA-Z(),.]+)/i);
     if (maskMatch) maskColor = maskMatch[1];
 
-    // 3. 提取混合模式
     let blendMode = null;
     const blendMatch = rawVal.match(/\+blend:([a-z-]+)/i);
     if (blendMatch) blendMode = blendMatch[1];
 
-    // 4. 提取滤镜
     const filters = [];
     const satMatch = rawVal.match(/\+sat:([0-9.]+)/i);
     if (satMatch) filters.push(`saturate(${satMatch[1]})`);
@@ -300,17 +352,14 @@ function crossfadeBackground(bgVal, isLight, allowParticles = false) {
     const brightMatch = rawVal.match(/\+bright:([0-9.]+)/i);
     if (brightMatch) filters.push(`brightness(${brightMatch[1]})`);
 
-    // 5. 提取透明度
     let targetOpacity = '1';
     const opacityMatch = rawVal.match(/@([0-9.]+)/);
     if (opacityMatch) targetOpacity = opacityMatch[1];
 
-    // 6. 提取平铺与尺寸
     const repeatMatch = rawVal.match(/#repeat(?::([^\s@+#'"]+))?/i);
     const isRepeat = !!repeatMatch || /repeat/i.test(rawVal);
     const repeatSize = repeatMatch && repeatMatch[1] ? repeatMatch[1] : 'auto';
 
-    // 7. 提取真实纯净的图片 URL
     let cleanUrl = rawVal.split(/[#+@]/)[0].trim();
     if (cleanUrl.startsWith('http://')) {
         cleanUrl = cleanUrl.replace('http://', 'https://');
@@ -402,7 +451,7 @@ function switchBackground(v, isLight = true, allowParticles = false) {
     }
 }
 
-// 双击屏幕手动切换粒子特效（仅在 BG_TOP_RIGHT_1 / 2 下生效）
+// 双击屏幕手动切换粒子
 (function initDoubleClickToggle() {
     let lastToggle = 0;
     const toggle = e => {
@@ -434,6 +483,8 @@ function switchBackground(v, isLight = true, allowParticles = false) {
     let scene, camera, renderer, animId = null, mouseX = 0, mouseY = 0, halfX = window.innerWidth / 2, halfY = window.innerHeight / 2, clock, geom, posAttr, posArr, velArr, resizeTimeout;
     function init() {
         if (typeof THREE === 'undefined') { setTimeout(init, 50); return; }
+        const canvas = document.getElementById('shuicheCanvas');
+        if (!canvas) return;
         clock = new THREE.Clock();
         geom = new THREE.BufferGeometry();
         posAttr = new THREE.BufferAttribute(new Float32Array(6 * count), 3);
@@ -445,7 +496,7 @@ function switchBackground(v, isLight = true, allowParticles = false) {
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 500);
         camera.position.z = 200;
-        renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('shuicheCanvas'), antialias: true, alpha: true });
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight, false);
         renderer.setClearColor(0, 0);
         for (let i = 0; i < count; i++) {
@@ -462,6 +513,7 @@ function switchBackground(v, isLight = true, allowParticles = false) {
     function debounceResize() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
+            if (!renderer || !camera) return;
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -491,14 +543,18 @@ function switchBackground(v, isLight = true, allowParticles = false) {
     }
     document.addEventListener("visibilitychange", () => {
         if (document.hidden && animId !== null) { cancelAnimationFrame(animId); animId = null; }
-        else if (!document.hidden && animId === null && window.isParticlesEnabled) { clock.start(); anime(); }
+        else if (!document.hidden && animId === null && window.isParticlesEnabled) { clock?.start(); anime(); }
     });
     window.bgEngine = { start: () => { if (animId === null) { clock?.start(); anime(); } }, stop: () => { if (animId !== null) { cancelAnimationFrame(animId); animId = null; } } };
     window.bgRenderer = { setClearColor: (c, a) => renderer?.setClearColor(c, a) };
-    window.addEventListener('DOMContentLoaded', init);
+    if (document.readyState === 'loading') {
+        window.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 })();
 
-function updateGlowingShadow() { glowingCard.style.boxShadow = '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset'; }
+function updateGlowingShadow() { if (glowingCard) glowingCard.style.boxShadow = '0px 10px 15px rgba(0, 0, 0, 0), 0 0 56px #fff inset'; }
 function switchPageTo(page) {
     if (page < 1 || page > 3) return;
     currentPage = page;
@@ -507,8 +563,9 @@ function switchPageTo(page) {
 }
 
 function togglePlay(btn) {
+    if (!audio) return;
     if (audio.paused) {
-        audio.play();
+        audio.play().catch(()=>{});
         btn.classList.add('playing');
         btn.querySelector('.btn-text').innerText = 'Pause';
         isPlaying = true;
@@ -519,11 +576,13 @@ function togglePlay(btn) {
         isPlaying = false;
     }
 }
-audio.addEventListener('ended', () => {
-    isPlaying = false;
-    const btn = document.querySelector('.play-btn');
-    if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
-});
+if (audio) {
+    audio.addEventListener('ended', () => {
+        isPlaying = false;
+        const btn = document.querySelector('.play-btn');
+        if (btn) { btn.classList.remove('playing'); btn.querySelector('.btn-text').innerText = 'Play'; }
+    });
+}
 document.addEventListener('play', e => {
     document.querySelectorAll('audio').forEach(el => {
         if (el !== e.target && !el.paused) {
@@ -538,15 +597,19 @@ document.addEventListener('play', e => {
 }, true);
 
 function loadMusicPlayer() {
-    let indexSong = 0, pendingCurrentTime = 0, isLocked = false, songsLength = null, selectedSong = null, songIsPlayed = false, progress_elmnt = null, songName_elmnt = null, sliderImgs_elmnt = null, singerName_elmnt = null, musicPlayerInfo_elmnt = null, progressBarIsUpdating = false, broadcastGuarantor_elmnt = null, isSwitchingMusic = false, preloadAbortController = null;
     const root = document.querySelector("#root"), mainAudio = document.getElementById('mainAudio');
+    if (!root || !mainAudio) return;
+
+    let indexSong = 0, pendingCurrentTime = 0, isLocked = false, songsLength = null, selectedSong = null, songIsPlayed = false, progress_elmnt = null, songName_elmnt = null, sliderImgs_elmnt = null, singerName_elmnt = null, musicPlayerInfo_elmnt = null, progressBarIsUpdating = false, broadcastGuarantor_elmnt = null, isSwitchingMusic = false, preloadAbortController = null;
     window.musicControls = { playPause: handlePlayMusic, next: () => handleChangeMusic({ isPrev: false }), prev: () => handleChangeMusic({ isPrev: true }) };
+
     function savePlaybackState() {
         if (selectedSong) localStorage.setItem('musicPlayerState', JSON.stringify({ currentSongIndex: indexSong, isPlaying: !selectedSong.paused, volume: selectedSong.volume, currentTime: pendingCurrentTime > 0 ? pendingCurrentTime : selectedSong.currentTime }));
     }
     document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && savePlaybackState());
     window.addEventListener('beforeunload', savePlaybackState);
     setInterval(savePlaybackState, 5000);
+
     function updateUIForSong(idx) {
         updateInfo(songName_elmnt, songs[idx].songName);
         updateInfo(singerName_elmnt, songs[idx].artist);
@@ -587,10 +650,10 @@ function loadMusicPlayer() {
         if (wasPlaying) {
             let p = mainAudio.play();
             if (p !== undefined) {
-                p.then(() => { isSwitchingMusic = false; }).catch(() => { isSwitchingMusic = songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); });
+                p.then(() => { isSwitchingMusic = false; }).catch(() => { isSwitchingMusic = songIsPlayed = false; if (broadcastGuarantor_elmnt) broadcastGuarantor_elmnt.classList.remove("click"); });
             }
             songIsPlayed = true;
-            broadcastGuarantor_elmnt.classList.add("click");
+            if (broadcastGuarantor_elmnt) broadcastGuarantor_elmnt.classList.add("click");
             preloadNextSongHead(indexSong + 1 > songsLength ? 0 : indexSong + 1);
         } else {
             isSwitchingMusic = false;
@@ -602,15 +665,15 @@ function loadMusicPlayer() {
         if (mainAudio.currentTime === mainAudio.duration && mainAudio.duration > 0) { handleChangeMusic({}); return; }
         if (!mainAudio.src || mainAudio.src === window.location.href || mainAudio.src === "") {
             mainAudio.src = songs[indexSong].files.song;
-            mainAudio.play();
+            mainAudio.play().catch(()=>{});
             songIsPlayed = true;
-            broadcastGuarantor_elmnt.classList.add("click");
+            if (broadcastGuarantor_elmnt) broadcastGuarantor_elmnt.classList.add("click");
             preloadNextSongHead(indexSong + 1 > songsLength ? 0 : indexSong + 1);
-        } else mainAudio.paused ? (mainAudio.play(), preloadNextSongHead(indexSong + 1 > songsLength ? 0 : indexSong + 1)) : mainAudio.pause();
+        } else mainAudio.paused ? (mainAudio.play().catch(()=>{}), preloadNextSongHead(indexSong + 1 > songsLength ? 0 : indexSong + 1)) : mainAudio.pause();
     }
     function updateTheProgressBar() {
         const d = this.duration, c = this.currentTime;
-        if (isNaN(d) || d === 0) return;
+        if (isNaN(d) || d === 0 || !progress_elmnt) return;
         const r = c / d;
         setProperty(progress_elmnt, "--scale", r);
         setProperty(progress_elmnt, "--width", `${r * 100}%`);
@@ -625,6 +688,7 @@ function loadMusicPlayer() {
     }
     function handleScrub(e) {
         e.preventDefault();
+        if (!progress_elmnt) return;
         let cx = e.touches ? e.touches[0].clientX : e.clientX;
         const rect = progress_elmnt.getBoundingClientRect(), d = selectedSong.duration;
         if (isNaN(d) || d === 0) return;
@@ -668,8 +732,8 @@ function loadMusicPlayer() {
     mainAudio.addEventListener('ended', () => { if (songIsPlayed) handleChangeMusic({}); });
     mainAudio.addEventListener('loadedmetadata', () => { if (pendingCurrentTime > 0) { mainAudio.currentTime = pendingCurrentTime; pendingCurrentTime = 0; } syncMediaSessionPosition(); });
     mainAudio.addEventListener('durationchange', syncMediaSessionPosition);
-    mainAudio.addEventListener('play', () => { songIsPlayed = true; broadcastGuarantor_elmnt.classList.add("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; syncMediaSessionPosition(); });
-    mainAudio.addEventListener('pause', () => { setTimeout(() => { if (mainAudio.paused && !isSwitchingMusic) { songIsPlayed = false; broadcastGuarantor_elmnt.classList.remove("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'; syncMediaSessionPosition(); } }, 100); });
+    mainAudio.addEventListener('play', () => { songIsPlayed = true; if (broadcastGuarantor_elmnt) broadcastGuarantor_elmnt.classList.add("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; syncMediaSessionPosition(); });
+    mainAudio.addEventListener('pause', () => { setTimeout(() => { if (mainAudio.paused && !isSwitchingMusic) { songIsPlayed = false; if (broadcastGuarantor_elmnt) broadcastGuarantor_elmnt.classList.remove("click"); if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'; syncMediaSessionPosition(); } }, 100); });
     mainAudio.addEventListener('seeked', syncMediaSessionPosition);
     controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt);
     controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt);
@@ -687,17 +751,17 @@ function loadMusicPlayer() {
         else if (target.classList.contains("music-player__playlist-button")) { this.classList.remove("resize"); setProperty(this, "--controls-animate", "up running"); }
     }
     function controlSubtitleAnimation(p, c) {
-        if (c.classList.contains("animate")) return;
+        if (!p || !c || c.classList.contains("animate")) return;
         const el = c.firstChild;
-        if (c.clientWidth > p.clientWidth) { c.appendChild(el.cloneNode(true)); c.classList.add("animate"); }
-        setProperty(c.parentElement, "width", `${el.clientWidth}px`);
+        if (el && c.clientWidth > p.clientWidth) { c.appendChild(el.cloneNode(true)); c.classList.add("animate"); }
+        if (el) setProperty(c.parentElement, "width", `${el.clientWidth}px`);
     }
-    function setProperty(target, prop, val = "") { target.style.setProperty(prop, val); }
-    function updateInfo(target, val) { while (target.firstChild) target.removeChild(target.firstChild); const child = document.createElement("div"); child.appendChild(document.createTextNode(val)); target.appendChild(child); target.classList.remove("animate"); controlSubtitleAnimation(musicPlayerInfo_elmnt, target); }
+    function setProperty(target, prop, val = "") { if (target) target.style.setProperty(prop, val); }
+    function updateInfo(target, val) { if (!target) return; while (target.firstChild) target.removeChild(target.firstChild); const child = document.createElement("div"); child.appendChild(document.createTextNode(val)); target.appendChild(child); target.classList.remove("animate"); controlSubtitleAnimation(musicPlayerInfo_elmnt, target); }
     function handleResize() { setProperty(document.documentElement, "--vH", `${window.innerHeight * 0.01}px`); }
     window.addEventListener("resize", handleResize);
     window.addEventListener("transitionstart", ({ target }) => { if (target === sliderImgs_elmnt) { isLocked = true; setProperty(sliderImgs_elmnt, "will-change", "transform"); } });
-    window.addEventListener("transitionend", ({ target, propertyName }) => { if (target === sliderImgs_elmnt) isLocked = false; if (target.classList.contains("slider") && propertyName === "height") { controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); } });
+    window.addEventListener("transitionend", ({ target, propertyName }) => { if (target === sliderImgs_elmnt) isLocked = false; if (target && target.classList.contains("slider") && propertyName === "height") { controlSubtitleAnimation(musicPlayerInfo_elmnt, songName_elmnt); controlSubtitleAnimation(musicPlayerInfo_elmnt, singerName_elmnt); } });
     const stopScrub = () => { if (progressBarIsUpdating) selectedSong.muted = progressBarIsUpdating = false; };
     const moveScrub = e => { if (progressBarIsUpdating) { e.preventDefault(); handleScrub(e); selectedSong.muted = true; } };
     window.addEventListener("pointerup", stopScrub);
@@ -711,23 +775,15 @@ function initKeyboardControls() {
     document.addEventListener('keydown', e => {
         const key = e.key.toLowerCase();
         
-        // 快捷键修改：
-        // 1. 按 Z 键：猫咪睡觉/唤醒
         if (key === 'z') typeof window.onekoSleep === 'function' && window.onekoSleep();
-        
-        // 2. 按 S 键：循环切换猫咪皮肤
         if (key === 's') typeof window.onekoCycleSkin === 'function' && window.onekoCycleSkin();
-        
-        // 3. 按 K 键：打开/关闭猫咪皮肤选择菜单
         if (key === 'k') typeof window.onekoToggleSkinMenu === 'function' && window.onekoToggleSkinMenu();
         
-        // 4. 按 C 键：打开/关闭 Chattable 聊天室
         if (key === 'c') {
             e.preventDefault();
             toggleChatModal();
         }
         
-        // 5. 按 ESC 键：若聊天室打开则关闭
         if (e.key === 'Escape') {
             const chatModal = document.getElementById('chat-modal');
             if (chatModal && chatModal.classList.contains('active')) {
@@ -737,39 +793,33 @@ function initKeyboardControls() {
 
         if (key === 'n' || key === 'm') triggerConfetti();
         
-        // 按 T 键：遍历所有壁纸
         if (key === 't') {
             currentBgIndex = (currentBgIndex + 1) % bgPresets.length;
             const p = bgPresets[currentBgIndex];
             switchBackground(p.value, p.isLight, p.allowParticles);
         }
-        // 按 1 键：左上角（日间 3 张循环）
         if (key === '1') {
             currentTopLeftStep = (currentTopLeftStep + 1) % bgTopLeftList.length;
             currentBgIndex = currentTopLeftStep;
             const p = bgTopLeftList[currentTopLeftStep];
             switchBackground(p.value, p.isLight, p.allowParticles);
         }
-        // 按 2 键：右上角（夜间 3 张循环）
         if (key === '2') {
             currentTopRightStep = (currentTopRightStep + 1) % bgTopRightList.length;
             currentBgIndex = 3 + currentTopRightStep;
             const p = bgTopRightList[currentTopRightStep];
             switchBackground(p.value, p.isLight, p.allowParticles);
         }
-        // 按 3 键：左下角（WebGL）
         if (key === '3') {
             currentBgIndex = 6;
             switchBackground(BG_BOTTOM_LEFT, true, false);
         }
-        // 按 4 键：右下角（日间 3 张循环）
         if (key === '4') {
             currentBottomRightStep = (currentBottomRightStep + 1) % bgBottomRightList.length;
             currentBgIndex = 7 + currentBottomRightStep;
             const p = bgBottomRightList[currentBottomRightStep];
             switchBackground(p.value, p.isLight, p.allowParticles);
         }
-        // 按 P 键：仅在允许粒子的主题下允许切换
         if (key === 'p') {
             if (isParticlesAllowedOnCurrentBg) {
                 userParticlesPref = !userParticlesPref;
@@ -781,9 +831,11 @@ function initKeyboardControls() {
             if (e.key === 'ArrowRight') switchPageTo(currentPage + 1 > 3 ? 1 : currentPage + 1);
             if (e.key === 'ArrowLeft') switchPageTo(currentPage - 1 < 1 ? 3 : currentPage - 1);
             if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && currentPage === 1) {
-                e.preventDefault();
                 const pv = document.querySelector('#page1 .page-vertical');
-                pv.scrollBy({ top: (e.key === 'ArrowUp' ? -1 : 1) * pv.clientHeight, behavior: 'smooth' });
+                if (pv) {
+                    e.preventDefault();
+                    pv.scrollBy({ top: (e.key === 'ArrowUp' ? -1 : 1) * pv.clientHeight, behavior: 'smooth' });
+                }
             }
         }
         if (window.musicControls) {
@@ -841,17 +893,14 @@ if ('IntersectionObserver' in window && video) {
             }
         });
     }, { threshold: 0.5 });
-    videoObserver.observe(document.getElementById('page1-4'));
+    
+    // 安全查找视频容器（兼容 page1-4 或 page1-5）
+    const videoTarget = document.getElementById('page1-5') || document.getElementById('page1-4');
+    if (videoTarget) {
+        videoObserver.observe(videoTarget);
+    }
 }
 if (video) video.addEventListener('click', () => video.muted = false);
-
-window.onload = function () {
-    loadMusicPlayer();
-    initKeyboardControls();
-    isParticlesAllowedOnCurrentBg = false;
-    updateParticlesDisplay();
-    switchPageTo(2);
-};
 
 const linkCards = document.querySelectorAll('.link-card');
 linkCards.forEach(card => {
@@ -870,222 +919,236 @@ linkCards.forEach(card => {
     card.addEventListener('touchcancel', stopGlitch);
 });
 
-(async function oneko() {
-    const nekoEl = document.createElement("div");
-    const skinList = [
-        { name: "classic", url: "images/oneko-classic.gif" }, { name: "black2", url: "images/black2.png" },
-        { name: "black", url: "images/black.png" }, { name: "calico", url: "images/calico.png" },
-        { name: "blue", url: "images/blue.png" }, { name: "holiday", url: "images/holiday.png" },
-        { name: "kina", url: "images/kina.png" }, { name: "lucky", url: "images/lucky.png" },
-        { name: "marmalade", url: "images/marmalade.png" }, { name: "mermaid", url: "images/mermaid.png" },
-        { name: "usa", url: "images/usa.png" }, { name: "neon", url: "images/neon.png" },
-        { name: "pink", url: "images/pink.png" }, { name: "socks", url: "images/socks.png" },
-        { name: "dog", url: "images/dog.png" }
-    ];
-    const skinMenu = document.createElement("div");
-    skinMenu.id = "oneko-skin-menu";
-    skinMenu.style.cssText = `position:fixed;display:none;grid-template-columns:repeat(5, 32px);grid-template-rows:repeat(3, 32px);gap:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,0.4);border-radius:12px;padding:10px;z-index:10000;box-shadow:0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255,255,255,0.4) inset;`;
-    skinList.forEach(s => {
-        const item = document.createElement("div");
-        item.style.cssText = `width:32px;height:32px;background-color:rgba(0,0,0,0);background-image:url('${s.url}');background-position:-222px -95px;image-rendering:pixelated;cursor:var(--cursor-img),pointer;border-radius:4px;border:2px solid transparent;transition:border 0.2s, transform 0.2s;`;
-        item.title = s.name;
-        item.onmouseenter = () => { item.style.border = "1px solid #c299ff"; item.style.transform = "scale(1.1)"; };
-        item.onmouseleave = () => { item.style.border = "1px solid transparent"; item.style.transform = "scale(1)"; };
-        item.onclick = e => { e.stopPropagation(); changeSkin(s.url); };
-        skinMenu.appendChild(item);
-    });
-    document.body.appendChild(skinMenu);
-    function changeSkin(url) { if (url) { nekoEl.style.backgroundImage = `url('${url}')`; localStorage.setItem("oneko:skin", url); } }
-    function showSkinMenu() {
-        skinMenu.style.display = "grid";
-        const w = skinMenu.offsetWidth, h = skinMenu.offsetHeight, rect = nekoEl.getBoundingClientRect();
-        skinMenu.style.left = rect.left < window.innerWidth / 2 ? `${rect.right + 10}px` : `${rect.left - w - 10}px`;
-        let top = rect.top + (rect.height / 2) - (h / 2);
-        if (top + h > window.innerHeight) top = window.innerHeight - h - 10;
-        skinMenu.style.top = `${Math.max(10, top)}px`;
-    }
-    window.onekoToggleSkinMenu = () => skinMenu.style.display === "grid" ? skinMenu.style.display = "none" : showSkinMenu();
-    window.onekoCycleSkin = () => {
-        const cur = localStorage.getItem("oneko:skin") || "images/oneko-classic.gif";
-        let idx = (skinList.findIndex(s => s.url === cur) + 1) % skinList.length;
-        changeSkin(skinList[idx].url);
-    };
-    document.addEventListener("pointerdown", e => { if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) skinMenu.style.display = "none"; });
-    let nekoPosX = 32, nekoPosY = 32, mousePosX = 32, mousePosY = 32, frameCount = 0, idleTime = 0, idleAnimation = null, idleAnimationFrame = 0, forceSleep = false, grabbing = false, grabStop = true, nudge = false, kuroNeko = false, variant = "classic", lastClickTime = 0;
-    function parseLocalStorage(k, f) { try { const v = JSON.parse(localStorage.getItem(`oneko:${k}`)); return typeof v === typeof f ? v : f; } catch (e) { return f; } }
-    const nekoSpeed = 10, variants = [["classic", "Classic"], ["dog", "Dog"], ["tora", "Tora"], ["maia", "Maia"], ["vaporwave", "Vaporwave"]],
-        spriteSets = { idle: [[-3, -3]], alert: [[-7, -3]], scratchSelf: [[-5, 0], [-6, 0], [-7, 0]], scratchWallN: [[0, 0], [0, -1]], scratchWallS: [[-7, -1], [-6, -2]], scratchWallE: [[-2, -2], [-2, -3]], scratchWallW: [[-4, 0], [-4, -1]], tired: [[-3, -2]], sleeping: [[-2, 0], [-2, -1]], N: [[-1, -2], [-1, -3]], NE: [[0, -2], [0, -3]], E: [[-3, 0], [-3, -1]], SE: [[-5, -1], [-5, -2]], S: [[-6, -3], [-7, -2]], SW: [[-5, -3], [-6, -1]], W: [[-4, -2], [-4, -3]], NW: [[-1, 0], [-1, -1]] };
-    function sleep() { forceSleep = !forceSleep; nudge = false; localStorage.setItem("oneko:forceSleep", forceSleep); if (forceSleep) mousePosX = nekoPosX, mousePosY = nekoPosY; else resetIdleAnimation(); }
-    window.onekoSleep = sleep;
-    function create() {
-        variant = parseLocalStorage("variant", "classic");
-        kuroNeko = parseLocalStorage("kuroneko", false);
-        if (!variants.some(v => v[0] === variant)) variant = "classic";
-        const saved = localStorage.getItem("oneko:skin") || "images/oneko-classic.gif";
-        nekoEl.id = "oneko";
-        nekoEl.style.width = nekoEl.style.height = "32px";
-        nekoEl.style.position = "fixed";
-        nekoEl.style.backgroundImage = `url('${saved}')`;
-        nekoEl.style.imageRendering = "pixelated";
-        nekoEl.style.left = `${nekoPosX - 16}px`;
-        nekoEl.style.top = `${nekoPosY - 16}px`;
-        nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
-        nekoEl.style.zIndex = "9999";
-        nekoEl.style.touchAction = nekoEl.style.userSelect = nekoEl.style.webkitUserSelect = "none";
-        document.body.appendChild(nekoEl);
-        function updateMousePos(e) {
-            if (skinMenu.style.display === "grid") {
-                const rect = skinMenu.getBoundingClientRect();
-                if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) return;
-            }
-            let offL = window.visualViewport?.offsetLeft || 0, offT = window.visualViewport?.offsetTop || 0;
-            mousePosX = e.clientX + offL;
-            mousePosY = e.clientY + offT;
-        }
-        window.addEventListener("mousemove", e => !forceSleep && updateMousePos(e));
-        window.addEventListener("pointermove", e => !forceSleep && e.pointerType === "touch" && updateMousePos(e));
-        function handleResize() {
-            if (window.visualViewport) {
-                let offL = window.visualViewport.offsetLeft, offT = window.visualViewport.offsetTop, w = window.visualViewport.width, h = window.visualViewport.height;
-                if (mousePosX < offL || mousePosX > offL + w || mousePosY < offT || mousePosY > offT + h) { mousePosX = offL + w / 2; mousePosY = offT + h / 2; }
-            }
-            if (forceSleep) { forceSleep = false; sleep(); }
-        }
-        window.addEventListener("resize", handleResize);
-        if (window.visualViewport) { window.visualViewport.addEventListener("resize", handleResize); window.visualViewport.addEventListener("scroll", handleResize); }
-        let clickTimeout = null;
-        nekoEl.addEventListener("pointerdown", e => {
-            if (e.button !== 0 && e.pointerType === "mouse") return;
-            e.preventDefault();
-            grabbing = true;
-            let isDragging = false;
-            try { nekoEl.setPointerCapture?.(e.pointerId); } catch (_) { }
-            let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval;
-            const moveHandler = e => {
-                e.preventDefault();
-                const dx = e.clientX - startX, dy = e.clientY - startY, adx = Math.abs(dx), ady = Math.abs(dy);
-                if (adx > 5 || ady > 5) isDragging = true;
-                if (adx > ady && adx > 10) setSprite(dx > 0 ? "scratchWallW" : "scratchWallE", frameCount);
-                else if (ady > adx && dy > 10) setSprite(dy > 0 ? "scratchWallN" : "scratchWallS", frameCount);
-                if (grabStop || adx > 10 || ady > 10 || Math.sqrt(dx ** 2 + dy ** 2) > 10) {
-                    grabStop = false;
-                    clearTimeout(grabInterval);
-                    grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150);
-                }
-                nekoPosX = startNekoX + dx;
-                nekoPosY = startNekoY + dy;
-                nekoEl.style.left = `${nekoPosX - 16}px`;
-                nekoEl.style.top = `${nekoPosY - 16}px`;
-            };
-            const upHandler = e => {
-                grabbing = false;
-                nudge = true;
-                resetIdleAnimation();
-                window.removeEventListener("pointermove", moveHandler);
-                window.removeEventListener("pointerup", upHandler);
-                window.removeEventListener("pointercancel", upHandler);
-                try { nekoEl.releasePointerCapture?.(e.pointerId); } catch (_) { }
-                if (!isDragging) {
-                    const cur = Date.now();
-                    if (cur - lastClickTime < 300) { clearTimeout(clickTimeout); sleep(); lastClickTime = 0; }
-                    else { lastClickTime = cur; clickTimeout = setTimeout(() => { if (forceSleep) sleep(); showSkinMenu(); }, 300); }
-                }
-            };
-            window.addEventListener("pointermove", moveHandler, { passive: false });
-            window.addEventListener("pointerup", upHandler);
-            window.addEventListener("pointercancel", upHandler);
+// Oneko 猫咪跟随模块（自适配生命周期）
+(function onekoInit() {
+    function startOneko() {
+        const nekoEl = document.createElement("div");
+        const skinList = [
+            { name: "classic", url: "images/oneko-classic.gif" }, { name: "black2", url: "images/black2.png" },
+            { name: "black", url: "images/black.png" }, { name: "calico", url: "images/calico.png" },
+            { name: "blue", url: "images/blue.png" }, { name: "holiday", url: "images/holiday.png" },
+            { name: "kina", url: "images/kina.png" }, { name: "lucky", url: "images/lucky.png" },
+            { name: "marmalade", url: "images/marmalade.png" }, { name: "mermaid", url: "images/mermaid.png" },
+            { name: "usa", url: "images/usa.png" }, { name: "neon", url: "images/neon.png" },
+            { name: "pink", url: "images/pink.png" }, { name: "socks", url: "images/socks.png" },
+            { name: "dog", url: "images/dog.png" }
+        ];
+        const skinMenu = document.createElement("div");
+        skinMenu.id = "oneko-skin-menu";
+        skinMenu.style.cssText = `position:fixed;display:none;grid-template-columns:repeat(5, 32px);grid-template-rows:repeat(3, 32px);gap:8px;background:rgba(255,255,255,0.15);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border:1px solid rgba(255,255,255,0.4);border-radius:12px;padding:10px;z-index:10000;box-shadow:0 4px 15px rgba(0,0,0,0), 0 0 90px rgba(255,255,255,0.4) inset;`;
+        skinList.forEach(s => {
+            const item = document.createElement("div");
+            item.style.cssText = `width:32px;height:32px;background-color:rgba(0,0,0,0);background-image:url('${s.url}');background-position:-222px -95px;image-rendering:pixelated;cursor:var(--cursor-img),pointer;border-radius:4px;border:2px solid transparent;transition:border 0.2s, transform 0.2s;`;
+            item.title = s.name;
+            item.onmouseenter = () => { item.style.border = "1px solid #c299ff"; item.style.transform = "scale(1.1)"; };
+            item.onmouseleave = () => { item.style.border = "1px solid transparent"; item.style.transform = "scale(1)"; };
+            item.onclick = e => { e.stopPropagation(); changeSkin(s.url); };
+            skinMenu.appendChild(item);
         });
-        nekoEl.addEventListener("contextmenu", e => { e.preventDefault(); kuroNeko = !kuroNeko; localStorage.setItem("oneko:kuroneko", kuroNeko); nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; });
-        window.onekoInterval = setInterval(frame, 100);
-    }
-    function getSprite(name, frame) { return spriteSets[name][frame % spriteSets[name].length]; }
-    function setSprite(name, frame) { const s = getSprite(name, frame); nekoEl.style.backgroundPosition = `${s[0] * 32}px ${s[1] * 32}px`; }
-    function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
-    function idle() {
-        idleTime += 1;
-        if (idleTime > 10 && Math.floor(Math.random() * 25) === 0 && idleAnimation == null) {
-            let av = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"], scW = false, scN = false, scE = false, scS = false;
-            let offL = window.visualViewport?.offsetLeft || 0, offT = window.visualViewport?.offsetTop || 0;
-            let vW = window.visualViewport?.width || window.innerWidth, vH = window.visualViewport?.height || window.innerHeight;
-            if (nekoPosX < offL + 32) scW = true;
-            if (nekoPosY < offT + 32) scN = true;
-            if (nekoPosX > offL + vW - 32) scE = true;
-            if (nekoPosY > offT + vH - 32) scS = true;
-            document.querySelectorAll('.glowing-card, .spotify-card, .link-card').forEach(card => {
-                const r = card.getBoundingClientRect();
-                if (!r.width || !r.height) return;
-                const rL = r.left + offL, rR = r.right + offL, rT = r.top + offT, rB = r.bottom + offT, t = 32;
-                if (nekoPosY >= rT - t && nekoPosY <= rB + t) {
-                    if (Math.abs(nekoPosX - rL) <= t) { if (nekoPosX <= rL) scE = true; else scW = true; }
-                    if (Math.abs(nekoPosX - rR) <= t) { if (nekoPosX >= rR) scW = true; else scE = true; }
-                }
-                if (nekoPosX >= rL - t && nekoPosX <= rR + t) {
-                    if (Math.abs(nekoPosY - rT) <= t) { if (nekoPosY <= rT) scS = true; else scN = true; }
-                    if (Math.abs(nekoPosY - rB) <= t) { if (nekoPosY >= rB) scN = true; else scS = true; }
-                }
-            });
-            let walls = [];
-            if (scW) walls.push("scratchWallW");
-            if (scN) walls.push("scratchWallN");
-            if (scE) walls.push("scratchWallE");
-            if (scS) walls.push("scratchWallS");
-            idleAnimation = walls.length > 0 && Math.random() < 0.4 ? walls[Math.floor(Math.random() * walls.length)] : av[Math.floor(Math.random() * av.length)];
+        document.body.appendChild(skinMenu);
+
+        function changeSkin(url) { if (url) { nekoEl.style.backgroundImage = `url('${url}')`; localStorage.setItem("oneko:skin", url); } }
+        function showSkinMenu() {
+            skinMenu.style.display = "grid";
+            const w = skinMenu.offsetWidth, h = skinMenu.offsetHeight, rect = nekoEl.getBoundingClientRect();
+            skinMenu.style.left = rect.left < window.innerWidth / 2 ? `${rect.right + 10}px` : `${rect.left - w - 10}px`;
+            let top = rect.top + (rect.height / 2) - (h / 2);
+            if (top + h > window.innerHeight) top = window.innerHeight - h - 10;
+            skinMenu.style.top = `${Math.max(10, top)}px`;
         }
-        if (forceSleep) idleAnimation = "sleeping";
-        switch (idleAnimation) {
-            case "sleeping":
-                if (idleAnimationFrame < 8 && nudge && forceSleep) { setSprite("idle", 0); break; }
-                else if (nudge) { nudge = false; resetIdleAnimation(); }
-                if (idleAnimationFrame < 8) { setSprite("tired", 0); break; }
-                setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
-                if (idleAnimationFrame > 192 && !forceSleep) resetIdleAnimation();
-                break;
-            case "scratchWallN":
-            case "scratchWallS":
-            case "scratchWallE":
-            case "scratchWallW":
-            case "scratchSelf":
-                setSprite(idleAnimation, idleAnimationFrame);
-                if (idleAnimationFrame > 9) resetIdleAnimation();
-                break;
-            default:
-                setSprite("idle", 0);
-                return;
-        }
-        idleAnimationFrame += 1;
-    }
-    function frame() {
-        frameCount += 1;
-        if (grabbing) { grabStop && setSprite("alert", 0); return; }
-        const dx = nekoPosX - mousePosX, dy = nekoPosY - mousePosY, dist = Math.sqrt(dx ** 2 + dy ** 2);
-        if (forceSleep && Math.abs(dy) < nekoSpeed && Math.abs(dx) < nekoSpeed) {
-            nekoPosX = mousePosX;
-            nekoPosY = mousePosY;
+        window.onekoToggleSkinMenu = () => skinMenu.style.display === "grid" ? skinMenu.style.display = "none" : showSkinMenu();
+        window.onekoCycleSkin = () => {
+            const cur = localStorage.getItem("oneko:skin") || "images/oneko-classic.gif";
+            let idx = (skinList.findIndex(s => s.url === cur) + 1) % skinList.length;
+            changeSkin(skinList[idx].url);
+        };
+        document.addEventListener("pointerdown", e => { if (skinMenu.style.display === "grid" && e.target !== nekoEl && !skinMenu.contains(e.target)) skinMenu.style.display = "none"; });
+        
+        let nekoPosX = 32, nekoPosY = 32, mousePosX = 32, mousePosY = 32, frameCount = 0, idleTime = 0, idleAnimation = null, idleAnimationFrame = 0, forceSleep = false, grabbing = false, grabStop = true, nudge = false, kuroNeko = false, variant = "classic", lastClickTime = 0;
+        function parseLocalStorage(k, f) { try { const v = JSON.parse(localStorage.getItem(`oneko:${k}`)); return typeof v === typeof f ? v : f; } catch (e) { return f; } }
+        const nekoSpeed = 10, variants = [["classic", "Classic"], ["dog", "Dog"], ["tora", "Tora"], ["maia", "Maia"], ["vaporwave", "Vaporwave"]],
+            spriteSets = { idle: [[-3, -3]], alert: [[-7, -3]], scratchSelf: [[-5, 0], [-6, 0], [-7, 0]], scratchWallN: [[0, 0], [0, -1]], scratchWallS: [[-7, -1], [-6, -2]], scratchWallE: [[-2, -2], [-2, -3]], scratchWallW: [[-4, 0], [-4, -1]], tired: [[-3, -2]], sleeping: [[-2, 0], [-2, -1]], N: [[-1, -2], [-1, -3]], NE: [[0, -2], [0, -3]], E: [[-3, 0], [-3, -1]], SE: [[-5, -1], [-5, -2]], S: [[-6, -3], [-7, -2]], SW: [[-5, -3], [-6, -1]], W: [[-4, -2], [-4, -3]], NW: [[-1, 0], [-1, -1]] };
+        function sleep() { forceSleep = !forceSleep; nudge = false; localStorage.setItem("oneko:forceSleep", forceSleep); if (forceSleep) mousePosX = nekoPosX, mousePosY = nekoPosY; else resetIdleAnimation(); }
+        window.onekoSleep = sleep;
+        
+        function create() {
+            variant = parseLocalStorage("variant", "classic");
+            kuroNeko = parseLocalStorage("kuroneko", false);
+            if (!variants.some(v => v[0] === variant)) variant = "classic";
+            const saved = localStorage.getItem("oneko:skin") || "images/oneko-classic.gif";
+            nekoEl.id = "oneko";
+            nekoEl.style.width = nekoEl.style.height = "32px";
+            nekoEl.style.position = "fixed";
+            nekoEl.style.backgroundImage = `url('${saved}')`;
+            nekoEl.style.imageRendering = "pixelated";
             nekoEl.style.left = `${nekoPosX - 16}px`;
             nekoEl.style.top = `${nekoPosY - 16}px`;
-            idle();
-            return;
+            nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none";
+            nekoEl.style.zIndex = "9999";
+            nekoEl.style.touchAction = nekoEl.style.userSelect = nekoEl.style.webkitUserSelect = "none";
+            document.body.appendChild(nekoEl);
+            
+            function updateMousePos(e) {
+                if (skinMenu.style.display === "grid") {
+                    const rect = skinMenu.getBoundingClientRect();
+                    if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) return;
+                }
+                let offL = window.visualViewport?.offsetLeft || 0, offT = window.visualViewport?.offsetTop || 0;
+                mousePosX = e.clientX + offL;
+                mousePosY = e.clientY + offT;
+            }
+            window.addEventListener("mousemove", e => !forceSleep && updateMousePos(e));
+            window.addEventListener("pointermove", e => !forceSleep && e.pointerType === "touch" && updateMousePos(e));
+            function handleResize() {
+                if (window.visualViewport) {
+                    let offL = window.visualViewport.offsetLeft, offT = window.visualViewport.offsetTop, w = window.visualViewport.width, h = window.visualViewport.height;
+                    if (mousePosX < offL || mousePosX > offL + w || mousePosY < offT || mousePosY > offT + h) { mousePosX = offL + w / 2; mousePosY = offT + h / 2; }
+                }
+                if (forceSleep) { forceSleep = false; sleep(); }
+            }
+            window.addEventListener("resize", handleResize);
+            if (window.visualViewport) { window.visualViewport.addEventListener("resize", handleResize); window.visualViewport.addEventListener("scroll", handleResize); }
+            
+            let clickTimeout = null;
+            nekoEl.addEventListener("pointerdown", e => {
+                if (e.button !== 0 && e.pointerType === "mouse") return;
+                e.preventDefault();
+                grabbing = true;
+                let isDragging = false;
+                try { nekoEl.setPointerCapture?.(e.pointerId); } catch (_) { }
+                let startX = e.clientX, startY = e.clientY, startNekoX = nekoPosX, startNekoY = nekoPosY, grabInterval;
+                const moveHandler = e => {
+                    e.preventDefault();
+                    const dx = e.clientX - startX, dy = e.clientY - startY, adx = Math.abs(dx), ady = Math.abs(dy);
+                    if (adx > 5 || ady > 5) isDragging = true;
+                    if (adx > ady && adx > 10) setSprite(dx > 0 ? "scratchWallW" : "scratchWallE", frameCount);
+                    else if (ady > adx && dy > 10) setSprite(dy > 0 ? "scratchWallN" : "scratchWallS", frameCount);
+                    if (grabStop || adx > 10 || ady > 10 || Math.sqrt(dx ** 2 + dy ** 2) > 10) {
+                        grabStop = false;
+                        clearTimeout(grabInterval);
+                        grabInterval = setTimeout(() => { grabStop = true; nudge = false; startX = e.clientX; startY = e.clientY; startNekoX = nekoPosX; startNekoY = nekoPosY; }, 150);
+                    }
+                    nekoPosX = startNekoX + dx;
+                    nekoPosY = startNekoY + dy;
+                    nekoEl.style.left = `${nekoPosX - 16}px`;
+                    nekoEl.style.top = `${nekoPosY - 16}px`;
+                };
+                const upHandler = e => {
+                    grabbing = false;
+                    nudge = true;
+                    resetIdleAnimation();
+                    window.removeEventListener("pointermove", moveHandler);
+                    window.removeEventListener("pointerup", upHandler);
+                    window.removeEventListener("pointercancel", upHandler);
+                    try { nekoEl.releasePointerCapture?.(e.pointerId); } catch (_) { }
+                    if (!isDragging) {
+                        const cur = Date.now();
+                        if (cur - lastClickTime < 300) { clearTimeout(clickTimeout); sleep(); lastClickTime = 0; }
+                        else { lastClickTime = cur; clickTimeout = setTimeout(() => { if (forceSleep) sleep(); showSkinMenu(); }, 300); }
+                    }
+                };
+                window.addEventListener("pointermove", moveHandler, { passive: false });
+                window.addEventListener("pointerup", upHandler);
+                window.addEventListener("pointercancel", upHandler);
+            });
+            nekoEl.addEventListener("contextmenu", e => { e.preventDefault(); kuroNeko = !kuroNeko; localStorage.setItem("oneko:kuroneko", kuroNeko); nekoEl.style.filter = kuroNeko ? "invert(100%)" : "none"; });
+            window.onekoInterval = setInterval(frame, 100);
         }
-        if ((dist < nekoSpeed || dist < 48) && !forceSleep) { idle(); return; }
-        idleAnimation = null;
-        idleAnimationFrame = 0;
-        if (idleTime > 1) { setSprite("alert", 0); idleTime = Math.min(idleTime, 7) - 1; return; }
-        let dir = dy / dist > 0.5 ? "N" : "";
-        dir += dy / dist < -0.5 ? "S" : "";
-        dir += dx / dist > 0.5 ? "W" : "";
-        dir += dx / dist < -0.5 ? "E" : "";
-        if (!dir) dir = "idle";
-        setSprite(dir, frameCount);
-        nekoPosX -= (dx / dist) * nekoSpeed;
-        nekoPosY -= (dy / dist) * nekoSpeed;
-        let offL = window.visualViewport?.offsetLeft || 0, offT = window.visualViewport?.offsetTop || 0;
-        let vW = window.visualViewport?.width || window.innerWidth, vH = window.visualViewport?.height || window.innerHeight;
-        nekoPosX = Math.min(Math.max(offL + 16, nekoPosX), offL + vW - 16);
-        nekoPosY = Math.min(Math.max(offT + 16, nekoPosY), offT + vH - 16);
-        nekoEl.style.left = `${nekoPosX - 16}px`;
-        nekoEl.style.top = `${nekoPosY - 16}px`;
+        function getSprite(name, frame) { return spriteSets[name][frame % spriteSets[name].length]; }
+        function setSprite(name, frame) { const s = getSprite(name, frame); nekoEl.style.backgroundPosition = `${s[0] * 32}px ${s[1] * 32}px`; }
+        function resetIdleAnimation() { idleAnimation = null; idleAnimationFrame = 0; }
+        function idle() {
+            idleTime += 1;
+            if (idleTime > 10 && Math.floor(Math.random() * 25) === 0 && idleAnimation == null) {
+                let av = ["scratchSelf", "sleeping", "scratchSelf", "sleeping", "scratchSelf"], scW = false, scN = false, scE = false, scS = false;
+                let offL = window.visualViewport?.offsetLeft || 0, offT = window.visualViewport?.offsetTop || 0;
+                let vW = window.visualViewport?.width || window.innerWidth, vH = window.visualViewport?.height || window.innerHeight;
+                if (nekoPosX < offL + 32) scW = true;
+                if (nekoPosY < offT + 32) scN = true;
+                if (nekoPosX > offL + vW - 32) scE = true;
+                if (nekoPosY > offT + vH - 32) scS = true;
+                document.querySelectorAll('.glowing-card, .spotify-card, .link-card').forEach(card => {
+                    const r = card.getBoundingClientRect();
+                    if (!r.width || !r.height) return;
+                    const rL = r.left + offL, rR = r.right + offL, rT = r.top + offT, rB = r.bottom + offT, t = 32;
+                    if (nekoPosY >= rT - t && nekoPosY <= rB + t) {
+                        if (Math.abs(nekoPosX - rL) <= t) { if (nekoPosX <= rL) scE = true; else scW = true; }
+                        if (Math.abs(nekoPosX - rR) <= t) { if (nekoPosX >= rR) scW = true; else scE = true; }
+                    }
+                    if (nekoPosX >= rL - t && nekoPosX <= rR + t) {
+                        if (Math.abs(nekoPosY - rT) <= t) { if (nekoPosY <= rT) scS = true; else scN = true; }
+                        if (Math.abs(nekoPosY - rB) <= t) { if (nekoPosY >= rB) scN = true; else scS = true; }
+                    }
+                });
+                let walls = [];
+                if (scW) walls.push("scratchWallW");
+                if (scN) walls.push("scratchWallN");
+                if (scE) walls.push("scratchWallE");
+                if (scS) walls.push("scratchWallS");
+                idleAnimation = walls.length > 0 && Math.random() < 0.4 ? walls[Math.floor(Math.random() * walls.length)] : av[Math.floor(Math.random() * av.length)];
+            }
+            if (forceSleep) idleAnimation = "sleeping";
+            switch (idleAnimation) {
+                case "sleeping":
+                    if (idleAnimationFrame < 8 && nudge && forceSleep) { setSprite("idle", 0); break; }
+                    else if (nudge) { nudge = false; resetIdleAnimation(); }
+                    if (idleAnimationFrame < 8) { setSprite("tired", 0); break; }
+                    setSprite("sleeping", Math.floor(idleAnimationFrame / 4));
+                    if (idleAnimationFrame > 192 && !forceSleep) resetIdleAnimation();
+                    break;
+                case "scratchWallN":
+                case "scratchWallS":
+                case "scratchWallE":
+                case "scratchWallW":
+                case "scratchSelf":
+                    setSprite(idleAnimation, idleAnimationFrame);
+                    if (idleAnimationFrame > 9) resetIdleAnimation();
+                    break;
+                default:
+                    setSprite("idle", 0);
+                    return;
+            }
+            idleAnimationFrame += 1;
+        }
+        function frame() {
+            frameCount += 1;
+            if (grabbing) { grabStop && setSprite("alert", 0); return; }
+            const dx = nekoPosX - mousePosX, dy = nekoPosY - mousePosY, dist = Math.sqrt(dx ** 2 + dy ** 2);
+            if (forceSleep && Math.abs(dy) < nekoSpeed && Math.abs(dx) < nekoSpeed) {
+                nekoPosX = mousePosX;
+                nekoPosY = mousePosY;
+                nekoEl.style.left = `${nekoPosX - 16}px`;
+                nekoEl.style.top = `${nekoPosY - 16}px`;
+                idle();
+                return;
+            }
+            if ((dist < nekoSpeed || dist < 48) && !forceSleep) { idle(); return; }
+            idleAnimation = null;
+            idleAnimationFrame = 0;
+            if (idleTime > 1) { setSprite("alert", 0); idleTime = Math.min(idleTime, 7) - 1; return; }
+            let dir = dy / dist > 0.5 ? "N" : "";
+            dir += dy / dist < -0.5 ? "S" : "";
+            dir += dx / dist > 0.5 ? "W" : "";
+            dir += dx / dist < -0.5 ? "E" : "";
+            if (!dir) dir = "idle";
+            setSprite(dir, frameCount);
+            nekoPosX -= (dx / dist) * nekoSpeed;
+            nekoPosY -= (dy / dist) * nekoSpeed;
+            let offL = window.visualViewport?.offsetLeft || 0, offT = window.visualViewport?.offsetTop || 0;
+            let vW = window.visualViewport?.width || window.innerWidth, vH = window.visualViewport?.height || window.innerHeight;
+            nekoPosX = Math.min(Math.max(offL + 16, nekoPosX), offL + vW - 16);
+            nekoPosY = Math.min(Math.max(offT + 16, nekoPosY), offT + vH - 16);
+            nekoEl.style.left = `${nekoPosX - 16}px`;
+            nekoEl.style.top = `${nekoPosY - 16}px`;
+        }
+        create();
     }
-    create();
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startOneko);
+    } else {
+        startOneko();
+    }
 })();
 
 class CyberCat {
@@ -1151,10 +1214,15 @@ let cyberCat = null;
 function spawnCyberCat() { cyberCat = new CyberCat(0, 50); }
 function checkMouse(e) { cyberCat?.mouseCheck(e.clientX, e.clientY); }
 function windowChange() { cyberCat?.teleportRandom(); }
-window.addEventListener("DOMContentLoaded", () => {
+
+if (document.readyState === 'loading') {
+    window.addEventListener("DOMContentLoaded", () => {
+        spawnCyberCat();
+        document.addEventListener("mousemove", checkMouse);
+        window.addEventListener("resize", windowChange);
+    });
+} else {
     spawnCyberCat();
     document.addEventListener("mousemove", checkMouse);
     window.addEventListener("resize", windowChange);
-});
-chattable.initialize()
-
+}
