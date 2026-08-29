@@ -538,7 +538,7 @@ canvas {
 .bullet::before {
     content: "";
     position: absolute;
-    inset: -20px 0
+    inset: -25px 0
 }
 
 .bullet.active {
