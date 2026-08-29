@@ -6,7 +6,8 @@
     z-index: 0
 }
 :root {
-    --scrollbar-thumb: rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+    --scrollbar-thumb: rgba(0, 0, 0, 0.4); 
     --cursor-img: url('../images/fish-3.webp')32 32;
     --glow-sens: 30;
     --dark: hsl(260,25%,10%);
@@ -37,6 +38,8 @@
 
 
 .light {
+    color-scheme: light;
+    --scrollbar-thumb: rgba(0, 0, 0, 0.4); 
     --cursor-img: url('../images/fish-1.webp')32 32;
     --card-bg: linear-gradient(8deg,color-mix(in hsl,hsl(260,25%,95%),var(--dark) 2.5%) 75%,hsl(260,25%,95%) 75.5%);
     --blend: darken;
