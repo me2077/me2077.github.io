@@ -94,21 +94,13 @@ window.initWebGLShaderBg=function(container){
    ========================================================================== */
 const BG_TOP_LEFT_1 = 'https://file.garden/ZWlUCY4S7Xz2vypS/archived%20backgrounds/colours/green/dddf143.jpg#repeat+mask:rgba(127,225,221,0.2)';
 const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/397.GIF#repeat+mask:rgba(127,225,221,0.2)';
-
 const BG_TOP_LEFT_3 = 'https://textures.neocities.org/textures/fabric/rope195.jpg#repeat+mask:rgba(127,225,221,0.2)';
 
-
-
 const BG_TOP_RIGHT_1 = 'https://artwork.neocities.org/bgs/stardown.gif#repeat';
-
 const BG_TOP_RIGHT_2 = 'https://artwork.neocities.org/bgs/nightani.gif#repeat';
-
 const BG_TOP_RIGHT_3 = 'https://artwork.neocities.org/bgs/movingstars.gif#repeat';
 
-
-
 const BG_BOTTOM_LEFT = 'webgl-shader';
-
 
 const BG_BOTTOM_RIGHT_1 = 'https://textures.neocities.org/textures/stone-and-brick/GRYCON7.JPG#repeat+mask:rgba(127,225,221,0.2)';
 const BG_BOTTOM_RIGHT_2 = 'https://textures.neocities.org/textures/wood/woodgrain2195.jpg#repeat+mask:rgba(127,225,221,0.2)';
@@ -153,44 +145,54 @@ const bgPresets = [
     ...bgBottomRightList
 ];
 
-
-// 标记是否已经动态加载过 Chattable 脚本
+/* ==========================================================================
+   Chattable 聊天室：空闲预加载 + 悬停预热 + 点击秒开
+   ========================================================================== */
 let isChattableScriptLoaded = false;
 
-// 全局切换聊天室打开/关闭（真正点击时才加载脚本与 iframe）
+// 1. 动态加载 JS 脚本
+function loadChattableScript() {
+    if (isChattableScriptLoaded) return;
+    const script = document.createElement('script');
+    script.src = 'https://iframe.chat/scripts/main.min.js';
+    script.async = true;
+    script.onload = () => {
+        isChattableScriptLoaded = true;
+        if (typeof window.chattable !== 'undefined' && window.chattable.initialize) {
+            try { window.chattable.initialize(); } catch (e) {}
+        }
+    };
+    document.body.appendChild(script);
+}
+
+// 2. 浏览器空闲时自动在后台静默预加载 JS
+if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => loadChattableScript(), { timeout: 3000 });
+} else {
+    window.addEventListener('load', () => {
+        setTimeout(loadChattableScript, 2000);
+    });
+}
+
+// 3. 全局切换聊天室打开/关闭
 function toggleChatModal() {
     const chatModal = document.getElementById('chat-modal');
     const iframe = document.getElementById('chattable-iframe');
     
     if (!chatModal) return;
-
     const isOpening = !chatModal.classList.contains('active');
 
     if (isOpening) {
-        // 首次打开时，动态载入 main.min.js
+        // 如果脚本还未载入完毕，立即兜底触发加载
         if (!isChattableScriptLoaded) {
-            const script = document.createElement('script');
-            script.src = 'https://iframe.chat/scripts/main.min.js';
-            script.async = true;
-            script.onload = () => {
-                isChattableScriptLoaded = true;
-                if (typeof window.chattable !== 'undefined' && window.chattable.initialize) {
-                    try { window.chattable.initialize(); } catch (e) {}
-                }
-            };
-            document.body.appendChild(script);
+            loadChattableScript();
         }
-
-        // 首次打开时，给 iframe 赋值 src 开始加载聊天页面
+        // 激活 iframe 加载聊天室网页
         if (iframe && !iframe.src) {
-            const dataSrc = iframe.getAttribute('data-src');
-            if (dataSrc) {
-                iframe.src = dataSrc;
-            }
+            const dataSrc = iframe.getAttribute('data-src') || iframe.getAttribute('src');
+            if (dataSrc) iframe.src = dataSrc;
         }
     }
-
-    // 切换弹窗显示/隐藏
     chatModal.classList.toggle('active');
 }
 
@@ -278,11 +280,20 @@ document.addEventListener('DOMContentLoaded', () => {
         clipboard.on('success', () => { alert('👉微信号复制成功,即将前往微信！'); window.location.href = 'wechat://'; });
     }
 
-    // Chattable 弹窗绑定
+    // Chattable 弹窗按钮交互绑定（含悬停预热）
     const chatModal = document.getElementById('chat-modal');
     const openChatBtn = document.getElementById('btn-open-chat');
 
     if (openChatBtn) {
+        // 鼠标悬停时预先加载 iframe 内容，消除点击后的加载白屏
+        openChatBtn.addEventListener('mouseenter', () => {
+            const iframe = document.getElementById('chattable-iframe');
+            if (iframe && !iframe.src) {
+                const dataSrc = iframe.getAttribute('data-src');
+                if (dataSrc) iframe.src = dataSrc;
+            }
+        }, { once: true });
+
         openChatBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             toggleChatModal();
@@ -297,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 初始化核心模块（不再死等 window.onload）
+    // 初始化核心模块
     loadMusicPlayer();
     initKeyboardControls();
     isParticlesAllowedOnCurrentBg = false;
@@ -894,7 +905,6 @@ if ('IntersectionObserver' in window && video) {
         });
     }, { threshold: 0.5 });
     
-    // 安全查找视频容器（兼容 page1-4 或 page1-5）
     const videoTarget = document.getElementById('page1-5') || document.getElementById('page1-4');
     if (videoTarget) {
         videoObserver.observe(videoTarget);
@@ -919,7 +929,7 @@ linkCards.forEach(card => {
     card.addEventListener('touchcancel', stopGlitch);
 });
 
-// Oneko 猫咪跟随模块（自适配生命周期）
+// Oneko 猫咪跟随模块
 (function onekoInit() {
     function startOneko() {
         const nekoEl = document.createElement("div");
