@@ -1317,7 +1317,7 @@ a,button,.theme-toggle,.day-toggle,.profile-pic,.link-card,.spotify-card,.play-b
     visibility: hidden;
     pointer-events: none;
     /* 关闭时平滑淡出 */
-    transition: opacity 0.6s ease, visibility 0.6s ease;
+    transition: opacity 1.2s ease, visibility 1.2s ease;
     transform: translateZ(0);
 }
 
