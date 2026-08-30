@@ -1,7 +1,7 @@
 #bg-container .init-bg {
     background:
       linear-gradient(rgba(127, 225, 221, 0.2), rgba(127, 225, 221, 0.2)),
-      url('hhttps://dogpan.com/f/2R58S8/tumblr_inline_mlnm9mP2bx1qz4rgp.png') repeat;
+      url('https://dogpan.com/f/2R58S8/tumblr_inline_mlnm9mP2bx1qz4rgp.png') repeat;
     opacity: 1;
     z-index: 0
 }
