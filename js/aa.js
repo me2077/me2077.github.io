@@ -86,15 +86,19 @@ window.initWebGLShaderBg=function(container){
 };
 
 /* ==========================================================================
-   壁纸变量配置：
-   - 左上角（日间 3 张）：BG_TOP_LEFT_1 / BG_TOP_LEFT_2 / BG_TOP_LEFT_3
-   - 右上角（夜间 3 张）：BG_TOP_RIGHT_1 / BG_TOP_RIGHT_2 / BG_TOP_RIGHT_3
-   - 左下角：BG_BOTTOM_LEFT
-   - 右下角（日间 3 张）：BG_BOTTOM_RIGHT_1 / BG_BOTTOM_RIGHT_2 / BG_BOTTOM_RIGHT_3
+平铺尺寸   #repeat:32px
+饱和度     +sat:0.5
+灰度       +gray:0.2
+对比度     +contrast:0.8
+亮度       +bright:1.2
+透明度     @0.8
    ========================================================================== */
-const BG_TOP_LEFT_1 = 'https://file.garden/ZWlUCY4S7Xz2vypS/archived%20backgrounds/colours/green/dddf143.jpg#repeat+mask:rgba(127,225,221,0.2)';
-const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/397.GIF#repeat+mask:rgba(127,225,221,0.2)';
-const BG_TOP_LEFT_3 = 'https://textures.neocities.org/textures/fabric/rope195.jpg#repeat+mask:rgba(127,225,221,0.2)';
+
+
+const BG_TOP_LEFT_1 = 'https://textures.neocities.org/textures/wood/OAKQRTRT.png#repeat+mask:rgba(127,225,221,0.2)+bright:0.7+sat:1.2';
+const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/pni50038.jpg#repeat+mask:rgba(127,225,221,0.2)+bright:0.6';
+const BG_TOP_LEFT_3 = 'https://textures.neocities.org/textures/abstract-green-and-yellow/1002.GIF#repeat+mask:rgba(127,225,221,0.2)';
+
 
 const BG_TOP_RIGHT_1 = 'https://artwork.neocities.org/bgs/stardown.gif#repeat';
 const BG_TOP_RIGHT_2 = 'https://artwork.neocities.org/bgs/nightani.gif#repeat';
@@ -102,9 +106,11 @@ const BG_TOP_RIGHT_3 = 'https://artwork.neocities.org/bgs/movingstars.gif#repeat
 
 const BG_BOTTOM_LEFT = 'webgl-shader';
 
-const BG_BOTTOM_RIGHT_1 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/416.GIF#repeat+mask:rgba(127,225,221,0.2)+bright:0.6+sat:1.5';
+const BG_BOTTOM_RIGHT_1 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/416.GIF#repeat+mask:rgba(127,225,221,0.2)+bright:0.7';
 const BG_BOTTOM_RIGHT_2 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/155.GIF#repeat+mask:rgba(127,225,221,0.2)+bright:0.6+sat:1.5';
 const BG_BOTTOM_RIGHT_3 = 'https://textures.neocities.org/textures/paper-and-sponge/paper.jpg#repeat+mask:rgba(127,225,221,0.2)';
+
+
 
 // 读取本地存储中用户的粒子特效偏好（默认开启 true）
 let userParticlesPref = localStorage.getItem('particlesPref') !== null ? (localStorage.getItem('particlesPref') === 'true') : true;
