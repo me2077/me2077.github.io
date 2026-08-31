@@ -106,8 +106,8 @@ const BG_TOP_RIGHT_3 = 'https://artwork.neocities.org/bgs/movingstars.gif#repeat
 const BG_BOTTOM_LEFT = 'webgl-shader';
 
 const BG_BOTTOM_RIGHT_1 = 'https://textures.neocities.org/textures/abstract-pink-and-blue/155.GIF#repeat+mask:rgba(127,225,221,0.2)+bright:0.6+sat:1.5';
-const BG_BOTTOM_RIGHT_2 = 'https://textures.neocities.org/textures/wood/OAKQRTRT.png#repeat+mask:rgba(127,225,221,0.2)+bright:0.7+sat:1.2';
-const BG_BOTTOM_RIGHT_3 = 'https://textures.neocities.org/textures/wood/woodgrain2195.jpg#repeat+mask:rgba(127,225,221,0.2)';
+const BG_BOTTOM_RIGHT_2 = 'https://textures.neocities.org/textures/wood/woodgrain2195.jpg#repeat+mask:rgba(127,225,221,0.2)';
+const BG_BOTTOM_RIGHT_3 = 'https://textures.neocities.org/textures/wood/OAKQRTRT.png#repeat+mask:rgba(127,225,221,0.2)+bright:0.7+sat:1.2';
 
 
 
