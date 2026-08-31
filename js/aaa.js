@@ -95,7 +95,7 @@ window.initWebGLShaderBg=function(container){
    ========================================================================== */
 
 const BG_TOP_LEFT_1 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/397.GIF#repeat+mask:rgba(127,225,221,0.2)';
-const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-green-and-yellow/1002.GIF#repeat+mask:rgba(127,225,221,0.2)';
+const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/143.GIF#repeat:80px+mask:rgba(127,225,221,0.2)+bright:0.8';
 const BG_TOP_LEFT_3 = 'https://textures.neocities.org/textures/paper-and-sponge/paper.jpg#repeat+mask:rgba(127,225,221,0.2)';
 
 
