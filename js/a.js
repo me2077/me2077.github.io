@@ -94,7 +94,7 @@ window.initWebGLShaderBg=function(container){
    ========================================================================== */
 const BG_TOP_LEFT_1 = 'https://file.garden/ZWlUCY4S7Xz2vypS/archived%20backgrounds/colours/green/dddf143.jpg#repeat+mask:rgba(127,225,221,0.2)';
 const BG_TOP_LEFT_2 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/397.GIF#repeat+mask:rgba(127,225,221,0.2)';
-const BG_TOP_LEFT_3 = 'https://textures.neocities.org/textures/abstract-brown-and-grey/143.GIF#repeat:110px+mask:rgba(127,225,221,0.2)+bright:0.8';
+const BG_TOP_LEFT_3 = 'https://i.imgur.com/XtguPk5.jpeg#repeat+mask:rgba(127,225,221,0.1)';
 
 const BG_TOP_RIGHT_1 = 'https://artwork.neocities.org/bgs/stardown.gif#repeat';
 const BG_TOP_RIGHT_2 = 'https://artwork.neocities.org/bgs/nightani.gif#repeat';
