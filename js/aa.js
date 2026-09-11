@@ -95,7 +95,7 @@ window.initWebGLShaderBg=function(container){
    ========================================================================== */
 
 
-const BG_TOP_LEFT_1 = 'https://dogpan.com/f/vgPliA/roman_marble_brown.jpg#repeat+mask:rgba(127,225,221,0.2)+bright:0.9';
+const BG_TOP_LEFT_1 = 'https://www.online-image-editor.com/wizards/images/glitters/glitter_215.gif#repeat+mask:rgba(127,225,221,0.2)';
 const BG_TOP_LEFT_2 = 'https://dogpan.com/f/r0LRi2/pentup_stone_grey.gif#repeat+mask:rgba(127,225,221,0.1)+bright:0.8';
 const BG_TOP_LEFT_3 = 'https://textures.neocities.org/textures/abstract-green-and-yellow/1002.GIF#repeat+mask:rgba(127,225,221,0.2)';
 
