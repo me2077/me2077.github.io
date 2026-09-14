@@ -911,7 +911,7 @@ if ('IntersectionObserver' in window && video) {
         });
     }, { threshold: 0.5 });
     
-    const videoTarget = document.getElementById('page1-5') || document.getElementById('page1-4');
+    const videoTarget = document.getElementById('page1-5') || document.getElementById('page1-5');
     if (videoTarget) {
         videoObserver.observe(videoTarget);
     }
