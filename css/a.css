@@ -47,7 +47,7 @@
     --glow-color: 280deg 90% 95%;
     --glowing-card-bg: rgb(255 255 255 / 13%);
     --glowing-card-border: rgb(255 255 255 / 80%);
-    --glowing-card-backdrop: blur(10px);
+    --glowing-card-backdrop: blur(20px);
     --link-card-bg: rgb(255 255 255 / 7%);
     --link-card-hover-bg: rgb(255 255 255 / 25%);
     --link-card-border: rgb(255 255 255 / 50%);
